@@ -1,24 +1,13 @@
 <?php
 
-/*
- *     __						    _
- *    / /  _____   _____ _ __ _   _| |
- *   / /  / _ \ \ / / _ \ '__| | | | |
- *  / /__|  __/\ V /  __/ |  | |_| | |
- *  \____/\___| \_/ \___|_|   \__, |_|
- *						      |___/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author LeverylTeam
- * @link https://github.com/LeverylTeam
- *
-*/
-
-declare(strict_types = 1);
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\block;
 
@@ -29,16 +18,14 @@ use pocketmine\level\sound\GenericSound;
 use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\Player;
 
-class DragonEgg extends Fallable {
+class DragonEgg extends Fallable{
+	
 	protected $id = self::DRAGON_EGG;
 
 	const RAND_VERTICAL = [-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7];
 	const RAND_HORIZONTAL = [-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-
-
+	
 	/**
-	 * DragonEgg constructor.
-	 *
 	 * @param int $meta
 	 */
 	public function __construct($meta = 0){
@@ -82,7 +69,7 @@ class DragonEgg extends Fallable {
 		return false;
 	}
 
-	public function canBeActivated(): bool{
+	public function canBeActivated(){
 		return true;
 	}
 
@@ -98,13 +85,9 @@ class DragonEgg extends Fallable {
 				break;
 			}
 		}
-
-		/** @noinspection PhpUndefinedVariableInspection */
+		
 		$level->setBlock($this, new Air(), true, true);
 		$oldpos = clone $this;
-		/** @noinspection PhpUndefinedVariableInspection */
-		/** @noinspection PhpUndefinedVariableInspection */
-		/** @noinspection PhpUndefinedVariableInspection */
 		$pos = new Position($x, $y, $z, $level);
 		$newpos = clone $pos;
 
@@ -118,7 +101,7 @@ class DragonEgg extends Fallable {
 				$this->getLevel()->addSound(new GenericSound(new Position($oldpos->x + $posdistance->x * $progress, 1.62 + $oldpos->y + $posdistance->y * $progress, $oldpos->z + $posdistance->z * $progress, $this->getLevel()), LevelEventPacket::EVENT_PARTICLE_PORTAL_1));
 			}
 		}
-
-		return $safe; // Unnecessary but added just to stop PHPStorm from whining... And, Why not.
+		
+		return $safe;
 	}
 }

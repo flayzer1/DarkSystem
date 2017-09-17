@@ -4,7 +4,7 @@ namespace pocketmine\block;
 
 use pocketmine\item\Item;
 
-class EndGateway extends Transparent {
+class EndGateway extends Transparent{
     
     protected $id = self::END_GATEWAY;
     
@@ -21,7 +21,7 @@ class EndGateway extends Transparent {
     }
     
     public function getLightLevel(){
-		return 15;
+		return 10;
 	}
     
     public function getDrops(Item $item) {
