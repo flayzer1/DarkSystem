@@ -2115,12 +2115,16 @@ class Server extends DarkSystem{
 		}
 	}
 	
-	public function exceptionHandler(\Throwable $e){
+	public function exceptionHandler(\Throwable $e, $trace = null){
 		if($e === null){
 			return;
 		}
 
 		global $lastError;
+		
+		if($trace === null){
+			$trace = $e->getTrace();
+		}
 		
 		$errstr = $e->getMessage();
 		$errfile = $e->getFile();
@@ -2135,7 +2139,7 @@ class Server extends DarkSystem{
 		$errfile = cleanPath($errfile);
 
 		if($this->konsol instanceof MainLogger){
-			$this->konsol->logException($e);
+			$this->konsol->logException($e, $trace);
 		}
 
 		$lastError = [
@@ -2143,7 +2147,8 @@ class Server extends DarkSystem{
 			"message" => $errstr,
 			"fullFile" => $e->getFile(),
 			"file" => $errfile,
-			"line" => $errline
+			"line" => $errline,
+			"trace" => @getTrace(1, $trace)
 		];
 
 		global $lastExceptionError, $lastError;

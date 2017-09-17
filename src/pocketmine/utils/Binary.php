@@ -15,6 +15,7 @@ use pocketmine\entity\Entity;
 use pocketmine\utils\MetadataConvertor;
 
 class Binary{
+	
 	const BIG_ENDIAN = 0x00;
 	const LITTLE_ENDIAN = 0x01;
 

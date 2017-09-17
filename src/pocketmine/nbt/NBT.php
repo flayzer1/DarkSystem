@@ -47,9 +47,10 @@ class NBT{
 	const TAG_IntArray = 11;
 
 	public $buffer;
-	private $offset;
 	public $endianness;
+	
 	private $data;
+	private $offset;
 	
 	/**
 	 * @param Item $item

@@ -10,6 +10,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
 
 class Pig extends WalkingAnimal implements Rideable{
+	
 	const NETWORK_ID = 12;
 
 	public $width = 1.45;
@@ -33,10 +34,11 @@ class Pig extends WalkingAnimal implements Rideable{
 	}
 
 	public function getDrops(){
+		$drops = [];
 		if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-			return [Item::get(Item::RAW_PORKCHOP, 0, 1)];
+			  $drops[] = Item::get(Item::RAW_PORKCHOP, 0, 1);
 		}
-		return [];
+		return $drops;
 	}
 
 }

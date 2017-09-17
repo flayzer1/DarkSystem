@@ -14,6 +14,7 @@ namespace pocketmine\utils;
 use pocketmine\ThreadManager;
 
 class Utils{
+	
 	public static $online = true;
 	public static $ip = false;
 	public static $os;
@@ -56,18 +57,12 @@ class Utils{
 		}
 
 		$hex = bin2hex($data);
-
-		//xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx 8-4-4-12
+		
 		return substr($hex, 0, 8) . "-" . substr($hex, 8, 4) . "-" . hexdec($version) . substr($hex, 13, 3) . "-" . $fixed{0} . substr($hex, 17, 3) . "-" . substr($hex, 20, 12);
 	}
 
 	/**
-	 * Gets this machine / server instance unique ID
-	 * Returns a hash, the first 32 characters (or 16 if raw)
-	 * will be an identifier that won't change frequently.
-	 * The rest of the hash will change depending on other factors.
-	 *
-	 * @param string $extra optional, additional data to identify the machine
+	 * @param string $extra
 	 *
 	 * @return UUID
 	 */
@@ -90,7 +85,8 @@ class Utils{
 						unset($matches[1][$i]);
 					}
 				}
-				$machine .= implode(" ", $matches[1]); //Mac Addresses
+				
+				$machine .= implode(" ", $matches[1]);
 			}
 		}elseif($os === "linux"){
 			if(file_exists("/etc/machine-id")){
@@ -104,7 +100,8 @@ class Utils{
 							unset($matches[1][$i]);
 						}
 					}
-					$machine .= implode(" ", $matches[1]); //Mac Addresses
+					
+					$machine .= implode(" ", $matches[1]);
 				}
 			}
 		}elseif($os === "android"){
@@ -112,6 +109,7 @@ class Utils{
 		}elseif($os === "mac"){
 			$machine .= `system_profiler SPHardwareDataType | grep UUID`;
 		}
+		
 		$data = $machine . PHP_MAXPATHLEN;
 		$data .= PHP_INT_MAX;
 		$data .= PHP_INT_SIZE;
@@ -130,13 +128,10 @@ class Utils{
 	}
 
 	/**
-	 * Gets the External IP using an external service, it is cached
-	 *
-	 * @param bool $force default false, force IP check even when cached
+	 * @param bool $force
 	 *
 	 * @return string
 	 */
-
 	public static function getIP($force = false){
 		if(Utils::$online === false){
 			return false;
@@ -170,35 +165,26 @@ class Utils{
 	}
 
 	/**
-	 * Returns the current Operating System
-	 * Windows => win
-	 * MacOS => mac
-	 * iOS => ios
-	 * Android => android
-	 * Linux => Linux
-	 * BSD => bsd
-	 * Other => other
-	 *
 	 * @return string
 	 */
 	public static function getOS($recalculate = false){
 		if(Utils::$os === null or $recalculate){
 			$uname = php_uname("s");
-			if(stripos($uname, "Darwin") !== false){
+			if(strpos($uname, "Darwin") !== false){
 				if(strpos(php_uname("m"), "iP") === 0){
 					Utils::$os = "ios";
 				}else{
 					Utils::$os = "mac";
 				}
-			}elseif(stripos($uname, "Win") !== false or $uname === "Msys"){
+			}elseif(strpos($uname, "Win") !== false or $uname === "Msys"){
 				Utils::$os = "win";
-			}elseif(stripos($uname, "Linux") !== false){
+			}elseif(strpos($uname, "Linux") !== false){
 				if(@file_exists("/system/build.prop")){
 					Utils::$os = "android";
 				}else{
 					Utils::$os = "linux";
 				}
-			}elseif(stripos($uname, "BSD") !== false or $uname === "DragonFly"){
+			}elseif(strpos($uname, "BSD") !== false or $uname === "DragonFly"){
 				Utils::$os = "bsd";
 			}else{
 				Utils::$os = "other";
@@ -208,8 +194,7 @@ class Utils{
 		return Utils::$os;
 	}
 	
-	/*
-	public function chechMod(){
+	/*public function chechMod(){
 		$modded = false;
 		$uname = php_uname("s");
 		if(@file_exists("/sdcard/Android/data/net.zhuoweizhang.mcpelauncher/cache/http/journal"){
@@ -217,8 +202,7 @@ class Utils{
 		}else{
 			$modded = false;
 		}
-	}
-	*/
+	}*/
 	
 	public static function getRealMemoryUsage(){
 		$stack = 0;
@@ -312,12 +296,11 @@ class Utils{
 				$processors = (int) getenv("NUMBER_OF_PROCESSORS");
 				break;
 		}
+		
 		return $processors;
 	}
 
 	/**
-	 * Returns a prettified hexdump
-	 *
 	 * @param string $bin
 	 *
 	 * @return string
@@ -336,8 +319,6 @@ class Utils{
 
 
 	/**
-	 * Returns a string that can be printed, replaces non-printable characters
-	 *
 	 * @param $str
 	 *
 	 * @return string
@@ -351,15 +332,12 @@ class Utils{
 	}
 
 	/**
-	 * This function tries to get all the entropy available in PHP, and distills it to get a good RNG.
-	 *
-	 *
-	 * @param int    $length       default 16, Number of bytes to generate
-	 * @param bool   $secure       default true, Generate secure distilled bytes, slower
-	 * @param bool   $raw          default true, returns a binary string if true, or an hexadecimal one
-	 * @param string $startEntropy default null, adds more initial entropy
-	 * @param int    &$rounds      Will be set to the number of rounds taken
-	 * @param int    &$drop        Will be set to the amount of dropped bytes
+	 * @param int    $length
+	 * @param bool   $secure
+	 * @param bool   $raw
+	 * @param string $startEntropy
+	 * @param int    &$rounds
+	 * @param int    &$drop
 	 *
 	 * @return string
 	 */
@@ -371,7 +349,6 @@ class Utils{
 		$rounds = 0;
 		$drop = 0;
 		while(!isset($output{$length - 1})){
-			//some entropy, but works ^^
 			$weakEntropy = [
 				is_array($startEntropy) ? implode($startEntropy) : $startEntropy,
 				__DIR__,
@@ -414,7 +391,6 @@ class Utils{
 			unset($weakEntropy);
 
 			if($secure === true){
-
 				if(file_exists("/dev/urandom")){
 					$fp = fopen("/dev/urandom", "rb");
 					$systemRandom = fread($fp, 64);
@@ -435,7 +411,6 @@ class Utils{
 					$strongEntropy = $strongEntropy ^ $value;
 				}
 				$value = "";
-				//Von Neumann randomness extractor, increases entropy
 				$bitcnt = 0;
 				for($j = 0; $j < 64; ++$j){
 					$a = ord($strongEntropy{$j});
@@ -457,18 +432,18 @@ class Utils{
 					}
 				}
 			}
+			
 			$output .= substr($value, 0, min($length - strlen($output), $length));
 			unset($value);
 			++$rounds;
 		}
+		
 		$lastRandom = hash("sha512", $lastRandom, true);
 
 		return $raw === false ? bin2hex($output) : $output;
 	}
 	
 	/**
-	 * GETs an URL using cURL
-	 *
 	 * @param     $page
 	 * @param int $timeout default 10
 	 * @param array $extraHeaders
@@ -498,8 +473,6 @@ class Utils{
 	}
 
 	/**
-	 * POSTs data to an URL
-	 *
 	 * @param              $page
 	 * @param array|string $args
 	 * @param int          $timeout
@@ -531,9 +504,7 @@ class Utils{
 		return $ret;
 	}
 	
-	/**
-	 * PUTs data to an url
-	 * 
+	/** 
 	 * @param string $page
 	 * @param array|string $args
 	 * @param int $timeout

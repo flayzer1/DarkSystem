@@ -43,8 +43,9 @@ class SpawnEgg extends Item{
 
 	public function onActivate(Level $level, Player $player, Block $block, Block $target, $face, $fx, $fy, $fz){
 		$entity = null;
-		$chunk = $level->getChunk($block->getX() >> 4, $block->getZ() >> 4);
-
+		if($target->getId() == Block::MONSTER_SPAWNER){
+			return true;
+		}
 		$nbt = new Compound("", [
 			"Pos" => new Enum("Pos", [
 				new DoubleTag("", $block->getX() + 0.5),
@@ -69,7 +70,7 @@ class SpawnEgg extends Item{
 		$entity = Entity::createEntity($this->meta, $level, $nbt);
 
 		if($entity instanceof Entity){
-			if($player->isSurvival()){
+			if($player->isSurvival() or $player->isAdventure()){
 				--$this->count;
 			}
 			

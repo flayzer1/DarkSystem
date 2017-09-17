@@ -12,6 +12,7 @@
 namespace pocketmine\utils;
 
 class Range{
+	
 	public $minValue;
 	public $maxValue;
 
@@ -20,7 +21,8 @@ class Range{
 		$this->maxValue = $max;
 	}
 
-	public function isInRange(int $v) : bool{
+	public function isInRange(int $v){
 		return $v >= $this->minValue && $v <= $this->maxValue;
 	}
+	
 }

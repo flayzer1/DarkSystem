@@ -56,7 +56,13 @@ class CrashReport{
 		$this->data["time"] = $this->time;
 		$this->addLine($this->server->getName() . " Çökme Arşivi " . date("D M j H:i:s T Y", $this->time));
 		$this->addLine();
-		$this->baseCrash();
+		try{
+			$this->baseCrash();
+		}catch(\Exception $e){
+			$this->addLine("Çökme Arşivi Oluşturulurken Bir Hata Oluştu ve İşlem Durduruldu!");
+			$this->addLine();
+		}
+		
 		$this->generalData();
 		$this->pluginsData();
 		$this->extraData();
@@ -107,7 +113,6 @@ class CrashReport{
 					"load" => $d->getOrder() === PluginLoadOrder::POSTWORLD ? "POSTWORLD" : "STARTUP",
 					"website" => $d->getWebsite()
 				];
-				
 				$this->addLine($d->getName() . " " . $d->getVersion() . " Yapan " . implode(", ", $d->getAuthors()) . " API(ler) " . implode(", ", $d->getCompatibleApis()));
 			}
 		}
@@ -148,6 +153,7 @@ class CrashReport{
 			$error = $lastExceptionError;
 		}else{
 			$error = (array) error_get_last();
+			$error["trace"] = @getTrace(3);
 			$errorConversion = [
 				E_ERROR => "E_HATA",
 				E_WARNING => "E_UYARI",
@@ -180,6 +186,7 @@ class CrashReport{
 
 		$this->data["error"] = $error;
 		unset($this->data["error"]["fullFile"]);
+		unset($this->data["error"]["trace"]);
 		$this->addLine("Hata: " . $error["message"]);
 		$this->addLine("Dosya: " . $error["file"]);
 		$this->addLine("Satır: " . $error["line"]);
@@ -217,9 +224,15 @@ class CrashReport{
 			}
 		}
 		
-		$this->generalData();
+		$this->addLine();
+		$this->addLine("Ayrıntı:");
+		foreach(($this->data["trace"] = $error["trace"]) as $line){
+			$this->addLine($line);
+		}
+		
+		$this->addLine();
 	}
-
+	
 	private function generalData(){
 		$version = new VersionString();
 		$this->data["general"] = [];

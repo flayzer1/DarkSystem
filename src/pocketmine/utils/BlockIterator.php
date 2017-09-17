@@ -26,19 +26,16 @@ use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 
 class BlockIterator implements \Iterator{
-
-	/** @var Level */
+	
 	private $level;
 	private $maxDistance;
 
-	private static $gridSize = 16777216; //1 << 24
+	private static $gridSize = 16777216;
 
 	private $end = false;
-
-	/** @var \SplFixedArray<Block>[3] */
+	
 	private $blockQueue;
 	private $currentBlock = 0;
-	/** @var Block */
 	private $currentBlockObject = null;
 	private $currentDistance = 0;
 	private $maxDistanceInt = 0;

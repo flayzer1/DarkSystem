@@ -22,6 +22,7 @@
 namespace pocketmine\utils;
 
 abstract class Terminal{
+	
 	public static $FORMAT_BOLD = "";
 	public static $FORMAT_OBFUSCATED = "";
 	public static $FORMAT_ITALIC = "";

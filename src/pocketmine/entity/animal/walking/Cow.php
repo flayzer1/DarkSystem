@@ -9,6 +9,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
 
 class Cow extends WalkingAnimal{
+	
 	const NETWORK_ID = 11;
 
 	public $width = 1.45;
@@ -42,4 +43,5 @@ class Cow extends WalkingAnimal{
 		}
 		return [];
 	}
+	
 }

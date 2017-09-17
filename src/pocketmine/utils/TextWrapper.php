@@ -21,10 +21,6 @@
 
 namespace pocketmine\utils;
 
-
-/**
- * @deprecated
- */
 abstract class TextWrapper{
 
 	private static $characterWidths = [

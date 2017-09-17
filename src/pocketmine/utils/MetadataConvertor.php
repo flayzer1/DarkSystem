@@ -3,7 +3,7 @@
 namespace pocketmine\utils;
 
 use pocketmine\entity\Entity;
-use pocketmine\network\protocol\Info;
+use pocketmine\network\protocol\Info as ProtocolInfo;
 
 class MetadataConvertor{
 
@@ -24,6 +24,7 @@ class MetadataConvertor{
 		'DATA_FLAG_CHESTED_MOUNT' => 34,
 		'DATA_FLAG_STACKABLE' => 35,
 	];
+	
 	private static $diffEntityFlags120 = [
 		'DATA_FLAG_RESTING_BAT' => 22,
 		'DATA_FLAG_ANIMAL_SIT' => 23,
@@ -40,14 +41,17 @@ class MetadataConvertor{
 		'DATA_FLAG_CHESTED_MOUNT' => 34,
 		'DATA_FLAG_STACKABLE' => 35,
 	];
+	
 	private static $entityFlags110 = [];
 	private static $entityFlags120 = [];
 	private static $diffEntityMetaIds110 = [
 		'DATA_MAX_AIR' => 43,
 	];
+	
 	private static $diffEntityMetaIds120 = [
 		'DATA_MAX_AIR' => 43,
 	];
+	
 	private static $entityMetaIds110 = [];
 	private static $entityMetaIds120 = [];
 
@@ -88,10 +92,10 @@ class MetadataConvertor{
 
 	private static function updateMetaIds($meta, $protocol) {
 		switch ($protocol) {
-			case Info::PROTOCOL_120:
+			case ProtocolInfo::PROTOCOL_120:
 				$protocolMeta = self::$entityMetaIds120;
 				break;
-			case Info::PROTOCOL_110:
+			case ProtocolInfo::PROTOCOL_110:
 				$protocolMeta = self::$entityMetaIds110;
 				break;
 			default:
@@ -113,11 +117,11 @@ class MetadataConvertor{
 			return $meta;
 		}
 		switch ($protocol) {
-			case Info::PROTOCOL_120:
+			case ProtocolInfo::PROTOCOL_120:
 				$newflags = 1 << 19; //DATA_FLAG_CAN_CLIMBING
 				$protocolFlags = self::$entityFlags120;
 				break;
-			case Info::PROTOCOL_110:
+			case ProtocolInfo::PROTOCOL_110:
 				$newflags = 1 << 19; //DATA_FLAG_CAN_CLIMBING
 				$protocolFlags = self::$entityFlags110;
 				break;

@@ -15,6 +15,7 @@ use pocketmine\scheduler\FileWriteTask;
 use pocketmine\Server;
 
 class Config{
+	
 	const DETECT = -1; //Detect by file extension
 	const PROPERTIES = 0; // .properties
 	const CNF = Config::PROPERTIES; // .cnf

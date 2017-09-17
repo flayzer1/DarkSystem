@@ -12,7 +12,7 @@
 namespace pocketmine\utils;
 
 use pocketmine\item\Item;
-use pocketmine\network\protocol\Info;
+use pocketmine\network\protocol\Info as ProtocolInfo;
 
 class BinaryStream extends \stdClass{
 
@@ -151,7 +151,7 @@ class BinaryStream extends \stdClass{
 		for($i = 1; $i <= $len and !$this->feof(); ++$i){
 			$data[] = $this->get($this->getTriad());
 		}
-
+		
 		return $data;
 	}
 
@@ -193,7 +193,7 @@ class BinaryStream extends \stdClass{
 			$nbt = $this->get($nbtLen);
 		}
 		
-		if($playerProtocol >= Info::PROTOCOL_110){
+		if($playerProtocol >= ProtocolInfo::PROTOCOL_110){
 			$this->offset += 2;
 		}
 		
@@ -212,11 +212,11 @@ class BinaryStream extends \stdClass{
 		}
 		
 		$this->putSignedVarInt($item->getId());
-		$this->putSignedVarInt(($item->getDamage() === null ? 0  : ($item->getDamage() << 8)) + $item->getCount());	
+		$this->putSignedVarInt(($item->getDamage() === null ? 0 : ($item->getDamage() << 8)) + $item->getCount());	
 		$nbt = $item->getCompound();	
 		$this->putLShort(strlen($nbt));
 		$this->put($nbt);
-		if($playerProtocol >= Info::PROTOCOL_110){
+		if($playerProtocol >= ProtocolInfo::PROTOCOL_110){
 			$this->putByte(0);
 			$this->putByte(0);
 		}
@@ -226,32 +226,32 @@ class BinaryStream extends \stdClass{
 		return !isset($this->buffer{$this->offset});
 	}
 	
-	
-	public function getSignedVarInt() {
+	public function getSignedVarInt(){
 		$result = $this->getVarInt();
-		if ($result % 2 == 0) {
+		if($result % 2 == 0){
 			$result = $result / 2;
-		} else {
+		}else{
 			$result = (-1) * ($result + 1) / 2;
 		}
+		
 		return $result;
 	}
 
-	public function getVarInt() {
+	public function getVarInt(){
 		$result = $shift = 0;
-		do {
+		do{
 			$byte = $this->getByte();
 			$result |= ($byte & 0x7f) << $shift;
 			$shift += 7;
-		} while ($byte > 0x7f);
+		}while($byte > 0x7f);
 		return $result;
 	}
 
-	public function putSignedVarInt($v) {
+	public function putSignedVarInt($v){
 		$this->put(Binary::writeSignedVarInt($v));
 	}
 
-	public function putVarInt($v) {
+	public function putVarInt($v){
 		$this->put(Binary::writeVarInt($v));
 	}
 

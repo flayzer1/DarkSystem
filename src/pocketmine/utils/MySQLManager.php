@@ -27,12 +27,10 @@ class MySQLManager extends DataBase{
 		if($this->database->connect_error){
 			return false;
 		}else{
-
 			$sql = "CREATE TABLE IF NOT EXISTS InventoryData (name VARCHAR(20) NOT NULL,slot VARCHAR(3) NOT NULL,id VARCHAR(3) NOT NULL,meta VARCHAR(2) NOT NULL,count VARCHAR(2) NOT NULL,PRIMARY KEY (name,slot))";
 			$this->db->query($sql);
 			$sql = "CREATE TABLE IF NOT EXISTS PlayerData (name VARCHAR(20) NOT NULL,gametype INT(1) NOT NULL,lastplayed INT(10) NOT NULL,hunger Int(2) NOT NULL,health Int(3) NOT NULL,maxhealth Int(3) NOT NULL,exp Int(1000000) NOT NULL,explevel Int(1000) NOT NULL,PRIMARY KEY (name))";
 			$this->db->query($sql);
-
 			return true;
 		}
 	}
@@ -42,7 +40,6 @@ class MySQLManager extends DataBase{
 	}
 
 	public function loadInventory($player){
-
 		$sql = "SELECT `name`,`slot`,`id`,`meta`,`count` FROM InventoryData WHERE name='".strtolower($player->getName())."'";
 		$res = $this->db->query($sql);
 		if(!$res === false){
@@ -70,12 +67,11 @@ class MySQLManager extends DataBase{
 	}
 
 	public function registerPlayer($name){
-			$sql = "INSERT INTO `".$this->dbname."`.`PlayerData` (`name`,`gamemode`,`lastplayed`,`hunger`,`health`,`maxhealth`,`exp`,`explevel`)VALUES ('".$name."','".$slot."','".$id."','".$meta."','".$count."')";
-			$this->db->query($sql);
+		$sql = "INSERT INTO `".$this->dbname."`.`PlayerData` (`name`,`gamemode`,`lastplayed`,`hunger`,`health`,`maxhealth`,`exp`,`explevel`)VALUES ('".$name."','".$slot."','".$id."','".$meta."','".$count."')";
+		$this->db->query($sql);
 	}
 
 	public function savePlayer($player){
-
 		$GameType = $player->gamemode;
 		$lastPlayed = floor(microtime(true) * 1000);
 		$Hunger = $player->food;
@@ -83,9 +79,6 @@ class MySQLManager extends DataBase{
 		$MaxHealth = $player->getMaxHealth();
 		$Experience = $player->exp;
 		$ExpLevel = $player->expLevel;
-
-
-
 	}
-
+	
 }

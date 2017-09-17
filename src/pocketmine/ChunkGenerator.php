@@ -184,23 +184,23 @@ class ChunkGenerator extends Worker{
 		$this->shutdown = true;
 	}
 	
-	public function errorHandler($errno, $errstr, $errfile, $errline, $context){
+	public function errorHandler($errno, $errstr, $errfile, $errline, $context, $trace = null){
 		$errorConversion = [
 			E_ERROR => "E_HATA",
-				E_WARNING => "E_UYARI",
-				E_PARSE => "E_OKUMA",
-				E_NOTICE => "E_BILDIRIM",
-				E_CORE_ERROR => "E_CORE_HATASI",
-				E_CORE_WARNING => "E_CORE_UYARISI",
-				E_COMPILE_ERROR => "E_COMPILE_HATASI",
-				E_COMPILE_WARNING => "E_COMPILE_UYARISI",
-				E_USER_ERROR => "E_KULLANICI_HATASI",
-				E_USER_WARNING => "E_KULLANICI_UYARISI",
-				E_USER_NOTICE => "E_KULLANCI_BILDIRIMI",
-				E_STRICT => "E_STRICT",
-				E_RECOVERABLE_ERROR => "E_RECOVERABLE_HATA",
-				E_DEPRECATED => "E_DEPRECATED",
-				E_USER_DEPRECATED => "E_KULLANICI_DEPRECATED",
+			E_WARNING => "E_UYARI",
+			E_PARSE => "E_OKUMA",
+			E_NOTICE => "E_BILDIRIM",
+			E_CORE_ERROR => "E_CORE_HATASI",
+			E_CORE_WARNING => "E_CORE_UYARISI",
+			E_COMPILE_ERROR => "E_COMPILE_HATASI",
+			E_COMPILE_WARNING => "E_COMPILE_UYARISI",
+			E_USER_ERROR => "E_KULLANICI_HATASI",
+			E_USER_WARNING => "E_KULLANICI_UYARISI",
+			E_USER_NOTICE => "E_KULLANCI_BILDIRIMI",
+			E_STRICT => "E_STRICT",
+			E_RECOVERABLE_ERROR => "E_RECOVERABLE_HATA",
+			E_DEPRECATED => "E_DEPRECATED",
+			E_USER_DEPRECATED => "E_KULLANICI_DEPRECATED",
 		];
 		
 		$errno = isset($errorConversion[$errno]) ? $errorConversion[$errno] : $errno;

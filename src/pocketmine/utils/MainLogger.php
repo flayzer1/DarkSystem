@@ -51,10 +51,6 @@ class MainLogger extends \AttachableThreadedLogger{
 		$this->start();
 	}
 	
-	public static function getLoggr(){
-		return static::$logger;
-	}
-	
 	public static function getLogger(){
 		return static::$logger;
 	}
@@ -98,7 +94,10 @@ class MainLogger extends \AttachableThreadedLogger{
 		$this->logDebug = (bool) $logDebug;
 	}
 
-	public function logException(\Throwable $e){
+	public function logException(\Throwable $e, $trace = null){
+		if($trace === null){
+			$trace = $e->getTrace();
+		}
 		$errstr = $e->getMessage();
 		$errfile = $e->getFile();
 		$errno = $e->getCode();
@@ -132,6 +131,9 @@ class MainLogger extends \AttachableThreadedLogger{
 		}
 		$errfile = \pocketmine\cleanPath($errfile);
 		$this->log($type, get_class($e) . ": \"$errstr\" ($errno) in \"$errfile\" at line $errline");
+		foreach(@\pocketmine\getTrace(1, $trace) as $i => $line){
+			$this->debug($line);
+		}
 	}
 
 	public function log($level, $message){
