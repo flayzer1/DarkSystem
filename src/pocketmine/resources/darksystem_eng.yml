@@ -164,34 +164,6 @@ dserver:
  #the server list，Separate by ';'，e.g. 1.example.com:19132;2.example.com:19133
  server-list: ""
  
-ai:
- #Yaratık Ayarları
- enable: false
- #Zombi Ayarları，0=Devredışı，1=AI 1.0
- zombie: 0
- #Zombi Domuz Adam
- pigzombie: false
- #İnek
- cow: false
- #Tavuk
- chicken: false
- #Koyun
- sheep: false
- #Domuz
- pig: false
- #Skeleton's AI
- skeleton: false
- #Creeper's AI
- creeper: false
- #Iron golem's AI
- iron-golem: false
- #Snow golem's AI 
- snow-golem: false
- #Creeper Patladığında Blokları Patlat
- creeper-explode-destroy-block: false
- #Otomatik Yaratık Çağırma
- mobgenerate: false
- 
 inventory:
  #Hileleri Aktif Et
  allow-cheats: false

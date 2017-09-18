@@ -589,6 +589,7 @@ class Item{
 		91 => "Jack-O'-Lantern",
 		92 => "Cake Block",
 		//95 => "Invisible Bedrock",
+		95 => "Stained Glass",
 		96 => "Trapdoor",
 		98 => "Stone Bricks",
 		99 => "Brown Mushroom Block",
@@ -611,7 +612,7 @@ class Item{
 		118 => "Cauldron Block",
 		120 => "End Portal",
 		121 => "End Stone",
-        Item::DRAGON_EGG => 'Dragon Egg',
+        122 => "Dragon Egg",
 		123 => "Redstone Lamp",
 		124 => "Redstone Lamp Active",
 		125 => "Dropper",
@@ -619,7 +620,7 @@ class Item{
 		127 => "Cocoa",
 		128 => "Sendstone Stairs",
 		129 => "Emerald Ore",
-        Item::ENDER_CHEST => 'Ender Chest',
+        130 => "Ender Chest",
 		131 => "Tripwire Hook",
 		132 => "Tripwire",
 		133 => "Emerald Block",
@@ -648,7 +649,7 @@ class Item{
 		157 => "Double Wood Slab",
 		158 => "Wooden Slab",
 		159 => "Stained Clay",
-        Item::STAINED_GLASS_PANE => 'Stained Glass Pane',
+        160 => 'Stained Glass Pane',
 		161 => "Leaves2",
 		162 => "Wood2",
 		163 => "Acacia Wood Stairs",
@@ -675,15 +676,20 @@ class Item{
 		195 => "Jungle Door",
 		196 => "Acacia Door",
 		197 => "Dark Oak Door",
-		198 => "Grass Path",
-        Item::CHORUS_FLOWER => 'Chorus Flower',
-        Item::PURPUR_BLOCK => 'Purpur Block',
-        Item::END_BRICKS => 'End Brick',
-        Item::END_ROD => 'End Rod',
-        Item::CHORUS_PLANT => 'Chorus Plant',
-        Item::STAINED_GLASS => 'Stained Glass',
+		198 => "End Rod",
+		199 => "Chorus Plant",
+		200 => "Chorus Flower",
+		201 => "Purpur Block",
+		202 => "Purpur Pillar",
+		203 => "Purpur Stairs",
+		204 => "Purpur Double Slab",
+		205 => "Purpur Slab",
+		206 => "End Stone Bricks",
+		207 => "Beetroot Block", ///
+		208 => "Grass Path",
+		209 => "End Gateway",
 		243 => "Podzol",
-		244 => "Beetroot Block",
+		244 => "Beetroot Block", ///
 		245 => "Stonecutter",
 		246 => "Glowing Obsidian",
 		247 => "Nether Reactor",
@@ -823,7 +829,7 @@ class Item{
 		419 => "Diamond Horse Armor",
 		420 => "Lead",
 		421 => "Name Tag",
-		Item::PRISMARINE_CRYSTAL => "Prismarine Crystal",
+		422 => "Prismarine Crystals",
 		423 => "Raw Mutton",
 		424 => "Cooked Mutton",
 		427 => "Spruce Door",
@@ -831,8 +837,10 @@ class Item{
 		429 => "Jungle Door",
 		430 => "Acacia Door",
 		431 => "Dark Oak Door",
-		431 => "Chorus Fruit",
+		432 => "Chorus Fruit",
+		437 => "Dragon's Breath",
 		438 => "Splash Potion",
+		444 => "Elytra",
 		457 => "Beetroot",
 		458 => "Beetroot Seed",
 		459 => "Beetroot Soup",
@@ -1498,6 +1506,7 @@ class Item{
 		if(!$this->hasCompound()){
 			return $this;
 		}
+		
 		$tag = $this->getNamedTag();
 
 		if(isset($tag->BlockEntityTag) and $tag->BlockEntityTag instanceof Compound){
@@ -1591,9 +1600,10 @@ class Item{
 		$found = false;
 		$maxIntIndex = -1;
 		foreach($tag->ench as $k => $entry){
-			if (is_numeric($k) && $k > $maxIntIndex) {
+			if(is_numeric($k) && $k > $maxIntIndex){
 				$maxIntIndex = $k;
 			}
+			
 			if($entry["id"] === $ench->getId()){
 				$tag->ench->{$k} = new Compound("", [
 					"id" => new ShortTag("id", $ench->getId()),
@@ -1691,16 +1701,18 @@ class Item{
 	
 	public function setCustomColor($colorCode){	
 		if(!$this->hasCompound()){
-			if (!is_int($colorCode)) {
+			if(!is_int($colorCode)){
 				return $this;
 			}
+			
 			$tag = new Compound("", []);
 		}else{
 			$tag = $this->getNamedTag();
 		}
-		if (!is_int($colorCode)) {
+		
+		if(!is_int($colorCode)){
 			unset($tag->customColor);			
-		} else {
+		}else{
 			$tag->customColor = new IntTag("customColor", $colorCode);
 		}
 		
@@ -1713,6 +1725,7 @@ class Item{
 		if(!$this->hasCompound()){
 			return $this;
 		}
+		
 		$tag = $this->getNamedTag();
 
 		if(isset($tag->display) and $tag->display instanceof Compound){
@@ -1742,6 +1755,7 @@ class Item{
 		}elseif($this->cachedNBT !== null){
 			return $this->cachedNBT;
 		}
+		
 		return $this->cachedNBT = Item::parseCompound($this->tags);
 	}
 
@@ -1775,9 +1789,11 @@ class Item{
 	final public function canBePlaced(){
 		return $this->block !== null and $this->block->canBePlaced();
 	}
+	
 	final public function isPlaceable(){
 		return (($this->block instanceof Block) and $this->block->isPlaceable === true);
 	}
+	
 	public function getBlock(){
 		if($this->block instanceof Block){
 			return clone $this->block;
@@ -1806,6 +1822,7 @@ class Item{
 		if(!isset(Fuel::$duration[$this->id])){
 			return null;
 		}
+		
 		if($this->id !== Item::BUCKET or $this->meta === 10){
 			return Fuel::$duration[$this->id];
 		}
@@ -1899,14 +1916,12 @@ class Item{
 	}
 	
 	/**
-	 * Serializes the item to an NBT Compound
-	 *
 	 * @param int    $slot optional, the inventory slot of the item
 	 * @param string $tagName the name to assign to the Compound object
 	 *
 	 * @return Compound
 	 */
-	public function nbtSerialize(int $slot = -1, string $tagName = "") : Compound{
+	public function nbtSerialize(int $slot = -1, string $tagName = ""){
 		$tag = new Compound($tagName, [
 			"id" => new ShortTag("id", $this->id),
 			"Count" => new ByteTag("Count", $this->count ?? -1),
@@ -1926,13 +1941,11 @@ class Item{
 	}
 
 	/**
-	 * Deserializes an Item from an NBT Compound
-	 *
 	 * @param Compound $tag
 	 *
 	 * @return Item
 	 */
-	public static function nbtDeserialize(Compound $tag) : Item{
+	public static function nbtDeserialize(Compound $tag){
 		if(!isset($tag->id) or !isset($tag->Count)){
 			return Item::get(0);
 		}
