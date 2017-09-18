@@ -59,10 +59,10 @@ namespace pocketmine{
 	use pocketmine\utils\Utils;
 	use pocketmine\setup\Setup;
 
-	const VERSION = "1.9.0";
+	const VERSION = "2.0.0";
 	const DARKBOT_VERSION = "1.0.0";
 	const API_VERSION = "3.0.1";
-	const TAG = "Platinum";
+	const TAG = "Prismarine";
 	const CODENAME = "DarkSystem";
 	const CREATOR = "DarkYusuf13";
 	
@@ -155,7 +155,7 @@ namespace pocketmine{
 	define('pocketmine\DATA', isset($opts["data"]) ? $opts["data"] . DIRECTORY_SEPARATOR : \getcwd() . DIRECTORY_SEPARATOR);
 	
 	$lang = "Bilinmeyen";
-	if(!file_exists(\pocketmine\DATA . "sunucu.properties") and !isset($opts["no-setup"])){
+	if(!file_exists(\pocketmine\DATA . "sunucu.properties") && !file_exists(\pocketmine\DATA . "server.properties") && !isset($opts["no-setup"])){
 		$setup = new Setup();
 		$lang = $setup->getDefaultLang();
 	}
@@ -208,7 +208,7 @@ namespace pocketmine{
 		$j = 0;
 		for($i = (int) $start; isset($trace[$i]); ++$i, ++$j){
 			$params = "";
-			if(isset($trace[$i]["args"]) or isset($trace[$i]["params"])){
+			if(isset($trace[$i]["args"]) || isset($trace[$i]["params"])){
 				if(isset($trace[$i]["args"])){
 					$args = $trace[$i]["args"];
 				}else{
@@ -220,7 +220,7 @@ namespace pocketmine{
 				}
 			}
 			
-			$messages[] = "#$j " . (isset($trace[$i]["file"]) ? cleanPath($trace[$i]["file"]) : "") . "(" . (isset($trace[$i]["line"]) ? $trace[$i]["line"] : "") . "): " . (isset($trace[$i]["class"]) ? $trace[$i]["class"] . (($trace[$i]["type"] === "dynamic" or $trace[$i]["type"] === "->") ? "->" : "::") : "") . $trace[$i]["function"] . "(" . Utils::printable(substr($params, 0, -2)) . ")";
+			$messages[] = "#$j " . (isset($trace[$i]["file"]) ? cleanPath($trace[$i]["file"]) : "") . "(" . (isset($trace[$i]["line"]) ? $trace[$i]["line"] : "") . "): " . (isset($trace[$i]["class"]) ? $trace[$i]["class"] . (($trace[$i]["type"] === "dynamic" || $trace[$i]["type"] === "->") ? "->" : "::") : "") . $trace[$i]["function"] . "(" . Utils::printable(substr($params, 0, -2)) . ")";
 		}
 
 		return $messages;
@@ -304,7 +304,7 @@ namespace pocketmine{
 		$thread->quit();
 	}
 	
-	$konsol->info("§l§cSunucu Durduruldu!");
+	$konsol->info("§cSunucu Durduruldu!");
 	$konsol->shutdown();
 	exit(0);
 	exit(0);

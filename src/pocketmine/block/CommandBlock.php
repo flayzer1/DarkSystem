@@ -22,12 +22,12 @@ class CommandBlock extends Solid
         $this->meta = $meta;
     }
 
-    public function canBeActivated(): bool
+    public function canBeActivated()
     {
         return true;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Command Block";
     }

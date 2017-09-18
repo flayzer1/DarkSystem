@@ -109,7 +109,7 @@ class BaseClassLoader extends \Threaded implements ClassLoader{
             include($path);
             if(!class_exists($name, false) and !interface_exists($name, false) and !trait_exists($name, false)){
 	            if($this->getParent() === null){
-		            throw new ClassNotFoundException("Class $name bulunamadı");
+		            throw new ClassNotFoundException("Class $name not found");
 	            }
                 return false;
             }
@@ -122,7 +122,7 @@ class BaseClassLoader extends \Threaded implements ClassLoader{
 
             return true;
         }elseif($this->getParent() === null){
-	        throw new ClassNotFoundException("Class $name bulunamadı");
+	        throw new ClassNotFoundException("Class $name not found");
         }
 
         return false;

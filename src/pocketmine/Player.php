@@ -587,7 +587,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$data = new \stdClass();
 		$count = 0;
 		foreach($this->server->getCommandMap()->getCommands() as $command){
-			if($this->hasPermission($command->getPermission()) or $command->getPermission() == null){
+			if($this->hasPermission($command->getPermission()) || $command->getPermission() == null){
 			    if(($cmdData = $command->generateCustomCommandData($this)) !== null/* && $command->testPermission($this)*/){
 				    ++$count;
 				    $data->{$command->getName()}->versions[0] = $cmdData;
@@ -1087,7 +1087,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			if($entity instanceof Arrow && $entity->hadCollision){
 				$item = Item::get(Item::ARROW, 0, 1);
 				//if($this->isSurvival() || $this->isAdventure() || $this->isCreative() && !$this->isSpectator() && !$this->inventory->canAddItem($item)){
-				if($this->isSurvival() and !$this->inventory->canAddItem($item)){
+				if($this->isSurvival() && !$this->inventory->canAddItem($item)){
 					continue;
 				}
 

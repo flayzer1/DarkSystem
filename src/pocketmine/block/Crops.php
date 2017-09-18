@@ -37,7 +37,6 @@ abstract class Crops extends Flowable{
 		$down = $this->getSide(0);
 		if($down->getId() === self::FARMLAND){
 			$this->getLevel()->setBlock($block, $this, true, true);
-
 			return true;
 		}
 

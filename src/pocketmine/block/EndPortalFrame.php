@@ -53,7 +53,6 @@ class EndPortalFrame extends Solid{
 	}
 
 	protected function recalculateBoundingBox(){
-
 		return new AxisAlignedBB(
 			$this->x,
 			$this->y,

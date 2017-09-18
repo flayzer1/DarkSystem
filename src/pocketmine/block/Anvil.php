@@ -73,7 +73,7 @@ class Anvil extends Fallable{
 	public function getDrops(Item $item){
 		if($item->isPickaxe() >= 1){
 			return [
-				[$this->id, 0, 1], //TODO break level
+				[$this->id, 0, 1],
 			];
 		}else{
 			return [];

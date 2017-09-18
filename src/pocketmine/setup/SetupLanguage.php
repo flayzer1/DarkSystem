@@ -48,12 +48,12 @@ class SetupLanguage{
 				$this->langfile = \pocketmine\PATH . "src/pocketmine/language/setup/" . $l . ".ini";
 			}else{
 				$this->lang = "tr";
-				$this->langfile = \pocketmine\PATH . "src/pocketmine/language/setup/tur.ini";
+				$this->langfile = \pocketmine\PATH . "src/pocketmine/language/setup/tr_TR.ini";
 			}
 		}
 
-		$this->loadLang(\pocketmine\PATH . "src/pocketmine/language/setup/tur.ini", "tur");
-		if($this->lang !== "tr"){
+		$this->loadLang(\pocketmine\PATH . "src/pocketmine/language/setup/tr_TR.ini", "tur");
+		if($this->lang !== "tur"){
 			$this->loadLang($this->langfile, $this->lang);
 		}
 
@@ -63,7 +63,7 @@ class SetupLanguage{
 		return ($this->lang);
 	}
 
-	public function loadLang($langfile, $lang = "en"){
+	public function loadLang($langfile, $lang = "tur"){
 		$this->texts[$lang] = [];
 		$texts = explode("\n", str_replace(["\r", "\\/\\/"], ["", "//"], file_get_contents($langfile)));
 		foreach($texts as $line){
@@ -71,6 +71,7 @@ class SetupLanguage{
 			if($line === ""){
 				continue;
 			}
+			
 			$line = explode("=", $line);
 			$this->texts[$lang][trim(array_shift($line))] = trim(str_replace(["\\n", "\\N",], "\n", implode("=", $line)));
 		}
@@ -78,8 +79,8 @@ class SetupLanguage{
 
 	public function get($name, $search = [], $replace = []){
 		if(!isset($this->texts[$this->lang][$name])){
-			if($this->lang !== "tr" and isset($this->texts["tr"][$name])){
-				return $this->texts["tr"][$name];
+			if($this->lang !== "tur" and isset($this->texts["tur"][$name])){
+				return $this->texts["tur"][$name];
 			}else{
 				return $name;
 			}

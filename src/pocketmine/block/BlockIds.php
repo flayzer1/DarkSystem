@@ -11,8 +11,8 @@
 
 namespace pocketmine\block;
 
-interface BlockIds
-{
+interface BlockIds{
+	
     const AIR = 0;
     const STONE = 1;
     const GRASS = 2;

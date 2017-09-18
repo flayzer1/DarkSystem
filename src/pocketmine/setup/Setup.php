@@ -90,7 +90,6 @@ LISANS;
 		if(strtolower($this->getInput("n")) != "y"){
 			echo "[!] " . $this->lang->you_have_to_accept_the_license . "\n";
 			sleep(4);
-
 			return false;
 		}
 
@@ -104,7 +103,11 @@ LISANS;
 	}
 
 	private function generateBaseConfig(){
-		$config = new Config(\pocketmine\DATA . "sunucu.properties", Config::PROPERTIES);
+		if($this->lang == "tr" || "tur"){
+			$config = new Config(\pocketmine\DATA . "sunucu.properties", Config::PROPERTIES);
+		}else{
+			$config = new Config(\pocketmine\DATA . "server.properties", Config::PROPERTIES);
+		}
 		echo "[?] " . $this->lang->name_your_server . " (" . self::DEFAULT_NAME . "): ";
 		$server_name = $this->getInput(self::DEFAULT_NAME);
 		$config->set("server-name", $server_name);
@@ -166,14 +169,20 @@ LISANS;
 		$op = strtolower($this->getInput(""));
 		if($op === ""){
 			echo "[!] " . $this->lang->op_warning . "\n";
-		}else{
+		}elseif($this->lang == "tr" || "tur"){
 			$ops = new Config(\pocketmine\DATA . "yoneticiler.json", Config::ENUM);
-			$ops->set($op, true);
-			$ops->save();
+		}else{
+			$ops = new Config(\pocketmine\DATA . "ops.json", Config::ENUM);
 		}
+		$ops->set($op, true);
+		$ops->save();
 		echo "[*] " . $this->lang->whitelist_info . "\n";
 		echo "[?] " . $this->lang->whitelist_enable . " (y/N): ";
-		$config = new Config(\pocketmine\DATA . "sunucu.properties", Config::PROPERTIES);
+		if($this->lang == "tr" || "tur"){
+			$config = new Config(\pocketmine\DATA . "sunucu.properties", Config::PROPERTIES);
+		}else{
+			$config = new Config(\pocketmine\DATA . "server.properties", Config::PROPERTIES);
+		}
 		if(strtolower($this->getInput("n")) === "y"){
 			echo "[!] " . $this->lang->whitelist_warning . "\n";
 			$config->set("white-list", true);
@@ -184,7 +193,11 @@ LISANS;
 	}
 
 	private function networkFunctions(){
-		$config = new Config(\pocketmine\DATA . "sunucu.properties", Config::PROPERTIES);
+		if($this->lang == "tr" || "tur"){
+			$config = new Config(\pocketmine\DATA . "sunucu.properties", Config::PROPERTIES);
+		}else{
+			$config = new Config(\pocketmine\DATA . "server.properties", Config::PROPERTIES);
+		}
 		echo "[!] " . $this->lang->query_warning1 . "\n";
 		echo "[!] " . $this->lang->query_warning2 . "\n";
 		echo "[?] " . $this->lang->query_disable . " (y/N): ";

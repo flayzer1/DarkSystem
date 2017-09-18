@@ -1,5 +1,14 @@
 <?php
 
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
+
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
@@ -12,7 +21,7 @@ use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\IntTag;
 
-class EnderChest extends Transparent {
+class EnderChest extends Transparent{
     
     protected $id = self::ENDER_CHEST;
     
@@ -20,15 +29,15 @@ class EnderChest extends Transparent {
 		$this->meta = $meta;
 	}
     
-    public function getName() {
+    public function getName(){
         return 'Ender Chest';
     }
     
-    public function getToolType() {
+    public function getToolType(){
         return Tool::TYPE_PICKAXE;
     }
     
-    public function getHardness() {
+    public function getHardness(){
         return 22.5;
     }
     
@@ -36,7 +45,7 @@ class EnderChest extends Transparent {
 		return 7;
 	}
     
-    public function getDrops(Item $item) {
+    public function getDrops(Item $item){
         return [
             [self::OBSIDIAN, 0, 8]
         ];
@@ -53,6 +62,7 @@ class EnderChest extends Transparent {
 			new IntTag("y", $this->y),
 			new IntTag("z", $this->z)
 		]);
+		
 		$nbt->Items->setTagType(NBT::TAG_Compound);
 
 		if($item->hasCustomName()){
@@ -67,12 +77,7 @@ class EnderChest extends Transparent {
         $level = $this->getLevel();
 		$level->setBlock($block, $this, true, true);
 		Tile::createTile("EnderChest", $level, $nbt);
-
 		return true;
 	}
-    
-    /** @todo open */
-    /** @todo inventory */
-    /** @todo bunch of other things */
-    
+	
 }

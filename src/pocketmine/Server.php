@@ -367,7 +367,11 @@ class Server extends DarkSystem{
 	}
 	
 	public function getServerName(){
-		return $this->getConfigString("motd", "DarkSystem Sunucusu");
+		if($this->language == "tr" || "tur"){
+			return $this->getConfigString("motd", "DarkSystem Sunucusu");
+		}else{
+			return $this->getConfigString("motd", "DarkSystem Server");
+		}
 	}
 	
 	public function getAutoSave(){
@@ -500,11 +504,11 @@ class Server extends DarkSystem{
 	}
 	
 	public function getMotd(){
-		return $this->getConfigString("motd", "DarkSystem Sunucusu");
-	}
-	
-	public function getdbot(){
-		return $this->dbot;
+		if($this->language == "tr" || "tur"){
+			return $this->getConfigString("motd", "DarkSystem Sunucusu");
+		}else{
+			return $this->getConfigString("motd", "DarkSystem Server");
+		}
 	}
 	
 	public function getDarkBot(){
@@ -1515,6 +1519,7 @@ class Server extends DarkSystem{
 			
 			$this->config = new Config($configPath = $this->dataPath . "pocketmine.yml", Config::YAML, []);
 			$this->cmdReader = new CommandReader($knsol);
+			if($this->language == "tr" || "tur"){
 			$this->properties = new Config($this->dataPath . "sunucu.properties", Config::PROPERTIES, [
 				"motd" => "DarkSystem Sunucusu",
 				"server-ip" => "0.0.0.0",
@@ -1547,6 +1552,40 @@ class Server extends DarkSystem{
 				"time-update" => true,
 				"online-mode" => false
 			]);
+			}else{
+			$this->properties = new Config($this->dataPath . "server.properties", Config::PROPERTIES, [
+				"motd" => "DarkSystem Server",
+				"server-ip" => "0.0.0.0",
+				"server-port" => 19132,
+				"memory-limit" => "256M",
+				"white-list" => false,
+				"announce-player-achievements" => false,
+				"spawn-protection" => 16,
+				"max-players" => 100,
+				"allow-flight" => false,
+				"spawn-animals" => true,
+				"animals-limit" => 0,
+				"spawn-mobs" => true,
+				"mobs-limit" => 0,
+				"gamemode" => 0,
+				"force-gamemode" => false,
+				"hardcore" => false,
+				"pvp" => true,
+				"difficulty" => 1,
+				"generator-settings" => "",
+				"level-name" => "world",
+				"level-seed" => "",
+				"level-type" => "FLAT",
+				"enable-query" => true,
+				"enable-rcon" => false,
+				"rcon.password" => substr(base64_encode(random_bytes(20)), 3, 10),
+				"auto-save" => true,
+				"auto-generate" => true,
+				"save-player-data" => true,
+				"time-update" => true,
+				"online-mode" => false
+			]);
+			}
 			
 			$dbotcheck = $this->dbot->check();
 			$dbotver = $this->getDarkBotVersion();
@@ -1559,7 +1598,7 @@ class Server extends DarkSystem{
 			$tag = \pocketmine\TAG;
 			$package = $packages;
 
-			$this->konsol->info("
+			/*$this->konsol->info("
 			
     §e______           _    _____           _                  
     §6|  _  \         | |  /  ___|         | |                  
@@ -1572,6 +1611,22 @@ class Server extends DarkSystem{
                                                       §eDARKBOT: $dbotcheck (v$dbotver)
                                                         
       §aDarkSystem $version ($build)  *$tag*                                                
+	
+			");*/
+			
+			$this->konsol->info("
+			
+    §b______           _    _____           _                  
+    §9|  _  \         | |  /  ___|         | |                  
+    §b| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+    §9| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+    §b| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+    §9|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+                                 §b__/  |      
+                                 §9|___/            §6MCPE: $mcpe §e($protocol)
+                                                      §6DARKBOT: $dbotcheck (v$dbotver)
+                                                        
+      §3DarkSystem $version ($build)  *$tag*                                                
 	
 			");
 			
@@ -1594,19 +1649,9 @@ class Server extends DarkSystem{
 				$content = file_get_contents($file = $this->filePath . "src/pocketmine/resources/darksystem_eng.yml");
 			}
 			
-			/*if(file_exists($this->filePath . "src/pocketmine/resources/eklentiler/plugin_required.phar")){
-				$contentpl = file_get_contents($filepl = $this->filePath . "src/pocketmine/resources/eklentiler/plugin_required.phar");
-			}else{
-				$contentpl = file_get_contents($filepl = $this->filePath . "src/pocketmine/resources/eklentiler/plugin_required1.phar");
-			}*/
-			
 			if(!file_exists($this->dataPath . "darksystem.yml")){
 				@file_put_contents($this->dataPath . "darksystem.yml", $content);
 			}
-			
-			/*if(!file_exists($this->pluginPath . "plugin_required.phar")){
-				@file_put_contents($this->pluginPath . "plugin_required.phar", $contentpl);
-			}*/
 			
 			$internelConfig = new Config($file, Config::YAML, []);
 			$this->advancedConfig = new Config($this->dataPath . "darksystem.yml", Config::YAML, []);
@@ -1670,9 +1715,9 @@ class Server extends DarkSystem{
 			$this->banByCID = new BanList($this->dataPath . "engelli-CIDler.txt");
 			$this->banByCID->load();
 			}else{
-			$this->operators = new Config($this->dataPath . "ops.txt", Config::ENUM);
-			$this->whitelist = new Config($this->dataPath . "white-list.txt", Config::ENUM);
-			if(file_exists($this->dataPath . "banned.txt") and !file_exists($this->dataPath . "banned-players.txt")){
+			$this->operators = new Config($this->dataPath . "ops.json", Config::JSON);
+			$this->whitelist = new Config($this->dataPath . "white-list.json", Config::JSON);
+			if(file_exists($this->dataPath . "banned.txt") && !file_exists($this->dataPath . "banned-players.txt")){
 				@rename($this->dataPath . "banned.txt", $this->dataPath . "banned-players.txt");
 			}
 			@touch($this->dataPath . "banned-players.txt");
@@ -2166,13 +2211,13 @@ class Server extends DarkSystem{
 
 		ini_set("error_reporting", 0);
 		ini_set("memory_limit", -1);
+		
 		$this->konsol->emergency($this->getLanguage()->translateString("pocketmine.crash.create"));
-		//try{
-		$report = new CrashReport($this);
-		//}catch(\Exception $e){
-			//$this->konsol->critical($this->getLanguage()->translateString("pocketmine.crash.error", $e->getMessage()));
-			//return;
-		//}
+		try{
+		    $report = new CrashReport($this);
+		}catch(\Exception $e){
+			$this->konsol->critical($this->getLanguage()->translateString("pocketmine.crash.error", $e->getMessage()));
+		}
 
 		$this->konsol->emergency($this->getLanguage()->translateString("pocketmine.crash.submit", [$report->getPath()]));
 		
@@ -2385,7 +2430,7 @@ class Server extends DarkSystem{
 			}
 			$this->saveEverything();
 		}*/
-		/*if(($this->tickCounter % 1925) === 0){ //LaggClear
+		if(($this->tickCounter % 1925) === 0){
 			foreach($this->levels as $l){
 				foreach($l->getEntities() as $e){
 					if($e instanceof Item){
@@ -2393,8 +2438,8 @@ class Server extends DarkSystem{
 					}
 				}
 			}
-		}*/
-		if($this->autoSave and ++$this->autoSaveTicker >= $this->autoSaveTicks){
+		}
+		if($this->autoSave && ++$this->autoSaveTicker >= $this->autoSaveTicks){
 			$this->autoSaveTicker = 0;
 			$this->doAutoSave();
 		}
@@ -2422,28 +2467,48 @@ class Server extends DarkSystem{
 				}
 			}
 		}
-		if($this->language == "tr" || "tur"){
 		if(($this->tickCounter % 2975) === 0 && $dbotcheck = "§aAktif"){
-			switch(mt_rand(1, 5)){
-				case 1:
-				$this->broadcastMessage($this->getDarkBotPrefix() . "§aSunucu Benimle Güvende!");
-				break;
-				case 2:
-				$this->broadcastMessage($this->getDarkBotPrefix() . "§aBu Sunucu Güvencem Altındadır!");
-				break;
-				case 3:
-				$this->broadcastMessage($this->getDarkBotPrefix() . "§aYakında Oyuna Bende Katılacağım!");
-				break;
-				case 4:
-				$this->broadcastMessage($this->getDarkBotPrefix() . "§aBen Sadece Bir Robot Değilim!");
-				break;
-				case 5:
-				$this->broadcastMessage($this->getDarkBotPrefix() . "§aGüvenlik Önemlidir!");
-				break;
-				default;
-				break;
+			if($this->language == "tr" || "tur"){
+				switch(mt_rand(1, 5)){
+					case 1:
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aSunucu Benimle Güvende!");
+				    break;
+				    case 2:
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aBu Sunucu Güvencem Altındadır!");
+				    break;
+				    case 3:
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aYakında Oyuna Bende Katılacağım!");
+				    break;
+				    case 4:
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aBen Sadece Bir Robot Değilim!");
+				    break;
+				    case 5:
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aGüvenlik Önemlidir!");
+				    break;
+				    default;
+				    break;
+				}
+			}else{
+				switch(mt_rand(1, 5)){
+					case 1:
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aServer is in safe with me!");
+				    break;
+				    case 2:
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aThis server is inside protection of me!");
+				    break;
+				    case 3:
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aI will join game soon!");
+				    break;
+				    case 4:
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aI am not only a robot!");
+				    break;
+				    case 5:
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aProtection is important!");
+				    break;
+				    default;
+				    break;
+				}
 			}
-		}
 		}
 		/*if(($this->tickCounter % 6375) === 0){
 			$this->clearChat();

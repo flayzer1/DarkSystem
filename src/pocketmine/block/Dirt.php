@@ -53,7 +53,6 @@ class Dirt extends Solid{
 		if($item->isHoe()){
 			$item->useOn($this);
 			$this->getLevel()->setBlock($this, Block::get(Item::FARMLAND, 0), true);
-
 			return true;
 		}
 
