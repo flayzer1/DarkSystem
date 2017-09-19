@@ -29,6 +29,7 @@ use pocketmine\level\Level;
 use pocketmine\Player;
 
 class Bucket extends Item{
+	
 	public function __construct($meta = 0, $count = 1){
 		parent::__construct(self::BUCKET, $meta, $count, "Bucket");
 	}
@@ -51,7 +52,7 @@ class Bucket extends Item{
 				$player->getServer()->getPluginManager()->callEvent($ev = new PlayerBucketFillEvent($player, $block, $face, $this, $result));
 				if(!$ev->isCancelled()){
 					$player->getLevel()->setBlock($target, new Air(), true, true);
-					if($player->isSurvival()){
+					if($player->isSurvival() or $player->isAdventure()){
 						$player->getInventory()->setItemInHand($ev->getItem(), $player);
 					}
 					return true;
@@ -65,7 +66,7 @@ class Bucket extends Item{
 			$player->getServer()->getPluginManager()->callEvent($ev = new PlayerBucketFillEvent($player, $block, $face, $this, $result));
 			if(!$ev->isCancelled()){
 				$player->getLevel()->setBlock($block, $targetBlock, true, true);
-				if($player->isSurvival()){
+				if($player->isSurvival() or $player->isAdventure()){
 					$player->getInventory()->setItemInHand($ev->getItem(), $player);
 				}
 				return true;

@@ -117,9 +117,9 @@ abstract class BaseInventory implements Inventory{
 
 	public function setItem($index, Item $item){
 		$item = clone $item;
-		if($index < 0 or $index >= $this->size){
+		if($index < 0 || $index >= $this->size){
 			return false;
-		}elseif($item->getId() === 0 or $item->getCount() <= 0){
+		}elseif($item->getId() === 0 || $item->getCount() <= 0){
 			return $this->clear($index);
 		}
 		$holder = $this->getHolder();
@@ -179,7 +179,7 @@ abstract class BaseInventory implements Inventory{
 		$checkDamage = $item->getDamage() === null ? false : true;
 		$checkTags = $item->getCompound() === null ? false : true;
 		foreach($this->getContents() as $index => $i){
-			if($item->equals($i, $checkDamage, $checkTags) and $i->getCount() >= $count){
+			if($item->equals($i, $checkDamage, $checkTags) && $i->getCount() >= $count){
 				return $index;
 			}
 		}
@@ -221,7 +221,7 @@ abstract class BaseInventory implements Inventory{
 			if(!($slot instanceof Item)){
 				throw new \InvalidArgumentException("Expected Item[], got ".gettype($slot));
 			}
-			if($slot->getId() !== 0 and $slot->getCount() > 0){
+			if($slot->getId() !== 0 && $slot->getCount() > 0){
 				$itemSlots[] = clone $slot;
 			}
 		}
@@ -253,7 +253,7 @@ abstract class BaseInventory implements Inventory{
 				break;
 			}
 		}
-		if(count($itemSlots) > 0 and count($emptySlots) > 0){
+		if(count($itemSlots) > 0 && count($emptySlots) > 0){
 			foreach($emptySlots as $slotIndex){
 				foreach($itemSlots as $index => $slot){
 					$amount = min($slot->getMaxStackSize(), $slot->getCount(), $this->getMaxStackSize());
@@ -279,13 +279,13 @@ abstract class BaseInventory implements Inventory{
 			if(!($slot instanceof Item)){
 				throw new \InvalidArgumentException("Expected Item[], got ".gettype($slot));
 			}
-			if($slot->getId() !== 0 and $slot->getCount() > 0){
+			if($slot->getId() !== 0 && $slot->getCount() > 0){
 				$itemSlots[] = clone $slot;
 			}
 		}
 		for($i = 0; $i < $this->getSize(); ++$i){
 			$item = $this->getItem($i);
-			if($item->getId() === Item::AIR or $item->getCount() <= 0){
+			if($item->getId() === Item::AIR || $item->getCount() <= 0){
 				continue;
 			}
 			foreach($itemSlots as $index => $slot){
@@ -392,7 +392,7 @@ abstract class BaseInventory implements Inventory{
 		}
 
 		foreach($target as $player){
-			if(($id = $player->getWindowId($this)) === -1 or $player->spawned !== true){
+			if(($id = $player->getWindowId($this)) === -1 || $player->spawned !== true){
 				$this->close($player);
 				continue;
 			}

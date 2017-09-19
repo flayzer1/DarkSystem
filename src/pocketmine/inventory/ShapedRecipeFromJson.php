@@ -27,6 +27,7 @@ use pocketmine\utils\UUID;
 use pocketmine\math\Vector2;
 
 class ShapedRecipeFromJson extends ShapedRecipe{
+	
 	/** @var Item */
 	private $output;
 

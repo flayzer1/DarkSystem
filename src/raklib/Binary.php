@@ -16,6 +16,7 @@ if(!defined("ENDIANNESS")){
 }
 
 class Binary{
+	
     const BIG_ENDIAN = 0x00;
     const LITTLE_ENDIAN = 0x01;
     

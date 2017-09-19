@@ -14,20 +14,13 @@ namespace pocketmine\event;
 abstract class Event{
 	
 	protected $eventName = null;
+	
 	private $isCancelled = false;
-
-	/**
-	 * @return string
-	 */
+	
 	final public function getEventName(){
 		return $this->eventName === null ? get_class($this) : $this->eventName;
 	}
-
-	/**
-	 * @return bool
-	 *
-	 * @throws \BadMethodCallException
-	 */
+	
 	public function isCancelled(){
 		if(!($this instanceof Cancellable)){
 			throw new \BadMethodCallException("Event is not Cancellable");
@@ -35,14 +28,7 @@ abstract class Event{
 		
 		return $this->isCancelled === true;
 	}
-
-	/**
-	 * @param bool $value
-	 *
-	 * @return bool
-	 *
-	 * @throws \BadMethodCallException
-	 */
+	
 	public function setCancelled($value = true){
 		if(!($this instanceof Cancellable)){
 			throw new \BadMethodCallException("Event is not Cancellable");
@@ -50,10 +36,7 @@ abstract class Event{
 		
 		$this->isCancelled = (bool) $value;
 	}
-
-	/**
-	 * @return HandlerList
-	 */
+	
 	public function getHandlers(){
 		if(static::$handlerList === null){
 			static::$handlerList = new HandlerList();

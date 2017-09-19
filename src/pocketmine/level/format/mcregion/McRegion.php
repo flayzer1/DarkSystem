@@ -26,7 +26,6 @@ use pocketmine\utils\ChunkException;
 class McRegion extends BaseLevelProvider{
 	
 	protected $regions = [];
-	
 	protected $chunks = [];
 
 	public static function getProviderName(){

@@ -14,6 +14,7 @@ namespace pocketmine\permission;
 use pocketmine\Server;
 
 class Permission{
+	
 	const DEFAULT_OP = "op";
 	const DEFAULT_NOT_OP = "notop";
 	const DEFAULT_TRUE = "true";

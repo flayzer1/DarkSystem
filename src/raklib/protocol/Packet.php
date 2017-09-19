@@ -14,9 +14,11 @@ namespace raklib\protocol;
 use raklib\Binary;
 
 abstract class Packet{
+	
     public static $ID = -1;
 
     protected $offset = 0;
+    
     public $buffer;
     public $sendTime;
 

@@ -59,26 +59,24 @@ class SendPlayerFaceTask extends AsyncTask{
     private $player;
     private $skindata;
 
-    public function __construct(string $player, string $skindata)
-    {
+    public function __construct(string $player, string $skindata){
         $this->player = $player;
         $this->skindata = $skindata;
     }
 
-    private function rgbToTextFormat($r, $g, $b)
-    {
+    private function rgbToTextFormat($r, $g, $b){
         $differenceList = [];
         foreach(self::TEXTFORMAT_RGB as $value){
             $difference = pow($r - $value[0],2) + pow($g - $value[1],2) + pow($b - $value[2],2);
             $differenceList[] = $difference;
         }
+        
         $smallest = min($differenceList);
         $key = array_search($smallest, $differenceList);
         return self::TEXTFORMAT_LIST[$key];
     }
 
-    public function onRun()
-    {
+    public function onRun(){
         $symbol = hex2bin(self::HEX_SYMBOL);
         $strArray = [];
         $skin = substr($this->skindata, ($pos = (64 * 8 * 4)) - 4, $pos);
@@ -87,6 +85,7 @@ class SendPlayerFaceTask extends AsyncTask{
                 if(!isset($strArray[$y])){
                     $strArray[$y] = "";
                 }
+                
                 $key = ((64 * $y) + 8 + $x) * 4;
                 $r = ord($skin{$key});
                 $g = ord($skin{$key + 1});
@@ -95,11 +94,11 @@ class SendPlayerFaceTask extends AsyncTask{
                 $strArray[$y] .= $format.$symbol;
             }
         }
+        
         $this->setResult(implode("\n", $strArray));
     }
 
-    public function onCompletion(Server $server)
-    {
+    public function onCompletion(Server $server){
         if(($player = $server->getPlayerExact($this->player)) !== null){
             $player->sendMessage($this->getResult());
         }

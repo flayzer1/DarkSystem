@@ -42,7 +42,7 @@ abstract class LightUpdate{
 		$this->spreadQueue->enqueue([$x, $y, $z, $oldLight]);
 	}
 
-	abstract protected function getLight(int $x, int $y, int $z) : int;
+	abstract protected function getLight(int $x, int $y, int $z);
 
 	abstract protected function setLight(int $x, int $y, int $z, int $level);
 
@@ -54,10 +54,10 @@ abstract class LightUpdate{
 
 		if($oldLevel !== $newLevel){
 			$this->setLight($x, $y, $z, $newLevel);
-			if($oldLevel < $newLevel){ //light increased
+			if($oldLevel < $newLevel){
 				$this->spreadVisited[$index] = true;
 				$this->spreadQueue->enqueue([$x, $y, $z]);
-			}else{ //light removed
+			}else{
 				$this->removalVisited[$index] = true;
 				$this->removalQueue->enqueue([$x, $y, $z, $oldLevel]);
 			}

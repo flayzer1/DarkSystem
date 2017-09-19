@@ -32,22 +32,22 @@ class EnchantedGoldenApple extends Food
         parent::__construct(self::ENCHANTED_GOLDEN_APPLE, $meta, $count, "Enchanted Golden Apple");
     }
 
-    public function canBeConsumedBy(Entity $entity): bool
+    public function canBeConsumedBy(Entity $entity)
     {
         return $entity instanceof Human and $this->canBeConsumed();
     }
 
-    public function getFoodRestore(): int
+    public function getFoodRestore()
     {
         return 4;
     }
 
-    public function getSaturationRestore(): float
+    public function getSaturationRestore()
     {
         return 9.6;
     }
 
-    public function getAdditionalEffects(): array
+    public function getAdditionalEffects()
     {
         return [
             Effect::getEffect(Effect::REGENERATION)->setDuration(600)->setAmplifier(4),

@@ -58,7 +58,7 @@ class PlayerInventory extends BaseInventory{
 	}
 
 	public function getHotbarSlotIndex($index){
-		return ($index >= 0 and $index < $this->getHotbarSize()) ? $this->hotbar[$index] : -1;
+		return ($index >= 0 && $index < $this->getHotbarSize()) ? $this->hotbar[$index] : -1;
 	}
 
 	public function setHotbarSlotIndex($index, $slot){
@@ -70,7 +70,7 @@ class PlayerInventory extends BaseInventory{
 			$this->setItem($index, $this->getItem($slot));
 			$this->setItem($slot, $tmp);
 		} else {
-			if($index >= 0 and $index < $this->getHotbarSize() and $slot >= -1 and $slot < $this->getSize()){
+			if($index >= 0 && $index < $this->getHotbarSize() && $slot >= -1 && $slot < $this->getSize()){
 				$this->hotbar[$index] = $slot;
 			}
 		}
@@ -84,13 +84,13 @@ class PlayerInventory extends BaseInventory{
 	 * @param int $index
 	 */
 	public function justSetHeldItemIndex($index){
-		if($index >= 0 and $index < $this->getHotbarSize()){
+		if($index >= 0 && $index < $this->getHotbarSize()){
 			$this->itemInHandIndex = $index;
 		}
 	}
 
 	public function setHeldItemIndex($index, $isNeedSendToHolder = true){
-		if($index >= 0 and $index < $this->getHotbarSize()){
+		if($index >= 0 && $index < $this->getHotbarSize()){
 			$this->itemInHandIndex = $index;
 			if($isNeedSendToHolder === true && $this->getHolder() instanceof Player){
 				$this->sendHeldItem($this->getHolder());
@@ -124,7 +124,7 @@ class PlayerInventory extends BaseInventory{
 	}
 
 	public function setHeldItemSlot($slot){
-		if($slot >= -1 and $slot < $this->getSize()){
+		if($slot >= -1 && $slot < $this->getSize()){
 			$item = $this->getItem($slot);
 			$itemIndex = $this->getHeldItemIndex();
 			if($this->getHolder() instanceof Player){
@@ -170,7 +170,7 @@ class PlayerInventory extends BaseInventory{
 
 	public function onSlotChange($index, $before, $sendPacket = true){
 		$holder = $this->getHolder();
-		if($holder instanceof Player and !$holder->spawned){
+		if($holder instanceof Player && !$holder->spawned){
 			return;
 		}
 		parent::onSlotChange($index, $before, $sendPacket);
@@ -224,14 +224,14 @@ class PlayerInventory extends BaseInventory{
 	}
 
 	public function setItem($index, Item $item, $sendPacket = true){
-		if($index < 0 or $index >= $this->size){
+		if($index < 0 || $index >= $this->size){
 			return false;
-		}elseif($item->getId() === 0 or $item->getCount() <= 0){
+		}elseif($item->getId() === 0 || $item->getCount() <= 0){
 			return $this->clear($index);
 		}
 		if($index >= $this->getSize()){
 			Server::getInstance()->getPluginManager()->callEvent($ev = new EntityArmorChangeEvent($this->getHolder(), $this->getItem($index), $item, $index));
-			if($ev->isCancelled() and $this->getHolder() instanceof Human){
+			if($ev->isCancelled() && $this->getHolder() instanceof Human){
 				$this->sendArmorSlot($index, $this->getHolder());
 				return false;
 			}
@@ -255,7 +255,7 @@ class PlayerInventory extends BaseInventory{
 		if(isset($this->slots[$index])){
 			$item = clone $this->air;
 			$old = $this->slots[$index];
-			if($index >= $this->getSize() and $index < $this->size){ //Armor change
+			if($index >= $this->getSize() && $index < $this->size){ //Armor change
 				Server::getInstance()->getPluginManager()->callEvent($ev = new EntityArmorChangeEvent($this->getHolder(), $old, $item, $index));
 				if($ev->isCancelled()){
 					if($index >= $this->size){
@@ -365,7 +365,7 @@ class PlayerInventory extends BaseInventory{
 	 */
 	public function setArmorContents(array $items, $sendPacket = true){
 		for($i = 0; $i < 4; ++$i){
-			if(!isset($items[$i]) or !($items[$i] instanceof Item)){
+			if(!isset($items[$i]) || !($items[$i] instanceof Item)){
 				$items[$i] = clone $this->air;
 			}
 			if($items[$i]->getId() === Item::AIR){
@@ -464,5 +464,4 @@ class PlayerInventory extends BaseInventory{
 		}
 		parent::removeItem($searchItem);
 	}
-	
 }

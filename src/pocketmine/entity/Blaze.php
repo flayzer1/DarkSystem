@@ -36,7 +36,7 @@ class Blaze extends Monster
     {
         $pk = new AddEntityPacket();
         $pk->eid = $this->getId();
-        $pk->type = self::NETWORK_ID;
+        $pk->type = Blaze::NETWORK_ID;
         $pk->x = $this->x;
         $pk->y = $this->y;
         $pk->z = $this->z;

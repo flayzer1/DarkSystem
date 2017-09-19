@@ -24,4 +24,5 @@ interface ChunkManager{
 	public function getYMask();
 	
 	public function getMaxY();
+	
 }

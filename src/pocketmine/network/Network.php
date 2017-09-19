@@ -249,7 +249,7 @@ class Network{
 	}
 			
 	public function processBatch(BatchPacket $packet, Player $p){
-		$str = @\zlib_decode($packet->payload, 1024 * 1024 * 64); //Max 64MB
+		$str = @\zlib_decode($packet->payload, 1024 * 1024 * 64);
 		if($str === false){
 			$p->checkVersion();
 			return;
@@ -311,11 +311,9 @@ class Network{
 				$class = $this->packetPool[$id];
 				break;
 		}
-		
 		if($class !== null){
 			return clone $class;
 		}
-		
 		return null;
 	}
 	

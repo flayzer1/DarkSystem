@@ -14,6 +14,7 @@ namespace pocketmine\permission;
 use pocketmine\Server;
 
 abstract class DefaultPermissions{
+	
 	const ROOT = "pocketmine";
 	
 	public static function registerPermission(Permission $perm, Permission $parent = null){

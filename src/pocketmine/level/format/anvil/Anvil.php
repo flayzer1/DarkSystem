@@ -26,7 +26,6 @@ use pocketmine\level\format\generic\EmptyChunkSection;
 class Anvil extends McRegion{
 	
 	protected $regions = [];
-	
 	protected $chunks = [];
 
 	public static function getProviderName(){

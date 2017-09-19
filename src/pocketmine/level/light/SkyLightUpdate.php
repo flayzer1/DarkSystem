@@ -13,7 +13,7 @@ namespace pocketmine\level\light;
 
 class SkyLightUpdate extends LightUpdate{
 
-	public function getLight(int $x, int $y, int $z) : int{
+	public function getLight(int $x, int $y, int $z){
 		return $this->level->getBlockSkyLightAt($x, $y, $z);
 	}
 

@@ -56,7 +56,7 @@ class Creeper extends Monster
         }
     }
 
-    public function isPowered(): bool
+    public function isPowered()
     {
         return (bool)$this->namedtag["powered"];
     }

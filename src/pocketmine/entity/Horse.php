@@ -34,7 +34,7 @@ class Horse extends Living
     {
         $pk = new AddEntityPacket();
         $pk->eid = $this->getId();
-        $pk->type = self::NETWORK_ID;
+        $pk->type = Horse::NETWORK_ID;
         $pk->x = $this->x;
         $pk->y = $this->y;
         $pk->z = $this->z;

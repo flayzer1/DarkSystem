@@ -26,4 +26,5 @@ interface ServerOperator{
 	public function isOp();
 	
 	public function setOp($value);
+	
 }
