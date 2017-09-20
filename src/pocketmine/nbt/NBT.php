@@ -26,13 +26,14 @@ use pocketmine\nbt\tag\NamedTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\Tag;
-use pocketmine\utils\Utils;
 use pocketmine\utils\Binary;
+use pocketmine\utils\Utils;
 
 class NBT{
 
 	const LITTLE_ENDIAN = 0;
 	const BIG_ENDIAN = 1;
+	
 	const TAG_End = 0;
 	const TAG_Byte = 1;
 	const TAG_Short = 2;
@@ -58,7 +59,7 @@ class NBT{
 	 * @return Compound
 	 */
 	public static function putItemHelper(Item $item, $slot = null){
-		$tag = new Compound('Item', [
+		$tag = new Compound("Item", [
 			"id" => new ShortTag("id", $item->getId()),
 			"Count" => new ByteTag("Count", $item->getCount()),
 			"Damage" => new ShortTag("Damage", $item->getDamage())
@@ -455,10 +456,8 @@ class NBT{
 	public function write($old = false){
 		$this->offset = 0;
 		$this->buffer = "";
-
 		if($this->data instanceof Compound){
 			$this->writeTag($this->data, $old);
-
 			return $this->buffer;
 		}elseif(is_array($this->data)){
 			foreach($this->data as $tag){
@@ -466,7 +465,6 @@ class NBT{
 			}
 			return $this->buffer;
 		}
-
 		return false;
 	}
 
@@ -474,7 +472,6 @@ class NBT{
 		if(($write = $this->write(true)) !== false){
 			return zlib_encode($write, $compression, $level);
 		}
-
 		return false;
 	}
 	

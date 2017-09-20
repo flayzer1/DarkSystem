@@ -55,4 +55,5 @@ interface BehaviorPack{
 	 * @return string byte-array
 	 */
 	public function getPackChunk(int $start, int $length) : string;
+	
 }

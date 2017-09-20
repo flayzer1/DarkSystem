@@ -25,6 +25,7 @@ use pocketmine\plugin\Plugin;
 use pocketmine\utils\PluginException;
 
 class PermissionAttachment{
+	
 	/** @var PermissionRemovedExecutor */
 	private $removed = null;
 
@@ -127,7 +128,7 @@ class PermissionAttachment{
 			if($this->permissions[$name] === $value){
 				return;
 			}
-			unset($this->permissions[$name]); //Fixes children getting overwritten
+			unset($this->permissions[$name]);
 		}
 		$this->permissions[$name] = $value;
 		$this->permissible->recalculatePermissions();

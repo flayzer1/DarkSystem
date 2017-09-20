@@ -34,7 +34,7 @@ class SetupLanguage{
 		}else{
 			$files = [];
 			foreach(new \DirectoryIterator(\pocketmine\PATH . "src/pocketmine/language/setup/") as $file){
-				if($file->getExtension() === "ini" and substr($file->getFilename(), 0, 2) === $lang){
+				if($file->getExtension() === "ini" && substr($file->getFilename(), 0, 2) === $lang){
 					$files[$file->getFilename()] = $file->getSize();
 				}
 			}
@@ -44,7 +44,7 @@ class SetupLanguage{
 				reset($files);
 				$l = key($files);
 				$l = substr($l, 0, -4);
-				$this->lang = isset(self::$languages[$l]) ? $l : $lang;
+				$this->lang = isset(SetupLanguage::$languages[$l]) ? $l : $lang;
 				$this->langfile = \pocketmine\PATH . "src/pocketmine/language/setup/" . $l . ".ini";
 			}else{
 				$this->lang = "tr";
@@ -79,7 +79,7 @@ class SetupLanguage{
 
 	public function get($name, $search = [], $replace = []){
 		if(!isset($this->texts[$this->lang][$name])){
-			if($this->lang !== "tur" and isset($this->texts["tur"][$name])){
+			if($this->lang !== "tur" && isset($this->texts["tur"][$name])){
 				return $this->texts["tur"][$name];
 			}else{
 				return $name;

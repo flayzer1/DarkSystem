@@ -26,6 +26,7 @@ use pocketmine\level\Level;
 use pocketmine\plugin\Plugin;
 
 class BlockMetadataStore extends MetadataStore{
+	
 	/** @var Level */
 	private $owningLevel;
 
@@ -37,7 +38,7 @@ class BlockMetadataStore extends MetadataStore{
 		if(!($block instanceof Block)){
 			throw new \InvalidArgumentException("Argument must be a Block instance");
 		}
-
+		
 		return $block->x . ":" . $block->y . ":" . $block->z . ":" . $metadataKey;
 	}
 

@@ -24,7 +24,7 @@ class OfflinePlayer implements IPlayer{
 	public function __construct(Server $server, $name){
 		$this->server = $server;
 		$this->name = $name;
-		if($this->server->language == "tr" || "tur"){
+		if(Translate::checkTurkish === true){
 		    if(file_exists($this->server->getDataPath() . "oyuncular/" . strtolower($this->getName()) . ".dat")){
 			    $this->namedtag = $this->server->getOfflinePlayerData($this->name);
 		    }else{

@@ -765,6 +765,7 @@ abstract class Entity extends Location implements Metadatable{
 				if($effect === null){
 					continue;
 				}
+				
 				$effect->setAmplifier($e["Amplifier"])->setDuration($e["Duration"])->setVisible($e["ShowParticles"] > 0);
 				$this->addEffect($effect);
 			}
@@ -1143,10 +1144,7 @@ abstract class Entity extends Location implements Metadatable{
 			$this->level->addEntityMotion($this->getViewers(), $this->id, $this->motionX, $this->motionY, $this->motionZ);
 		}
 	}
-
-	/**
-	 * @return Vector3
-	 */
+	
 	public function getDirectionVector(){
 		$y = -sin(deg2rad($this->pitch));
 		$xz = cos(deg2rad($this->pitch));
@@ -1596,6 +1594,7 @@ abstract class Entity extends Location implements Metadatable{
 		if($this->dead){
 			return;
 		}
+		
 		$this->dead = true;
 		$this->setHealth(0);
 		$this->scheduleUpdate();
@@ -1618,7 +1617,7 @@ abstract class Entity extends Location implements Metadatable{
 		$to = Position::fromObject($pos, $pos instanceof Position ? $pos->getLevel() : $this->level);
 		$this->server->getPluginManager()->callEvent($ev = new EntityTeleportEvent($this, $from, $to));
 		if($ev->isCancelled()){
-			return false;
+			return true;
 		}
 		
 		$this->ySize = 0;
@@ -1769,7 +1768,6 @@ abstract class Entity extends Location implements Metadatable{
 					$pk->type = 2;
 					$this->dataPacket($pk);
 				}
-
 				return true;
 			case 2:
 				if(!$entity->isAlive()){
@@ -1780,7 +1778,6 @@ abstract class Entity extends Location implements Metadatable{
 				}
 				$this->linkedEntity = $entity;
 				$this->linkedType = 2;
-
 				return true;
 			default:
 				return false;
@@ -1818,6 +1815,7 @@ abstract class Entity extends Location implements Metadatable{
 				if(!$this->spawned){
 					return;
 				}
+				
 				$targets[] = $this;
 			}
 

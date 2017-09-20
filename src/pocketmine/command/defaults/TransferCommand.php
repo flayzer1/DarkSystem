@@ -13,7 +13,8 @@ namespace pocketmine\command\defaults;
 
 use pocketmine\network\protocol\TransferPacket;
 use pocketmine\command\CommandSender;
-use pocketmine\{Player, Server};
+use pocketmine\Server;
+use pocketmine\Player;
 
 class TransferCommand extends VanillaCommand{
 	
@@ -37,7 +38,7 @@ class TransferCommand extends VanillaCommand{
 
 			if(count($args) <= 0){
 				$sender->sendMessage("Kullanış: /transfer <address> [port]");
-				return false;
+				return true;
 			}
 
 			$address = strtolower($args[0]);
@@ -50,12 +51,12 @@ class TransferCommand extends VanillaCommand{
 
 		if(count($args) <= 1){
 			$sender->sendMessage("Kullanış: /transfer <player> <address> [port]");
-			return false;
+			return true;
 		}
 
 		if(!($player = Server::getInstance()->getPlayer($args[0])) instanceof Player){
 			$sender->sendMessage("Player specified not found!");
-			return false;
+			return true;
 		}
 
 		$address = strtolower($args[1]);

@@ -34,4 +34,5 @@ interface IPlayer extends ServerOperator{
 	public function getLastPlayed();
 	
 	public function hasPlayedBefore();
+	
 }

@@ -40,7 +40,6 @@ abstract class MetadataStore{
 		if($owningPlugin === null){
 			throw new PluginException("Plugin cannot be null");
 		}
-
 		$key = $this->disambiguate($subject, $metadataKey);
 		if(!isset($this->metadataMap[$key])){
 			$entry = new \WeakMap();
@@ -117,4 +116,5 @@ abstract class MetadataStore{
 	 * @throws \InvalidArgumentException
 	 */
 	public abstract function disambiguate(Metadatable $subject, $metadataKey);
+	
 }

@@ -38,10 +38,7 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 		if(!isset($this->namedtag->Items) or !($this->namedtag->Items instanceof Enum)){
 			$this->namedtag->Items = new Enum("Items", []);
 			$this->namedtag->Items->setTagType(NBT::TAG_Compound);
-			//$this->namedtag->CustomName = new StringTag("CustomName", "§6Sandık");
 		}
-		
-		//$this->setName("§6Sandık");
 		
 		for($i = 0; $i < $this->getSize(); ++$i){
 			$this->inventory->setItem($i, $this->getItem($i));
@@ -261,7 +258,11 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 				new IntTag("z", (int) $this->z),
 				new IntTag("pairx", (int) $this->namedtag["pairx"]),
 				new IntTag("pairz", (int) $this->namedtag["pairz"]),
-				new StringTag("CustomName", "§6Geniş Sandık")
+				if(Translate::checkTurkish === true){
+					new StringTag("CustomName", "§6Geniş Sandık")
+				}else{
+					new StringTag("CustomName", "§6Large Chest")
+				}
 			]);
 		}else{
 			$c = new Compound("", [
@@ -269,7 +270,11 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 				new IntTag("x", (int) $this->x),
 				new IntTag("y", (int) $this->y),
 				new IntTag("z", (int) $this->z),
-				new StringTag("CustomName", "§6Sandık")
+				if(Translate::checkTurkish === true){
+					new StringTag("CustomName", "§6Sandık")
+				}else{
+					new StringTag("CustomName", "§6Chest")
+				}
 			]);
 		}
 
