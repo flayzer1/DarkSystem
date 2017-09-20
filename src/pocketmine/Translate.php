@@ -9,7 +9,7 @@
 #                             __/ |                       
 #                            |___/
 
-namespace pocketmine\utils;
+namespace pocketmine;
 
 use pocketmine\Server;
 
