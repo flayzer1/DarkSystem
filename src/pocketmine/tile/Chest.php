@@ -11,6 +11,7 @@
 
 namespace pocketmine\tile;
 
+use pocketmine\Translate;
 use pocketmine\inventory\ChestInventory;
 use pocketmine\inventory\DoubleChestInventory;
 use pocketmine\inventory\InventoryHolder;
@@ -250,6 +251,13 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 	}
 
 	public function getSpawnCompound(){
+		if(Translate::checkTurkish() === true){
+			$paired = "§6Sandık";
+			$unpaired = "§6Geniş Sandık";
+		}else{
+			$paired = "§6Chest";
+			$unpaired = "§6Large Chest";
+		}
 		if($this->isPaired()){
 			$c = new Compound("", [
 				new StringTag("id", Tile::CHEST),
@@ -258,11 +266,7 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 				new IntTag("z", (int) $this->z),
 				new IntTag("pairx", (int) $this->namedtag["pairx"]),
 				new IntTag("pairz", (int) $this->namedtag["pairz"]),
-				if(Translate::checkTurkish === true){
-					new StringTag("CustomName", "§6Geniş Sandık")
-				}else{
-					new StringTag("CustomName", "§6Large Chest")
-				}
+				new StringTag("CustomName", $paired)
 			]);
 		}else{
 			$c = new Compound("", [
@@ -270,11 +274,7 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 				new IntTag("x", (int) $this->x),
 				new IntTag("y", (int) $this->y),
 				new IntTag("z", (int) $this->z),
-				if(Translate::checkTurkish === true){
-					new StringTag("CustomName", "§6Sandık")
-				}else{
-					new StringTag("CustomName", "§6Chest")
-				}
+				new StringTag("CustomName", $unpaired)
 			]);
 		}
 

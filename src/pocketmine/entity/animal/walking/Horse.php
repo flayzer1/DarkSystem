@@ -103,7 +103,6 @@ class Horse extends WalkingAnimal implements Rideable{
 		$pk->entries = $entry;
 		$pk->entityId = $this->getId();
 		$player->dataPacket($pk);
-
 	}
 
 	public function goBack(Player $player){
@@ -153,11 +152,7 @@ class Horse extends WalkingAnimal implements Rideable{
 		$this->move(0, $this->maxjump * ($power * 0.0001), 0);
 		$this->updateMovement();
 	}
-
-	public function getRidePosition(){
-		return [-0.02, 2.3, 0.19];
-	}
-
+	
 	public function createChild($ageable){
 		
 	}
@@ -182,7 +177,7 @@ class Horse extends WalkingAnimal implements Rideable{
     }
     
     public function getRidePosition(){
-        return null;
+    	return [-0.02, 2.3, 0.19];
     }
     
 }

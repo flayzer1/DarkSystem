@@ -6,6 +6,7 @@
 #|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
 #                             __/ |                       
 #                            |___/
+
 main:
  #Sunucu Lobi Dünya İsmi (Klasör İsmi)
  lobi-dunyasi: world

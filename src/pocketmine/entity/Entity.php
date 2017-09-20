@@ -260,7 +260,7 @@ abstract class Entity extends Location implements Metadatable{
 		Entity::registerEntity(Ghast::class);
 		Entity::registerEntity(Guardian::class);
 		//Entity::registerEntity(Herobrine::class);
-		Entity::registerEntity(Horse::class);
+		//Entity::registerEntity(Horse::class);
 		Entity::registerEntity(Husk::class);
 		Entity::registerEntity(IronGolem::class);
 		Entity::registerEntity(LavaSlime::class);
@@ -1571,7 +1571,7 @@ abstract class Entity extends Location implements Metadatable{
 		if(!$this->justCreated){
 			$this->server->getPluginManager()->callEvent($ev = new EntityMotionEvent($this, $motion));
 			if($ev->isCancelled()){
-				return false;
+				return true;
 			}
 		}
 

@@ -83,7 +83,7 @@ network:
  #모든 것을 압축하려면 0으로 설정합니다.-1을 비활성화합니다.
  batch-threshold: 256
  #압축 패킷 전송 시 사용되는 압축 수준입니다. 높음=CPU, 대역 폭 사용량이 적음
- compression-level: 7
+ compression-level: 6
  #압축을 위해 AsyncTasks를 사용합니다. 메인 스레드에서 CPU로드/언로드 지연, CPU부하 감소
  async-compression: false
  #실험용, Windows용으로만 사용 가능. UPnP/DLNA를 사용하여 자동으로 포트 포워딩

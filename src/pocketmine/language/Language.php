@@ -16,7 +16,7 @@ use pocketmine\event\TranslationContainer;
 
 class Language{
 
-	const FALLBACK_LANGUAGE = "tur";
+	const FALLBACK_LANGUAGE = "eng";
 
 	protected $langName;
 
@@ -131,9 +131,9 @@ class Language{
 			if($replaceString !== null){
 				$ord = ord($c);
 				if(
-					($ord >= 0x30 && $ord <= 0x39) // 0-9
-					or ($ord >= 0x41 && $ord <= 0x5a) // A-Z
-					or ($ord >= 0x61 && $ord <= 0x7a) || // a-z
+					($ord >= 0x30 && $ord <= 0x39)
+					|| ($ord >= 0x41 && $ord <= 0x5a)
+					|| ($ord >= 0x61 && $ord <= 0x7a) ||
 					$c === "." || $c === "-"
 				){
 					$replaceString .= $c;

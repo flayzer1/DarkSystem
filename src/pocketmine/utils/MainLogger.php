@@ -14,6 +14,7 @@ namespace pocketmine\utils;
 use LogLevel;
 use pocketmine\Thread;
 use pocketmine\Worker;
+use pocketmine\Translate;
 
 class MainLogger extends \AttachableThreadedLogger{
 	
@@ -56,38 +57,70 @@ class MainLogger extends \AttachableThreadedLogger{
 	}
 
 	public function emergency($message){
-		$this->send($message, \LogLevel::EMERGENCY, "ACIL", TextFormat::RED);
+		if(Translate::checkTurkish() === true){
+			$this->send($message, \LogLevel::EMERGENCY, "ACIL", TextFormat::RED);
+		}else{
+			$this->send($message, \LogLevel::EMERGENCY, "EMERGENCY", TextFormat::RED);
+		}
 	}
 
 	public function alert($message){
-		$this->send($message, \LogLevel::ALERT, "IKAZ", TextFormat::RED);
+		if(Translate::checkTurkish() === true){
+			$this->send($message, \LogLevel::ALERT, "IKAZ", TextFormat::RED);
+		}else{
+			$this->send($message, \LogLevel::ALERT, "ALERT", TextFormat::RED);
+		}
 	}
 
 	public function critical($message){
-		$this->send($message, \LogLevel::CRITICAL, "KRITIK", TextFormat::RED);
+		if(Translate::checkTurkish() === true){
+			$this->send($message, \LogLevel::CRITICAL, "KRITIK", TextFormat::RED);
+		}else{
+			$this->send($message, \LogLevel::CRITICAL, "CRITICAL", TextFormat::RED);
+		}
 	}
 
 	public function error($message){
-		$this->send($message, \LogLevel::ERROR, "HATA", TextFormat::RED);
+		if(Translate::checkTurkish() === true){
+			$this->send($message, \LogLevel::ERROR, "HATA", TextFormat::RED);
+		}else{
+			$this->send($message, \LogLevel::ERROR, "ERROR", TextFormat::RED);
+		}
 	}
 
 	public function warning($message){
-		$this->send($message, \LogLevel::WARNING, "UYARI", TextFormat::GOLD);
+		if(Translate::checkTurkish() === true){
+			$this->send($message, \LogLevel::WARNING, "UYARI", TextFormat::GOLD);
+		}else{
+			$this->send($message, \LogLevel::WARNING, "WARNING", TextFormat::GOLD);
+		}
 	}
 
 	public function notice($message){
-		$this->send($message, \LogLevel::NOTICE, "BILDIRIM", TextFormat::GRAY);
+		if(Translate::checkTurkish() === true){
+			$this->send($message, \LogLevel::NOTICE, "BILDIRIM", TextFormat::GRAY);
+		}else{
+			$this->send($message, \LogLevel::NOTICE, "NOTICE", TextFormat::GRAY);
+		}
 	}
 
 	public function info($message){
-		$this->send($message, \LogLevel::INFO, "BILGI", TextFormat::YELLOW);
+		if(Translate::checkTurkish() === true){
+			$this->send($message, \LogLevel::INFO, "BILGI", TextFormat::YELLOW);
+		}else{
+			$this->send($message, \LogLevel::INFO, "INFO", TextFormat::YELLOW);
+		}
 	}
 
 	public function debug($message, $name = "ONARIM"){
 		if($this->logDebug === false){
 			return;
 		}
-		$this->send($message, \LogLevel::DEBUG, $name, TextFormat::GRAY);
+		if(Translate::checkTurkish() === true){
+			$this->send($message, \LogLevel::DEBUG, $name, TextFormat::GRAY);
+		}else{
+			$this->send($message, \LogLevel::DEBUG, "DEBUG", TextFormat::GRAY);
+		}
 	}
 	
 	public function setLogDebug($logDebug){
@@ -123,7 +156,7 @@ class MainLogger extends \AttachableThreadedLogger{
 		if($errno === 0){
 			$type = LogLevel::CRITICAL;
 		}else{
-			$type = ($errno === E_ERROR or $errno === E_USER_ERROR) ? LogLevel::ERROR : (($errno === E_USER_WARNING or $errno === E_WARNING) ? LogLevel::WARNING : LogLevel::NOTICE);
+			$type = ($errno === E_ERROR || $errno === E_USER_ERROR) ? LogLevel::ERROR : (($errno === E_USER_WARNING || $errno === E_WARNING) ? LogLevel::WARNING : LogLevel::NOTICE);
 		}
 		$errno = isset($errorConversion[$errno]) ? $errorConversion[$errno] : $errno;
 		if(($pos = strpos($errstr, "\n")) !== false){
@@ -174,7 +207,7 @@ class MainLogger extends \AttachableThreadedLogger{
 		$thread = \Thread::getCurrentThread();
 		if($thread === null){
 			$threadName = "Sunucu Görevi";
-		}elseif($thread instanceof Thread or $thread instanceof Worker){
+		}elseif($thread instanceof Thread || $thread instanceof Worker){
 			$threadName = $thread->getThreadName() . " Görevi";
 		}else{
 			$threadName = (new \ReflectionClass($thread))->getShortName() . " Görevi";
