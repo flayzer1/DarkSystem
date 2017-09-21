@@ -11,13 +11,17 @@
 
 namespace pocketmine;
 
-use pocketmine\Server;
 use pocketmine\language\Language;
 
 class Translate{
 	
+	/*public function __construct(Server $server){
+		$this->server = $server;
+	}*/
+	
     public static function checkTurkish(){
     	$server = Server::getInstance();
+    	//if($server->getLanguageProperty() == "tr" || "tur"){
     	if($server->getServerLanguage() == "tr" || "tur"){
     	    return true;
     	}else{

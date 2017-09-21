@@ -2506,7 +2506,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				if($this->protocol >= ProtocolInfo::PROTOCOL_120){
 					$craftSlots = $this->inventory->getCraftContents();
 					try {
-						Player::tryApplyCraft($craftSlots, $recipe);
+						$this->tryApplyCraft($craftSlots, $recipe);
 						$this->inventory->setItem(PlayerInventory120::CRAFT_RESULT_INDEX, $recipe->getResult());
 						foreach($craftSlots as $slot => $item){
 							if($item == null){

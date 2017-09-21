@@ -175,8 +175,6 @@ namespace pocketmine{
 	}
 	
 	date_default_timezone_set("UTC");
-
-	$konsol = new MainLogger(\pocketmine\ANSI);
 	
 	function kill($pid){
 		switch(Utils::getOS()){
@@ -229,7 +227,9 @@ namespace pocketmine{
 	function cleanPath($path){
 		return rtrim(str_replace(["\\", ".php", "phar://", rtrim(str_replace(["\\", "phar://"], ["/", ""], \pocketmine\PATH), "/"), rtrim(str_replace(["\\", "phar://"], ["/", ""], \pocketmine\PLUGIN_PATH), "/")], ["/", "", "", "", ""], $path), "/");
 	}
-
+	
+	$konsol = new MainLogger(\pocketmine\ANSI);
+	
 	$errors = 0;
 
 	if(php_sapi_name() !== "cli"){
