@@ -3374,7 +3374,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			}
 			
 			$this->forceMovement = new Vector3($this->x, $this->y, $this->z);
-			$this->sendPosition($this, $this->pitch, $this->yaw, MovePlayerPacket::MODE_RESET);
+			$this->sendPosition($this, $this->yaw, $this->pitch, MovePlayerPacket::MODE_RESET);
 			//$this->level->updateAround($pos);
 			//$this->level->updateAllLight($pos);
 			//$this->level->sendBlocks([$this], [$pos], UpdateBlockPacket::FLAG_ALL_PRIORITY);
