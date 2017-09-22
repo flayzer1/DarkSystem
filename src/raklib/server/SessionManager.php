@@ -48,17 +48,16 @@ use raklib\RakLib;
 use pocketmine\utils\BinaryStream;
 
 class SessionManager{
+	
     protected $packetPool = [];
-
-    /** @var RakLibServer */
+    
     protected $server;
 
     protected $socket;
 
     protected $receiveBytes = 0;
     protected $sendBytes = 0;
-
-    /** @var Session[] */
+    
     protected $sessions = [];
 
     protected $name = "";
@@ -74,16 +73,12 @@ class SessionManager{
     protected $ipSec = [];
 
     public $portChecking = true;
-	
-	private $spamPacket;
-
+    
     public function __construct(RakLibServer $server, UDPServerSocket $socket){
         $this->server = $server;
         $this->socket = $socket;
         $this->registerPackets();
         
-		$this->spamPacket = hex2bin('210400');
-		
         $this->run();
     }
 
@@ -129,6 +124,7 @@ class SessionManager{
 				$this->blockAddress($address);
 			}
 		}
+		
 		$this->ipSec = [];
 		if(($this->ticks & 0b1111) === 0){
 			$diff = max(0.005, $time - $this->lastMeasure);
@@ -205,24 +201,10 @@ class SessionManager{
 
     public function streamEncapsulated(Session $session, EncapsulatedPacket $packet, $flags = RakLib::PRIORITY_NORMAL){
 		$id = $session->getAddress() . ":" . $session->getPort();
-		if (ord($packet->buffer{0}) == 0xfe) {
+		if(ord($packet->buffer{0}) == 0xfe){
 			$buff = substr($packet->buffer, 1);
-			if (ord($buff{0}) == 0x78) {
-				$decoded = zlib_decode($buff);
-				$stream = new BinaryStream($decoded);
-				$length = strlen($decoded);
-				while ($stream->getOffset() < $length) {
-					$buf = $stream->getString();
-					if ($buf == $this->spamPacket) {
-						continue;
-					}
-					$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . $buf;
-					$this->server->pushThreadToMainPacket($buffer);
-				}
-			} else {
-				$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . $buff;
-				$this->server->pushThreadToMainPacket($buffer);
-			}
+			$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . $buff;
+			$this->server->pushThreadToMainPacket($buffer);
 		}
     }
 	

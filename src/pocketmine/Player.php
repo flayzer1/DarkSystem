@@ -1146,7 +1146,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			return;
 		}
 		$distanceSquared = ($this->newPosition->x - $this->x) ** 2 + ($this->newPosition->z - $this->z) ** 2;
-		if(($distanceSquared / ($tickDiff ** 2)) > $this->movementSpeed * 230){
+		if(($distanceSquared / ($tickDiff ** 2)) > $this->movementSpeed * 225){
 			//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
 			//return;
 		}
@@ -1162,7 +1162,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$from = new Location($this->x, $this->y, $this->z, $this->lastYaw, $this->lastPitch, $this->level);
 		$to = new Location($newPos->x, $newPos->y, $newPos->z, $this->yaw, $this->pitch, $this->level);
 		$deltaAngle = abs($from->yaw - $to->yaw) + abs($from->pitch - $to->pitch);
-		$distanceSquared += ($this->newPosition->y - $this->y) ** 2;
+		$distanceSquared = ($this->newPosition->x - $this->x) ** 2 + ($this->newPosition->y - $this->y) ** 2 + ($this->newPosition->z - $this->z) ** 2;
 		if($distanceSquared > 0.0625 || $deltaAngle > 10){
 			$isFirst = ($this->lastX === null || $this->lastY === null || $this->lastZ === null);
 			if(!$isFirst){
@@ -1271,11 +1271,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$pk->entities[] = [$this->id, $mot->x, $mot->y, $mot->z];
 				$this->dataPacket($pk);
 			}
-
-			if($this->motionY > 999){ //Disable
-				//$this->startAirTicks = (-(log($this->gravity / ($this->gravity + $this->drag * $this->motionY))) / $this->drag) * 2 + 5;
-			}
-
+			
 			return true;
 		}
 		
