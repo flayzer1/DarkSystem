@@ -1,4 +1,5 @@
 <?php
+
 /*
  *
  *  ____            _        _   __  __ _                  __  __ ____  
@@ -17,7 +18,9 @@
  * 
  *
 */
+
 namespace pocketmine\entity;
+
 use pocketmine\event\entity\EntityCombustByEntityEvent;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -29,11 +32,17 @@ use pocketmine\level\MovingObjectPosition;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\ShortTag;
+
 abstract class Projectile extends Entity{
+	
 	const DATA_SHOOTER_ID = 17;
+	
 	public $shootingEntity = null;
-	protected $damage = 0;
+	
 	public $hadCollision = false;
+	
+	protected $damage = 0;
+	
 	public function __construct(Level $level, Compound $nbt, Entity $shootingEntity = null){
 		$this->shootingEntity = $shootingEntity;
 		if($shootingEntity !== null){
@@ -41,11 +50,13 @@ abstract class Projectile extends Entity{
 		}
 		parent::__construct($level, $nbt);
 	}
+	
 	public function attack($damage, EntityDamageEvent $source){
 		if($source->getCause() === EntityDamageEvent::CAUSE_VOID){
 			parent::attack($damage, $source);
 		}
 	}
+	
 	protected function initEntity(){
 		parent::initEntity();
 		$this->setMaxHealth(1);
@@ -54,13 +65,16 @@ abstract class Projectile extends Entity{
 			$this->age = $this->namedtag["Age"];
 		}
 	}
+	
 	public function canCollideWith(Entity $entity){
 		return $entity instanceof Living and !$this->onGround;
 	}
+	
 	public function saveNBT(){
 		parent::saveNBT();
 		$this->namedtag->Age = new ShortTag("Age", $this->age);
 	}
+	
 	public function onUpdate($currentTick){
 		if($this->closed){
 			return false;

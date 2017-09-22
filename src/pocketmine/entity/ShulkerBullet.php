@@ -44,7 +44,7 @@ class ShulkerBullet extends Projectile
 
     public function onUpdate($currentTick)
     {
-        if ($this->closed) {
+        if($this->closed){
             return false;
         }
 
@@ -52,7 +52,7 @@ class ShulkerBullet extends Projectile
 
         $hasUpdate = parent::onUpdate($currentTick);
 
-        if ($this->age > 1200 or $this->isCollided) {
+        if($this->age > 1200 or $this->isCollided){
             $this->kill();
             $hasUpdate = true;
         }

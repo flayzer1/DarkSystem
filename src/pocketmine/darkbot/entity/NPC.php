@@ -22,12 +22,12 @@ use pocketmine\level\Level;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
 use pocketmine\math\AxisAlignedBB;
+use pocketmine\scheduler\CallbackTask;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\network\protocol\AddPlayerPacket;
 use pocketmine\network\protocol\MovePlayerPacket;
 use pocketmine\network\protocol\MoveEntityPacket;
 use pocketmine\network\protocol\SetEntityMotionPacket;
-use pocketmine\scheduler\CallbackTask;
 
 class NPC extends Human{
 	
@@ -168,6 +168,12 @@ class NPC extends Human{
 		return [$target,$dist];
 	}
 	
+	public function onUpdate($currentTick){
+		$this->zupdateMovement();
+		return !$this->closed;
+		//return $this->isAlive();
+	}
+	
 	//public function updateMove(){
 	public function onUpdate($currentTick){
 		if($this->knockbackTicks > 0) $this->knockbackTicks--;
@@ -215,15 +221,6 @@ class NPC extends Human{
 		return !$this->closed;
 		//return $this->isAlive();
 	}
-	
-	/*public function onUpdate($currentTick){
-		$tickDiff = $currentTick - $this->lastUpdate;
-		$this->lastUpdate = $currentTick;
-		//$this->entityBaseTick($tickDiff);
-		$this->updateMove();
-		//$this->checkChunks();
-		return true;
-	}*/
 	
 	/*public function onUpdate($currentTick){
         switch($this->type){

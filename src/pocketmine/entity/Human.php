@@ -36,15 +36,12 @@ use pocketmine\Player;
 use pocketmine\level\Level;
 
 class Human extends Creature implements ProjectileSource, InventoryHolder{
-
-	protected $nameTag = "TESTIFICATE";
-	/** @var PlayerInventory */
-	protected $inventory;
 	
-	/** @var UUID */
+	protected $inventory;
 	protected $uuid;
 	protected $rawUUID;
-
+	protected $nameTag = "TESTIFICATE";
+	
 	public $width = 0.5; //Default: 0.6
 	public $length = 0.5; //and This
 	public $height = 1.7; //Default: 1.8

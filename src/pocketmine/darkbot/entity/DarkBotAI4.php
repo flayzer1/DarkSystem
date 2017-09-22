@@ -34,7 +34,7 @@ use pocketmine\network\protocol\RemoveEntityPacket;
 use pocketmine\Player;
 use pocketmine\level\Level;
 use pocketmine\entity\Attribute;
-use pocketmine\entity\Creature;
+use pocketmine\darkbot\entity\Creature;
 use pocketmine\entity\ProjectileSource;
 use pocketmine\network\multiversion\Multiversion;
 

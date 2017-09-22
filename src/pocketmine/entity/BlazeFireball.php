@@ -35,6 +35,7 @@ class BlazeFireball extends Projectile
 
     public $width = 0.3125;
     public $height = 0.3125;
+    
     protected $damage = 4;
     protected $drag = 0.01;
     protected $gravity = 0.05;
@@ -47,7 +48,7 @@ class BlazeFireball extends Projectile
         $this->isCritical = $critical;
     }
 
-    public function isExplode(): bool
+    public function isExplode()
     {
         return $this->canExplode;
     }
@@ -66,21 +67,21 @@ class BlazeFireball extends Projectile
         $this->timings->startTiming();
         $hasUpdate = parent::onUpdate($currentTick);
         if (!$this->hadCollision and $this->isCritical) {
-            $this->level->addParticle(new CriticalParticle($this->add(
+            /*$this->level->addParticle(new CriticalParticle($this->add(
                 $this->width / 2 + mt_rand(-100, 100) / 500,
                 $this->height / 2 + mt_rand(-100, 100) / 500,
-                $this->width / 2 + mt_rand(-100, 100) / 500)));
+                $this->width / 2 + mt_rand(-100, 100) / 500)));*/
         } elseif ($this->onGround) {
             $this->isCritical = false;
         }
 
         if ($this->age > 1200 or $this->isCollided) {
             if ($this->isCollided and $this->canExplode) {
-                $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8, $dropItem = false));
+                $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.6, $dropItem = false));
                 if (!$ev->isCancelled()) {
                     $explosion = new Explosion($this, $ev->getForce(), $this->shootingEntity);
                     if ($ev->isBlockBreaking()) {
-                        $explosion->explodeA();
+                        $explosion->explodeB();
                     }
                     $explosion->explodeB();
                 }

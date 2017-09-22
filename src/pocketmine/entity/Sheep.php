@@ -36,7 +36,7 @@ class Sheep extends Animal implements Colorable
 
     public function __construct(Level $level, Compound $nbt)
     {
-        if (!isset($nbt->Color)) {
+        if(!isset($nbt->Color)){
             $nbt->Color = new ByteTag("Color", self::getRandomColor());
         }
         parent::__construct($level, $nbt);
@@ -44,7 +44,7 @@ class Sheep extends Animal implements Colorable
         $this->setDataProperty(self::DATA_COLOR_INFO, self::DATA_TYPE_BYTE, $this->getColor());
     }
 
-    public static function getRandomColor(): int
+    public static function getRandomColor()
     {
         $rand = "";
         $rand .= str_repeat(Wool::WHITE . " ", 20);
@@ -65,7 +65,7 @@ class Sheep extends Animal implements Colorable
         return intval($arr[mt_rand(0, count($arr) - 1)]);
     }
 
-    public function getColor(): int
+    public function getColor()
     {
         return (int)$this->namedtag["Color"];
     }

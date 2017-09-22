@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class Herobrine extends Boss
 {
-    const NETWORK_ID = ???;
+    const NETWORK_ID = 63;
 
     public $width = 0.6;
     public $length = 0.6;
