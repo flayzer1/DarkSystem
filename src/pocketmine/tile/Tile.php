@@ -27,6 +27,7 @@ abstract class Tile extends Position{
 	const SIGN = "Sign";
 	const SKULL = "Skull";
 	const CHEST = "Chest";
+	const BANNER = "Banner";
 	const FURNACE = "Furnace";
 	const FLOWER_POT = "FlowerPot";
 	const MOB_SPAWNER = "MobSpawner";
@@ -64,6 +65,7 @@ abstract class Tile extends Position{
 	public $tickTimer;
 	
 	public static function init(){
+		Tile::registerTile(Banner::class);
 		Tile::registerTile(Beacon::class);
 		Tile::registerTile(Bed::class);
 		Tile::registerTile(BrewingStand::class);

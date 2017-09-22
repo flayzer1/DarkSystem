@@ -62,7 +62,7 @@ class Trapdoor extends Transparent{
 	/**
 	 * @return bool
 	 */
-	public function canBeActivated() : bool{
+	public function canBeActivated(){
 		return true;
 	}
 
@@ -70,7 +70,6 @@ class Trapdoor extends Transparent{
 	 * @return AxisAlignedBB
 	 */
 	protected function recalculateBoundingBox(){
-
 		$damage = $this->getDamage();
 
 		$f = 0.1875;
@@ -174,7 +173,7 @@ class Trapdoor extends Transparent{
 	 *
 	 * @return array
 	 */
-	public function getDrops(Item $item) : array{
+	public function getDrops(Item $item){
 		return [
 			[$this->id, 0, 1],
 		];

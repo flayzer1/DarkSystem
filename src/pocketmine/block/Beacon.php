@@ -21,7 +21,7 @@ class Beacon extends Transparent
         $this->meta = $meta;
     }
 
-    public function canBeActivated(): bool
+    public function canBeActivated()
     {
         return true;
     }
@@ -58,6 +58,7 @@ class Beacon extends Transparent
             new IntTag("y", $block->y),
             new IntTag("z", $block->z)
         ]);
+        
         $pot = Tile::createTile(Tile::BEACON, $this->getLevel(), $nbt);
         return true;
     }
@@ -84,12 +85,10 @@ class Beacon extends Transparent
                     new IntTag("y", $this->y),
                     new IntTag("z", $this->z)
                 ]);
+                
                 Tile::createTile(Tile::BEACON, $this->getLevel(), $nbt);
             }
-
-            if ($player->isCreative() and $player->getServer()->limitedCreative) {
-                return true;
-            }
+            
             $player->addWindow($beacon->getInventory());
         }
 

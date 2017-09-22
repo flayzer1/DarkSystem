@@ -22,12 +22,13 @@
 namespace pocketmine\block;
 
 class IronTrapdoor extends Trapdoor{
+	
 	protected $id = self::IRON_TRAPDOOR;
 
 	/**
 	 * @return string
 	 */
-	public function getName() : string{
+	public function getName(){
 		return "Iron Trapdoor";
 	}
 

@@ -71,6 +71,7 @@ class Block extends Position implements Metadatable{
 	const PISTON = 33;
 	const PISTON_HEAD = 34;
 	const WOOL = 35;
+	const PISTON_EXTENSION = 36;
 	const DANDELION = 37;
 	const ROSE = 38;
 	const POPPY = 38;
@@ -254,6 +255,8 @@ class Block extends Position implements Metadatable{
 	const COAL_BLOCK = 173;
 	const PACKED_ICE = 174;
 	const DOUBLE_PLANT = 175;
+	const STANDING_BANNER = 176;
+	const WALL_BANNER = 177;
 	const INVERTED_DAYLIGHT_SENSOR = 178;
 	const RED_SANDSTONE = 179;
 	const RED_SANDSTONE_STAIRS = 180;
@@ -428,6 +431,13 @@ class Block extends Position implements Metadatable{
 
 			Block::$list[Block::TRAPDOOR] = Trapdoor::class;
 			Block::$list[Block::IRON_TRAPDOOR] = IronTrapdoor::class;
+			
+			Block::$list[Block::STANDING_BANNER] = StandingBanner::class;
+			Block::$list[Block::WALL_BANNER] = WallBanner::class;
+			
+			Block::$list[Block::PISTON] = Piston::class;
+			Block::$list[Block::STICKY_PISTON] = StickyPiston::class;
+			Block::$list[Block::PISTON_HEAD] = PistonHead::class;
 
 			Block::$list[Block::STONE_BRICKS] = StoneBricks::class;
 

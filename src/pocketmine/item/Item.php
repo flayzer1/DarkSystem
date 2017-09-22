@@ -102,7 +102,10 @@ class Item{
 	const TALL_GRASS = 31;
 	const BUSH = 32;
 	const DEAD_BUSH = 32;
+	const PISTON = 33;
+	const PISTON_HEAD = 34;
 	const WOOL = 35;
+	const PISTON_EXTENSION = 36;
 	const DANDELION = 37;
 	const POPPY = 38;
 	const ROSE = 38;
@@ -484,6 +487,7 @@ class Item{
 	const PRISMARINE_CRYSTAL = 422;
 	const RAW_MUTTON = 423;
 	const COOKED_MUTTON = 424;
+	const BANNER = 425;
 	const END_CRYSTAL = 426;
 	const SPRUCE_DOOR = 427;
 	const BIRCH_DOOR = 428;
@@ -535,10 +539,16 @@ class Item{
 		22 => "Lapis Block",
 		24 => "Sandstone",
 		26 => "Bed",
+		27 => "Powered Rail",
+		28 => "Detector Rail",
+		29 => "Sticky Piston",
 		30 => "Cobweb",
 		31 => "Tall Grass",
 		32 => "Bush",
+		33 => "Piston",
+		34 => "Piston Head",
 		35 => "Wool",
+		36 => "Piston Extension",
 		37 => "Dandelion",
 		38 => "Red Flower",
 		39 => "Brown Mushroom",
@@ -697,7 +707,7 @@ class Item{
 		256 => "Iron Shovel",
 		257 => "Iron Pickaxe",
 		258 => "Iron Axe",
-		259 => "Flint && Steel",
+		259 => "Flint & Steel",
 		260 => "Apple",
 		261 => "Bow",
 		262 => "Arrow",
@@ -777,7 +787,7 @@ class Item{
 		341 => "Slimeball",
 		344 => "Egg",
 		345 => "Compass",
-		346 => "Compass",
+		346 => "Fishing Rod",
 		347 => "Clock",
 		348 => "Glowstone Dust",
 		349 => "Raw Fish",
@@ -833,6 +843,8 @@ class Item{
 		422 => "Prismarine Crystals",
 		423 => "Raw Mutton",
 		424 => "Cooked Mutton",
+		425 => "Banner",
+		426 => "End Crystal",
 		427 => "Spruce Door",
 		428 => "Birch Door",
 		429 => "Jungle Door",

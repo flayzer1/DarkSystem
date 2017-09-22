@@ -1,33 +1,23 @@
 <?php
 
-/*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
-use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\Enum;
 use pocketmine\Player;
 use pocketmine\tile\Tile;
 use pocketmine\tile\BrewingStand as TileBrewingStand;
@@ -47,8 +37,8 @@ class BrewingStand extends Transparent
     {
         if ($block->getSide(Vector3::SIDE_DOWN)->isTransparent() === false) {
             $this->getLevel()->setBlock($block, $this, true, true);
-            $nbt = new CompoundTag("", [
-                new ListTag("Items", []),
+            $nbt = new Compound("", [
+                new Enum("Items", []),
                 new StringTag("id", Tile::BREWING_STAND),
                 new IntTag("x", $this->x),
                 new IntTag("y", $this->y),
@@ -66,13 +56,14 @@ class BrewingStand extends Transparent
             }
 
             Tile::createTile(Tile::BREWING_STAND, $this->getLevel(), $nbt);
-
+            
             return true;
         }
+        
         return false;
     }
 
-    public function canBeActivated(): bool
+    public function canBeActivated()
     {
         return true;
     }
@@ -92,7 +83,7 @@ class BrewingStand extends Transparent
         return 1;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Brewing Stand";
     }
@@ -100,17 +91,12 @@ class BrewingStand extends Transparent
     public function onActivate(Item $item, Player $player = null)
     {
         if ($player instanceof Player) {
-            //TODO lock
-            if ($player->isCreative() and $player->getServer()->limitedCreative) {
-                return true;
-            }
             $t = $this->getLevel()->getTile($this);
-            //$brewingStand = false;
             if ($t instanceof TileBrewingStand) {
                 $brewingStand = $t;
             } else {
-                $nbt = new CompoundTag("", [
-                    new ListTag("Items", []),
+                $nbt = new Compound("", [
+                    new Enum("Items", []),
                     new StringTag("id", Tile::BREWING_STAND),
                     new IntTag("x", $this->x),
                     new IntTag("y", $this->y),
@@ -119,8 +105,10 @@ class BrewingStand extends Transparent
                 $nbt->Items->setTagType(NBT::TAG_Compound);
                 $brewingStand = Tile::createTile(Tile::BREWING_STAND, $this->getLevel(), $nbt);
             }
+            
             $player->addWindow($brewingStand->getInventory());
         }
+        
         return true;
     }
 

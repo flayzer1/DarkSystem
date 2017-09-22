@@ -168,11 +168,11 @@ class NPC extends Human{
 		return [$target,$dist];
 	}
 	
-	public function onUpdate($currentTick){
+	/*public function onUpdate($currentTick){
 		$this->zupdateMovement();
 		return !$this->closed;
 		//return $this->isAlive();
-	}
+	}*/
 	
 	//public function updateMove(){
 	public function onUpdate($currentTick){
