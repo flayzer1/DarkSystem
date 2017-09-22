@@ -8,25 +8,33 @@
 [![Build Status](https://travis-ci.org/DarkYusuf13/DarkSystem.svg?branch=master)](https://travis-ci.org/DarkYusuf13/DarkSystem) | [![Discord](https://camo.githubusercontent.com/455152269a0ed38255ed15e375084d4dd08e0c98/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636861742d6f6e253230646973636f72642d3732383944412e737667)](https://discord.gg/aByhSs) |
 
 # Features:
-- DarkSystem is **# 1** about no lagging. (We think so)
+- DarkSystem is **# 1** about speed. (We think so)
 - Fast chunk loading
 - MobAI Support
 - Smooth Movement
 - Colored Console
 - More Commands (/clear, /tpall, /clearchat etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
-- DarkBot (Virtual Bot; Can talk, help players, can move etc.)
+- DarkBot (Virtual Bot; Can talk, help players, move etc.)
+
+# Added Best Things:
+- Banner (1.2 only)
+- Piston (indev)
+- Rideable Car (indev)
+- Rideable Horse (indev)
+- Behavior Support (indev)
+- ModPE/BlockLauncher check (Can kick modded players) (indev)
 
 # TODO List:
 - [ ] **Command Block**
 - [ ] **Experience System (working)**
 - [ ] **Map**
-- [ ] **Horse**
+- [x] **Horse**
 - [ ] **Throwing Potions**
 - [ ] **Riding Mincart and Boat**
 - [ ] **Fully Redstone System**
 - [ ] **Multi-core**
-- [ ] **Pistons**
+- [x] **Pistons**
 - [ ] **Fully Multi-Language**
 - [ ] **Mob Spawner**
 - [ ] **ItemFrame**
