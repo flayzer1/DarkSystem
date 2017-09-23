@@ -67,13 +67,7 @@ class Language{
 			}
 		}
 	}
-
-	/**
-	 * @param string   $str
-	 * @param string[] $params
-	 *
-	 * @return string
-	 */
+	
 	public function translateString($str, array $params = [], $onlyPrefix = null){
 		$baseText = $this->get($str);
 		$baseText = $this->parseTranslation(($baseText !== null && ($onlyPrefix === null || strpos($str, $onlyPrefix) === 0)) ? $baseText : $str, $onlyPrefix);

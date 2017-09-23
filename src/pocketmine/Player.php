@@ -2028,16 +2028,23 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					foreach(explode("\n", $packet->message) as $message){
 						if($this->server->getName() == "DarkSystem"){
 							switch($message){
+								/* English */
+								case "darkbot hi":
+								case "#hi":
+								$this->server->broadcastMessage($dbotprefix . "Hi!");
+								break;
+								case "darkbot how are you":
+								case "#how are you":
+								$this->server->broadcastMessage($dbotprefix . "I fine, thanks!");
+								break;
+								case "darkbot what are you doing":
+								case "#what are you doing":
+								$this->server->broadcastMessage($dbotprefix . "Nothing.");
+								break;
 								/* Korean */
 								case "안녕":
 								case "darkbot 안녕":
 								$this->server->broadcastMessage($dbotprefix . "안녕");
-								break;
-								case "잘 지냈어요":
-								case "너는 어떻게 지내니":
-								case "안녕하십니까":
-								case "스폰":
-								$this->teleport($this->server->getDefaultLevel()->getSafeSpawn());
 								break;
 								case "darkbot 잘 지냈어요":
 								case "darkbot 너는 어떻게 지내니":
@@ -2176,12 +2183,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 								case "#darkbot sen delisin":
 								$this->server->broadcastMessage($dbotprefix . "§aDeli sensin!");
 								break;
-								case "dbot dark nerde":
-								case "darkbot dark nerde":
-								case "#dark nerde":
-								case "#darkbot dark nerde":
-								$this->server->broadcastMessage($dbotprefix . "§aBen Ne Bileyim?");
-								break;
 								case "dbot iyimisin":
 								case "dbot iyi misin":
 								case "darkbot iyimisin":
@@ -2200,22 +2201,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 								case "#bende iyiyim dbot":
 								case "#bende iyiyim darkbot":
 								$this->server->broadcastMessage($dbotprefix . "§aBuna Sevindim.");
-								break;
-								case "darkbot dark neden yetki vermiyor":
-								case "darkbot dark neden yetki vermiyor?":
-								case "#darkbot dark neden yetki vermiyor":
-								case "#darkbot dark neden yetki vermiyor?":
-								$this->server->broadcastMessage($dbotprefix . "§aÇok Önceden Sunucusu Hacklendi Diye Duymuştum, Gerisini Bilmiyorum.");
-								break;
-								case "darkbot dark ın gerçek adı ne":
-								case "darkbot dark ın gerçek adı ne?":
-								case "darkbot darkın gerçek adı ne":
-								case "darkbot darkın gerçek adı ne?":
-								case "#darkbot dark ın gerçek adı ne":
-								case "#darkbot dark ın gerçek adı ne?":
-								case "#darkbot darkın gerçek adı ne":
-								case "#darkbot darkın gerçek adı ne?":
-								$this->server->broadcastMessage($dbotprefix . "§aYusuf.");
 								break;
 								case "alım varmı":
 								case "alım var mı":
@@ -2501,7 +2486,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				
 				if($this->protocol >= ProtocolInfo::PROTOCOL_120){
 					$craftSlots = $this->inventory->getCraftContents();
-					try {
+					try{
 						$this->tryApplyCraft($craftSlots, $recipe);
 						$this->inventory->setItem(PlayerInventory120::CRAFT_RESULT_INDEX, $recipe->getResult());
 						foreach($craftSlots as $slot => $item){
@@ -2676,7 +2661,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$nbt->read($packet->namedtag, false, true);
 					$nbt = $nbt->getData();
 					$ev = new SignChangeEvent($t->getBlock(), $this, [
-						TF::clean($nbt["Text1"], $this->removeFormat == false), TF::clean($nbt["Text2"], $this->removeFormat == false), TF::clean($nbt["Text3"], $this->removeFormat == false), TF::clean($nbt["Text4"], $this->removeFormat == false)
+						TF::clean($nbt["Text1"], $this->removeFormat === false), TF::clean($nbt["Text2"], $this->removeFormat === false), TF::clean($nbt["Text3"], $this->removeFormat === false), TF::clean($nbt["Text4"], $this->removeFormat === false)
 					]);
 					
 					$this->server->getPluginManager()->callEvent($ev);
@@ -2846,7 +2831,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function sendTranslation($message, array $parameters = []){
 		$pk = new TextPacket();
-		if(!$this->server->isLanguageForced()){
+		if($this->server->isLanguageForced()){
 			$pk->type = TextPacket::TYPE_TRANSLATION;
 			$pk->message = $this->server->getLanguage()->translateString($message, $parameters, "pocketmine.");
 			foreach($parameters as $i => $p){

@@ -170,6 +170,7 @@ class Banner extends Spawnable{
 		]);
 
 		$this->onChanged();
+		
 		return true;
 	}
 	
@@ -181,6 +182,7 @@ class Banner extends Spawnable{
 		unset($this->namedtag->Patterns->{$patternId});
 
 		$this->onChanged();
+		
 		return true;
 	}
 	
@@ -194,6 +196,7 @@ class Banner extends Spawnable{
 		unset($this->namedtag->Patterns->{$index});
 
 		$this->onChanged();
+		
 		return true;
 	}
 	
@@ -207,6 +210,7 @@ class Banner extends Spawnable{
 		unset($this->namedtag->Patterns->{$index});
 
 		$this->onChanged();
+		
 		return true;
 	}
 	

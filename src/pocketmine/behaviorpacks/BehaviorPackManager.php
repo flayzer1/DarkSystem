@@ -12,6 +12,7 @@
 namespace pocketmine\behaviorpacks;
 
 use pocketmine\Server;
+use pocketmine\Translate;
 use pocketmine\utils\Config;
 
 class BehaviorPackManager{
@@ -47,13 +48,21 @@ class BehaviorPackManager{
 		}elseif(!is_dir($this->path)){
 			throw new \InvalidArgumentException("Behavior packs path $path exists and is not a directory");
 		}
-
-		if(!file_exists($this->path . "behavior_paketleri.yml")){
-			file_put_contents($this->path . "behavior_paketleri.yml", file_get_contents($this->server->getFilePath() . "src/pocketmine/resources/behavior_paketleri.yml"));
+		
+		if(Translate::checkTurkish() === "yes"){
+			if(!file_exists($this->path . "behavior_paketleri.yml")){
+				file_put_contents($this->path . "behavior_paketleri.yml", file_get_contents($this->server->getFilePath() . "src/pocketmine/resources/behavior_paketleri.yml"));
+			}
+			
+			$this->behaviorPacksConfig = new Config($this->path . "behavior_paketleri.yml", Config::YAML, []);
+		}else{
+			if(!file_exists($this->path . "behavior_packs.yml")){
+				file_put_contents($this->path . "behavior_packs.yml", file_get_contents($this->server->getFilePath() . "src/pocketmine/resources/behavior_packs.yml"));
+			}
+			
+			$this->behaviorPacksConfig = new Config($this->path . "behavior_packs.yml", Config::YAML, []);
 		}
-
-		$this->behaviorPacksConfig = new Config($this->path . "behavior_paketleri.yml", Config::YAML, []);
-
+		
 		$this->serverForceResources = (bool) $this->behaviorPacksConfig->get("force_behavior", false);
 
 		foreach($this->behaviorPacksConfig->get("behavior_stack", []) as $pos => $pack){

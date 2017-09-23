@@ -367,19 +367,11 @@ class Server extends DarkSystem{
 	}
 	
 	public function getServerLanguage(){
-		return $this->language;
+		return Translate::ENG;
 	}
-	
-	public function getLanguageProperty(){
-		return $this->getProperty("settings.language", Language::FALLBACK_LANGUAGE);
-	}
-	
-	/*public function getTranslator(){
-		return $this->translate;
-	}*/
 	
 	public function getServerName(){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			return $this->getConfigString("motd", "DarkSystem Sunucusu");
 		}else{
 			return $this->getConfigString("motd", "DarkSystem Server");
@@ -426,7 +418,7 @@ class Server extends DarkSystem{
 	}
 	
 	public function getForceGamemode(){
-		return $this->getConfigBoolean("force-gamemode", false);
+		return $this->getConfigBoolean("force-gamemode", true);
 	}
 	
 	public static function getGamemodeString($mode){
@@ -516,7 +508,7 @@ class Server extends DarkSystem{
 	}
 	
 	public function getMotd(){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			return $this->getConfigString("motd", "DarkSystem Sunucusu");
 		}else{
 			return $this->getConfigString("motd", "DarkSystem Server");
@@ -757,7 +749,7 @@ class Server extends DarkSystem{
 	public function getOfflinePlayerData($name){
 		$name = strtolower($name);
 		
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 		    $path = $this->getDataPath() . "oyuncular/";
 		}else{
 			$path = $this->getDataPath() . "players/";
@@ -806,6 +798,7 @@ class Server extends DarkSystem{
 			new ByteTag("Invulnerable", 0),
 			new StringTag("NameTag", $name),
 		]);
+		
 		$nbt->Pos->setTagType(NBT::TAG_Double);
 		$nbt->Inventory->setTagType(NBT::TAG_Compound);
 		$nbt->EnderChestInventory->setTagType(NBT::TAG_Compound);
@@ -824,7 +817,7 @@ class Server extends DarkSystem{
 		try{
 			$nbt->setData($nbtTag);
 			
-			if(Translate::checkTurkish() === true){
+			if(Translate::checkTurkish() === "yes"){
 			    if($async){
 				    $this->scheduler->scheduleAsyncTask(new FileWriteTask($this->getDataPath() . "oyuncular/" . strtolower($name) . ".dat", $nbt->writeCompressed()));
 			    }else{
@@ -1024,7 +1017,7 @@ class Server extends DarkSystem{
 			return false;
 		}
 		
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 		    $path = $this->getDataPath() . "dunyalar/" . $name . "/";
 		}else{
 			$path = $this->getDataPath() . "worlds/" . $name . "/";
@@ -1075,7 +1068,7 @@ class Server extends DarkSystem{
 		}
 
 		try{
-			if(Translate::checkTurkish() === true){
+			if(Translate::checkTurkish() === "yes"){
 			    $path = $this->getDataPath() . "dunyalar/" . $name . "/";
 			}else{
 				$path = $this->getDataPath() . "worlds/" . $name . "/";
@@ -1136,7 +1129,7 @@ class Server extends DarkSystem{
 			return false;
 		}
 		
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 		    $path = $this->getDataPath() . "dunyalar/" . $name . "/";
 		}else{
 			$path = $this->getDataPath() . "worlds/" . $name . "/";
@@ -1383,7 +1376,7 @@ class Server extends DarkSystem{
 	}
 	
 	public function getCrashPath(){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 		    return $this->dataPath . "cokme-arsivleri/";
 		}else{
 			return $this->dataPath . "crashdumps/";
@@ -1466,7 +1459,7 @@ class Server extends DarkSystem{
 		//$this->translate = new Translate($this);
 		$this->dbot = new DarkBot($this);
 		try{
-			if(Translate::checkTurkish() === true){
+			if(Translate::checkTurkish() === "yes"){
 			if(!file_exists($dataPath . "dunyalar/")){
 				mkdir($dataPath . "dunyalar/", 0777);
 			}
@@ -1524,13 +1517,13 @@ class Server extends DarkSystem{
 			if(!file_exists($this->dataPath . "pocketmine.yml")){
 				if(file_exists($this->dataPath . "lang_cache.txt")){
 					$langFile = new Config($configPath = $this->dataPath . "lang_cache.txt", Config::ENUM, []);
-                    $wizardLang = null;
+                    $setupLang = null;
 					foreach($langFile->getAll(true) as $langName){
-						$wizardLang = $langName;
+						$setupLang = $langName;
 						break;
 					}
-					if(file_exists($this->filePath . "src/pocketmine/resources/pocketmine_$wizardLang.yml")){
-						$content1 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/pocketmine_$wizardLang.yml");
+					if(file_exists($this->filePath . "src/pocketmine/resources/pocketmine_$setupLang.yml")){
+						$content1 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/pocketmine_$setupLang.yml");
 					}else{
 						$content1 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/pocketmine_eng.yml");
 					}
@@ -1557,7 +1550,7 @@ class Server extends DarkSystem{
 			
 			$this->config = new Config($configPath = $this->dataPath . "pocketmine.yml", Config::YAML, []);
 			$this->cmdReader = new CommandReader($knsol);
-			if(Translate::checkTurkish() === true){
+			if(Translate::checkTurkish() === "yes"){
 			$this->properties = new Config($this->dataPath . "sunucu.properties", Config::PROPERTIES, [
 				"motd" => "DarkSystem Sunucusu",
 				"server-ip" => "0.0.0.0",
@@ -1573,7 +1566,7 @@ class Server extends DarkSystem{
 				"spawn-mobs" => true,
 				"mobs-limit" => 0,
 				"gamemode" => 0,
-				"force-gamemode" => false,
+				"force-gamemode" => true,
 				"hardcore" => false,
 				"pvp" => true,
 				"difficulty" => 1,
@@ -1588,7 +1581,8 @@ class Server extends DarkSystem{
 				"auto-generate" => true,
 				"save-player-data" => true,
 				"time-update" => true,
-				"online-mode" => false
+				"online-mode" => false,
+				"file-lang" => "tur"
 			]);
 			}else{
 			$this->properties = new Config($this->dataPath . "server.properties", Config::PROPERTIES, [
@@ -1606,7 +1600,7 @@ class Server extends DarkSystem{
 				"spawn-mobs" => true,
 				"mobs-limit" => 0,
 				"gamemode" => 0,
-				"force-gamemode" => false,
+				"force-gamemode" => true,
 				"hardcore" => false,
 				"pvp" => true,
 				"difficulty" => 1,
@@ -1621,7 +1615,8 @@ class Server extends DarkSystem{
 				"auto-generate" => true,
 				"save-player-data" => true,
 				"time-update" => true,
-				"online-mode" => false
+				"online-mode" => false,
+				"file-lang" => "eng"
 			]);
 			}
 			
@@ -1674,14 +1669,13 @@ class Server extends DarkSystem{
 			
 			$this->konsol->info("§aEklentiler Yükleniyor...");
 			
-			$nowLang = $this->getProperty("settings.language", "eng");
-			if($defaultLang != "Bilinmeyen" && $nowLang != $defaultLang){
-				@file_put_contents($configPath, str_replace('language: "' . $nowLang . '"', 'language: "' . $defaultLang . '"', file_get_contents($configPath)));
+			$lang = $this->getProperty("settings.language", Language::FALLBACK_LANGUAGE);
+			if($defaultLang != "Bilinmeyen" && $lang != $defaultLang){
+				@file_put_contents($configPath, str_replace('language: "' . $lang . '"', 'language: "' . $defaultLang . '"', file_get_contents($configPath)));
 				$this->config->reload();
 				unset($this->propertyCache["settings.language"]);
 			}
-
-			$lang = $this->getProperty("settings.language", Language::FALLBACK_LANGUAGE);
+			
 			if(file_exists($this->filePath . "src/pocketmine/resources/darksystem_$lang.yml")){
 				$content3 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/darksystem_$lang.yml");
 			}else{
@@ -1737,7 +1731,7 @@ class Server extends DarkSystem{
 			$this->playerMetadata = new PlayerMetadataStore();
 			$this->levelMetadata = new LevelMetadataStore();
 			
-			if(Translate::checkTurkish() === true){
+			if(Translate::checkTurkish() === "yes"){
 			$this->operators = new Config($this->dataPath . "yoneticiler.json", Config::JSON);
 			$this->whitelist = new Config($this->dataPath . "beyaz-liste.json", Config::JSON);
 			if(file_exists($this->dataPath . "engelli.txt") && !file_exists($this->dataPath . "engelli-oyuncular.txt")){
@@ -1818,8 +1812,15 @@ class Server extends DarkSystem{
 			MetadataConvertor::init();
 			
 			$this->craftingMgr = new CraftingManager();
-			$this->resourceMgr = new ResourcePackManager($this, $this->getDataPath() . "doku_paketleri" . DIRECTORY_SEPARATOR);
-			$this->behaviorMgr = new BehaviorPackManager($this, $this->getDataPath() . "behavior_paketleri" . DIRECTORY_SEPARATOR);
+			
+			if(Translate::checkTurkish() === "yes"){
+				$this->resourceMgr = new ResourcePackManager($this, $this->getDataPath() . "doku_paketleri" . DIRECTORY_SEPARATOR);
+				$this->behaviorMgr = new BehaviorPackManager($this, $this->getDataPath() . "behavior_paketleri" . DIRECTORY_SEPARATOR);
+			}else{
+				$this->resourceMgr = new ResourcePackManager($this, $this->getDataPath() . "resource_packs" . DIRECTORY_SEPARATOR);
+				$this->behaviorMgr = new BehaviorPackManager($this, $this->getDataPath() . "behavior_packs" . DIRECTORY_SEPARATOR);
+			}
+			
 			$this->pluginMgr = new PluginManager($this, $this->cmdMap);
 			$this->pluginMgr->subscribeToPermission(Server::BROADCAST_CHANNEL_ADMINISTRATIVE, $this->consoleSender);
 			$this->pluginMgr->setUseTimings($this->getProperty("settings.enable-profiling", false));
@@ -2143,7 +2144,7 @@ class Server extends DarkSystem{
 			}
 			$this->pluginMgr->disablePlugins();
 			foreach($this->levels as $l){
-				//$l->save();
+				$l->save();
 				$this->unloadLevel($l, true, true);
 			}
 			HandlerList::unregisterAll();
@@ -2310,7 +2311,6 @@ class Server extends DarkSystem{
 				$batch->payload = zlib_encode(Binary::writeVarInt(strlen($pk->getBuffer())) . $pk->getBuffer(), ZLIB_ENCODING_DEFLATE, 7);
 				$readyPackets[$protocol] = $batch;
 			}
-			
 			$p->dataPacket($readyPackets[$protocol]);
 		}
 	}
@@ -2507,7 +2507,7 @@ class Server extends DarkSystem{
 			}
 		}
 		if(($this->tickCounter % 2975) === 0 && $dbotcheck = "§aAktif"){
-			if(Translate::checkTurkish() === true){
+			if(Translate::checkTurkish() === "yes"){
 				switch(mt_rand(1, 5)){
 					case 1:
 				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aSunucu Benimle Güvende!");

@@ -21,9 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-use pocketmine\network\protocol\Info;
-
 class TextPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::TEXT_PACKET;
 	const PACKET_NAME = "TEXT_PACKET";
 
@@ -39,24 +38,24 @@ class TextPacket extends PEPacket{
 	public $source;
 	public $message;
 	public $parameters = [];
-	public $isLocolize = true;
+	public $isLocalize = true;
 
 	public function decode($playerProtocol){
 		$this->type = $this->getByte();
 		if($playerProtocol >= Info::PROTOCOL_120){
-			$this->isLocolize = $this->getByte();
+			$this->isLocalize = $this->getByte();
 		}
 		switch($this->type){
-			case self::TYPE_POPUP:
-			case self::TYPE_CHAT:
+			case TextPacket::TYPE_POPUP:
+			case TextPacket::TYPE_CHAT:
 				$this->source = $this->getString();
-			case self::TYPE_RAW:
-			case self::TYPE_TIP:
-			case self::TYPE_SYSTEM:
+			case TextPacket::TYPE_RAW:
+			case TextPacket::TYPE_TIP:
+			case TextPacket::TYPE_SYSTEM:
 				$this->message = $this->getString();
 				break;
 
-			case self::TYPE_TRANSLATION:
+			case TextPacket::TYPE_TRANSLATION:
 				$this->message = $this->getString();
 				$count = $this->getByte();
 				for($i = 0; $i < $count; ++$i){
@@ -69,21 +68,21 @@ class TextPacket extends PEPacket{
 		$this->reset($playerProtocol);
 		$this->putByte($this->type);
 		if($playerProtocol >= Info::PROTOCOL_120){
-			$this->putByte($this->isLocolize);
+			$this->putByte($this->isLocalize);
 		}
 		switch($this->type){
-			case self::TYPE_POPUP:
-			case self::TYPE_CHAT:
-            case self::TYPE_WHISPER:
+			case TextPacket::TYPE_POPUP:
+			case TextPacket::TYPE_CHAT:
+            case TextPacket::TYPE_WHISPER:
 				$this->putString($this->source);
-			case self::TYPE_RAW:
-			case self::TYPE_TIP:
-			case self::TYPE_SYSTEM:
-            case self::TYPE_WHISPER:
+			case TextPacket::TYPE_RAW:
+			case TextPacket::TYPE_TIP:
+			case TextPacket::TYPE_SYSTEM:
+            case TextPacket::TYPE_WHISPER:
 				$this->putString($this->message);
 				break;
 
-			case self::TYPE_TRANSLATION:
+			case TextPacket::TYPE_TRANSLATION:
 				$this->putString($this->message);
 				$this->putByte(count($this->parameters));
 				foreach($this->parameters as $p){

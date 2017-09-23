@@ -15,17 +15,24 @@ use pocketmine\language\Language;
 
 class Translate{
 	
-	/*public function __construct(Server $server){
+	const CURRENT_LANG = "eng"; //
+	
+	const ENG = "eng";
+	const TUR = "tur";
+	
+	public function __construct(Server $server){
 		$this->server = $server;
-	}*/
+	}
 	
     public static function checkTurkish(){
     	$server = Server::getInstance();
-    	//if($server->getLanguageProperty() == "tr" || "tur"){
-    	if($server->getServerLanguage() == "tr" || "tur"){
-    	    return true;
-    	}else{
-    	    return false;
+    
+    	$isturkish = "no";
+    	if(Translate::CURRENT_LANG == Translate::TUR){
+    	    $isturkish = "yes";
     	}
+    
+    	return $isturkish;
     }
+    
 }

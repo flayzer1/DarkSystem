@@ -22,6 +22,7 @@
 namespace pocketmine\resourcepacks;
 
 use pocketmine\Server;
+use pocketmine\Translate;
 use pocketmine\utils\Config;
 
 class ResourcePackManager{
@@ -58,12 +59,20 @@ class ResourcePackManager{
 			throw new \InvalidArgumentException("Resource packs path $path exists and is not a directory");
 		}
 
-		if(!file_exists($this->path . "doku_paketleri.yml")){
-			file_put_contents($this->path . "doku_paketleri.yml", file_get_contents($this->server->getFilePath() . "src/pocketmine/resources/doku_paketleri.yml"));
+		if(Translate::checkTurkish() === "yes"){
+			if(!file_exists($this->path . "doku_paketleri.yml")){
+				file_put_contents($this->path . "doku_paketleri.yml", file_get_contents($this->server->getFilePath() . "src/pocketmine/resources/doku_paketleri.yml"));
+			}
+			
+			$this->resourcePacksConfig = new Config($this->path . "doku_paketleri.yml", Config::YAML, []);
+		}else{
+			if(!file_exists($this->path . "resource_packs.yml")){
+				file_put_contents($this->path . "resource_packs.yml", file_get_contents($this->server->getFilePath() . "src/pocketmine/resources/resource_packs.yml"));
+			}
+			
+			$this->resourcePacksConfig = new Config($this->path . "resource_packs.yml", Config::YAML, []);
 		}
-
-		$this->resourcePacksConfig = new Config($this->path . "doku_paketleri.yml", Config::YAML, []);
-
+		
 		$this->serverForceResources = (bool) $this->resourcePacksConfig->get("force_resources", false);
 
 		foreach($this->resourcePacksConfig->get("resource_stack", []) as $pos => $pack){

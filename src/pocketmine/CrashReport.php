@@ -32,7 +32,7 @@ class CrashReport{
 		$this->time = time();
 		$this->server = $server;
 		
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 		    if(!is_dir($this->server->getDataPath() . "cokme-arsivleri")){
 			    mkdir($this->server->getDataPath() . "cokme-arsivleri");
 			}
@@ -42,7 +42,7 @@ class CrashReport{
 			}
 		}
 		
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 		    $this->path = $this->server->getCrashPath() . "CokmeArsivi_" . date("D_M_j-H.i.s-T_Y", $this->time) . ".log";
 		}else{
 			$this->path = $this->server->getCrashPath() . "CrashDump_" . date("D_M_j-H.i.s-T_Y", $this->time) . ".log";

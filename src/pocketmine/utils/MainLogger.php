@@ -57,7 +57,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	}
 
 	public function emergency($message){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			$this->send($message, \LogLevel::EMERGENCY, "ACIL", TextFormat::RED);
 		}else{
 			$this->send($message, \LogLevel::EMERGENCY, "EMERGENCY", TextFormat::RED);
@@ -65,7 +65,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	}
 
 	public function alert($message){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			$this->send($message, \LogLevel::ALERT, "IKAZ", TextFormat::RED);
 		}else{
 			$this->send($message, \LogLevel::ALERT, "ALERT", TextFormat::RED);
@@ -73,7 +73,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	}
 
 	public function critical($message){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			$this->send($message, \LogLevel::CRITICAL, "KRITIK", TextFormat::RED);
 		}else{
 			$this->send($message, \LogLevel::CRITICAL, "CRITICAL", TextFormat::RED);
@@ -81,7 +81,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	}
 
 	public function error($message){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			$this->send($message, \LogLevel::ERROR, "HATA", TextFormat::RED);
 		}else{
 			$this->send($message, \LogLevel::ERROR, "ERROR", TextFormat::RED);
@@ -89,7 +89,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	}
 
 	public function warning($message){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			$this->send($message, \LogLevel::WARNING, "UYARI", TextFormat::GOLD);
 		}else{
 			$this->send($message, \LogLevel::WARNING, "WARNING", TextFormat::GOLD);
@@ -97,7 +97,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	}
 
 	public function notice($message){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			$this->send($message, \LogLevel::NOTICE, "BILDIRIM", TextFormat::GRAY);
 		}else{
 			$this->send($message, \LogLevel::NOTICE, "NOTICE", TextFormat::GRAY);
@@ -105,7 +105,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	}
 
 	public function info($message){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			$this->send($message, \LogLevel::INFO, "BILGI", TextFormat::YELLOW);
 		}else{
 			$this->send($message, \LogLevel::INFO, "INFO", TextFormat::YELLOW);
@@ -116,7 +116,7 @@ class MainLogger extends \AttachableThreadedLogger{
 		if($this->logDebug === false){
 			return;
 		}
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			$this->send($message, \LogLevel::DEBUG, $name, TextFormat::GRAY);
 		}else{
 			$this->send($message, \LogLevel::DEBUG, "DEBUG", TextFormat::GRAY);
