@@ -54,15 +54,15 @@ class ItemFrame extends Flowable{
 
 		if($tile->hasItem()){
 			$tile->setItemRotation(($tile->getItemRotation() + 1) % 8);
-			$this->getLevel()->addSound(new ItemFrameRotateItemSound($this));
+			//$this->getLevel()->addSound(new ItemFrameRotateItemSound($this));
 		}else{
 			if($item->getCount() > 0){
 				$frameItem = clone $item;
 				$frameItem->setCount(1);
 				$item->setCount($item->getCount() - 1);
 				$tile->setItem($frameItem);
-				$this->getLevel()->addSound(new ItemFrameAddItemSound($this));
-				if($player instanceof Player and $player->isSurvival()){
+				//$this->getLevel()->addSound(new ItemFrameAddItemSound($this));
+				if($player->isSurvival() or $player->isAdventure()){
 					$player->getInventory()->setItemInHand($item->getCount() <= 0 ? Item::get(Item::AIR) : $item);
 				}
 			}

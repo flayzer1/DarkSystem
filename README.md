@@ -37,16 +37,15 @@
 - [x] **Pistons**
 - [ ] **Fully Multi-Language**
 - [ ] **Mob Spawner**
-- [ ] **ItemFrame**
-- [ ] **Auto lag cleaner**
+- [x] **Item Frame**
+- [x] **Auto lag cleaner**
 
 # Known Bugs:
 - When DarkSystem crash, server does not stop.
-- Sometimes creative players cannot get item on their hand.
 - DarkSystem's experience system does not work correctly.
 
 # Notes:
-- DarkSystem's language is currently Turkish, but You can choose it from pocketmine.yml (Support +30 Languages)
+- DarkSystem's language is currently Turkish, but you can change it from pocketmine.yml (Support +20 Languages)
 - Some plugins are not compatible with DarkSystem, Because DarkSystem uses different NBT System, ex. CompoundTag -> Compound.
 - DarkSystem is not stable now. Will be in future
 - /op command renamed to /operator and you can enable/disable in **pocketmine_advanced.yml**.

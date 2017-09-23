@@ -1598,7 +1598,7 @@ class Item{
 	 *
 	 * @return Compound
 	 */
-	public function nbtSerialize(int $slot = -1, string $tagName = ""){
+	public function nbtSerialize($slot = -1, $tagName = ""){
 		$tag = new Compound($tagName, [
 			"id" => new ShortTag("id", $this->id),
 			"Count" => new ByteTag("Count", $this->count ?? -1),

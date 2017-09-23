@@ -113,6 +113,7 @@ class CrashReport{
 					"load" => $d->getOrder() === PluginLoadOrder::POSTWORLD ? "POSTWORLD" : "STARTUP",
 					"website" => $d->getWebsite()
 				];
+				
 				$this->addLine($d->getName() . " " . $d->getVersion() . " Yapan " . implode(", ", $d->getAuthors()) . " API(ler) " . implode(", ", $d->getCompatibleApis()));
 			}
 		}
