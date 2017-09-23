@@ -13,7 +13,7 @@
 # Choose whether players have to accept downloading your resource pack(s) to join the game.
 force_resources: false
 # List of your resource packs. They should be put under `resource_packs` folder.
-resource_stack:
+resource_stack: []
  # e.g.
  # - natural.zip
  # - vanilla.zip

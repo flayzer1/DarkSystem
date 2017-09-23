@@ -13,7 +13,7 @@
 # Choose whether players have to accept downloading your behavior pack(s) to join the game.
 force_behavior: false
 # List of your behavior packs. They should be put under `behavior_packs` folder.
-behavior_stack:
+behavior_stack: []
  # e.g.
  # - natural.zip
  # - vanilla.zip
