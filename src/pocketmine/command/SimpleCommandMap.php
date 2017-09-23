@@ -153,7 +153,7 @@ class SimpleCommandMap implements CommandMap{
 		SimpleCommandMap::register("pocketmine", new MakeServerCommand("ms"));
 		SimpleCommandMap::register("pocketmine", new ExtractPluginCommand("ep"));
 		
-		if($this->server->getSoftConfig("komutlar.operator-komutu", true)){
+		if($this->server->getSoftConfig("commands.operator-command", true)){
 			SimpleCommandMap::register("pocketmine", new OperatorCommand("operator"));
 		}
 		

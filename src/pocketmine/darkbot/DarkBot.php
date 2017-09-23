@@ -11,17 +11,18 @@
 
 namespace pocketmine\darkbot;
 
-use pocketmine\Thread;
-use pocketmine\Server;
 use pocketmine\Player;
+use pocketmine\Server;
+use pocketmine\Thread;
+use pocketmine\Translate;
+use pocketmine\level\Level;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
-use pocketmine\level\Level;
 use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\protocol\AddPlayerPacket;
 use pocketmine\utils\MainLogger;
 use pocketmine\utils\Utils;
@@ -46,14 +47,18 @@ class DarkBot extends Thread{
 	}
 	
 	public function getStartupMessage(){
-		return self::PREFIX . "§aSunucuyu Ben Yönetiyorum!";
+		if(Translate::checkTurkish() === "yes"){
+			return DarkBot::PREFIX . "§aSunucuyu Ben Yönetiyorum!";
+		}else{
+			return DarkBot::PREFIX . "§aI manage server!";
+		}
 	}
 	
 	public function check(){
 		if($active = true){
-			return "§aAktif";
+			return "✔";
 		}else{
-			return "§cDevre Dışı";
+			return "❌";
 		}
 	}
 	

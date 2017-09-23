@@ -1581,8 +1581,7 @@ class Server extends DarkSystem{
 				"auto-generate" => true,
 				"save-player-data" => true,
 				"time-update" => true,
-				"online-mode" => false,
-				"file-lang" => "tur"
+				"online-mode" => false
 			]);
 			}else{
 			$this->properties = new Config($this->dataPath . "server.properties", Config::PROPERTIES, [
@@ -1615,8 +1614,7 @@ class Server extends DarkSystem{
 				"auto-generate" => true,
 				"save-player-data" => true,
 				"time-update" => true,
-				"online-mode" => false,
-				"file-lang" => "eng"
+				"online-mode" => false
 			]);
 			}
 			
@@ -1663,11 +1661,17 @@ class Server extends DarkSystem{
 	
 			");
 			
-			if($dbotcheck = "§aAktif"){
+			if($dbotcheck = "✔"){
 				$this->konsol->info($this->dbot->getStartupMessage());
 			}
 			
-			$this->konsol->info("§aEklentiler Yükleniyor...");
+			//if(count($this->pluginMgr->getPlugins()) > 0 || $this->pluginMgr->getPlugins() === null){
+				if(Translate::checkTurkish() === "yes"){
+					$this->konsol->info("§aEklentiler Yükleniyor...");
+				}else{
+					$this->konsol->info("§aEnabling Plugins...");
+				}
+			//}
 			
 			$lang = $this->getProperty("settings.language", Language::FALLBACK_LANGUAGE);
 			if($defaultLang != "Bilinmeyen" && $lang != $defaultLang){
@@ -2074,12 +2078,12 @@ class Server extends DarkSystem{
 			return true;
 		}
 		if($sender instanceof Player){
-			$message = $this->getSoftConfig("mesajlar.bilinmeyen-komut", "Sunucumuzda Böyle Bir Komut Yok!");
+			$message = $this->getSoftConfig("messages.unknown-command", "Unknown command!");
 			if(is_string($message) && strlen($message) > 0){
 				$sender->sendMessage(TF::RED . $message);
 			}
 		}else{
-			$sender->sendMessage(TF::RED . "Sunucumuzda Böyle Bir Komut Yok!");
+			$sender->sendMessage(TF::RED . "Unknown command!");
 		}
 		return false;
 	}
@@ -2092,8 +2096,13 @@ class Server extends DarkSystem{
 		$this->pluginMgr->disablePlugins();
 		$this->pluginMgr->clearPlugins();
 		$this->cmdMap->clearCommands();
-
-		$this->konsol->info("Ayarlar Yeniden Yükleniyor...");
+		
+		if(Translate::checkTurkish() === "yes"){
+			$this->konsol->info("Ayarlar Yeniden Yükleniyor...");
+		}else{
+			$this->konsol->info("Reloading Properties...");
+		}
+		
 		$this->properties->reload();
 		$this->advancedConfig->reload();
 		$this->loadAdvancedConfig();
@@ -2138,7 +2147,13 @@ class Server extends DarkSystem{
 			}
 			$this->shutdown();
 			//$this->dbot->shutdown();
-			$this->konsol->info("§cEklentiler Devre Dışı Bırakılıyor...");
+			//if(count($this->pluginMgr->getPlugins()) > 0 || $this->pluginMgr->getPlugins() === null){
+				if(Translate::checkTurkish() === "yes"){
+					$this->konsol->info("§cEklentiler Devre Dışı Bırakılıyor...");
+				}else{
+					$this->konsol->info("§cDisabling Plugins...");
+				}
+			//}
 			if($this->rcon instanceof RCON){
 				$this->rcon->stop();
 			}

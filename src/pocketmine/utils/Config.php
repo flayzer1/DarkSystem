@@ -12,6 +12,7 @@
 namespace pocketmine\utils;
 
 use pocketmine\scheduler\FileWriteTask;
+use pocketmine\Translate;
 use pocketmine\Server;
 
 class Config{
@@ -122,7 +123,7 @@ class Config{
 						$this->config = json_decode($content, true);
 						break;
 					case Config::YAML:
-						$content = self::fixYAMLIndexes($content);
+						$content = Config::fixYAMLIndexes($content);
 						$this->config = yaml_parse($content);
 						break;
 					case Config::SERIALIZED:
@@ -332,7 +333,7 @@ class Config{
 	 */
 	public function exists($k, $lowercase = false){
 		if($lowercase === true){
-			$k = strtolower($k); //Convert requested  key to lower
+			$k = strtolower($k); //Convert requested key to lower
 			$array = array_change_key_case($this->config, CASE_LOWER); //Change all keys in array to lower
 			return isset($array[$k]); //Find $k in modified array
 		}else{
@@ -403,7 +404,11 @@ class Config{
 	 * @return string
 	 */
 	private function writeProperties(){
-		$content = "#DarkSystem Ayar Dosyası\r\n#" . date("D M j H:i:s T Y") . "\r\n";
+		if(Translate::checkTurkish() === "yes"){
+			$content = "#DarkSystem Ayar Dosyası\r\n#" . date("D M j H:i:s T Y") . "\r\n";
+		}else{
+			$content = "#DarkSystem Properties File\r\n#" . date("D M j H:i:s T Y") . "\r\n";
+		}
 		foreach($this->config as $k => $v){
 			if(is_bool($v) === true){
 				$v = $v === true ? "on" : "off";

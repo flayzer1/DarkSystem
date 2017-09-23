@@ -11,13 +11,13 @@ main:
  #Sunucu Lobi Dünya İsmi (Klasör İsmi)
  lobi-dunyasi: world
  
-mesajlar:
+messages:
  #Bilinmeyen Bir Komut Yazıldığında Gösterilecek Mesaj
- bilinmeyen-komut: "Sunucumuzda Böyle Bir Komut Yok!"
+ unknown-command: "Unknown command!"
  
-komutlar:
+commands:
  #/operator (OP) Komutunu Aktif Eder
- operator-komutu: true
+ operator-command: true
  
 inventory:
  #Envanter Boyutu
