@@ -26,7 +26,6 @@ use pocketmine\item\Tool;
 
 class Prismarine extends Solid
 {
-
     protected $id = self::PRISMARINE;
 
     public function __construct($meta = 0)
@@ -34,13 +33,14 @@ class Prismarine extends Solid
         $this->meta = $meta;
     }
 
-    public function getName(): string
+    public function getName()
     {
         static $names = [
             0 => "Prismarine Block",
             1 => "Dark Prismarine Block",
             2 => "Prismarine Bricks Block",
         ];
+        
         return $names[$this->meta & 0x0f];
     }
 
@@ -54,13 +54,13 @@ class Prismarine extends Solid
         return Tool::TYPE_PICKAXE;
     }
 
-    public function getDrops(Item $item): array
+    public function getDrops(Item $item)
     {
-        if ($item->isPickaxe() >= Tool::TIER_WOODEN) {
+        if($item->isPickaxe() >= Tool::TIER_WOODEN){
             return [
                 [$this->id, $this->meta & 0x0f, 1],
             ];
-        } else {
+        }else{
             return [];
         }
     }

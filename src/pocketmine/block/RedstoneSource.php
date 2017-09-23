@@ -49,7 +49,6 @@ class RedstoneSource extends Flowable
 
     public function activateBlockWithoutWire(Block $block)
     {
-
         if (($block instanceof Door) or ($block instanceof Trapdoor) or ($block instanceof FenceGate)) {
             if (!$block->isOpened()) $block->onActivate(new Item(0));
         }
@@ -59,7 +58,7 @@ class RedstoneSource extends Flowable
         /** @var Dropper|Dispenser $block */
         if ($block->getId() == Block::DROPPER or $block->getId() == Block::DISPENSER) $block->activate();
         /** @var Piston $block */
-        if ($block->getId() == Block::PISTON) $block->activate();
+        //if ($block->getId() == Block::PISTON) $block->activate();
     }
 
     public function activateBlock(Block $block)

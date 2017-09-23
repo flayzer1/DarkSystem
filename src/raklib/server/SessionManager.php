@@ -74,10 +74,14 @@ class SessionManager{
 
     public $portChecking = true;
     
+    private $spamPacket;
+    
     public function __construct(RakLibServer $server, UDPServerSocket $socket){
         $this->server = $server;
         $this->socket = $socket;
         $this->registerPackets();
+        
+        $this->spamPacket = hex2bin("210400");
         
         $this->run();
     }
@@ -96,7 +100,6 @@ class SessionManager{
 
     private function tickProcessor(){
         $this->lastMeasure = microtime(true);
-
         while(!$this->shutdown){
             $start = microtime(true);
             $max = 10000;
@@ -118,13 +121,11 @@ class SessionManager{
 				$this->streamPing($session);
 			}
 		}
-
 		foreach($this->ipSec as $address => $count){
 			if($count >= $this->packetLimit){
 				$this->blockAddress($address);
 			}
 		}
-		
 		$this->ipSec = [];
 		if(($this->ticks & 0b1111) === 0){
 			$diff = max(0.005, $time - $this->lastMeasure);
@@ -157,22 +158,18 @@ class SessionManager{
             if(isset($this->block[$source])){
                 return true;
             }
-
             if(isset($this->ipSec[$source])){
                 $this->ipSec[$source]++;
             }else{
                 $this->ipSec[$source] = 1;
             }
-
             if($len > 0){
-                $pid = ord($buffer{0});
-                
+                $pid = ord($buffer{0});        
                 if($pid === UNCONNECTED_PING::$ID){
-                    $packet = new UNCONNECTED_PING;
+                    $packet = new UNCONNECTED_PING();
                     $packet->buffer = $buffer;
                     $packet->decode();
-
-                    $pk = new UNCONNECTED_PONG;
+                    $pk = new UNCONNECTED_PONG();
                     $pk->serverID = $this->getID();
                     $pk->pingID = $packet->pingID;
                     $pk->serverName = $this->getName();
@@ -187,10 +184,8 @@ class SessionManager{
                     $this->streamRaw($source, $port, $buffer);
                 }
             }
-            
             return true;
         }
-
         return false;
     }
 
@@ -199,17 +194,35 @@ class SessionManager{
 		$this->sendBytes += $this->socket->writePacket($packet->buffer, $dest, $port);    
     }
 
-    public function streamEncapsulated(Session $session, EncapsulatedPacket $packet, $flags = RakLib::PRIORITY_NORMAL){
+    /*public function streamEncapsulated(Session $session, EncapsulatedPacket $packet, $flags = RakLib::PRIORITY_NORMAL){
 		$id = $session->getAddress() . ":" . $session->getPort();
-		/*if(ord($packet->buffer{0}) == 0xfe){
-			$buff = substr($packet->buffer, 1);
-			$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . $buff;
-			$this->server->pushThreadToMainPacket($buffer);
-		}*/
 		$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . chr($flags) . $packet->toBinary(true);
 		$this->server->pushThreadToMainPacket($buffer);
-    }
-	
+    }*/
+    
+    public function streamEncapsulated(Session $session, EncapsulatedPacket $packet, $flags = RakLib::PRIORITY_NORMAL){
+		$id = $session->getAddress() . ":" . $session->getPort();
+		if(ord($packet->buffer{0}) == 0xfe){
+			$buff = substr($packet->buffer, 1);
+			if(ord($buff{0}) == 0x78){
+				$decoded = zlib_decode($buff);
+				$stream = new BinaryStream($decoded);
+				$length = strlen($decoded);
+				while($stream->getOffset() < $length){
+					$buf = $stream->getString();
+					if($buf == $this->spamPacket){
+						continue;
+					}
+					$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . $buf;
+					$this->server->pushThreadToMainPacket($buffer);
+				}
+			}else{
+				$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . $buff;
+				$this->server->pushThreadToMainPacket($buffer);
+			}
+		}
+	}
+    
 	public function streamPing(Session $session){
         $id = $session->getAddress() . ":" . $session->getPort();
 		$ping = $session->getPing();

@@ -49,9 +49,7 @@ class RedstoneOre extends Solid{
 
 		return false;
 	}
-
-
-
+	
 	public function getToolType(){
 		return Tool::TYPE_PICKAXE;
 	}

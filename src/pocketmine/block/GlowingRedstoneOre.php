@@ -68,5 +68,4 @@ class GlowingRedstoneOre extends Solid{
 			return [];
 		}
 	}
-
 }

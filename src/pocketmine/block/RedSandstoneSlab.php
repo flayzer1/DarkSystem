@@ -1,23 +1,13 @@
 <?php
 
-/*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\block;
 
@@ -26,10 +16,9 @@ use pocketmine\Player;
 
 class RedSandstoneSlab extends Slab
 {
-
     protected $id = Block::RED_SANDSTONE_SLAB;
 
-    public function getName(): string
+    public function getName()
     {
         return "Red Sandstone Slab";
     }
@@ -58,7 +47,6 @@ class RedSandstoneSlab extends Slab
 
                 return true;
             }
-            //TODO: check for collision
         } else {
             if ($block->getId() === self::RED_SANDSTONE_SLAB) {
                 $this->getLevel()->setBlock($block, Block::get(Item::DOUBLE_RED_SANDSTONE_SLAB, $this->meta), true);
@@ -72,8 +60,9 @@ class RedSandstoneSlab extends Slab
         if ($block->getId() === self::RED_SANDSTONE_SLAB and ($target->getDamage() & 0x07) !== ($this->meta & 0x07)) {
             return false;
         }
+        
         $this->getLevel()->setBlock($block, $this, true, true);
-
+        
         return true;
     }
 }

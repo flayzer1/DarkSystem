@@ -47,6 +47,7 @@ class Sandstone extends Solid{
 			2 => "Smooth Sandstone",
 			3 => "",
 		];
+		
 		return $names[$this->meta & 0x03];
 	}
 
@@ -63,5 +64,4 @@ class Sandstone extends Solid{
 			return [];
 		}
 	}
-
 }

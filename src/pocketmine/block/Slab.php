@@ -58,11 +58,11 @@ class Slab extends Transparent{
 			6 => "Quartz",
 			7 => "",
 		];
+		
 		return (($this->meta & 0x08) > 0 ? "Upper " : "") . $names[$this->meta & 0x07] . " Slab";
 	}
 
 	protected function recalculateBoundingBox(){
-
 		if(($this->meta & 0x08) > 0){
 			return new AxisAlignedBB(
 				$this->x,
@@ -108,7 +108,6 @@ class Slab extends Transparent{
 
 				return true;
 			}
-			//TODO: check for collision
 		}else{
 			if($block->getId() === self::SLAB){
 				if(($block->getDamage() & 0x07) === ($this->meta & 0x07)){
@@ -142,9 +141,7 @@ class Slab extends Transparent{
 			return [];
 		}
 	}
-
-
-
+	
 	public function getToolType(){
 		return Tool::TYPE_PICKAXE;
 	}

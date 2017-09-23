@@ -36,8 +36,7 @@ class RedMushroom extends Flowable{
 	public function getName(){
 		return "Red Mushroom";
 	}
-
-
+	
 	public function onUpdate($type){
 		if($type === Level::BLOCK_UPDATE_NORMAL){
 			if($this->getSide(0)->isTransparent() === true){
@@ -54,7 +53,6 @@ class RedMushroom extends Flowable{
 		$down = $this->getSide(0);
 		if($down->isTransparent() === false){
 			$this->getLevel()->setBlock($block, $this, true, true);
-
 			return true;
 		}
 

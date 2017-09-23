@@ -118,7 +118,7 @@ class Piston extends Solid{
 		return true;
 	}
 	
-	public function onActivate(Item $item, Player $player = \null){
+	public function onActivate(Item $item, Player $player = null){
 		$block = $this->y + 1;
 		$newBlock = $block + 1;
 		if($block instanceof Block and $newBlock instanceof Block){

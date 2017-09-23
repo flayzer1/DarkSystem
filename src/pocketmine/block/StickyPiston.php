@@ -14,7 +14,7 @@ namespace pocketmine\block;
 use pocketmine\item\Item;
 use pocketmine\Player;
 
-class StickyPiston extends Solid{
+class StickyPiston extends Piston{
 
 	protected $id = self::STICKY_PISTON;
 

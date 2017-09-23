@@ -47,6 +47,7 @@ class SlimeBlock extends Solid{
 	}
 	
 	public function onUpdate($type){
+		
 	}
 
 	public function onActivate(Item $item, Player $player = null){

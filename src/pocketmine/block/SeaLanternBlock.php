@@ -39,5 +39,4 @@ class SeaLanternBlock extends Solid{
 			[Item::PRISMARINE_CRYSTALS, 0, 2],
 		];
 	}
-
 }

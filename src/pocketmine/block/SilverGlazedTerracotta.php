@@ -22,17 +22,14 @@
 namespace pocketmine\block;
 
 use pocketmine\item\Tool;
-
 use pocketmine\Player;
 use pocketmine\item\Item;
 
-class SilverGlazedTerracotta extends Solid {
+class SilverGlazedTerracotta extends Solid{
 
 	protected $id = self::SILVER_GLAZED_TERRACOTTA;
 
 	/**
-	 * SilverGlazedTerracotta constructor.
-	 *
 	 * @param int $meta
 	 */
 	public function __construct($meta = 0){
@@ -79,6 +76,7 @@ class SilverGlazedTerracotta extends Solid {
 			2 => 5,
 			3 => 3,
 		];
+		
 		$this->meta = $faces[$player instanceof Player ? $player->getDirection() : 0];
 		$this->getLevel()->setBlock($block, $this, true, true);
 		return true;

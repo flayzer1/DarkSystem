@@ -21,7 +21,6 @@
 
 namespace pocketmine\block;
 
-
 class Sponge extends Solid{
 
 	protected $id = self::SPONGE;

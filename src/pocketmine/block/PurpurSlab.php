@@ -34,16 +34,15 @@ class PurpurSlab extends Transparent{
 		$this->meta = $meta;
 	}
 
-	public function getHardness() {
+	public function getHardness(){
 		return 3;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Purpur Slab";
 	}
 
 	protected function recalculateBoundingBox(){
-
 		if(($this->meta & 0x08) > 0){
 			return new AxisAlignedBB(
 				$this->x,
@@ -89,7 +88,7 @@ class PurpurSlab extends Transparent{
 
 				return true;
 			}
-		}else{ //TODO: collision
+		}else{
 			if($block->getId() === self::PURPUR_SLAB){
 				if(($block->getDamage() & 0x07) === ($this->meta & 0x07)){
 					$this->getLevel()->setBlock($block, Block::get(self::DOUBLE_PURPUR_SLAB, $this->meta), true);
@@ -117,7 +116,7 @@ class PurpurSlab extends Transparent{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getDrops(Item $item) : array {
+	public function getDrops(Item $item){
 		if($item->isPickaxe() >= 1){
 			return [
 				[Item::PURPUR_SLAB, 0, 1],

@@ -1,11 +1,20 @@
 <?php
 
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
+
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
 
-class PurpurBlock extends Solid {
+class PurpurBlock extends Solid{
     
     const META_TYPE_PILLAR = 2;
 
@@ -15,25 +24,24 @@ class PurpurBlock extends Solid {
 		$this->meta = $meta;
 	}
     
-    public function getName() {
+    public function getName(){
         return 'Purpur Block';
     }
     
-    public function getHardness() {
+    public function getHardness(){
         return 1.5;
     }
     
-    public function getToolType() {
+    public function getToolType(){
         return Tool::TYPE_PICKAXE;
     }
     
-    public function getDrops(Item $item) {
-        if ($item->isPickaxe()) {
+    public function getDrops(Item $item){
+        if($item->isPickaxe()){
             return [
-                [ $this->id, $this->meta, 1 ]
+                [$this->id, $this->meta, 1]
             ];
         }
         return [];
     }
-    
 }
