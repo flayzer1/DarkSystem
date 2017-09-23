@@ -21,7 +21,6 @@
 
 namespace pocketmine\block;
 
-
 use pocketmine\item\Tool;
 
 class Wool extends Solid{
@@ -59,6 +58,7 @@ class Wool extends Solid{
 			14 => "Red Wool",
 			15 => "Black Wool",
 		];
+		
 		return $names[$this->meta & 0x0f];
 	}
 

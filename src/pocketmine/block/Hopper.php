@@ -1,23 +1,13 @@
 <?php
 
-/*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\block;
 
@@ -34,7 +24,6 @@ use pocketmine\tile\Tile;
 
 class Hopper extends Transparent
 {
-
     protected $id = self::HOPPER_BLOCK;
 
     public function __construct($meta = 0)
@@ -42,7 +31,7 @@ class Hopper extends Transparent
         $this->meta = $meta;
     }
 
-    public function canBeActivated(): bool
+    public function canBeActivated()
     {
         return true;
     }
@@ -52,7 +41,7 @@ class Hopper extends Transparent
         return Tool::TYPE_PICKAXE;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Hopper";
     }
@@ -114,7 +103,7 @@ class Hopper extends Transparent
         return true;
     }
 
-    public function getDrops(Item $item): array
+    public function getDrops(Item $item)
     {
         if ($item->isPickaxe() >= 1) {
             return [

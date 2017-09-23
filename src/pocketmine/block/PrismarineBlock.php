@@ -1,26 +1,13 @@
 <?php
 
-/*
- *
- *  ____          
- * |  __|_              _
- * | |__| |      _    _(_)_ __   ___
- * |  __| |_   _| |  | | | '_ \ / _ \
- * | |__| | | | | |/\| | | | | | (_) |
- * |____|_|\ \/ \__/\__/_|_| |_|\___ |
- *         _|  /                 __| |
- *        |___/                 |____/
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author H4PM Team
- * @link http://www.github.net/H4PM
- * 
- *
-*/
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\block;
 
@@ -35,12 +22,13 @@ class PrismarineBlock extends Solid{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Prismarine Block",
 			1 => "Dark Prismarine Block",
 			2 => "Prismarine Bricks Block",
 		];
+		
 		return $names[$this->meta & 0x0f];
 	}
 
@@ -52,7 +40,7 @@ class PrismarineBlock extends Solid{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getDrops(Item $item) : array {
+	public function getDrops(Item $item){
 		if($item->isPickaxe() >= Tool::TIER_WOODEN){
 			return [
 				[$this->id, $this->meta & 0x0f, 1],

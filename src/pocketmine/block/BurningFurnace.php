@@ -58,7 +58,7 @@ class BurningFurnace extends Solid{
 	}
 
 	public function getLightLevel(){
-		return 13;
+		return 8;
 	}
 
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
@@ -90,13 +90,11 @@ class BurningFurnace extends Solid{
 		}
 
 		Tile::createTile("Furnace", $this->getLevel(), $nbt);
-
 		return true;
 	}
 
 	public function onBreak(Item $item){
 		$this->getLevel()->setBlock($this, new Air(), true, true);
-
 		return true;
 	}
 
@@ -130,11 +128,7 @@ class BurningFurnace extends Solid{
 					return true;
 				}
 			}
-
-			if($player->isCreative()){
-				return true;
-			}
-
+			
 			$player->addWindow($furnace->getInventory());
 		}
 

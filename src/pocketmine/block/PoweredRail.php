@@ -38,7 +38,6 @@ class PoweredRail extends Rail{
 	 * @return bool
 	 */
 	protected function update(){
-
 		return true;
 	}
 
@@ -84,7 +83,6 @@ class PoweredRail extends Rail{
 	 * @return bool
 	 */
 	public function connect(Rail $rail, $force = false){
-
 		if(!$force){
 			$connected = $this->canConnect($rail);
 			if(!is_array($connected)){
@@ -151,7 +149,6 @@ class PoweredRail extends Rail{
 				if($block instanceof Rail){
 					if($block->connect($this)){
 						$connected[] = $v3;
-						//感觉这里怪怪的
 						if($key <= 1){
 							$xz = $arrayXZ[$key + 1];
 							foreach($arrayY as $yy){

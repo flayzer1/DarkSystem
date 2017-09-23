@@ -66,7 +66,7 @@ class TNT extends Solid{
 			]));
 			
 			$tnt->spawnToAll();
-
+			
 			return true;
 		}
 

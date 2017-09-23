@@ -1,5 +1,14 @@
 <?php
 
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
+
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
@@ -14,7 +23,6 @@ use pocketmine\tile\Tile;
 
 class SkullBlock extends Flowable
 {
-
     protected $id = self::SKULL_BLOCK;
 
     public function __construct($meta = 0)
@@ -27,7 +35,7 @@ class SkullBlock extends Flowable
         return 1;
     }
 
-    public function getName(): bool
+    public function getName()
     {
         return "Mob Head";
     }
@@ -90,7 +98,7 @@ class SkullBlock extends Flowable
             $this->getLevel()->setBlock($block, $this, true);
             $moveMouth = false;
             if ($item->getDamage() === SkullTile::TYPE_DRAGON) {
-                if (in_array($target->getId(), [Block::REDSTONE_TORCH, Block::REDSTONE_BLOCK])) $moveMouth = true; //Temp-hacking Dragon Head Mouth Move
+                if (in_array($target->getId(), [Block::REDSTONE_TORCH, Block::REDSTONE_BLOCK])) $moveMouth = true;
             }
             $nbt = new Compound("", [
                 new StringTag("id", Tile::SKULL),
@@ -110,7 +118,7 @@ class SkullBlock extends Flowable
         return false;
     }
 
-    public function getDrops(Item $item): array
+    public function getDrops(Item $item)
     {
         $tile = $this->level->getTile($this);
         if ($tile instanceof SkullTile) {

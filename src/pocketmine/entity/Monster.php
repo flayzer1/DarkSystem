@@ -21,6 +21,6 @@
 
 namespace pocketmine\entity;
 
-abstract class Monster extends Mob{
+abstract class Monster extends Creature{
 
 }

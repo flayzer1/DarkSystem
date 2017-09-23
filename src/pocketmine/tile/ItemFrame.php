@@ -91,6 +91,7 @@ class ItemFrame extends Spawnable{
 			$this->namedtag->ItemDropChance,
 			$this->namedtag->ItemRotation,
 		]);
+		
 		if($this->hasItem()){
 			$tag->Item = $this->namedtag->Item;
 		}

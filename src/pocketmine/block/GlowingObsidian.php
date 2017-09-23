@@ -34,7 +34,7 @@ class GlowingObsidian extends Solid{
 	}
 
 	public function getLightLevel(){
-		return 12;
+		return 7;
 	}
 
 }

@@ -172,7 +172,7 @@ class SessionManager{
                     $packet->buffer = $buffer;
                     $packet->decode();
 
-                    $pk = new UNCONNECTED_PONG();
+                    $pk = new UNCONNECTED_PONG;
                     $pk->serverID = $this->getID();
                     $pk->pingID = $packet->pingID;
                     $pk->serverName = $this->getName();
@@ -201,11 +201,13 @@ class SessionManager{
 
     public function streamEncapsulated(Session $session, EncapsulatedPacket $packet, $flags = RakLib::PRIORITY_NORMAL){
 		$id = $session->getAddress() . ":" . $session->getPort();
-		if(ord($packet->buffer{0}) == 0xfe){
+		/*if(ord($packet->buffer{0}) == 0xfe){
 			$buff = substr($packet->buffer, 1);
 			$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . $buff;
 			$this->server->pushThreadToMainPacket($buffer);
-		}
+		}*/
+		$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . chr($flags) . $packet->toBinary(true);
+		$this->server->pushThreadToMainPacket($buffer);
     }
 	
 	public function streamPing(Session $session){

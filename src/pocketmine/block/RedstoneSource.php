@@ -58,6 +58,8 @@ class RedstoneSource extends Flowable
         if ($block->getId() == Block::REDSTONE_LAMP) $block->turnOn();
         /** @var Dropper|Dispenser $block */
         if ($block->getId() == Block::DROPPER or $block->getId() == Block::DISPENSER) $block->activate();
+        /** @var Piston $block */
+        if ($block->getId() == Block::PISTON) $block->activate();
     }
 
     public function activateBlock(Block $block)

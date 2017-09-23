@@ -1,4 +1,5 @@
 <?php
+
 namespace pocketmine\block;
 
 class RedstoneTorchActive extends RedstoneTorch{

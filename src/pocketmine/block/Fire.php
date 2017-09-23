@@ -47,7 +47,7 @@ class Fire extends Flowable{
 	}
 
 	public function getLightLevel(){
-		return 15;
+		return 10;
 	}
 
 	public function isBreakable(Item $item){

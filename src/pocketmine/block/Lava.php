@@ -39,7 +39,7 @@ class Lava extends Liquid{
 	}
 
 	public function getLightLevel(){
-		return 15;
+		return 10;
 	}
 
 	public function getName(){

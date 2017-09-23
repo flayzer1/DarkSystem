@@ -543,6 +543,7 @@ class Block extends Position implements Metadatable{
 			
 			Block::$list[Block::MOB_HEAD_BLOCK] = MobHead::class;
 			Block::$list[Block::FLOWER_POT_BLOCK] = FlowerPot::class;
+			Block::$list[Block::ITEM_FRAME_BLOCK] = ItemFrame::class;
 			
 			Block::$list[Block::CHORUS_FLOWER] = ChorusFlower::class;
 			Block::$list[Block::CHORUS_PLANT] = ChorusPlant::class;

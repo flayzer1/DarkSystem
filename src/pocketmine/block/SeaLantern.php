@@ -25,7 +25,6 @@ use pocketmine\item\Item;
 
 class SeaLantern extends Transparent
 {
-
     protected $id = self::SEA_LANTERN;
 
     public function __construct($meta = 0)
@@ -35,10 +34,10 @@ class SeaLantern extends Transparent
 
     public function getLightLevel()
     {
-        return 15;
+        return 10;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Sea Lantern";
     }
@@ -48,7 +47,7 @@ class SeaLantern extends Transparent
         return 0.3;
     }
 
-    public function getDrops(Item $item): array
+    public function getDrops(Item $item)
     {
         return [
             [Item::PRISMARINE_CRYSTALS, 0, 3],

@@ -62,7 +62,6 @@ class Vine extends Transparent{
 	}
 
 	protected function recalculateBoundingBox(){
-
 		$f1 = 1;
 		$f2 = 1;
 		$f3 = 1;
@@ -132,10 +131,10 @@ class Vine extends Transparent{
 				4 => 8,
 				5 => 2,
 			];
+			
 			if(isset($faces[$face])){
 				$this->meta = $faces[$face];
 				$this->getLevel()->setBlock($block, $this, true, true);
-
 				return true;
 			}
 		}
