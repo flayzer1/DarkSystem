@@ -27,12 +27,12 @@ class Translate{
     public static function checkTurkish(){
     	$server = Server::getInstance();
     
-    	$isturkish = "no";
+    	$isTurkish = "no";
     	if(Translate::CURRENT_LANG == Translate::TUR){
-    	    $isturkish = "yes";
+    	    $isTurkish = "yes";
     	}
     
-    	return $isturkish;
+    	return $isTurkish;
     }
     
 }

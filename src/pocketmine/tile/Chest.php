@@ -251,7 +251,7 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 	}
 
 	public function getSpawnCompound(){
-		if(Translate::checkTurkish() === true){
+		if(Translate::checkTurkish() === "yes"){
 			$paired = "§6Sandık";
 			$unpaired = "§6Geniş Sandık";
 		}else{
