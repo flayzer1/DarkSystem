@@ -110,45 +110,6 @@ redstone:
  frequency-pulse: false
  #设置脉冲频率, 默认: 1s
  pulse-frequency: 1
-
-synapse:
- #如果你想使用 Synapse API 或连接到一个synapse服务器,请将enabled置为true
- enabled: false
- server-ip: 127.0.0.1
- server-port: 10305
- #设置该服务器是否为接待大厅服务器或主服务器
- is-main-server: true
- server-password: 16bitlongkey
- #设置该服务器唯一的标识符
- description: "A Synapse client"
- #启用Disable RakLib设置玩家仅能通过接待大厅服务器或主服务器加入游戏
- disable-rak: false
- 
-dserver:
- #多服统统一人数
- enable: false
- #Query自动更新
- query-auto-update: false
- #Query周期更新
- query-tick-update: true
- #Motd最大人数，0为默认
- motd-max-players: 0
- #Query最大人数，0为默认
- query-max-players: 0
- #Motd显示总人数
- motd-all-players: false
- #Query显示总人数
- query-all-players: false
- #Motd显示人数
- motd-players: false
- #Query显示人数
- query-players: false
- #更新频率，20 = 1秒
- time: 40
- #获取失败自动重试次数
- retry-times: 3
- #服务器列表，用;隔开，例如 1.example.com:19132;2.example.com:19133
- server-list: ""
  
 inventory:
  #Set this to true if you have problems with anvils. Will process inventory transactions in a vanilla fashion with no anti-cheats or verification.

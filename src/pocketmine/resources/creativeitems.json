@@ -3198,6 +3198,18 @@
     "nbt": ""
   },
   {
+    "id": 33,
+    "damage": 0,
+    "count": 1,
+    "nbt": ""
+  },
+  {
+    "id": 29,
+    "damage": 0,
+    "count": 1,
+    "nbt": ""
+  },
+  {
     "id": 125,
     "damage": 3,
     "count": 1,
