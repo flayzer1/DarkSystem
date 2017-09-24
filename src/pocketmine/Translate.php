@@ -28,6 +28,8 @@ class Translate{
     	$isTurkish = "no";
     	if($server->getServerLanguage() == Translate::TUR){
     	    $isTurkish = "yes";
+    	}elseif($server->getServerLanguage() === null){
+    	    $isTurkish = "no";
     	}
     
     	return $isTurkish;
