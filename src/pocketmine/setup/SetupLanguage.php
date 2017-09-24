@@ -48,11 +48,11 @@ class SetupLanguage{
 				$this->langfile = \pocketmine\PATH . "src/pocketmine/language/setup/" . $l . ".ini";
 			}else{
 				$this->lang = "eng";
-				$this->langfile = \pocketmine\PATH . "src/pocketmine/language/setup/en_US.ini";
+				$this->langfile = \pocketmine\PATH . "src/pocketmine/language/setup/eng.ini";
 			}
 		}
 
-		$this->loadLang(\pocketmine\PATH . "src/pocketmine/language/setup/en_US.ini", "eng");
+		$this->loadLang(\pocketmine\PATH . "src/pocketmine/language/setup/eng.ini", "eng");
 		if($this->lang !== "eng"){
 			$this->loadLang($this->langfile, $this->lang);
 		}

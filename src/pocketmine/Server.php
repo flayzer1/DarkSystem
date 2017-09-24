@@ -373,7 +373,7 @@ class Server extends DarkSystem{
 	}
 	
 	public function getServerLanguage(){
-		if(!file_exists($this->getDataPath() . "sunucu.properties")){
+		if(!file_exists($this->getDataPath() . "sunucu.properties") && !file_exists($this->getDataPath() . "yoneticiler.json") && !file_exists($this->getDataPath() . "beyaz-liste.json")){
 			return Translate::ENG;
 		}else{
 			return Translate::TUR;

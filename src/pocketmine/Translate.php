@@ -22,14 +22,31 @@ class Translate{
 		$this->server = $server;
 	}
 	
-    public static function checkTurkish(){
+    /*public static function checkTurkish(){
     	$server = Server::getInstance();
     
     	$isTurkish = "no";
     	if($server->getServerLanguage() == Translate::TUR){
     	    $isTurkish = "yes";
     	}elseif($server->getServerLanguage() === null){
+    	    if(!file_exists(\pocketmine\DATA . "sunucu.properties") && !file_exists(\pocketmine\DATA . "yoneticiler.json") && !file_exists(\pocketmine\DATA . "beyaz-liste.json")){
+                $isTurkish = "no";
+    	    }else{
+    	        $isTurkish = "yes";
+    	    }
+    	}
+    
+    	return $isTurkish;
+    }*/
+    
+    public static function checkTurkish(){
+    	$server = Server::getInstance();
+    
+    	$isTurkish = "no";
+    	if(!file_exists(\pocketmine\DATA . "sunucu.properties") && !file_exists(\pocketmine\DATA . "yoneticiler.json") && !file_exists(\pocketmine\DATA . "beyaz-liste.json")){
     	    $isTurkish = "no";
+    	}else{
+            $isTurkish = "yes";
     	}
     
     	return $isTurkish;

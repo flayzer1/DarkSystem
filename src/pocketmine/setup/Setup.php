@@ -11,12 +11,13 @@
 
 namespace pocketmine\setup;
 
+use pocketmine\Translate;
 use pocketmine\utils\Config;
 use pocketmine\utils\Utils;
 
 class Setup{
 	
-	const DEFAULT_NAME = "DarkSystem Sunucusu";
+	const DEFAULT_NAME = "DarkSystem Server";
 	const DEFAULT_PORT = 19132;
 	const DEFAULT_MEMORY = 256;
 	const DEFAULT_PLAYERS = 100;
@@ -37,16 +38,16 @@ class Setup{
 	private $defaultLang;
 
 	public function __construct(){
-		echo "[*] DarkSystem Kurulumu\n";
-		echo "[*] Lütfen Bir Dil Seçiniz:\n";
+		echo "[*] DarkSystem Set-up Wizard\n";
+		echo "[*] Language:\n";
 		foreach(SetupLanguage::$languages as $short => $native){
 			echo " $native => $short\n";
 		}
 		do{
-			echo "[?] Dil (tur): ";
-			$lang = strtolower($this->getInput("tur"));
+			echo "[?] Language (eng): ";
+			$lang = strtolower($this->getInput("eng"));
 			if(!isset(SetupLanguage::$languages[$lang])){
-				echo "[!] Dil Bulunamadı!\n";
+				echo "[!] Language Not Found!\n";
 				$lang = false;
 			}
 			$this->defaultLang = $lang;
@@ -81,11 +82,22 @@ class Setup{
 
 	private function showLicense(){
 		echo $this->lang->welcome_to_pocketmine . "\n";
-		echo <<<LISANS
+		if($this->lang == "tur"){
+			echo <<<LISANS
 
   Bu Sunucu Dosyaları Ücretsizdir, Çoğaltılabilir. LGPL Lisansı Altında Lisanslanmıştır.
 
 LISANS;
+		}else{
+			echo <<<LICENSE
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+LICENSE;
+		}
 		echo "\n[?] " . $this->lang->accept_license . " (y/N): ";
 		if(strtolower($this->getInput("n")) != "y"){
 			echo "[!] " . $this->lang->you_have_to_accept_the_license . "\n";
@@ -103,7 +115,7 @@ LISANS;
 	}
 
 	private function generateBaseConfig(){
-		if($this->lang == "tr" || "tur"){
+		if($this->lang == "tur"){
 			$config = new Config(\pocketmine\DATA . "sunucu.properties", Config::PROPERTIES);
 		}else{
 			$config = new Config(\pocketmine\DATA . "server.properties", Config::PROPERTIES);
@@ -128,7 +140,6 @@ LISANS;
 		
 		echo "[?] " . $this->lang->level_name . " (" . self::DEFAULT_LEVEL_NAME . "): ";
 		$config->set("level-name", $this->getInput(self::DEFAULT_LEVEL_NAME));
-		
 		do{
 			echo "[?] " . $this->lang->level_type . " (" . self::DEFAULT_LEVEL_TYPE . "): ";
 			$type = strtoupper((string) $this->getInput(self::DEFAULT_LEVEL_TYPE));
@@ -153,7 +164,6 @@ LISANS;
 		}else{
 			$config->set("spawn-protection", 16);
 		}
-		
 		echo "[?] " . $this->lang->announce_player_achievements . " (y/N): ";
 		if(strtolower($this->getInput("n")) === "y"){
 			$config->set("announce-player-achievements", "on");
@@ -169,7 +179,8 @@ LISANS;
 		$op = strtolower($this->getInput(""));
 		if($op === ""){
 			echo "[!] " . $this->lang->op_warning . "\n";
-		}elseif($this->lang == "tr" || "tur"){
+		}
+		if($this->lang == "tur"){
 			$ops = new Config(\pocketmine\DATA . "yoneticiler.json", Config::ENUM);
 		}else{
 			$ops = new Config(\pocketmine\DATA . "ops.json", Config::ENUM);
@@ -178,7 +189,7 @@ LISANS;
 		$ops->save();
 		echo "[*] " . $this->lang->whitelist_info . "\n";
 		echo "[?] " . $this->lang->whitelist_enable . " (y/N): ";
-		if($this->lang == "tr" || "tur"){
+		if($this->lang == "tur"){
 			$config = new Config(\pocketmine\DATA . "sunucu.properties", Config::PROPERTIES);
 		}else{
 			$config = new Config(\pocketmine\DATA . "server.properties", Config::PROPERTIES);
@@ -193,7 +204,7 @@ LISANS;
 	}
 
 	private function networkFunctions(){
-		if($this->lang == "tr" || "tur"){
+		if($this->lang == "tur"){
 			$config = new Config(\pocketmine\DATA . "sunucu.properties", Config::PROPERTIES);
 		}else{
 			$config = new Config(\pocketmine\DATA . "server.properties", Config::PROPERTIES);
