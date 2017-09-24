@@ -3468,7 +3468,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$pk->status = PlayStatusPacket::LOGIN_SUCCESS;
 		$this->dataPacket($pk);			
 		
-		$pk = new ResourcePacksInfoPacket();
+		$pk = new ResourcePackInfoPacket();
 		$this->dataPacket($pk);
 		
 		//$pk = new BehaviorPackInfoPacket();
