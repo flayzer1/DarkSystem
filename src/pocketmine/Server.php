@@ -2182,7 +2182,11 @@ class Server extends DarkSystem{
 			$this->cmdReader->shutdown();
 			$this->cmdReader->notify();
 		}catch(\Exception $e){
-			$this->konsol->emergency("Sunucu Çöktü, Tüm Görevler Durduruluyor!");
+			if(Translate::checkTurkish() === "yes"){
+				$this->konsol->emergency("Sunucu Çöktü, Tüm Görevler Durduruluyor!");
+			}else{
+				$this->konsol->emergency("Server Crashed, Stopping All Threads...");
+			}
 			@kill(getmypid());
 		}
 	}
@@ -2193,9 +2197,11 @@ class Server extends DarkSystem{
 	
 	public function run(){	
 		DataPacket::initializePackets();
+		
 		if($this->isUseEncrypt){
 			\McpeEncrypter::generateKeyPair($this->serverPrivateKey, $this->serverPublicKey);
 		}
+		
 		if($this->getConfigBoolean("enable-query", true) === true){
 			$this->queryHandler = new QueryHandler();
 		}

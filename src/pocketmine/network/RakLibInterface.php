@@ -13,10 +13,9 @@ namespace pocketmine\network;
 
 use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\server\QueryRegenerateEvent;
-use pocketmine\network\protocol\DataPacket;
 use pocketmine\network\protocol\Info as ProtocolInfo;
-use pocketmine\network\protocol\Info;
 use pocketmine\network\protocol\UnknownPacket;
+use pocketmine\network\protocol\DataPacket;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\MainLogger;
@@ -96,7 +95,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		}else{
 			$info = $this->rakLib->getTerminationInfo();
 			$this->network->unregisterInterface($this);
-			\ExceptionHandler::handler(E_ERROR, "RakLib Thread crashed [".$info["scope"]."]: " . (isset($info["message"]) ? $info["message"] : ""), $info["file"], $info["line"]);
+			\ExceptionHandler::handler(E_ERROR, "RakLib Thread Crashed [".$info["scope"]."]: " . (isset($info["message"]) ? $info["message"] : ""), $info["file"], $info["line"]);
 		}
 	}
 
@@ -110,7 +109,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 
 		if($this->rakLib->isTerminated()){
 			$this->network->unregisterInterface($this);
-			throw new \Exception("RakLib Çöktü!");
+			throw new \Exception("RakLib Crashed!");
 		}
 
 		return $work;
@@ -210,8 +209,8 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		
 		$this->interface->sendOption("name",
 			"MCPE;" . rtrim(addcslashes($name, ";"), '\\') . ";" .
-			Info::CURRENT_PROTOCOL . ";" .
-			Info::MINECRAFT_VERSION_NETWORK . ";" .
+			ProtocolInfo::CURRENT_PROTOCOL . ";" .
+			ProtocolInfo::MINECRAFT_VERSION_NETWORK . ";" .
 			$poc . ";" .
 			$pc
 		);
@@ -254,12 +253,22 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		return null;
 	}
 	
-	private function getPacket($buffer, $playerProtocol, $isOnline){
+	private function getPacket($buffer, $player){
+		$playerProtocol = $player->getPlayerProtocol();
+		if($player->isEncryptEnable()){
+			$buffer = $player->getDecrypt($buffer);			
+		}		
+		if($playerProtocol >= ProtocolInfo::PROTOCOL_110 || $player->getOriginalProtocol() == 0 && $this->isZlib($buffer)){
+			$pk = new BatchPacket($buffer);
+			$pk->is110 = true;
+			return $pk;
+		}
 		$pid = ord($buffer{0});
 		if(($data = $this->network->getPacket($pid, $playerProtocol)) === null){
 			return null;
 		}
-		$data->setBuffer($buffer, 1);
+		$offset = 1;
+		$data->setBuffer($buffer, $offset);
 		return $data;
 	}
 
@@ -273,7 +282,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	}
 	
 	private function getPacketBuffer($packet, $protocol){
-		if($protocol < Info::PROTOCOL_110 || ($packet instanceof BatchPacket)){
+		if($protocol < ProtocolInfo::PROTOCOL_110 || ($packet instanceof BatchPacket)){
 			return $packet->buffer;
 		}
 		return $this->fakeZlib(Binary::writeVarInt(strlen($packet->buffer)) . $packet->buffer);
