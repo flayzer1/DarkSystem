@@ -240,6 +240,12 @@ class Server extends DarkSystem{
 	
 	private $unloadLevelQueue = [];
 	
+	private $serverPublicKey = "";
+	private $serverPrivateKey = "";
+	private $serverToken = "hksdYI3has";
+	
+	private $isUseEncrypt = false;
+	
 	public $keepInventory = false;
 	public $netherEnabled = false;
 	public $netherName = "cehennem";
@@ -367,7 +373,11 @@ class Server extends DarkSystem{
 	}
 	
 	public function getServerLanguage(){
-		return Translate::ENG;
+		if(!file_exists($this->getDataPath() . "sunucu.properties")){
+			return Translate::ENG;
+		}else{
+			return Translate::TUR;
+		}
 	}
 	
 	public function getServerName(){
@@ -1377,9 +1387,9 @@ class Server extends DarkSystem{
 	
 	public function getCrashPath(){
 		if(Translate::checkTurkish() === "yes"){
-		    return $this->dataPath . "cokme-arsivleri/";
+		    return $this->getDataPath() . "cokme-arsivleri/";
 		}else{
-			return $this->dataPath . "crashdumps/";
+			return $this->getDataPath() . "crashdumps/";
 		}
 	}
 	
@@ -1509,14 +1519,14 @@ class Server extends DarkSystem{
 			$this->dataPath = realpath($dataPath) . DIRECTORY_SEPARATOR;
 			$this->pluginPath = realpath($pluginPath) . DIRECTORY_SEPARATOR;
 
-			/*if(!file_exists($this->dataPath . "pocketmine.yml")){
+			/*if(!file_exists($this->getDataPath() . "pocketmine.yml")){
 				$content1 = file_get_contents($this->filePath . "src/pocketmine/resources/pocketmine.yml");
-				@file_put_contents($this->dataPath . "pocketmine.yml", $content1);
+				@file_put_contents($this->getDataPath() . "pocketmine.yml", $content1);
 			}*/
 			
-			if(!file_exists($this->dataPath . "pocketmine.yml")){
-				if(file_exists($this->dataPath . "lang_cache.txt")){
-					$langFile = new Config($configPath = $this->dataPath . "lang_cache.txt", Config::ENUM, []);
+			if(!file_exists($this->getDataPath() . "pocketmine.yml")){
+				if(file_exists($this->getDataPath() . "lang_cache.txt")){
+					$langFile = new Config($configPath = $this->getDataPath() . "lang_cache.txt", Config::ENUM, []);
                     $setupLang = null;
 					foreach($langFile->getAll(true) as $langName){
 						$setupLang = $langName;
@@ -1530,28 +1540,28 @@ class Server extends DarkSystem{
 				}else{
 					$content1 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/pocketmine_eng.yml");
 				}
-				@file_put_contents($this->dataPath . "pocketmine.yml", $content1);
+				@file_put_contents($this->getDataPath() . "pocketmine.yml", $content1);
 			}
 			
-			if(file_exists($this->dataPath . "lang_cache.txt")){
-				unlink($this->dataPath . "lang_cache.txt");
+			if(file_exists($this->getDataPath() . "lang_cache.txt")){
+				unlink($this->getDataPath() . "lang_cache.txt");
 			}
 			
-			if(!file_exists($this->dataPath . "pocketmine-advanced.yml")){
+			if(!file_exists($this->getDataPath() . "pocketmine-advanced.yml")){
 				$content2 = file_get_contents($this->filePath . "src/pocketmine/resources/pocketmine-advanced.yml");
-				@file_put_contents($this->dataPath . "pocketmine-advanced.yml", $content2);
+				@file_put_contents($this->getDataPath() . "pocketmine-advanced.yml", $content2);
 			}
 			
-		    $this->softConfig = new Config($this->dataPath . "pocketmine-advanced.yml", Config::YAML, []);
+		    $this->softConfig = new Config($this->getDataPath() . "pocketmine-advanced.yml", Config::YAML, []);
 		
 			if(!is_dir($this->pluginPath . "DarkSystem")){
 				mkdir($this->pluginPath . "DarkSystem");
 			}
 			
-			$this->config = new Config($configPath = $this->dataPath . "pocketmine.yml", Config::YAML, []);
+			$this->config = new Config($configPath = $this->getDataPath() . "pocketmine.yml", Config::YAML, []);
 			$this->cmdReader = new CommandReader($knsol);
 			if(Translate::checkTurkish() === "yes"){
-			$this->properties = new Config($this->dataPath . "sunucu.properties", Config::PROPERTIES, [
+			$this->properties = new Config($this->getDataPath() . "sunucu.properties", Config::PROPERTIES, [
 				"motd" => "DarkSystem Sunucusu",
 				"server-ip" => "0.0.0.0",
 				"server-port" => 19132,
@@ -1581,10 +1591,11 @@ class Server extends DarkSystem{
 				"auto-generate" => true,
 				"save-player-data" => true,
 				"time-update" => true,
-				"online-mode" => false
+				"online-mode" => false,
+				"use-encrypt" => false
 			]);
 			}else{
-			$this->properties = new Config($this->dataPath . "server.properties", Config::PROPERTIES, [
+			$this->properties = new Config($this->getDataPath() . "server.properties", Config::PROPERTIES, [
 				"motd" => "DarkSystem Server",
 				"server-ip" => "0.0.0.0",
 				"server-port" => 19132,
@@ -1614,7 +1625,8 @@ class Server extends DarkSystem{
 				"auto-generate" => true,
 				"save-player-data" => true,
 				"time-update" => true,
-				"online-mode" => false
+				"online-mode" => false,
+				"use-encrypt" => false
 			]);
 			}
 			
@@ -1686,12 +1698,12 @@ class Server extends DarkSystem{
 				$content3 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/darksystem_eng.yml");
 			}
 			
-			if(!file_exists($this->dataPath . "darksystem.yml")){
-				@file_put_contents($this->dataPath . "darksystem.yml", $content3);
+			if(!file_exists($this->getDataPath() . "darksystem.yml")){
+				@file_put_contents($this->getDataPath() . "darksystem.yml", $content3);
 			}
 			
 			$internelConfig = new Config($file, Config::YAML, []);
-			$this->advancedConfig = new Config($this->dataPath . "darksystem.yml", Config::YAML, []);
+			$this->advancedConfig = new Config($this->getDataPath() . "darksystem.yml", Config::YAML, []);
 			
 			$cfgVer = $this->getAdvancedProperty("config.version", 0, $internelConfig);
 			$advVer = $this->getAdvancedProperty("config.version", 0);
@@ -1736,35 +1748,35 @@ class Server extends DarkSystem{
 			$this->levelMetadata = new LevelMetadataStore();
 			
 			if(Translate::checkTurkish() === "yes"){
-			$this->operators = new Config($this->dataPath . "yoneticiler.json", Config::JSON);
-			$this->whitelist = new Config($this->dataPath . "beyaz-liste.json", Config::JSON);
-			if(file_exists($this->dataPath . "engelli.txt") && !file_exists($this->dataPath . "engelli-oyuncular.txt")){
-				@rename($this->dataPath . "engelli.txt", $this->dataPath . "engelli-oyuncular.txt");
+			$this->operators = new Config($this->getDataPath() . "yoneticiler.json", Config::JSON);
+			$this->whitelist = new Config($this->getDataPath() . "beyaz-liste.json", Config::JSON);
+			if(file_exists($this->getDataPath() . "engelli.txt") && !file_exists($this->getDataPath() . "engelli-oyuncular.txt")){
+				@rename($this->getDataPath() . "engelli.txt", $this->getDataPath() . "engelli-oyuncular.txt");
 			}
 			
-			@touch($this->dataPath . "engelli-oyuncular.txt");
-			$this->banByName = new BanList($this->dataPath . "engelli-oyuncular.txt");
+			@touch($this->getDataPath() . "engelli-oyuncular.txt");
+			$this->banByName = new BanList($this->getDataPath() . "engelli-oyuncular.txt");
 			$this->banByName->load();
-			@touch($this->dataPath . "engelli-IPler.txt");
-			$this->banByIP = new BanList($this->dataPath . "engelli-IPler.txt");
+			@touch($this->getDataPath() . "engelli-IPler.txt");
+			$this->banByIP = new BanList($this->getDataPath() . "engelli-IPler.txt");
 			$this->banByIP->load();
-			@touch($this->dataPath . "engelli-CIDler.txt");
-			$this->banByCID = new BanList($this->dataPath . "engelli-CIDler.txt");
+			@touch($this->getDataPath() . "engelli-CIDler.txt");
+			$this->banByCID = new BanList($this->getDataPath() . "engelli-CIDler.txt");
 			$this->banByCID->load();
 			}else{
-			$this->operators = new Config($this->dataPath . "ops.json", Config::JSON);
-			$this->whitelist = new Config($this->dataPath . "white-list.json", Config::JSON);
-			if(file_exists($this->dataPath . "banned.txt") && !file_exists($this->dataPath . "banned-players.txt")){
-				@rename($this->dataPath . "banned.txt", $this->dataPath . "banned-players.txt");
+			$this->operators = new Config($this->getDataPath() . "ops.json", Config::JSON);
+			$this->whitelist = new Config($this->getDataPath() . "white-list.json", Config::JSON);
+			if(file_exists($this->getDataPath() . "banned.txt") && !file_exists($this->getDataPath() . "banned-players.txt")){
+				@rename($this->getDataPath() . "banned.txt", $this->getDataPath() . "banned-players.txt");
 			}
-			@touch($this->dataPath . "banned-players.txt");
-			$this->banByName = new BanList($this->dataPath . "banned-players.txt");
+			@touch($this->getDataPath() . "banned-players.txt");
+			$this->banByName = new BanList($this->getDataPath() . "banned-players.txt");
 			$this->banByName->load();
-			@touch($this->dataPath . "banned-ips.txt");
-			$this->banByIP = new BanList($this->dataPath . "banned-ips.txt");
+			@touch($this->getDataPath() . "banned-ips.txt");
+			$this->banByIP = new BanList($this->getDataPath() . "banned-ips.txt");
 			$this->banByIP->load();
-			@touch($this->dataPath . "banned-cids.txt");
-			$this->banByCID = new BanList($this->dataPath . "banned-cids.txt");
+			@touch($this->getDataPath() . "banned-cids.txt");
+			$this->banByCID = new BanList($this->getDataPath() . "banned-cids.txt");
 			$this->banByCID->load();
 			}
 			
@@ -1777,6 +1789,7 @@ class Server extends DarkSystem{
 			$this->animalLimit = $this->getConfigInt("animals-limit", 0);
 			$this->useMonster = $this->getConfigBoolean("spawn-mobs", false);
 			$this->monsterLimit = $this->getConfigInt("mobs-limit", 0);
+			$this->isUseEncrypt = $this->getConfigBoolean("use-encrypt", false);
 			
 			if($this->getConfigBoolean("hardcore", false) === true && $this->getDifficulty() < 3){
 				$this->setConfigInt("difficulty", 3);
@@ -1920,8 +1933,8 @@ class Server extends DarkSystem{
 			return $this->broadcast($message, Server::BROADCAST_CHANNEL_USERS);
 		}
 		
-		foreach($recipients as $recipient){
-			$recipient->sendMessage($message);
+		foreach($recipients as $r){
+			$r->sendMessage($message);
 		}
 
 		return count($recipients);
@@ -1937,8 +1950,8 @@ class Server extends DarkSystem{
 			}
 		}
 		
-		foreach($recipients as $recipient){
-			$recipient->sendTip($tip);
+		foreach($recipients as $r){
+			$r->sendTip($tip);
 		}
 
 		return count($recipients);
@@ -1954,8 +1967,8 @@ class Server extends DarkSystem{
 			}
 		}
 		
-		foreach($recipients as $recipient){
-			$recipient->sendPopup($popup);
+		foreach($recipients as $r){
+			$r->sendPopup($popup);
 		}
 
 		return count($recipients);
@@ -1971,8 +1984,8 @@ class Server extends DarkSystem{
 			}
 		}
 		
-		foreach($recipients as $recipient){
-			$recipient->sendTitle($title, $subtitle, $fadeIn, $stay, $fadeOut);
+		foreach($recipients as $r){
+			$r->sendTitle($title, $subtitle, $fadeIn, $stay, $fadeOut);
 		}
 
 		return count($recipients);
@@ -1988,8 +2001,8 @@ class Server extends DarkSystem{
 			}
 		}
 
-		foreach($recipients as $recipient){
-			$recipient->sendMessage($message);
+		foreach($recipients as $r){
+			$r->sendMessage($message);
 		}
 
 		return count($recipients);
@@ -2180,6 +2193,9 @@ class Server extends DarkSystem{
 	
 	public function run(){	
 		DataPacket::initializePackets();
+		if($this->isUseEncrypt){
+			\McpeEncrypter::generateKeyPair($this->serverPrivateKey, $this->serverPublicKey);
+		}
 		if($this->getConfigBoolean("enable-query", true) === true){
 			$this->queryHandler = new QueryHandler();
 		}
@@ -2589,6 +2605,22 @@ class Server extends DarkSystem{
 		}
 		$this->nextTick += 0.05;
 		return true;
+	}
+	
+	public function isUseEncrypt(){
+		return $this->isUseEncrypt;
+	}
+		
+	public function getServerPublicKey(){
+		return $this->serverPublicKey;
+	}
+	
+	public function getServerPrivateKey(){
+		return $this->serverPrivateKey;
+	}
+	
+	public function getServerToken(){	
+		return $this->serverToken;
 	}
 	
 }

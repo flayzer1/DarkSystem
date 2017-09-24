@@ -22,6 +22,7 @@
 namespace pocketmine\network\protocol;
 
 class AdventureSettingsPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::ADVENTURE_SETTINGS_PACKET;
 	const PACKET_NAME = "ADVENTURE_SETTINGS_PACKET";
 
@@ -54,7 +55,7 @@ class AdventureSettingsPacket extends PEPacket{
 		$this->reset($playerProtocol);
 		$this->putVarInt($this->flags);
 		$this->putVarInt(0);
-		switch ($playerProtocol) {
+		switch($playerProtocol){
 			case Info::PROTOCOL_120:
 				$this->putVarInt($this->actionPermissions);
 				$this->putVarInt($this->permissionLevel);
@@ -63,9 +64,7 @@ class AdventureSettingsPacket extends PEPacket{
 				}else{
 					$this->putLLong($this->userId >> 1);
 				}
-				
 				break;
 		}
 	}
-
 }

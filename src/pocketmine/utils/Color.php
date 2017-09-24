@@ -106,6 +106,6 @@ class Color{
 	}
 
 	public function __toString(){
-		return "Renk(Kırmızı:" . $this->red . ", Yeşil:" . $this->green . ", Mavi:" . $this->blue . ")";
+		return "Color(Red:" . $this->red . ", Green:" . $this->green . ", Blue:" . $this->blue . ")";
 	}
 }

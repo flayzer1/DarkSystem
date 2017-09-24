@@ -27,4 +27,5 @@ interface InventoryNetworkIds{
 	const MINECART_CHEST = 10;
 	const MINECART_HOPPER = 11;
 	const HORSE = 12;
+	
 }

@@ -38,9 +38,6 @@ class AvailableCommandsPacket extends PEPacket{
 		$enums = [];
 		$commandsStream = new BinaryStream();
 		foreach($commands as $commandName => $commandData){
-			/*if($commandName == 'help'){
-				continue;
-			}*/
 			$commandsStream->putString($commandName);
 			$commandsStream->putString($commandData['versions'][0]['description']);
 			$commandsStream->putByte(0);

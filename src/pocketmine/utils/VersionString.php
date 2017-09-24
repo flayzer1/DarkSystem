@@ -12,6 +12,7 @@
 namespace pocketmine\utils;
 
 class VersionString{
+	
 	private $major;
 	private $build;
 	private $minor;

@@ -19,12 +19,10 @@
  *
 */
 
-
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
 class BehaviorPackChunkDataPacket extends DataPacket{
+	
 	const NETWORK_ID = Info::BEHAVIOR_PACK_CHUNK_DATA_PACKET;
 
 	public $packId;

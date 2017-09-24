@@ -15,8 +15,6 @@ use pocketmine\language\Language;
 
 class Translate{
 	
-	const CURRENT_LANG = "eng"; //
-	
 	const ENG = "eng";
 	const TUR = "tur";
 	
@@ -28,7 +26,7 @@ class Translate{
     	$server = Server::getInstance();
     
     	$isTurkish = "no";
-    	if(Translate::CURRENT_LANG == Translate::TUR){
+    	if($server->getServerLanguage() == Translate::TUR){
     	    $isTurkish = "yes";
     	}
     

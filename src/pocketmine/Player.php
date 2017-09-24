@@ -161,6 +161,7 @@ use pocketmine\network\protocol\BehaviorPackDataInfoPacket;
 use pocketmine\network\protocol\BehaviorPackInfoPacket;
 use pocketmine\network\protocol\BehaviorPackStackPacket;
 use pocketmine\network\protocol\SetTitlePacket;
+use pocketmine\network\protocol\ServerToClientHandshakePacket;
 use pocketmine\network\protocol\ResourcePackClientResponsePacket;
 use pocketmine\network\protocol\BehaviorPackClientResponsePacket;
 use pocketmine\network\protocol\LevelSoundEventPacket;
@@ -252,9 +253,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	protected $ip;
 	protected $removeFormat = true;
 	protected $port;
-	protected $username = '';
-	protected $iusername = '';
-	protected $displayName = '';
+	protected $username = "";
+	protected $iusername = "";
+	protected $displayName = "";
 	protected $startAction = -1;
 	
 	public $protocol = 0;
@@ -315,7 +316,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	private $exp = 0;
 	private $expLevel = 0;
 
-	private $elytraIsActivated = false;
+	private $elytrasActivated = false;
 	
     private $inventoryType = Player::INVENTORY_CLASSIC;
 	private $languageCode = false;
@@ -326,11 +327,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	private $noteSoundQueue = [];
     
-    private $xuid = '';
+    private $xuid = "";
 	
 	private $ping = 0;
     
-    protected $xblName = '';
+    protected $xblName = "";
 	
 	protected $viewRadius = 4;
 	
@@ -338,9 +339,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	private $isMayMove = false;
 	
-	protected $serverAddress = '';
+	protected $serverAddress = "";
 	
-	protected $clientVersion = '';
+	protected $clientVersion = "";
 	
 	protected $originalProtocol;
 	
@@ -1323,9 +1324,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						//$this->startAirTicks = 15;
 					}
 					$this->inAirTicks = 0;
-					if($this->elytraIsActivated){
+					if($this->elytrasActivated){
 						$this->setFlyingFlag(false);
-						$this->elytraIsActivated = false;
+						$this->elytrasActivated = false;
 					}
 				}else{
 					if(!$this->isUseElytra() && !$this->allowFlight && !$this->isSleeping()){
@@ -1862,12 +1863,12 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					case 'START_GLIDING':
 						if($this->isHaveElytra()){
 							$this->setFlyingFlag(true);
-							$this->elytraIsActivated = true;
+							$this->elytrasActivated = true;
 						}
 						break;
 					case 'STOP_GLIDING':
 						$this->setFlyingFlag(false);
-						$this->elytraIsActivated = false;
+						$this->elytrasActivated = false;
 						break;
 					case 'CRACK_BLOCK':
 						$this->crackBlock($packet);
@@ -2305,19 +2306,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 								case "#elinin körü":
 								case "#elinin körü :D":
 								$this->server->broadcastMessage($dbotprefix . "§a.d");
-								break;
-								case "darkbot eggwars kurmama yardım et":
-								case "darkbot eggwars kurmama yardım edermisin":
-								case "darkbot eggwars kurmama yardım eder misin":
-								case "darkbot eggwars kurmama yardım edermisin?":
-								case "darkbot eggwars kurmama yardım eder misin?":
-								case "#darkbot eggwars kurmama yardım et":
-								case "#darkbot eggwars kurmama yardım edermisin":
-								case "#darkbot eggwars kurmama yardım eder misin":
-								case "#darkbot eggwars kurmama yardım edermisin?":
-								case "#darkbot eggwars kurmama yardım eder misin?":
-								$this->server->broadcastMessage($dbotprefix . "§aElbette. Önce Kurmak İstediğin Dünyaya Işınlan, Sonra /ew olustur İle Arenayı Kur. Sonra /ew ayarla ile Başlangıç Noktalarını Belirle.");
-								$this->server->broadcastMessage($dbotprefix . "§a/ew market ile de Marketi Yerleştir. Bitti! Şimdi /ew kaydet Yaz ve Lobiye Git. Tabelanın 1. Satırına eggwars, 2. Satırına Arena İsmini Yaz. Ve Hazır! İyi Oyunlar!");
 								break;
 								case "darkbot gul":
 								case "darkbot gül":
@@ -3461,11 +3449,26 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function processLogin(){
+		if($this->server->isUseEncrypt() && $this->needEncrypt()){
+			$privateKey = $this->server->getServerPrivateKey();
+			$token = $this->server->getServerToken();
+			$pk = new ServerToClientHandshakePacket();
+			$pk->publicKey = $this->server->getServerPublicKey();
+			$pk->serverToken = $token;
+			$pk->privateKey = $privateKey;
+			$this->dataPacket($pk);
+			$this->enableEncrypt($token, $privateKey, $this->identityPublicKey);
+		}else{
+			$this->continueLoginProcess();
+		}
+	}
+	
+	public function continueLoginProcess(){
 		$pk = new PlayStatusPacket();
 		$pk->status = PlayStatusPacket::LOGIN_SUCCESS;
-		$this->dataPacket($pk);
+		$this->dataPacket($pk);			
 		
-		$pk = new ResourcePackInfoPacket();
+		$pk = new ResourcePacksInfoPacket();
 		$this->dataPacket($pk);
 		
 		//$pk = new BehaviorPackInfoPacket();
@@ -3599,9 +3602,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$pk->started = true;
 		$this->dataPacket($pk);
 		$pk = new SetSpawnPositionPacket();
-		$pk->x = (int) $spawnPosition->x;
-		$pk->y = (int) $spawnPosition->y + 0.1;
-		$pk->z = (int) $spawnPosition->z;
+		$pk->x = (int) $hub->x;
+		$pk->y = (int) $hub->y + 0.1;
+		$pk->z = (int) $hub->z;
 		$this->dataPacket($pk);
 		if($this->getHealth() <= 0){
 			$this->dead = true;
@@ -3942,7 +3945,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function isUseElytra(){
-		return ($this->isHaveElytra() && $this->elytraIsActivated);
+		return ($this->isHaveElytra() && $this->elytrasActivated);
 	}
 	
 	public function isHaveElytra(){
@@ -3954,11 +3957,28 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 
 	public function setElytraActivated($value){
-		$this->elytraIsActivated = $value;
+		$this->elytrasActivated = $value;
 	}
 
 	public function isElytraActivated(){
-		return $this->elytraIsActivated;
+		return $this->elytrasActivated;
+	}
+	
+	public function isEncryptEnable(){
+		return $this->encryptEnabled;
+	}
+	
+	public function getEncrypt($sStr){		
+		return $this->encrypter->encrypt($sStr);
+	}	
+
+	public function getDecrypt($sStr){
+		return $this->encrypter->decrypt($sStr);
+	}
+
+	private function enableEncrypt($token, $privateKey, $publicKey){
+		$this->encrypter = new \McpeEncrypter($token, $privateKey, $publicKey);
+		$this->encryptEnabled = true;
 	}
 	
 	public function getPlayerProtocol(){

@@ -160,8 +160,7 @@ namespace pocketmine{
 		$lang = $setup->getDefaultLang();
 	}
 	
-	//if($lang == "tr" || "tur"){
-	if(Translate::checkTurkish() === "yes"){
+	if($lang == "tr" || "tur"){
 		define('pocketmine\PLUGIN_PATH', isset($opts["eklentiler"]) ? $opts["eklentiler"] . DIRECTORY_SEPARATOR : \getcwd() . DIRECTORY_SEPARATOR . "eklentiler" . DIRECTORY_SEPARATOR);
 	}else{
 		define('pocketmine\PLUGIN_PATH', isset($opts["eklentiler"]) ? $opts["eklentiler"] . DIRECTORY_SEPARATOR : \getcwd() . DIRECTORY_SEPARATOR . "plugins" . DIRECTORY_SEPARATOR);

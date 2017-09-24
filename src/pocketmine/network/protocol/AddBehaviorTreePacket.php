@@ -24,7 +24,8 @@ namespace pocketmine\network\protocol;
 use pocketmine\network\mcpe\NetworkSession;
 
 class AddBehaviorTreePacket extends PEPacket{
-	const NETWORK_ID = ProtocolInfo::ADD_BEHAVIOR_TREE_PACKET;
+	
+	const NETWORK_ID = Info::ADD_BEHAVIOR_TREE_PACKET;
 	
 	public $unknownString1;
 
@@ -39,4 +40,5 @@ class AddBehaviorTreePacket extends PEPacket{
 	public function handle(NetworkSession $session) : bool{
 		return $session->handleAddBehaviorTree($this);
 	}
+	
 }
