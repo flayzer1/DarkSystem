@@ -13,6 +13,7 @@
 - MobAI Support
 - Smooth Movement
 - Colored Console
+- AntiForceOP
 - More Commands (/clear, /tpall, /clearchat etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
 - DarkBot (Virtual Bot; Can talk, help players, move etc.)
