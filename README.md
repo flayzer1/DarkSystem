@@ -1,7 +1,7 @@
 <img src="https://raw.githubusercontent.com/DarkYusuf13/DarkSystem/master/banner.png" border="0">
 
 
-**An Advanced Server Engine/Software For Minecraft PE**
+**An Advanced Server Engine/Software For Minecraft PE 1.x.x**
 
 | Travis CI | Discord |
 | :---: | :---:|
@@ -21,6 +21,7 @@
 # Added Best Things:
 - Banner (1.2 only)
 - Piston (indev)
+- Parrots (1.2 only)
 - Rideable Car (indev)
 - Rideable Horse (indev)
 - Behavior Support (indev)
@@ -31,6 +32,8 @@
 - [ ] **Experience System (working)**
 - [ ] **Map**
 - [x] **Horse**
+- [ ] **Fireworks**
+- [ ] **Armor Stand**
 - [ ] **Throwing Potions**
 - [ ] **Riding Mincart and Boat**
 - [ ] **Fully Redstone System**
