@@ -26,7 +26,7 @@ use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\item\Item as ItemItem;
 
-class Wither extends FlyingAnimal8
+class Wither extends FlyingAnimal
 {
     const NETWORK_ID = 52;
 

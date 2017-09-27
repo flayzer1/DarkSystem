@@ -65,5 +65,4 @@ class IronGolem extends WalkingMonster{
 		}
 		return [];
 	}
-
 }
