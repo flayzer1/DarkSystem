@@ -18,8 +18,7 @@ abstract class FlyingAnimal extends Creature implements Ageable
 {
     protected $gravity = 0;
     protected $drag = 0.02;
-
-    /** @var Vector3 */
+    
     public $flyDirection = null;
     public $flySpeed = 0.5;
     public $highestY = 128;
@@ -82,8 +81,8 @@ abstract class FlyingAnimal extends Creature implements Ageable
 
                 $this->motionX *= $friction;
                 $this->motionY *= 1 - $this->drag;
-                $this->motionZ *= $friction;
-*/
+                $this->motionZ *= $friction;*/
+                
                 $f = sqrt(($this->motionX ** 2) + ($this->motionZ ** 2));
                 $this->yaw = (-atan2($this->motionX, $this->motionZ) * 180 / M_PI);
                 $this->pitch = (-atan2($f, $this->motionY) * 180 / M_PI);
@@ -129,5 +128,4 @@ abstract class FlyingAnimal extends Creature implements Ageable
         }
         parent::attack($damage, $source);
     }
-
 }

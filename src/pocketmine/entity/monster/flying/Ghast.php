@@ -37,7 +37,7 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 		return "Ghast";
 	}
 
-	public function targetOption(Creature $creature, float $distance){
+	public function targetOption(Creature $creature, $distance){
 		return (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 10000;
 	}
 

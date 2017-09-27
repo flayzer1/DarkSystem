@@ -33,6 +33,7 @@ use pocketmine\network\protocol\SetEntityDataPacket;
 use pocketmine\Server;
 
 class PrimedTNT extends Entity implements Explosive{
+	
 	const NETWORK_ID = 65;
 
 	public $width = 0.98;

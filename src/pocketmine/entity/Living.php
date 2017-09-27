@@ -21,9 +21,9 @@ use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\network\Network;
 use pocketmine\network\protocol\EntityEventPacket;
+use pocketmine\utils\BlockIterator;
 use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\utils\BlockIterator;
 
 abstract class Living extends Entity implements Damageable{
 
@@ -274,10 +274,11 @@ abstract class Living extends Entity implements Damageable{
 			if (isset($blocks[0]) && $blocks[0] instanceof Block) {
 				return $blocks[0];
 			}
-		}catch (\ArrayOutOfBoundsException $e){
+		}catch(\ArrayOutOfBoundsException $e){
 
 		}
 
 		return null;
 	}
+	
 }

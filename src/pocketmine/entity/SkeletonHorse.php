@@ -18,7 +18,7 @@ class SkeletonHorse extends Monster
 {
 	const NETWORK_ID = 26;
 
-	public function getName(): string
+	public function getName()
 	{
 		return "Skeleton Horse";
 	}
@@ -27,7 +27,7 @@ class SkeletonHorse extends Monster
 	{
 		$pk = new AddEntityPacket();
 		$pk->eid = $this->getId();
-		$pk->type = self::NETWORK_ID;
+		$pk->type = SkeletonHorse::NETWORK_ID;
 		$pk->x = $this->x;
 		$pk->y = $this->y;
 		$pk->z = $this->z;

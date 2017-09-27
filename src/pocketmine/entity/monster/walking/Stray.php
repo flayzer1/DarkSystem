@@ -28,7 +28,7 @@ class Stray extends WalkingMonster implements ProjectileSource{
     public $width = 0.781;
     public $length = 0.875;
     
-    public function getName(): string{
+    public function getName(){
         return "Stray";
     }
     

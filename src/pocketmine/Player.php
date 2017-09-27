@@ -62,6 +62,7 @@ use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\player\PlayerRespawnAfterEvent;
 use pocketmine\event\player\PlayerTalkEvent;
+use pocketmine\event\player\PlayerToggleFlightEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\player\PlayerToggleSprintEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
@@ -109,6 +110,7 @@ use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\Network;
+use pocketmine\network\protocol\types\PlayerPermissions;
 use pocketmine\network\protocol\AddPlayerPacket;
 use pocketmine\network\protocol\AdventureSettingsPacket;
 use pocketmine\network\protocol\AnimatePacket;
@@ -318,6 +320,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	private $elytrasActivated = false;
 	
+	private $encrypter = null;
+	private $encryptEnabled = false;
+	
     private $inventoryType = Player::INVENTORY_CLASSIC;
 	private $languageCode = false;
 	
@@ -346,6 +351,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	protected $originalProtocol;
 	
 	protected $lastModalId = 1;
+	
+	//protected $lineHeight = null;
 	
 	public function getLeaveMessage(){
 		return "";
@@ -447,7 +454,19 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function setRemoveFormat($remove = true){
 		$this->removeFormat = (bool) $remove;
 	}
+	
+	/*public function getScreenLineHeight(){
+		return $this->lineHeight ?? 7;
+	}
 
+	public function setScreenLineHeight(int $height = null){
+		if($height !== null and $height < 1){
+			throw new \InvalidArgumentException("Line height must be at least 1");
+		}
+		
+		$this->lineHeight = $height;
+	}*/
+	
 	/**
 	 * @param Player $player
 	 *
@@ -695,7 +714,41 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function isSleeping(){
 		return $this->sleeping !== null;
 	}
+	
+	public function getInAirTicks(){
+		return $this->inAirTicks;
+	}
 
+	public function getStartAirTicks(){
+		return $this->startAirTicks;
+	}
+	
+	public function isFireProof(){
+		return $this->isCreative();
+	}
+	
+	public function sendGamemode(){
+		$pk = new SetPlayerGameTypePacket();
+		$pk->gamemode = $this->gamemode;
+		$this->dataPacket($pk);
+	}
+	
+	public function switchLevel(Level $targetLevel){
+		$oldLevel = $this->level;
+		if(parent::switchLevel($targetLevel)){
+			foreach($this->usedChunks as $index => $d){
+				Level::getXZ($index, $X, $Z);
+				$this->unloadChunk($X, $Z, $oldLevel);
+			}
+
+			$this->usedChunks = [];
+			$this->level->sendTime($this);
+			return true;
+		}
+
+		return false;
+	}
+	
 	public function unloadChunk($x, $z){
 		$index = Level::chunkHash($x, $z);
 		if(isset($this->usedChunks[$index])){
@@ -714,17 +767,17 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	 * @return Position
 	 */
 	public function getSpawn(){
-		if($this->spawnPosition instanceof Position && $this->spawnPosition->getLevel() instanceof Level){
+		/*if($this->spawnPosition instanceof Position && $this->spawnPosition->getLevel() instanceof Level){
 			return $this->spawnPosition;
-		}else{
+		}else{*/
 			$level = $this->server->getDefaultLevel();
 			return $level->getSafeSpawn();
-		}
+		//}
 	}
 
 	public function sendChunk($x, $z, $payload){ //$data
 		if($this->connected === false){
-			return;
+			return true;
 		}
 		$data = $payload[$this->getPlayerProtocol()];
 		$this->usedChunks[Level::chunkHash($x, $z)] = true;
@@ -744,7 +797,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	protected function sendNextChunk(){
 		if($this->connected === false){
-			return;
+			return true;
 		}
 		$count = 0;
 		foreach($this->loadQueue as $index => $distance){
@@ -774,7 +827,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->server->getPluginManager()->callEvent($ev = new PlayerLoginEvent($this, "Eklenti Hatası"));
 			if($ev->isCancelled()){
 				$this->close(TF::YELLOW . $this->username . " has left the game", $ev->getKickMessage());
-				return;
+				return true;
 			}
 			$this->spawned = true;
 			$this->sendSettings();
@@ -815,35 +868,58 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 
 	protected function orderChunks(){
-		if($this->connected === false){
-			return false;
+		if($this->connected === false || $this->viewRadius === -1){
+			return true;
 		}
 		$this->nextChunkOrderRun = 200;
-		$radiusSquared = $this->viewRadius ** 2;
+		$radius = $this->viewRadius;
+		$radiusSquared = $radius ** 2;
+		$newOrder = [];
+		$unloadChunks = $this->usedChunks;
 		$centerX = $this->x >> 4;
 		$centerZ = $this->z >> 4;
-		$newOrder = [];
-		$lastChunk = $this->usedChunks;
-		for($dx = 0; $dx < $this->viewRadius; $dx++){
-			for($dz = 0; $dz < $this->viewRadius; $dz++){
-				if($dx ** 2 + $dz ** 2 > $radiusSquared){
-					continue;
+		for($x = 0; $x < $radius; ++$x){
+			for($z = 0; $z <= $x; ++$z){
+				if(($x ** 2 + $z ** 2) > $radiusSquared){
+					break;
 				}
-				foreach([$dx, (-$dx - 1)] as $ddx){
-					foreach([$dz, (-$dz - 1)] as $ddz){
-						$chunkX = $centerX + $ddx;
-						$chunkZ = $centerZ + $ddz;
-						$index = Level::chunkHash($chunkX, $chunkZ);
-						if(isset($lastChunk[$index])){
-							unset($lastChunk[$index]);
-						}else{
-							$newOrder[$index] = abs($dx) + abs($dz);
-						}
+				if(!isset($this->usedChunks[$index = Level::chunkHash($centerX + $x, $centerZ + $z)]) || $this->usedChunks[$index] === false){
+					$newOrder[$index] = true;
+				}
+				unset($unloadChunks[$index]);
+				if(!isset($this->usedChunks[$index = Level::chunkHash($centerX - $x - 1, $centerZ + $z)]) || $this->usedChunks[$index] === false){
+					$newOrder[$index] = true;
+				}
+				unset($unloadChunks[$index]);
+				if(!isset($this->usedChunks[$index = Level::chunkHash($centerX + $x, $centerZ - $z - 1)]) || $this->usedChunks[$index] === false){
+					$newOrder[$index] = true;
+				}
+				unset($unloadChunks[$index]);
+				if(!isset($this->usedChunks[$index = Level::chunkHash($centerX - $x - 1, $centerZ - $z - 1)]) || $this->usedChunks[$index] === false){
+					$newOrder[$index] = true;
+				}
+				unset($unloadChunks[$index]);
+				if($x !== $z){
+					if(!isset($this->usedChunks[$index = Level::chunkHash($centerX + $z, $centerZ + $x)]) || $this->usedChunks[$index] === false){
+						$newOrder[$index] = true;
 					}
+					unset($unloadChunks[$index]);
+					if(!isset($this->usedChunks[$index = Level::chunkHash($centerX - $z - 1, $centerZ + $x)]) || $this->usedChunks[$index] === false){
+						$newOrder[$index] = true;
+					}
+					unset($unloadChunks[$index]);
+					if(!isset($this->usedChunks[$index = Level::chunkHash($centerX + $z, $centerZ - $x - 1)]) || $this->usedChunks[$index] === false){
+						$newOrder[$index] = true;
+					}
+					unset($unloadChunks[$index]);
+					if(!isset($this->usedChunks[$index = Level::chunkHash($centerX - $z - 1, $centerZ - $x - 1)]) || $this->usedChunks[$index] === false){
+						$newOrder[$index] = true;
+					}
+					unset($unloadChunks[$index]);
 				}
 			}
 		}
-		foreach($lastChunk as $index => $Yndex){
+		foreach($unloadChunks as $index => $Yndex){
 			$X = null;
 			$Z = null;
 			Level::getXZ($index, $X, $Z);
@@ -863,22 +939,18 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($this->connected === false){
 			return false;
 		}
-		
 		$disallowedPackets = [];
 		$protocol = $this->getPlayerProtocol();
 		if($protocol >= ProtocolInfo::PROTOCOL_120){
 			$disallowedPackets = Protocol120::getDisallowedPackets();
 		}
-		
 		if(in_array(get_class($packet), $disallowedPackets)){
-			return;
+			return true;
 		}
-		
 		$this->server->getPluginManager()->callEvent($ev = new DataPacketSendEvent($this, $packet));
 		if($ev->isCancelled()){
 			return true;
 		}
-		
 		$this->interface->putPacket($this, $packet, $needACK, false);	
 		return true;
 	}
@@ -897,7 +969,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($ev->isCancelled()){
 			return true;
 		}
-
 		$this->interface->putPacket($this, $packet, $needACK, true);
 		return true;
 	}
@@ -911,7 +982,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		foreach($this->level->getNearbyEntities($this->boundingBox->grow(2, 1, 2), $this) as $p){
 			if($p instanceof Player){
 				if($p->sleeping !== null && $pos->distance($p->sleeping) <= 0.1){
-					return false;
+					return true;
 				}
 			}
 		}
@@ -995,7 +1066,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	 */
 	public function setGamemode($gm){
 		if($gm < 0 || $gm > 3 || $this->gamemode === $gm){
-			return false;
+			return true;
 		}
 		$this->server->getPluginManager()->callEvent($ev = new PlayerGameModeChangeEvent($this, (int) $gm));
 		if($ev->isCancelled()){
@@ -1004,7 +1075,14 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->gamemode = $gm;
 		$this->allowFlight = $this->isCreative();
 		if($this->isSpectator()){
+			//$this->flying = true;
 			$this->despawnFromAll();
+			$this->teleport($this->temporalVector->setComponents($this->x, $this->y + 0.1, $this->z));
+		}else{
+			/*if($this->isSurvival() || $this->isAdventure()){
+				$this->flying = false;
+			}*/
+			$this->spawnToAll();
 		}
 		$this->namedtag->playerGameType = new IntTag("playerGameType", $this->gamemode);
 		$pk = new SetPlayerGameTypePacket();
@@ -1018,7 +1096,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		return true;
 	}
 	
-	public function sendSettings(){
+	/*public function sendSettings(){
 		$flags = 0;
 		if($this->isAdventure()){
 			$flags |= 0x01;
@@ -1037,8 +1115,55 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$pk = new AdventureSettingsPacket();
 		$pk->flags = $flags;
 		$this->dataPacket($pk);
-	}
+	}*/
+	
+	public function sendSettings(){
+		$pk = new AdventureSettingsPacket();
 
+		$pk->setFlag(AdventureSettingsPacket::WORLD_IMMUTABLE, $this->isSpectator());
+		$pk->setFlag(AdventureSettingsPacket::NO_PVP, $this->isSpectator());
+		$pk->setFlag(AdventureSettingsPacket::AUTO_JUMP, $this->autoJump);
+		$pk->setFlag(AdventureSettingsPacket::ALLOW_FLIGHT, $this->allowFlight);
+		$pk->setFlag(AdventureSettingsPacket::NO_CLIP, $this->isSpectator());
+		$pk->setFlag(AdventureSettingsPacket::FLYING, $this->flying);
+
+		$pk->commandPermission = ($this->isOp() ? AdventureSettingsPacket::PERMISSION_OPERATOR : AdventureSettingsPacket::PERMISSION_NORMAL);
+		$pk->playerPermission = ($this->isOp() ? PlayerPermissions::OPERATOR : PlayerPermissions::MEMBER);
+		$pk->eid = $this->getId();
+
+		$this->dataPacket($pk);
+	}
+	
+	public function handleAdventureSettings(AdventureSettingsPacket $packet){
+		if($packet->eid !== $this->getId()){
+			return true;
+		}
+
+		$handled = false;
+
+		$isFlying = $packet->getFlag(AdventureSettingsPacket::FLYING);
+		if($isFlying && !$this->allowFlight && !$this->server->getAllowFlight()){
+			$this->kick("Lütfen Hile Kullanmayınız!");
+			return true;
+		}elseif($isFlying !== $this->isFlying()){
+			$this->server->getPluginManager()->callEvent($ev = new PlayerToggleFlightEvent($this, $isFlying));
+			if($ev->isCancelled()){
+				$this->sendSettings();
+			}else{
+				$this->flying = $ev->isFlying();
+			}
+
+			$handled = true;
+		}
+
+		if($packet->getFlag(AdventureSettingsPacket::NO_CLIP) && !$this->isSpectator()){
+			$this->kick("Lütfen Hile Kullanmayınız!");
+			return true;
+		}
+		
+		return $handled;
+	}
+	
 	public function isSurvival(){
 		return ($this->gamemode & 0x01) === 0;
 	}
@@ -1335,7 +1460,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						if(!$this->hasEffect(Effect::JUMP) && $diff > 0.6 && $expectedVelocity < $this->speed->y && !$this->server->getAllowFlight() && !$this->isOp()){
 							if($this->inAirTicks < 312){
 							}elseif($this->kick("Uçmak Yasak!")){
-								return false;
+								return true;
 							}
 						}
 						++$this->inAirTicks;
@@ -1520,9 +1645,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
             case 'UPDATE_ATTRIBUTES_PACKET':
                 break;
             case 'ADVENTURE_SETTINGS_PACKET':
+            	if($packet->eid !== $this->getId()){
+            	    return true;
+            	}
                 $isHacker = ($this->allowFlight === false && ($packet->flags >> 9) & 0x01 === 1) || 
                     (!$this->isSpectator() && ($packet->flags >> 7) & 0x01 === 1);
                 if($isHacker){
+                	$this->kick("Lütfen Hile Kullanmayınız!");
+                }
+                if($packet->getFlag(AdventureSettingsPacket::NO_CLIP) && !$this->isSpectator()){
                 	$this->kick("Lütfen Hile Kullanmayınız!");
                 }
                 break;
@@ -1539,7 +1670,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
                 $this->xblName = $this->username;
 				$this->displayName = $this->username;
 				$this->setNameTag($this->username);
-				//$this->setDisplayName(TF::YELLOW . $this->username);
 				$this->iusername = strtolower($this->username);
 				$this->randomClientId = $packet->clientId;
 				$this->loginData = ["clientId" => $packet->clientId, "loginData" => null];
@@ -1730,7 +1860,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					//Timings::$timerActionPacket->stopTiming();
 					break;
 				}
-				
 				$action = MultiversionEnums::getPlayerAction($this->protocol, $packet->action);
 				switch($action){
 					case 'START_JUMP':
@@ -1769,7 +1898,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						foreach($viewers as $viewer){
 							$viewer->dataPacket($pk);
 						}
-						
 						break;
 					case 'RELEASE_USE_ITEM':
 						$this->releaseUseItem();

@@ -110,5 +110,4 @@ class GhastFireball extends Projectile
         
         parent::spawnTo($player);
     }
-
 }

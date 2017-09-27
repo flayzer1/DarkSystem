@@ -19,29 +19,25 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 
 	public abstract function attackEntity(Entity $player);
 
-	public function getDamage(int $difficulty = null){
+	public function getDamage($difficulty = null){
 		return mt_rand($this->getMinDamage($difficulty), $this->getMaxDamage($difficulty));
 	}
 
-	public function getMinDamage(int $difficulty = null){
+	public function getMinDamage($difficulty = null){
 		if($difficulty === null || $difficulty > 3 || $difficulty < 0){
 			$difficulty = Server::getInstance()->getDifficulty();
 		}
 		return $this->minDamage[$difficulty];
 	}
 
-	public function getMaxDamage(int $difficulty = null){
+	public function getMaxDamage($difficulty = null){
 		if($difficulty === null || $difficulty > 3 || $difficulty < 0){
 			$difficulty = Server::getInstance()->getDifficulty();
 		}
 		return $this->maxDamage[$difficulty];
 	}
-
-	/**
-	 * @param float|float[] $damage
-	 * @param int $difficulty
-	 */
-	public function setDamage($damage, int $difficulty = null){
+	
+	public function setDamage($damage, $difficulty = null){
 		if(is_array($damage)){
 			for($i = 0; $i < 4; $i++){
 				$this->minDamage[$i] = $damage[$i];
@@ -58,7 +54,7 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 		}
 	}
 
-	public function setMinDamage($damage, int $difficulty = null){
+	public function setMinDamage($damage, $difficulty = null){
 		if(is_array($damage)){
 			for($i = 0; $i < 4; $i++){
 				$this->minDamage[$i] = min($damage[$i], $this->getMaxDamage($i));
@@ -73,7 +69,7 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 		}
 	}
 
-	public function setMaxDamage($damage, int $difficulty = null){
+	public function setMaxDamage($damage, $difficulty = null){
 		if(is_array($damage)){
 			for($i = 0; $i < 4; $i++){
 				$this->maxDamage[$i] = max((int) $damage[$i], $this->getMaxDamage($i));

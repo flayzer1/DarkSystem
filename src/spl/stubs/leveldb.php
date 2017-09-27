@@ -115,6 +115,7 @@ class LevelDB{
 	static public function destroy($name, array $options = []){}
 
 	static public function repair($name, array $options = []){}
+	
 }
 
 class LevelDBIterator implements Iterator{
@@ -144,6 +145,7 @@ class LevelDBIterator implements Iterator{
 }
 
 class LevelDBWriteBatch{
+	
 	public function __construct($name, array $options = [], array $read_options = [], array $write_options = []){}
 
 	public function set($key, $value, array $write_options = []){}
@@ -156,6 +158,7 @@ class LevelDBWriteBatch{
 }
 
 class LevelDBSnapshot{
+	
 	public function __construct(LevelDB $db){}
 
 	public function release(){}

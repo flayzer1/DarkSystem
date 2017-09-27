@@ -21,7 +21,7 @@ class MinecartHopper extends Minecart{
 	/**
 	 * @return string
 	 */
-	public function getName(): string{
+	public function getName(){
 		return "Minecart Hopper";
 	}
 

@@ -30,7 +30,7 @@ class Bat extends FlyingAnimal
     public $flySpeed = 0.8;
     public $switchDirectionTicks = 100;
 
-    public function getName(): string
+    public function getName()
     {
         return "Bat";
     }

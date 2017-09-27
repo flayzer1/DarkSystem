@@ -19,7 +19,7 @@ class Horse extends Living
 {
     const NETWORK_ID = 23;
 
-    public function getName(): string
+    public function getName()
     {
         return "Horse";
     }
@@ -57,5 +57,4 @@ class Horse extends Living
 
         parent::spawnTo($player);
     }
-
 }

@@ -18,7 +18,7 @@ class Donkey extends Animal
 {
 	const NETWORK_ID = 24;
 
-	public function getName(): string
+	public function getName()
 	{
 		return "Donkey";
 	}

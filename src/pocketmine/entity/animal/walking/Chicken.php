@@ -25,7 +25,7 @@ class Chicken extends WalkingAnimal{
 		$this->setMaxHealth(4);
 	}
 
-	public function targetOption(Creature $creature, float $distance){
+	public function targetOption(Creature $creature, $distance){
 		if($creature instanceof Player){
 			return $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::SEEDS && $distance <= 39;
 		}

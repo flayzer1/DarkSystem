@@ -26,7 +26,7 @@ use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\item\Item as ItemItem;
 
-class Wither extends FlyingAnimal
+class Wither extends FlyingAnimal8
 {
     const NETWORK_ID = 52;
 
@@ -36,7 +36,7 @@ class Wither extends FlyingAnimal
 
     public $dropExp = 50;
 
-    public function getName(): string
+    public function getName()
     {
         return "Wither";
     }

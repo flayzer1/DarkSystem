@@ -58,4 +58,5 @@ interface ServerInstance{
      * @param string $value
      */
     public function handleOption($option, $value);
+    
 }

@@ -41,7 +41,7 @@ class ElderGuardian extends WaterAnimal implements Ageable
         $this->setDataFlag(ElderGuardian::DATA_FLAGS, ElderGuardian::DATA_FLAG_ELDER, 1);
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Elder Guardian";
     }

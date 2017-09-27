@@ -18,7 +18,7 @@ class Mule extends Animal
 {
 	const NETWORK_ID = 25;
 
-	public function getName(): string
+	public function getName()
 	{
 		return "Mule";
 	}

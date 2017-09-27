@@ -10,6 +10,7 @@
 #                            |___/
 
 namespace pocketmine\entity;
+
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
@@ -17,7 +18,7 @@ class Endermite extends Monster
 {
 	const NETWORK_ID = 55;
 
-	public function getName(): string
+	public function getName()
 	{
 		return "Endermite";
 	}

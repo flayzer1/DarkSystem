@@ -43,17 +43,17 @@ class Attribute
 
     public static function init()
     {
-        self::addAttribute(self::ABSORPTION, "minecraft:absorption", 0.00, 340282346638528859811704183484516925440.00, 0.00);
-        self::addAttribute(self::SATURATION, "minecraft:player.saturation", 0.00, 20.00, 5.00);
-        self::addAttribute(self::EXHAUSTION, "minecraft:player.exhaustion", 0.00, 5.00, 0.41);
-        self::addAttribute(self::KNOCKBACK_RESISTANCE, "minecraft:knockback_resistance", 0.00, 1.00, 0.00);
-        self::addAttribute(self::HEALTH, "minecraft:health", 0.00, 20.00, 20.00);
-        self::addAttribute(self::MOVEMENT_SPEED, "minecraft:movement", 0.00, 340282346638528859811704183484516925440.00, 0.10);
-        self::addAttribute(self::FOLLOW_RANGE, "minecraft:follow_range", 0.00, 2048.00, 16.00, false);
-        self::addAttribute(self::HUNGER, "minecraft:player.hunger", 0.00, 20.00, 20.00);
-        self::addAttribute(self::ATTACK_DAMAGE, "minecraft:attack_damage", 0.00, 340282346638528859811704183484516925440.00, 1.00, false);
-        self::addAttribute(self::EXPERIENCE_LEVEL, "minecraft:player.level", 0.00, 24791.00, 0.00);
-        self::addAttribute(self::EXPERIENCE, "minecraft:player.experience", 0.00, 1.00, 0.00);
+        Attribute::addAttribute(Attribute::ABSORPTION, "minecraft:absorption", 0.00, 340282346638528859811704183484516925440.00, 0.00);
+        Attribute::addAttribute(Attribute::SATURATION, "minecraft:player.saturation", 0.00, 20.00, 5.00);
+        Attribute::addAttribute(Attribute::EXHAUSTION, "minecraft:player.exhaustion", 0.00, 5.00, 0.41);
+        Attribute::addAttribute(Attribute::KNOCKBACK_RESISTANCE, "minecraft:knockback_resistance", 0.00, 1.00, 0.00);
+        Attribute::addAttribute(Attribute::HEALTH, "minecraft:health", 0.00, 20.00, 20.00);
+        Attribute::addAttribute(Attribute::MOVEMENT_SPEED, "minecraft:movement", 0.00, 340282346638528859811704183484516925440.00, 0.10);
+        Attribute::addAttribute(Attribute::FOLLOW_RANGE, "minecraft:follow_range", 0.00, 2048.00, 16.00, false);
+        Attribute::addAttribute(Attribute::HUNGER, "minecraft:player.hunger", 0.00, 20.00, 20.00);
+        Attribute::addAttribute(Attribute::ATTACK_DAMAGE, "minecraft:attack_damage", 0.00, 340282346638528859811704183484516925440.00, 1.00, false);
+        Attribute::addAttribute(Attribute::EXPERIENCE_LEVEL, "minecraft:player.level", 0.00, 24791.00, 0.00);
+        Attribute::addAttribute(Attribute::EXPERIENCE, "minecraft:player.experience", 0.00, 1.00, 0.00);
     }
 
     /**
@@ -72,7 +72,7 @@ class Attribute
             throw new \InvalidArgumentException("Invalid ranges: min value: $minValue, max value: $maxValue, $defaultValue: $defaultValue");
         }
 
-        return self::$attributes[(int)$id] = new Attribute($id, $name, $minValue, $maxValue, $defaultValue, $shouldSend);
+        return Attribute::$attributes[(int)$id] = new Attribute($id, $name, $minValue, $maxValue, $defaultValue, $shouldSend);
     }
 
     /**
@@ -82,7 +82,7 @@ class Attribute
      */
     public static function getAttribute($id)
     {
-        return isset(self::$attributes[$id]) ? clone self::$attributes[$id] : null;
+        return isset(Attribute::$attributes[$id]) ? clone Attribute::$attributes[$id] : null;
     }
 
     /**
@@ -92,7 +92,7 @@ class Attribute
      */
     public static function getAttributeByName($name)
     {
-        foreach (self::$attributes as $a){
+        foreach (Attribute::$attributes as $a){
             if($a->getName() === $name){
                 return clone $a;
             }

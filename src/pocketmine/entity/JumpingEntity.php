@@ -13,7 +13,7 @@ namespace pocketmine\entity;
 
 abstract class JumpingEntity extends BaseEntity{
 	
-    protected function checkTarget(bool $checkSkip = true){
+    protected function checkTarget($checkSkip = true){
     	
     }
 

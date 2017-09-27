@@ -11,6 +11,6 @@
 
 namespace pocketmine\entity;
 
-interface Boss{
+abstract class Boss extends Creature{
 
 }

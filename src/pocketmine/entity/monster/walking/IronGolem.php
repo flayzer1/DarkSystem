@@ -45,7 +45,7 @@ class IronGolem extends WalkingMonster{
 		}
 	}
 
-	public function targetOption(Creature $creature, float $distance){
+	public function targetOption(Creature $creature, $distance){
 		if(!($creature instanceof Player)){
 			return $creature->isAlive() && $distance <= 45;
 		}

@@ -18,7 +18,7 @@ class Husk extends Zombie
 {
     const NETWORK_ID = 47;
 
-    public function getName(): string
+    public function getName()
     {
         return "Husk";
     }

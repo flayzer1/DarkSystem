@@ -23,6 +23,7 @@ use pocketmine\level\Explosion;
 use pocketmine\event\entity\ExplosionPrimeEvent;
 
 class FireBall extends Projectile{
+	
 	const NETWORK_ID = 85;
 
 	public $width = 0.5;
@@ -46,7 +47,7 @@ class FireBall extends Projectile{
 		return $this->canExplode;
 	}
 
-	public function setExplode(bool $bool){
+	public function setExplode($bool){
 		$this->canExplode = $bool;
 	}
 
@@ -58,10 +59,10 @@ class FireBall extends Projectile{
 		$hasUpdate = parent::onUpdate($currentTick);
 
 		if(!$this->hadCollision and $this->isCritical){
-			$this->level->addParticle(new CriticalParticle($this->add(
+			/*$this->level->addParticle(new CriticalParticle($this->add(
 				$this->width / 2 + mt_rand(-100, 100) / 500,
 				$this->height / 2 + mt_rand(-100, 100) / 500,
-				$this->width / 2 + mt_rand(-100, 100) / 500)));
+				$this->width / 2 + mt_rand(-100, 100) / 500)));*/
 		}elseif($this->onGround){
 			$this->isCritical = false;
 		}
@@ -86,7 +87,7 @@ class FireBall extends Projectile{
 
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
-		$pk->type = self::NETWORK_ID;
+		$pk->type = FireBall::NETWORK_ID;
 		$pk->eid = $this->getId();
 		$pk->x = $this->x;
 		$pk->y = $this->y;

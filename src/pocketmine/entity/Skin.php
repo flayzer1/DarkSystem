@@ -37,9 +37,10 @@ class Skin{
 
 	public function setData($data){
 		if(strlen($data) != self::SINGLE_SKIN_SIZE && strlen($data) != self::DOUBLE_SKIN_SIZE){
-			Server::getInstance()->getLogger()->critical("Geçersiz Skin!");
+			//Server::getInstance()->getLogger()->critical("Geçersiz Skin!");
 			return false;
 		}
+		
 		$this->data = $data;
 	}
 

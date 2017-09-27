@@ -44,7 +44,7 @@ abstract class Spawnable extends Tile{
 		parent::__construct($level, $nbt);
 		$this->spawnToAll();
 	}
-
+	
 	public function spawnToAll(){
 		if($this->closed){
 			return;
@@ -54,6 +54,15 @@ abstract class Spawnable extends Tile{
 			if($player->spawned === true){
 				$this->spawnTo($player);
 			}
+		}
+	}
+	
+	protected function onChanged(){
+		$this->spawnToAll();
+
+		if($this->chunk !== null){
+			$this->chunk->setChanged();
+			$this->level->clearChunkCache($this->chunk->getX(), $this->chunk->getZ());
 		}
 	}
 }

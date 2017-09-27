@@ -57,7 +57,7 @@ class Minecart extends Vehicle{
     /**
      * @return string
      */
-    public function getName(): string{
+    public function getName(){
         return "Minecart";
     }
 

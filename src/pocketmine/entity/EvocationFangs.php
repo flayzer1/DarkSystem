@@ -18,7 +18,7 @@ class EvocationFangs extends Animal
 {
 	const NETWORK_ID = 103;
 
-	public function getName(): string
+	public function getName()
 	{
 		return "Evocation Fangs";
 	}

@@ -14,7 +14,7 @@ namespace pocketmine\entity;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
-class Vindicator extends Monster
+class Vindicator extends Illager
 {
 	const NETWORK_ID = 57;
 	

@@ -13,11 +13,11 @@ class Dragon extends Monster
 
 	public function initEntity()
 	{
-		$this->setMaxHealth(1);
+		$this->setMaxHealth(200);
 		parent::initEntity();
 	}
 
-	public function getName() : string
+	public function getName()
 	{
 		return "Ender Dragon";
 	}

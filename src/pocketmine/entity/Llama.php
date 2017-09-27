@@ -31,15 +31,16 @@ class Llama extends Animal
 
 	public $dropExp = [1, 3];
 	
-    public function getName(): string
+    public function getName()
     {
         return "Llama";
     }
     
     public function initEntity(){
+    	parent::initEntity();
+    
 		$this->setMaxHealth(30);
 		$this->setDataProperty(Entity::DATA_VARIANT, Entity::DATA_TYPE_INT, rand(0, 3));
-		parent::initEntity();
 	}
 	
     public function spawnTo(Player $player)

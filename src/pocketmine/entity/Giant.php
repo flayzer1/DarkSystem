@@ -14,10 +14,8 @@ namespace pocketmine\entity;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
-class Giant extends Monster
+class Giant extends Zombie
 {
-    const NETWORK_ID = 32;
-
     public $width = 3.6;
     //public $length = 3.6;
     public $height = 11.7;
@@ -40,7 +38,7 @@ class Giant extends Monster
     {
         $pk = new AddEntityPacket();
         $pk->eid = $this->getId();
-        $pk->type = Giant::NETWORK_ID;
+        $pk->type = Zombie::NETWORK_ID;
         $pk->x = $this->x;
         $pk->y = $this->y;
         $pk->z = $this->z;
@@ -52,6 +50,6 @@ class Giant extends Monster
         $pk->metadata = $this->dataProperties;
         $player->dataPacket($pk);
 
-        parent::spawnTo($player);
+        Entity::spawnTo($player);
     }
 }

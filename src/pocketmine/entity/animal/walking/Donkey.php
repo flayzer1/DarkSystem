@@ -18,7 +18,7 @@ class Donkey extends WalkingAnimal implements Rideable{
     public $height = 1.562;
     public $length = 1.2;
 
-    public function getName(): string{
+    public function getName(){
         return "Donkey";
     }
     
@@ -32,7 +32,7 @@ class Donkey extends WalkingAnimal implements Rideable{
         return 1.0;
     }
 
-    public function targetOption(Creature $creature, float $distance){
+    public function targetOption(Creature $creature, $distance){
         if($creature instanceof Player){
             return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
         }

@@ -42,7 +42,7 @@ class Horse extends WalkingAnimal implements Rideable{
 	public $maxhealth = 52;
 	public $maxjump = 3;
     
-    public function getName(): string{
+    public function getName(){
         return "Horse";
     }
     

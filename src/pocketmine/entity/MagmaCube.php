@@ -26,9 +26,7 @@ class MagmaCube extends Slime
 	public $length = 0.6;
 	public $height = 1.8;
 	
-	public $maxhealth = 16;
-	
-	public function getName(): string
+	public function getName()
 	{
 		return "MagmaCube";
 	}

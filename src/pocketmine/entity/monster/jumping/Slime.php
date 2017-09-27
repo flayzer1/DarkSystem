@@ -18,7 +18,7 @@ class Slime extends JumpingMonster{
     public $height = 1.2;
     public $length = 1.2;
     
-    public function getName(): string{
+    public function getName(){
         return "Slime";
     }
     
@@ -42,7 +42,7 @@ class Slime extends JumpingMonster{
         }
     }
 
-    public function targetOption(Creature $creature, float $distance){
+    public function targetOption(Creature $creature, $distance){
         if ($creature instanceof Player) {
             return $creature->isAlive() && $distance <= 25;
         }

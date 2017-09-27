@@ -33,6 +33,7 @@ use pocketmine\block\Sugarcane;
 use pocketmine\block\Wheat;
 use pocketmine\entity\Arrow;
 use pocketmine\entity\Entity;
+use pocketmine\entity\FloatingText;
 use pocketmine\entity\Item as DroppedItem;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
@@ -1119,7 +1120,42 @@ class Level implements ChunkManager, Metadatable{
 			$itemEntity->spawnToAll();
 		}
 	}
-
+	
+	/**
+	 * @param Vector3 $pos
+	 * @param string  $text
+	 * @param string  $title
+	 *
+	 * @return null|Entity
+	 */
+	public function addFloatingText(Vector3 $pos, $text, $title = ""){
+		$entity = Entity::createEntity("FloatingText", $this, new Compound("", [
+			new Enum("Pos", [
+				new DoubleTag("", $pos->x),
+				new DoubleTag("", $pos->y),
+				new DoubleTag("", $pos->z)
+			]),
+			new Enum("Motion", [
+				new DoubleTag("", 0),
+				new DoubleTag("", 0),
+				new DoubleTag("", 0)
+			]),
+			new Enum("Rotation", [
+				new FloatTag("", 0),
+				new FloatTag("", 0)
+			])
+		]));
+		
+		assert($entity !== null);
+		if($entity instanceof FloatingText){
+			$entity->setTitle($title);
+			$entity->setText($text);
+		}
+		
+		$entity->spawnToAll();
+		return $entity;
+	}
+	
 	/**
 	 * @param Vector3 $vector
 	 * @param Item    &$item (if null, can break anything)

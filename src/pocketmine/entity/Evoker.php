@@ -14,11 +14,11 @@ namespace pocketmine\entity;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
-class Evoker extends Animal
+class Evoker extends Illager
 {
 	const NETWORK_ID = 104;
 
-	public function getName(): string
+	public function getName()
 	{
 		return "Evoker";
 	}

@@ -18,7 +18,7 @@ class Husk extends WalkingMonster implements Ageable{
     public $length = 0.891;
     public $height = 2;
     
-    public function getName(): string{
+    public function getName(){
         return "Husk";
     }
     

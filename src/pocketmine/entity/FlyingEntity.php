@@ -86,6 +86,7 @@ abstract class FlyingEntity extends BaseEntity{
 				$this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
 				$this->motionY = $this->getSpeed() * 0.27 * ($y / $diff);
 			}
+			
 			$this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
 			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
 		}
@@ -140,7 +141,7 @@ abstract class FlyingEntity extends BaseEntity{
 		if($this instanceof Blaze){
 			if($this->onGround && !$isJump){
 				$this->motionY = 0;
-			}else if(!$isJump){
+			}elseif(!$isJump){
 				if($this->motionY > -$this->gravity * 4){
 					$this->motionY = -$this->gravity * 4;
 				}else{
@@ -148,6 +149,7 @@ abstract class FlyingEntity extends BaseEntity{
 				}
 			}
 		}
+		
 		$this->updateMovement();
 		return $target;
 	}

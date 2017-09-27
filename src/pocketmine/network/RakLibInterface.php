@@ -106,12 +106,10 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			while($this->interface->handlePacket()){
 			}
 		}
-
 		if($this->rakLib->isTerminated()){
 			$this->network->unregisterInterface($this);
 			throw new \Exception("RakLib Crashed!");
 		}
-
 		return $work;
 	}
 
@@ -148,7 +146,6 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		$ev = new PlayerCreationEvent($this, Player::class, Player::class, null, $address, $port);
 		$this->server->getPluginManager()->callEvent($ev);
 		$class = $ev->getPlayerClass();
-
 		$player = new $class($this, $ev->getClientId(), $ev->getAddress(), $ev->getPort());
 		$this->players[$identifier] = $player;
 		$this->identifiersACK[$identifier] = 0;
@@ -162,9 +159,13 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			$player = $this->players[$identifier];
 			try{
 				if($buffer !== ""){
-					$pk = $this->getPacket($buffer, $player->getPlayerProtocol(), $player->isOnline());				
+					$pk = $this->getPacket($buffer, $player);
 					if(!is_null($pk)){
-						$pk->decode($player->getPlayerProtocol());
+						try{
+							$pk->decode($player->getPlayerProtocol());
+						}catch(\Exception $e){
+							return true;
+						}
 						$player->handleDataPacket($pk);
 					}
 				}
@@ -206,7 +207,6 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		//$poc = $info->getPlayerCount();
 		$pc = $this->server->getMaxPlayers();
 		$poc = count($this->server->getOnlinePlayers());
-		
 		$this->interface->sendOption("name",
 			"MCPE;" . rtrim(addcslashes($name, ";"), '\\') . ";" .
 			ProtocolInfo::CURRENT_PROTOCOL . ";" .
@@ -221,7 +221,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	}
 
 	public function handleOption($name, $value){
-		if($name === "unknown" or $name === "dos" or $name === "ddos" or $name === "hack"){
+		if($name === "unknown" || $name === "dos" || $name === "ddos" || $name === "hack"){
 			return true;
 		}
 		if($name === "bandwidth"){
@@ -245,6 +245,9 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			if($needACK === true){
 				$pk->identifierACK = $this->identifiersACK[$identifier]++;
 			}
+			if($player->isEncryptEnable()){
+				$pk->buffer = chr(0xfe) . $player->getEncrypt(substr($pk->buffer, 1));
+			}
 			if($immediate){
 				$pk->reliability = 0;
 			}
@@ -257,12 +260,12 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		$playerProtocol = $player->getPlayerProtocol();
 		if($player->isEncryptEnable()){
 			$buffer = $player->getDecrypt($buffer);			
-		}		
-		if($playerProtocol >= ProtocolInfo::PROTOCOL_110 || $player->getOriginalProtocol() == 0 && $this->isZlib($buffer)){
+		}
+		/*if($playerProtocol >= ProtocolInfo::PROTOCOL_110 || $player->getOriginalProtocol() == 0 && $this->isZlib($buffer)){
 			$pk = new BatchPacket($buffer);
 			$pk->is110 = true;
 			return $pk;
-		}
+		}*/
 		$pid = ord($buffer{0});
 		if(($data = $this->network->getPacket($pid, $playerProtocol)) === null){
 			return null;
@@ -271,7 +274,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		$data->setBuffer($buffer, $offset);
 		return $data;
 	}
-
+	
 	public function putReadyPacket($player, $buffer){
 		if(isset($this->identifiers[$player])){	
 			$pk = new EncapsulatedPacket();

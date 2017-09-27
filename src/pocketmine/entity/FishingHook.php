@@ -77,9 +77,9 @@ class FishingHook extends Projectile{
 			$this->keepMovement = false;
 			$hasUpdate = true;
 		}
-		if($this->attractTimer === 0 && mt_rand(0, 100) <= 30){ // chance, that a fish bites
-			$this->coughtTimer = mt_rand(5, 10) * 20; // random delay to catch fish
-			$this->attractTimer = mt_rand(30, 100) * 20; // reset timer
+		if($this->attractTimer === 0 && mt_rand(0, 100) <= 30){
+			$this->coughtTimer = mt_rand(5, 10) * 20;
+			$this->attractTimer = mt_rand(30, 100) * 20;
 			$this->attractFish();
 			if($this->shootingEntity instanceof Player) $this->shootingEntity->sendTip("A fish bites!");
 		}elseif($this->attractTimer > 0){
@@ -154,4 +154,5 @@ class FishingHook extends Projectile{
 
 		parent::spawnTo($player);
 	}
+	
 }

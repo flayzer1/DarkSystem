@@ -34,7 +34,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource{
 		return "SnowGolem";
 	}
 
-	public function targetOption(Creature $creature, float $distance){
+	public function targetOption(Creature $creature, $distance){
 		return !($creature instanceof Player) && $creature->isAlive() && $distance <= 40;
 	}
 

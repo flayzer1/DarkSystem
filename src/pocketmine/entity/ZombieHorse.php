@@ -18,7 +18,7 @@ class ZombieHorse extends Monster
 {
 	const NETWORK_ID = 27;
 
-	public function getName(): string
+	public function getName()
 	{
 		return "Zombie Horse";
 	}

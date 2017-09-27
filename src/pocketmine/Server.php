@@ -231,7 +231,7 @@ class Server extends DarkSystem{
 	
 	private $useAnimal;
 	private $animalLimit;
-	private $useMonster ;
+	private $useMonster;
 	private $monsterLimit;
 	
 	public $packetMgr = null;
@@ -245,6 +245,8 @@ class Server extends DarkSystem{
 	private $serverToken = "hksdYI3has";
 	
 	private $isUseEncrypt = false;
+	
+	private $craftList = [];
 	
 	public $keepInventory = false;
 	public $netherEnabled = false;
@@ -672,6 +674,20 @@ class Server extends DarkSystem{
 		$this->craftingMgr->registerRecipe($recipe);
 	}
 	
+	public function isCreditsEnable(){
+		$isEnable = false; //TODO: Add config
+		switch($isEnable){
+			case true:
+			$result = 1;
+			break;
+			case false:
+			$result = 0;
+			break;
+		}
+		
+		return $result;
+	}
+	
 	public function clearChat(){
 		foreach($this->getOnlinePlayers() as $p){
 			$p->sendMessage(" ");
@@ -790,7 +806,13 @@ class Server extends DarkSystem{
 			new StringTag("Level", $this->getDefaultLevel()->getName()),
 			new Enum("Inventory", []),
 			new Enum("EnderChestInventory", []),
+			new Enum("recipeBook", []),
 			new Compound("Achievements", []),
+			new Compound("EnderItems", []),
+			new IntTag("Score", 0),
+			new IntTag("ShoulderEntityLeft", $player->getLeftShoulderEntity()),
+			new IntTag("ShoulderEntityRight", $player->getRightShoulderEntity()),
+			new IntTag("seenCredits", $this->isCreditsEnable()),
 			new IntTag("playerGameType", $this->getGamemode()),
 			new Enum("Motion", [
 				new DoubleTag(0, 0.0),
@@ -1580,6 +1602,7 @@ class Server extends DarkSystem{
 				"hardcore" => false,
 				"pvp" => true,
 				"difficulty" => 1,
+				"enable-command-block" => true,
 				"generator-settings" => "",
 				"level-name" => "world",
 				"level-seed" => "",
@@ -1614,6 +1637,7 @@ class Server extends DarkSystem{
 				"hardcore" => false,
 				"pvp" => true,
 				"difficulty" => 1,
+				"enable-command-block" => true,
 				"generator-settings" => "",
 				"level-name" => "world",
 				"level-seed" => "",
@@ -1790,6 +1814,7 @@ class Server extends DarkSystem{
 			$this->useMonster = $this->getConfigBoolean("spawn-mobs", false);
 			$this->monsterLimit = $this->getConfigInt("mobs-limit", 0);
 			$this->isUseEncrypt = $this->getConfigBoolean("use-encrypt", false);
+			$this->isCmdBlockEnable = $this->getConfigBoolean("enable-command-block", true);
 			
 			if($this->getConfigBoolean("hardcore", false) === true && $this->getDifficulty() < 3){
 				$this->setConfigInt("difficulty", 3);
@@ -2290,10 +2315,12 @@ class Server extends DarkSystem{
 		ini_set("memory_limit", -1);
 		
 		$this->konsol->emergency($this->getLanguage()->translateString("pocketmine.crash.create"));
+		
 		try{
 		    $report = new CrashReport($this);
 		}catch(\Exception $e){
 			$this->konsol->critical($this->getLanguage()->translateString("pocketmine.crash.error", $e->getMessage()));
+			return true;
 		}
 
 		$this->konsol->emergency($this->getLanguage()->translateString("pocketmine.crash.submit", [$report->getPath()]));
@@ -2360,8 +2387,6 @@ class Server extends DarkSystem{
 			$p->dataPacket($pk);
 		}
 	}
-	
-	private $craftList = [];
 	
 	public function sendRecipeList(Player $p){
 		if(!isset($this->craftList[$p->getPlayerProtocol()])){
@@ -2611,6 +2636,10 @@ class Server extends DarkSystem{
 		}
 		$this->nextTick += 0.05;
 		return true;
+	}
+	
+	public function isCommandBlockEnable(){
+		return $this->isCmdBlockEnable;
 	}
 	
 	public function isUseEncrypt(){

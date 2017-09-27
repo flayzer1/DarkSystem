@@ -21,7 +21,7 @@ class MinecartChest extends Minecart{
 	/**
 	 * @return string
 	 */
-	public function getName(): string{
+	public function getName(){
 		return "Minecart Chest";
 	}
 

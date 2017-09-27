@@ -26,7 +26,7 @@ class Vex extends Monster
 
 	public $dropExp = [5, 5];
 	
-	public function getName(): string
+	public function getName()
 	{
 		return "Vex";
 	}

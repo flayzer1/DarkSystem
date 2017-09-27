@@ -92,4 +92,5 @@ interface Logger{
      * @param $trace
      */
     public function logException(\Throwable $e);
+    
 }

@@ -1,23 +1,13 @@
 <?php
 
-/*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\entity;
 
@@ -28,7 +18,7 @@ use pocketmine\item\Item as ItemItem;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\network\protocol\AddEntityPacket;
-use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\Compound;
 use pocketmine\Player;
 
 class Rabbit extends Animal
@@ -58,7 +48,7 @@ class Rabbit extends Animal
         parent::initEntity();
     }
 
-    public function __construct(Level $level, CompoundTag $nbt)
+    public function __construct(Level $level, Compound $nbt)
     {
         if (!isset($nbt->RabbitType)) {
             $nbt->RabbitType = new ByteTag("RabbitType", $this->getRandomRabbitType());
@@ -68,23 +58,23 @@ class Rabbit extends Animal
         $this->setDataProperty(self::DATA_RABBIT_TYPE, self::DATA_TYPE_BYTE, $this->getRabbitType());
     }
 
-    public function getRandomRabbitType(): int
+    public function getRandomRabbitType()
     {
         $arr = [0, 1, 2, 3, 4, 5, 99];
         return $arr[mt_rand(0, count($arr) - 1)];
     }
 
-    public function setRabbitType(int $type)
+    public function setRabbitType($type)
     {
         $this->namedtag->RabbitType = new ByteTag("RabbitType", $type);
     }
 
-    public function getRabbitType(): int
+    public function getRabbitType()
     {
         return (int)$this->namedtag["RabbitType"];
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Rabbit";
     }
@@ -121,12 +111,9 @@ class Rabbit extends Animal
         } else {
             $drops[] = ItemItem::get(ItemItem::RAW_RABBIT, 0, mt_rand(0, 1));
         }
-        //Rare drop
         if (mt_rand(1, 200) <= (5 + 2 * $lootingL)) {
             $drops[] = ItemItem::get(ItemItem::RABBIT_FOOT, 0, 1);
         }
         return $drops;
     }
-
-
 }

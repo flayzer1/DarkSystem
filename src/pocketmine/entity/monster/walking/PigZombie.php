@@ -51,11 +51,11 @@ class PigZombie extends WalkingMonster{
 		return $this->angry > 0;
 	}
 
-	public function setAngry(int $val){
+	public function setAngry($val){
 		$this->angry = $val;
 	}
 
-	public function targetOption(Creature $creature, float $distance){
+	public function targetOption(Creature $creature, $distance){
 		return $this->isAngry() && parent::targetOption($creature, $distance);
 	}
 
@@ -104,5 +104,4 @@ class PigZombie extends WalkingMonster{
 		}
 		return $drops;
 	}
-
 }

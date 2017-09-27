@@ -22,6 +22,7 @@ use pocketmine\Player;
 use pocketmine\Server;
 
 class Squid extends WaterAnimal implements Ageable{
+	
 	const NETWORK_ID = 17;
 
 	public $width = 0.95;
@@ -63,8 +64,7 @@ class Squid extends WaterAnimal implements Ageable{
 	private function generateRandomDirection(){
 		return new Vector3(mt_rand(-1000, 1000) / 1000, mt_rand(-500, 500) / 1000, mt_rand(-1000, 1000) / 1000);
 	}
-
-
+	
 	public function onUpdate($type){
 		
 	}

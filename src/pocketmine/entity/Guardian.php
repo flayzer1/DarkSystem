@@ -50,7 +50,7 @@ class Guardian extends WaterAnimal implements Ageable
         $this->setMaxHealth(30);
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Guardian";
     }

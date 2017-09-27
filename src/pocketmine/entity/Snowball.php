@@ -62,4 +62,5 @@ class Snowball extends Projectile{
 
 		parent::spawnTo($player);
 	}
+	
 }

@@ -8,6 +8,7 @@ use pocketmine\Player;
 use pocketmine\entity\Creature;
 
 class Rabbit extends WalkingAnimal{
+	
 	const NETWORK_ID = 18;
 
 	public $width = 0.4;
@@ -27,7 +28,7 @@ class Rabbit extends WalkingAnimal{
 		$this->setMaxHealth(3);
 	}
 
-	public function targetOption(Creature $creature, float $distance){
+	public function targetOption(Creature $creature, $distance){
 		if($creature instanceof Player){
 			return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::SEEDS && $distance <= 39;
 		}

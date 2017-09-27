@@ -8,6 +8,7 @@ use pocketmine\item\Item;
 use pocketmine\entity\Creature;
 
 class Ocelot extends WalkingAnimal{
+	
 	const NETWORK_ID = 22;
 
 	public $width = 0.72;
@@ -27,7 +28,7 @@ class Ocelot extends WalkingAnimal{
 		return "Ocelot";
 	}
 
-	public function targetOption(Creature $creature, float $distance){
+	public function targetOption(Creature $creature, $distance){
 		if($creature instanceof Player){
 			return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::RAW_FISH && $distance <= 39;
 		}

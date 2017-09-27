@@ -10,6 +10,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
 
 class Sheep extends WalkingAnimal implements Colorable{
+	
 	const NETWORK_ID = 13;
 
 	public $width = 1.45;
@@ -25,7 +26,7 @@ class Sheep extends WalkingAnimal implements Colorable{
 		$this->setMaxHealth(8);
 	}
 
-	public function targetOption(Creature $creature, float $distance){
+	public function targetOption(Creature $creature, $distance){
 		if($creature instanceof Player){
 			return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 39;
 		}

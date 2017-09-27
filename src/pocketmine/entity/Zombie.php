@@ -25,7 +25,7 @@ class Zombie extends Monster
     public $length = 0.6;
     public $height = 1.8;
     
-    public function getName(): string
+    public function getName()
     {
         return "Zombie";
     }
@@ -54,5 +54,4 @@ class Zombie extends Monster
 
         parent::spawnTo($player);
     }
-    
 }

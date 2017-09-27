@@ -16,7 +16,7 @@ class MagmaCube extends JumpingMonster{
     public $height = 1.2;
     public $length = 1.2;
     
-    public function getName(): string{
+    public function getName(){
         return "MagmaCube";
     }
     

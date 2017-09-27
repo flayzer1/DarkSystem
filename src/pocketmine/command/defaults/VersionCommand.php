@@ -14,8 +14,9 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
 use pocketmine\network\protocol\Info as ProtocolInfo;
-use pocketmine\plugin\Plugin;
 use pocketmine\utils\TextFormat;
+use pocketmine\plugin\Plugin;
+use pocketmine\Translate;
 
 class VersionCommand extends VanillaCommand{
 
@@ -38,7 +39,11 @@ class VersionCommand extends VanillaCommand{
 			$ver = \pocketmine\VERSION;
 			$tag = \pocketmine\TAG;
 			$build = ProtocolInfo::DARKSYSTEM_VERSION;
-			$sender->sendMessage("§eBu Sunucu §aDarkSystem $tag $ver ($build) §eVersiyonunda Çalışıyor\n§eAPI: §a3.0.1\n§eDarkSystem'i İndirmek İçin:\n§ahttp://darkyusuf13.weebly.com/darksystem.html§r");
+			if(Translate::checkTurkish() === "yes"){
+				$sender->sendMessage("§eBu Sunucu §aDarkSystem $tag $ver ($build) §eVersiyonunda Çalışıyor\n§eAPI: §a3.0.1\n§eDarkSystem'i İndirmek İçin:\n§ahttps://github.com/DarkYusuf13/DarkSystem§r");
+			}else{
+				$sender->sendMessage("§eThis Server is Running on §aDarkSystem $tag $ver ($build)\n§eAPI: §a3.0.1\n§eTo Download DarkSystem:\n§ahttps://github.com/DarkYusuf13/DarkSystem§r");
+			}
 		}else{
 			$pluginName = implode(" ", $args);
 			$exactPlugin = $sender->getServer()->getPluginManager()->getPlugin($pluginName);

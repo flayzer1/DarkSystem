@@ -12,7 +12,7 @@ class Villager extends WalkingAnimal{
     public $length = 0.609;
     public $height = 2;
     
-    public function getName(): string{
+    public function getName(){
         return "Villager";
     }
     

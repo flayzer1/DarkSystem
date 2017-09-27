@@ -19,7 +19,7 @@ class AttributeMap implements \ArrayAccess{
 		$this->attributes[$attribute->getId()] = $attribute;
 	}
 	
-	public function getAttribute(int $id){
+	public function getAttribute($id){
 		return $this->attributes[$id] ?? null;
 	}
 

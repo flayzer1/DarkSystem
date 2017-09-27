@@ -14,8 +14,9 @@ namespace pocketmine\entity;
 use pocketmine\block\Block;
 use pocketmine\block\Water;
 use pocketmine\darkbot\entity\NPC;
-use pocketmine\entity\{Arrow, BlazeFireball, Camera, Car, Item as DroppedItem, Egg, EnderCrystal, EnderPearl, FallingSand, FishingHook, GhastFireball, LeashKnot, Lightning, Minecart, MinecartChest, MinecartHopper, MinecartTNT, Painting, PrimedTNT, Snowball, ThrownExpBottle, ThrownPotion, XPOrb, Herobrine, Human, Bat, BlueWitherSkull, Boat, Dragon, ElderGuardian, EnderDragon, Endermite, EvocationFangs, Giant, Guardian, Llama, PolarBear, Shulker, ShulkerBullet, SkeletonHorse, Squid, Vindicator, Witch, Wither, WitherSkeleton, ZombieHorse};
+use pocketmine\entity\{Arrow, BlazeFireball, Camera, Car, Item as DroppedItem, Egg, EnderCrystal, EnderPearl, FallingSand, FishingHook, FloatingText, GhastFireball, LeashKnot, Lightning, Minecart, MinecartChest, MinecartHopper, MinecartTNT, Painting, PrimedTNT, Snowball, ThrownExpBottle, ThrownPotion, XPOrb, Herobrine, Human, BlueWitherSkull, Boat, Dragon, ElderGuardian, EnderDragon, Endermite, EvocationFangs, Giant, Guardian, Illusioner, Llama, PolarBear, Shulker, ShulkerBullet, SkeletonHorse, Squid, Vindicator, Witch, Wither, WitherSkeleton, ZombieHorse};
 use pocketmine\entity\animal\walking\{Chicken, Cow, Donkey, Horse, Mooshroom, Mule, Ocelot, Pig, Rabbit, Sheep, Villager};
+use pocketmine\entity\animal\flying\{Bat, Parrot};
 use pocketmine\entity\monster\flying\{Blaze, Ghast, Vex};
 use pocketmine\entity\monster\jumping\{MagmaCube/*, Slime*/};
 use pocketmine\entity\monster\walking\{CaveSpider, Creeper, Enderman, Husk, IronGolem, PigZombie, Silverfish, Skeleton, SnowGolem, Spider, Stray, Wolf, Zombie, ZombieVillager};
@@ -57,8 +58,8 @@ use pocketmine\network\protocol\MovePlayerPacket;
 use pocketmine\network\protocol\RemoveEntityPacket;
 use pocketmine\network\protocol\SetEntityDataPacket;
 use pocketmine\network\protocol\SetTimePacket;
-use pocketmine\Player;
 use pocketmine\plugin\Plugin;
+use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\ChunkException;
 use pocketmine\block\Liquid;
@@ -226,6 +227,7 @@ abstract class Entity extends Location implements Metadatable{
 		Entity::registerEntity(FallingSand::class);
 		Entity::registerEntity(FireBall::class);
 		Entity::registerEntity(FishingHook::class);
+		Entity::registerEntity(FloatingText::class);
 		Entity::registerEntity(GhastFireball::class);
 		Entity::registerEntity(Item::class);
 		Entity::registerEntity(LeashKnot::class);
@@ -262,6 +264,7 @@ abstract class Entity extends Location implements Metadatable{
 		//Entity::registerEntity(Herobrine::class);
 		//Entity::registerEntity(Horse::class);
 		Entity::registerEntity(Husk::class);
+		Entity::registerEntity(Illusioner::class);
 		Entity::registerEntity(IronGolem::class);
 		Entity::registerEntity(LavaSlime::class);
 		Entity::registerEntity(Llama::class);
@@ -270,6 +273,7 @@ abstract class Entity extends Location implements Metadatable{
 		Entity::registerEntity(Mule::class);
 		Entity::registerEntity(NPC::class);
 		Entity::registerEntity(Ocelot::class);
+		Entity::registerEntity(Parrot::class);
 		Entity::registerEntity(Pig::class);
 		Entity::registerEntity(PigZombie::class);
 		Entity::registerEntity(PolarBear::class);
@@ -684,7 +688,7 @@ abstract class Entity extends Location implements Metadatable{
 		if(is_a($className, Entity::class, true) && !$class->isAbstract()){
 			if($className::NETWORK_ID !== -1){
 				Entity::$knownEntities[$className::NETWORK_ID] = $className;
-			} else if(!$force){
+			}elseif(!$force){
 				return false;
 			}
 
@@ -711,7 +715,7 @@ abstract class Entity extends Location implements Metadatable{
 			if($this->getNameTag() !== ""){
 				$this->namedtag->CustomName = new StringTag("CustomName", $this->getNameTag());
 				$this->namedtag->CustomNameVisible = new StringTag("CustomNameVisible", $this->isNameTagVisible());
-			} else {
+			}else{
 				unset($this->namedtag->CustomName);
 				unset($this->namedtag->CustomNameVisible);
 			}

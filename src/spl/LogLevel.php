@@ -16,6 +16,7 @@
 */
 
 interface LogLevel{
+	
     const EMERGENCY = "emergency";
     const ALERT = "alert";
     const CRITICAL = "critical";
@@ -24,4 +25,5 @@ interface LogLevel{
     const NOTICE = "notice";
     const INFO = "info";
     const DEBUG = "debug";
+    
 }

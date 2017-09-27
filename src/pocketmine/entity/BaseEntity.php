@@ -76,20 +76,20 @@ abstract class BaseEntity extends Creature{
 		return $this->wallcheck;
 	}
 
-	public function setMovement(bool $value){
+	public function setMovement($value){
 		$this->movement = $value;
 	}
 
-	public function setFriendly(bool $bool){
+	public function setFriendly($bool){
 		$this->friendly = $bool;
 	}
 
-	public function setWallCheck(bool $value){
+	public function setWallCheck($value){
 		$this->wallcheck = $value;
 	}
 
 	public function getSpeed(){
-		return 1;
+		return 1.0;
 	}
 
 	public function initEntity(){
@@ -225,8 +225,8 @@ abstract class BaseEntity extends Creature{
 		return true;
 	}
 
-	public function targetOption(Creature $creature, float $distance){
-		return $this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() || $creature->isAdventure() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 61;
+	public function targetOption(Creature $creature, $distance){
+		return $this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() || $creature->isAdventure() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 51;
 	}
 	
 	public static function create($type, Position $source, ...$args){
