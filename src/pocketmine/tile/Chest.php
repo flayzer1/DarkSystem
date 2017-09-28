@@ -156,6 +156,7 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 				$pair->createPair($this);
 				$pair->checkPairing();
 			}
+			
 			if($this->doubleInventory === null){
 				if(($pair->x + ($pair->z << 15)) > ($this->x + ($this->z << 15))){
 					$this->doubleInventory = new DoubleChestInventory($pair, $this);
@@ -245,6 +246,7 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 			$tile->checkPairing();
 			$tile->spawnToAll();
 		}
+		
 		$this->checkPairing();
 
 		return true;
@@ -252,11 +254,11 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 
 	public function getSpawnCompound(){
 		if(Translate::checkTurkish() === "yes"){
-			$paired = "§6Sandık";
-			$unpaired = "§6Geniş Sandık";
+			$paired = "§6Geniş Sandık";
+			$unpaired = "§6Sandık";
 		}else{
-			$paired = "§6Chest";
-			$unpaired = "§6Large Chest";
+			$paired = "§6Large Chest";
+			$unpaired = "§6Chest";
 		}
 		if($this->isPaired()){
 			$c = new Compound("", [

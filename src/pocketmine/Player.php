@@ -1125,7 +1125,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$pk->setFlag(AdventureSettingsPacket::AUTO_JUMP, $this->autoJump);
 		$pk->setFlag(AdventureSettingsPacket::ALLOW_FLIGHT, $this->allowFlight);
 		$pk->setFlag(AdventureSettingsPacket::NO_CLIP, $this->isSpectator());
-		$pk->setFlag(AdventureSettingsPacket::FLYING, $this->flying);
+		//$pk->setFlag(AdventureSettingsPacket::FLYING, $this->flying);
 
 		$pk->commandPermission = ($this->isOp() ? AdventureSettingsPacket::PERMISSION_OPERATOR : AdventureSettingsPacket::PERMISSION_NORMAL);
 		$pk->playerPermission = ($this->isOp() ? PlayerPermissions::OPERATOR : PlayerPermissions::MEMBER);

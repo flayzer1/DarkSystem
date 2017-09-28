@@ -52,7 +52,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	private $interface;
 	
 	public $count = 0;
-	public $maxcount = 100;
+	public $maxcount = 25;
 	
 	public function setCount($count, $maxcount){
 		$this->count = $count;
@@ -245,9 +245,9 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			if($needACK === true){
 				$pk->identifierACK = $this->identifiersACK[$identifier]++;
 			}
-			if($player->isEncryptEnable()){
+			/*if($player->isEncryptEnable()){
 				$pk->buffer = chr(0xfe) . $player->getEncrypt(substr($pk->buffer, 1));
-			}
+			}*/
 			if($immediate){
 				$pk->reliability = 0;
 			}
@@ -258,9 +258,9 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	
 	private function getPacket($buffer, $player){
 		$playerProtocol = $player->getPlayerProtocol();
-		if($player->isEncryptEnable()){
+		/*if($player->isEncryptEnable()){
 			$buffer = $player->getDecrypt($buffer);			
-		}
+		}*/
 		/*if($playerProtocol >= ProtocolInfo::PROTOCOL_110 || $player->getOriginalProtocol() == 0 && $this->isZlib($buffer)){
 			$pk = new BatchPacket($buffer);
 			$pk->is110 = true;

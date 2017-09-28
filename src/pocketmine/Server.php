@@ -1591,7 +1591,7 @@ class Server extends DarkSystem{
 				"white-list" => false,
 				"announce-player-achievements" => false,
 				"spawn-protection" => 16,
-				"max-players" => 100,
+				"max-players" => 25,
 				"allow-flight" => false,
 				"spawn-animals" => true,
 				"animals-limit" => 0,
@@ -1626,7 +1626,7 @@ class Server extends DarkSystem{
 				"white-list" => false,
 				"announce-player-achievements" => false,
 				"spawn-protection" => 16,
-				"max-players" => 100,
+				"max-players" => 25,
 				"allow-flight" => false,
 				"spawn-animals" => true,
 				"animals-limit" => 0,
@@ -1804,7 +1804,7 @@ class Server extends DarkSystem{
 			$this->banByCID->load();
 			}
 			
-			$this->maxPlayers = $this->getConfigInt("max-players", 100);
+			$this->maxPlayers = $this->getConfigInt("max-players", 25);
 			$this->setAutoSave($this->getConfigBoolean("auto-save", true));
 			$this->setAutoGenerate($this->getConfigBoolean("auto-generate", true));
 			$this->setSavePlayerData($this->getConfigBoolean("save-player-data", true));
@@ -2144,7 +2144,7 @@ class Server extends DarkSystem{
 		$this->properties->reload();
 		$this->advancedConfig->reload();
 		$this->loadAdvancedConfig();
-		$this->maxPlayers = $this->getConfigInt("max-players", 100);
+		$this->maxPlayers = $this->getConfigInt("max-players", 25);
 		
 		$this->banByName->load();
 		$this->banByIP->load();
