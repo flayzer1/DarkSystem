@@ -62,7 +62,7 @@ abstract class Spawnable extends Tile{
 
 		if($this->chunk !== null){
 			$this->chunk->setChanged();
-			$this->level->clearChunkCache($this->chunk->getX(), $this->chunk->getZ());
+			//$this->level->clearChunkCache($this->chunk->getX(), $this->chunk->getZ());
 		}
 	}
 }
