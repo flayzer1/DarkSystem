@@ -276,11 +276,14 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	}
 	
 	public function putReadyPacket($player, $buffer){
-		if(isset($this->identifiers[$player])){	
+		if(isset($this->identifiers[$player])){
 			$pk = new EncapsulatedPacket();
 			$pk->buffer = chr(0xfe) . $buffer;
-			$pk->reliability = 3;		
-			$this->interface->sendEncapsulated($player->getIdentifier(), $pk, RakLib::PRIORITY_NORMAL);			
+			$pk->reliability = 3;
+			/*if($player->isEncryptEnable()){
+				$pk->buffer = chr(0xfe) . $player->getEncrypt(substr($pk->buffer, 1));
+			}*/
+			$this->interface->sendEncapsulated($player->getIdentifier(), $pk, RakLib::PRIORITY_NORMAL);
 		}
 	}
 	

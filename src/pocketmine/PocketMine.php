@@ -75,21 +75,15 @@ namespace pocketmine{
 	if(!strpos(VERSION, ".")){
 		echo "[HATA] Geçersiz DarkSystem Sürümü!" . PHP_EOL;
 		exit(1);
-		exit(1);
-		exit(1);
 	}
 	
 	if(!strpos(DARKBOT_VERSION, ".")){
 		echo "[HATA] Geçersiz DarkBot Sürümü!" . PHP_EOL;
 		exit(1);
-		exit(1);
-		exit(1);
 	}
 	
 	if(!strpos(API_VERSION, ".")){
 		echo "[HATA] Geçersiz API Sürümü!" . PHP_EOL;
-		exit(1);
-		exit(1);
 		exit(1);
 	}
 	
@@ -97,15 +91,11 @@ namespace pocketmine{
 	if(CODENAME !== $codename){
 		echo "[HATA] Orjinal Olmayan DarkSystem Yüklemesi Bulundu!" . PHP_EOL;
 		exit(1);
-		exit(1);
-		exit(1);
 	}
 	
 	$creator = "DarkYusuf13"; //WARNING: Do not change!
 	if(CREATOR !== $creator){
 		echo "[HATA] Orjinal Olmayan DarkSystem Yüklemesi Bulundu!" . PHP_EOL;
-		exit(1);
-		exit(1);
 		exit(1);
 	}
 	
@@ -113,15 +103,11 @@ namespace pocketmine{
 		echo "[HATA] PHP 7.0 Kullanmalısınız!" . PHP_EOL;
 		echo "[HATA] Yükleyici Kullanarak İndiriniz!" . PHP_EOL;
 		exit(1);
-		exit(1);
-		exit(1);
 	}
 
 	if(!extension_loaded("pthreads")){
 		echo "[HATA] pthreads Bulunamadı!" . PHP_EOL;
 		echo "[HATA] Yükleyici Kullanarak İndiriniz!" . PHP_EOL;
-		exit(1);
-		exit(1);
 		exit(1);
 	}
 	
@@ -286,8 +272,6 @@ namespace pocketmine{
 		$konsol->critical("Lütfen PHP'yi Güncelleyiniz!");
 		$konsol->shutdown();
 		exit(1);
-		exit(1);
-		exit(1);
 	}
 	
 	@define("ENDIANNESS", (pack("d", 1) === "\77\360\0\0\0\0\0\0" ? 0x00 : 0x01));
@@ -306,7 +290,5 @@ namespace pocketmine{
 	
 	$konsol->info("§cSunucu Durduruldu!");
 	$konsol->shutdown();
-	exit(0);
-	exit(0);
 	exit(0);
 }

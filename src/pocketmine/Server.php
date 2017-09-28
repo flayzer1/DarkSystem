@@ -153,7 +153,7 @@ class Server extends DarkSystem{
 	private $consoleSender;
 
 	/** @var int */
-	private $maxPlayers;
+	private $maxPlayers = 25;
 
 	/** @var bool */
 	private $autoSave;
@@ -195,9 +195,7 @@ class Server extends DarkSystem{
 	private $filePath;
 	private $dataPath;
 	private $pluginPath;
-
-	private $lastSendUsage = null;
-
+	
 	/** @var QueryHandler */
 	private $queryHandler;
 
@@ -415,6 +413,10 @@ class Server extends DarkSystem{
 	
 	public function setSavePlayerData($value){
 		$this->savePlayerData = (bool) $value;
+	}
+	
+	public function getOps(){
+		return $this->operators;
 	}
 	
 	public function getLevelType(){
@@ -1024,7 +1026,7 @@ class Server extends DarkSystem{
 				return true;
 			}
 		}else{
-			$this->unloadLevelQueue[$level->getId()] = ['level' => $level, 'force' => $forceUnload];
+			$this->unloadLevelQueue[$level->getId()] = ["level" => $level, "force" => $forceUnload];
 		}
 
 		return false;
@@ -1373,14 +1375,7 @@ class Server extends DarkSystem{
 	public function getWhitelisted(){
 		return $this->whitelist;
 	}
-
-	/**
-	 * @return Config
-	 */
-	public function getOps(){
-		return $this->operators;
-	}
-
+	
 	public function reloadWhitelist(){
 		$this->whitelist->reload();
 	}
@@ -2067,10 +2062,10 @@ class Server extends DarkSystem{
 		}
 		
 		$data = array();
-		$data['packets'] = $newPackets;
-		$data['targets'] = $targets;
-		$data['networkCompressionLevel'] = $this->networkCompressionLevel;
-		$data['isBatch'] = true;
+		$data["packets"] = $newPackets;
+		$data["targets"] = $targets;
+		$data["networkCompressionLevel"] = $this->networkCompressionLevel;
+		$data["isBatch"] = true;
 		
 		$this->packetMgr->pushMainToThreadPacket(serialize($data));
 	}
@@ -2320,7 +2315,7 @@ class Server extends DarkSystem{
 		    $report = new CrashReport($this);
 		}catch(\Exception $e){
 			$this->konsol->critical($this->getLanguage()->translateString("pocketmine.crash.error", $e->getMessage()));
-			return true;
+			return;
 		}
 
 		$this->konsol->emergency($this->getLanguage()->translateString("pocketmine.crash.submit", [$report->getPath()]));
@@ -2329,8 +2324,6 @@ class Server extends DarkSystem{
 		$this->forceShutdown();
 		$this->isRunning = false;
 		@kill(getmypid());
-		exit(1);
-		exit(1);
 		exit(1);
 	}
 	
@@ -2427,7 +2420,7 @@ class Server extends DarkSystem{
 		}
 			
 		foreach($this->levels as $l){
-			$l->save(false);
+			$l->save();
 		}
 	}
 	
@@ -2523,7 +2516,7 @@ class Server extends DarkSystem{
 		++$this->tickCounter;
 		$this->checkConsole();
 		/*foreach($this->unloadLevelQueue as $levelForUnload){
-			$this->unloadLevel($levelForUnload['level'], $levelForUnload['force'], true);
+			$this->unloadLevel($levelForUnload["level"], $levelForUnload["force"], true);
 		}*/
 		/*if(($this->tickCounter % 200) === 0){
 			foreach($this->levels as $l){
@@ -2547,9 +2540,9 @@ class Server extends DarkSystem{
 		$this->unloadLevelQueue = [];
 		while(strlen($str = $this->packetMgr->readThreadToMainPacket()) > 0){
 			$data = unserialize($str);
-			if(isset($this->players[$data['identifier']])){
-				$player = $this->players[$data['identifier']];
-				$player->getInterface()->putReadyPacket($player, $data['buffer']);
+			if(isset($this->players[$data["identifier"]])){
+				$player = $this->players[$data["identifier"]];
+				$player->getInterface()->putReadyPacket($player, $data["buffer"]);
 			}
 		}
 		$this->network->processInterfaces();
@@ -2635,7 +2628,7 @@ class Server extends DarkSystem{
 			$this->nextTick = $tickTime;
 		}
 		$this->nextTick += 0.05;
-		return true;
+		return;
 	}
 	
 	public function isCommandBlockEnable(){
