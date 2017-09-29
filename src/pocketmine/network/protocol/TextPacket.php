@@ -30,9 +30,11 @@ class TextPacket extends PEPacket{
 	const TYPE_CHAT = 1;
 	const TYPE_TRANSLATION = 2;
 	const TYPE_POPUP = 3;
-	const TYPE_TIP = 4;
-	const TYPE_SYSTEM = 5;
-	const TYPE_WHISPER = 6;
+	const TYPE_JUKEBOX_POPUP = 4;
+	const TYPE_TIP = 5;
+	const TYPE_SYSTEM = 6;
+	const TYPE_WHISPER = 7;
+	const TYPE_ANNOUNCEMENT = 8;
 
 	public $type;
 	public $source;

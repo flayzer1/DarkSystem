@@ -169,8 +169,9 @@ use pocketmine\network\protocol\BehaviorPackClientResponsePacket;
 use pocketmine\network\protocol\LevelSoundEventPacket;
 use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\network\protocol\v120\PlayerSkinPacket;
-use pocketmine\network\protocol\v120\ShowModalFormPacket;
 use pocketmine\network\protocol\v120\ServerSettingsResponsetPacket;
+use pocketmine\network\protocol\v120\ShowModalFormPacket;
+use pocketmine\network\protocol\v120\SubClientLoginPacket;
 use pocketmine\network\protocol\v120\InventoryTransactionPacket;
 use pocketmine\network\protocol\v120\Protocol120;
 use pocketmine\network\multiversion\Multiversion;
@@ -352,6 +353,14 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	protected $lastModalId = 1;
 	
+	protected $activeModalWindows = [];
+	
+	protected $subClients = [];
+	
+	protected $subClientId = 0;
+	
+	protected $parent = null;
+	
 	//protected $lineHeight = null;
 	
 	protected $foodTick = 0;
@@ -364,6 +373,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function getPlayer(){
 		return $this;
+	}
+	
+	public function getParent(){
+		return $this->parent;
 	}
 	
 	public function getLeaveMessage(){
@@ -381,7 +394,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function getClientId(){
 		return $this->randomClientId;
 	}
-
+	
+	public function getSubClientId(){
+		return $this->subClientId;
+	}
+	
 	public function getClientSecret(){
 		return $this->clientSecret;
 	}
@@ -453,32 +470,20 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		return $this->autoJump;
 	}
 
-	/**
-	 * @param Player $player
-	 */
 	public function spawnTo(Player $player){
 		if($this->spawned === true && $player->spawned === true && $this->dead !== true && $player->dead !== true && $player->getLevel() === $this->level && $player->canSee($this) && !$this->isSpectator()){
 			parent::spawnTo($player);
 		}
 	}
-
-	/**
-	 * @return Server
-	 */
+	
 	public function getServer(){
 		return $this->server;
 	}
-
-	/**
-	 * @return bool
-	 */
+	
 	public function getRemoveFormat(){
 		return $this->removeFormat;
 	}
-
-	/**
-	 * @param bool $remove
-	 */
+	
 	public function setRemoveFormat($remove = true){
 		$this->removeFormat = (bool) $remove;
 	}
@@ -495,18 +500,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->lineHeight = $height;
 	}*/
 	
-	/**
-	 * @param Player $player
-	 *
-	 * @return bool
-	 */
 	public function canSee(Player $player){
 		return !isset($this->hiddenPlayers[$player->getName()]);
 	}
-
-	/**
-	 * @param Player $player
-	 */
+	
 	public function hidePlayer(Player $player){
 		if($player === $this){
 			return;
@@ -516,9 +513,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$player->despawnFrom($this);
 	}
 
-	/**
-	 * @param Player $player
-	 */
 	public function showPlayer(Player $player){
 		if($player === $this){
 			return;
@@ -543,24 +537,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		
 		$this->inAirTicks = 0;
 	}
-
-	/**
-	 * @return bool
-	 */
+	
 	public function isOnline(){
 		return $this->connected === true && $this->loggedIn === true;
 	}
-
-	/**
-	 * @return bool
-	 */
+	
 	public function isOp(){
 		return $this->server->isOp($this->getName());
 	}
-
-	/**
-	 * @param bool $value
-	 */
+	
 	public function setOp($value){
 		if($value === $this->isOp()){
 			return;
@@ -572,37 +557,19 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 		$this->recalculatePermissions();
 	}
-
-	/**
-	 * @param permission\Permission|string $name
-	 *
-	 * @return bool
-	 */
+	
 	public function isPermissionSet($name){
 		return $this->perm->isPermissionSet($name);
 	}
-
-	/**
-	 * @param permission\Permission|string $name
-	 *
-	 * @return bool
-	 */
+	
 	public function hasPermission($name){
 		return $this->perm->hasPermission($name);
 	}
-
-	/**
-	 * @param Plugin $plugin
-	 * @param string $name
-	 * @param bool   $value
-	 */
+	
 	public function addAttachment(Plugin $plugin, $name = null, $value = null){
 		return $this->perm->addAttachment($plugin, $name, $value);
 	}
-
-	/**
-	 * @param PermissionAttachment $attachment
-	 */
+	
 	public function removeAttachment(PermissionAttachment $attachment){
 		$this->perm->removeAttachment($attachment);
 	}
@@ -627,10 +594,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		
 		$this->sendCommandData();
 	}
-
-	/**
-	 * @return permission\PermissionAttachmentInfo[]
-	 */
+	
 	public function getEffectivePermissions(){
 		return $this->perm->getEffectivePermissions();
 	}
@@ -640,21 +604,12 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$count = 0;
 		foreach($this->server->getCommandMap()->getCommands() as $command){
 			if($this->hasPermission($command->getPermission()) || $command->getPermission() == null){
-			    if(($cmdData = $command->generateCustomCommandData($this)) !== null/* && $command->testPermission($this)*/){
+			    if(($cmdData = $command->generateCustomCommandData($this)) !== null){
 				    ++$count;
 				    $data->{$command->getName()}->versions[0] = $cmdData;
 				}
 			}
 		}
-		
-		/*if(!$command->testPermission($this)){
-			$this->sendMessage(TF::RED . "Bu Komutu Kullanmaya İzniniz Yok!");
-			return;
-		}else{
-			$this->sendMessage(TF::RED . "Sunucumuzda Böyle Bir Komut Yok!");
-			return;
-		}*/
-		
 		if($count > 0){
 			$pk = new AvailableCommandsPacket();
 			$pk->commands = json_encode($data);
@@ -690,31 +645,19 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function setViewRadius($radius){
 		$this->viewRadius = $radius;
 	}
-
-	/**
-	 * @return bool
-	 */
+	
 	public function isConnected(){
 		return $this->connected === true;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getDisplayName(){
 		return $this->displayName;
 	}
-
-	/**
-	 * @param string $name
-	 */
+	
 	public function setDisplayName($name){
 		$this->displayName = $name;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getNameTag(){
 		return $this->nameTag;
 	}
@@ -726,23 +669,14 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 	}
 	
-	/**
-	 * @return string
-	 */
 	public function getAddress(){
 		return $this->ip;
 	}
-
-	/**
-	 * @return int
-	 */
+	
 	public function getPort(){
 		return $this->port;
 	}
-
-	/**
-	 * @return bool
-	 */
+	
 	public function isSleeping(){
 		return $this->sleeping !== null;
 	}
@@ -794,10 +728,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->level->freeChunk($x, $z, $this);
 		unset($this->loadQueue[$index]);
 	}
-
-	/**
-	 * @return Position
-	 */
+	
 	public function getSpawn(){
 		/*if($this->spawnPosition instanceof Position && $this->spawnPosition->getLevel() instanceof Level){
 			return $this->spawnPosition;
@@ -859,7 +790,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->server->getPluginManager()->callEvent($ev = new PlayerLoginEvent($this, "Eklenti Hatası"));
 			if($ev->isCancelled()){
 				$this->close(TF::YELLOW . $this->username . " has left the game", $ev->getKickMessage());
-				return true;
+				return;
 			}
 			$this->spawned = true;
 			$this->sendSettings();
@@ -958,58 +889,50 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->unloadChunk($X, $Z);
 		}
 		$this->loadQueue = $newOrder;
-		return true;
+		return;
 	}
-
-	/**
-	 * @param DataPacket $packet
-	 * @param bool       $needACK
-	 *
-	 * @return int|bool
-	 */
+	
 	public function dataPacket(DataPacket $packet, $needACK = false){
 		if($this->connected === false){
 			return;
 		}
-		$disallowedPackets = [];
-		$protocol = $this->getPlayerProtocol();
-		if($protocol >= ProtocolInfo::PROTOCOL_120){
+		/*if($this->subClientId > 0 && $this->parent != null){
+			$packet->senderSubClientID = $this->subClientId;
+			return $this->parent->dataPacket($packet, $needACK);
+		}*/
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$disallowedPackets = Protocol120::getDisallowedPackets();
-		}
-		if(in_array(get_class($packet), $disallowedPackets)){
-			return true;
+			if(in_array(get_class($packet), $disallowedPackets)){
+				//$packet->senderSubClientID = 0;
+				return;
+			}
 		}
 		$this->server->getPluginManager()->callEvent($ev = new DataPacketSendEvent($this, $packet));
 		if($ev->isCancelled()){
-			return true;
+			return;
 		}
 		$this->interface->putPacket($this, $packet, $needACK, false);	
-		return true;
+		return;
 	}
-
-	/**
-	 * @param DataPacket $packet
-	 * @param bool       $needACK
-	 *
-	 * @return bool|int
-	 */
+	
 	public function directDataPacket(DataPacket $packet, $needACK = false){
 		if($this->connected === false){
 			return;
 		}
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
+			$disallowedPackets = Protocol120::getDisallowedPackets();
+			if(in_array(get_class($packet), $disallowedPackets)){
+				return;
+			}
+		}
 		$this->server->getPluginManager()->callEvent($ev = new DataPacketSendEvent($this, $packet));
 		if($ev->isCancelled()){
-			return true;
+			return;
 		}
 		$this->interface->putPacket($this, $packet, $needACK, true);
-		return true;
+		return;
 	}
-
-	/**
-	 * @param Vector3 $pos
-	 *
-	 * @return boolean
-	 */
+	
 	public function sleepOn(Vector3 $pos){
 		foreach($this->level->getNearbyEntities($this->boundingBox->grow(2, 1, 2), $this) as $p){
 			if($p instanceof Player){
@@ -1084,18 +1007,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getGamemode(){
 		return $this->gamemode;
 	}
-
-	/**
-	 * @param int $gm
-	 *
-	 * @return bool
-	 */
+	
 	public function setGamemode($gm){
 		if($gm < 0 || $gm > 3 || $this->gamemode === $gm){
 			return true;
@@ -1428,7 +1343,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		return false;
 	}
 	
-	public function sendAttributes(bool $sendAll = false){
+	public function sendAttributes($sendAll = false){
 		$entries = $sendAll ? $this->attributeMap->getAll() : $this->attributeMap->needSend();
 		if(count($entries) > 0){
 			$pk = new UpdateAttributesPacket();
@@ -1443,11 +1358,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function onUpdate($currentTick){
 		if(!$this->loggedIn){
-			return false;
+			return;
 		}
 		$tickDiff = $currentTick - $this->lastUpdate;
 		if($tickDiff <= 0){
-			return true;
+			return;
 		}
 		$this->messageCounter = 2;
 		$this->lastUpdate = $currentTick;
@@ -1484,7 +1399,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						if(!$this->hasEffect(Effect::JUMP) && $diff > 0.6 && $expectedVelocity < $this->speed->y && !$this->server->getAllowFlight() && !$this->isOp()){
 							if($this->inAirTicks < 312){
 							}elseif($this->kick("Uçmak Yasak!")){
-								return true;
+								return;
 							}
 						}
 						++$this->inAirTicks;
@@ -1499,7 +1414,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			if($this->getFood() <= 0){
 				$this->starvationTick++;
 			}
-			if($this->isMoving() && $this->isSurvival() || $this->isAdventure() && !$this->isCreative() && !$this->isSpectator()){
+			if($this->isMoving() && $this->isSurvival() || $this->isAdventure()/* && !$this->isCreative() && !$this->isSpectator()*/){
 				if($this->isSprinting()){
 					$this->foodUsageTime += 500;
 				}else{
@@ -1550,7 +1465,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$noteId = array_shift($this->noteSoundQueue);
 			$this->sendNoteSound($noteId);
 		}
-		return true;
+		return;
 	}
 
 	public function eatFoodInHand(){
@@ -1644,10 +1559,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			}
 		}
 	}
-
-	/**
-	 * @param DataPacket $packet
-	 */
+	
 	public function handleDataPacket(DataPacket $packet){
 		if($this->connected === false){
 			return;
@@ -1663,6 +1575,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if(!$this->isOnline() && !in_array($packet->pname(), $beforeLoginAvailablePackets)){
 			return;
 		}
+		/*if($packet->targetSubClientID > 0 && isset($this->subClients[$packet->targetSubClientID])){
+			$this->subClients[$packet->targetSubClientID]->handleDataPacket($packet);
+			return;
+		}*/
 		switch($packet->pname()){
             case "SET_PLAYER_GAMETYPE_PACKET":
                 break;
@@ -2936,6 +2852,18 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			case "SERVER_SETTINGS_REQUEST_PACKET":
 				$this->sendServerSettings();
 				break;
+			case "SUB_CLIENT_LOGIN_PACKET":
+				$subPlayer = new static($this->interface, null, $this->ip, $this->port);
+				if($subPlayer->subAuth($packet, $this)){
+					$this->subClients[$packet->targetSubClientID] = $subPlayer;
+				}
+				//$this->kick("COOP play is not allowed");
+				break;
+			case "DISCONNECT_PACKET":
+				if($this->subClientId > 0){
+					$this->close('', "client disconnect");
+				}
+				break;
 			default:
 				break;
 		}
@@ -2945,16 +2873,17 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->server->getPluginManager()->callEvent($ev = new PlayerKickEvent($this, $reason, TF::YELLOW . $this->username . " has left the game"));
 		if(!$ev->isCancelled()){
 			$this->close($ev->getQuitMessage(), $reason);
-			return true;
+			return;
 		}
-		return false;
+		
+		return;
 	}
 	
 	public function sendMessage($message){
 		if($message instanceof TextContainer){
 			if($message instanceof TranslationContainer){
 				$this->sendTranslation($message->getText(), $message->getParameters());
-				return false;
+				return;
 			}
 			$message = $message->getText();
 		}
@@ -2971,7 +2900,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function sendTranslation($message, array $parameters = []){
 		$pk = new TextPacket();
-		if($this->server->isLanguageForced()){
+		if(!$this->server->isLanguageForced()){
 			$pk->type = TextPacket::TYPE_TRANSLATION;
 			$pk->message = $this->server->getLanguage()->translateString($message, $parameters, "pocketmine.");
 			foreach($parameters as $i => $p){
@@ -2986,9 +2915,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->server->getPluginManager()->callEvent($ev);
 		if(!$ev->isCancelled()){
 			$this->dataPacket($pk);
-			return true;
+			return;
 		}
-		return false;
+		return;
 	}
 
 	public function sendPopup($message){
@@ -3084,8 +3013,47 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->dataPacket($pk);
 	}
 	
+	public function sendWhisper(string $sender, string $message){
+		$pk = new TextPacket();
+		$pk->type = TextPacket::TYPE_WHISPER;
+		$pk->source = $sender;
+		$pk->message = $message;
+		$this->dataPacket($pk);
+	}
+	
+	public function sendWhisperMessage(string $sender, string $message){
+		$pk = new TextPacket();
+		$pk->type = TextPacket::TYPE_WHISPER;
+		$pk->source = $sender;
+		$pk->message = $message;
+		$this->dataPacket($pk);
+	}
+	
+	public function addWhisper(string $sender, string $message){
+		$pk = new TextPacket();
+		$pk->type = TextPacket::TYPE_WHISPER;
+		$pk->source = $sender;
+		$pk->message = $message;
+		$this->dataPacket($pk);
+	}
+	
+	public function addWhisperMessage(string $sender, string $message){
+		$pk = new TextPacket();
+		$pk->type = TextPacket::TYPE_WHISPER;
+		$pk->source = $sender;
+		$pk->message = $message;
+		$this->dataPacket($pk);
+	}
+	
 	public function close($message = "", $reason = "Generik Neden"){
 		$this->server->saveEverything();
+		/*if($this->parent !== null){
+			$this->parent->removeSubClient($this->subClientId);
+		}else{
+			foreach($this->subClients as $subClient){
+				$subClient->close($message, $reason);
+			}
+		}*/
         Win10InvLogic::removeData($this);
         foreach($this->tasks as $t){
 			$t->cancel();
@@ -3507,11 +3475,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 	}
 	
-	/**
-	 * @param Inventory $inventory
-	 *
-	 * @return int
-	 */
 	public function getWindowId(Inventory $inventory){
 		if($inventory === $this->currentWindow){
 			return $this->currentWindowId;
@@ -3529,13 +3492,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function getCurrentWindow(){
 		return $this->currentWindow;
 	}
-
-	/**
-	 * @param Inventory $inventory
-	 * @param int       $forceId
-	 *
-	 * @return int
-	 */
+	
 	public function addWindow(Inventory $inventory, $forceId = null){
 		if($this->currentWindow === $inventory){
 			return $this->currentWindowId;
@@ -4354,7 +4311,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			return;
 		}
 
-		if($item->isTool() && $this->isSurvival() || $this->isAdventure() && !$this->isCreative() && !$this->isSpectator()){
+		if($item->isTool() && $this->isSurvival() || $this->isAdventure()/* && !$this->isCreative() && !$this->isSpectator()*/){
 			if($item->useOn($target) && $item->getDamage() >= $item->getMaxDurability()){
 				$this->inventory->setItemInHand(Item::get(Item::AIR, 0, 1), $this);
 			}elseif($this->inventory->getItemInHand()->getId() == $item->getId()){
@@ -4724,7 +4681,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($this->startAction > -1 && $this->getDataFlag(Player::DATA_FLAGS, Player::DATA_FLAG_ACTION)){
 			if($this->inventory->getItemInHand()->getId() === Item::BOW){
 				$bow = $this->inventory->getItemInHand();
-				if($this->isSurvival() || $this->isAdventure() && !$this->isCreative() && !$this->isSpectator() && !$this->inventory->contains(Item::get(Item::ARROW, 0, 1))){
+				if($this->isSurvival() || $this->isAdventure()/* && !$this->isCreative() && !$this->isSpectator()*/ && !$this->inventory->contains(Item::get(Item::ARROW, 0, 1))){
 					$this->inventory->sendContents($this);
 					return;
 				}
@@ -4840,7 +4797,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function showModal($modalWindow){
-		if($this->protocol >= Info::PROTOCOL_120){
+		if($this->protocol >= ProtocolInfo::PROTOCOL_120){
 			$pk = new ShowModalFormPacket();
 			$pk->formId = $this->lastModalId++;
 			$pk->data = $modalWindow->toJSON();
@@ -4860,7 +4817,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	protected function sendServerSettingsModal($modalWindow){
-		if($this->protocol >= Info::PROTOCOL_120){
+		if($this->protocol >= ProtocolInfo::PROTOCOL_120){
 			$pk = new ServerSettingsResponsetPacket();
 			$pk->formId = $this->lastModalId++;
 			$pk->data = $modalWindow->toJSON();
@@ -4874,7 +4831,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function needEncrypt(){
-		return $this->protocol >= Info::PROTOCOL_120;
+		return $this->protocol >= ProtocolInfo::PROTOCOL_120;
 	}
 	
 	public function updatePlayerSkin($oldSkinName, $newSkinName){
@@ -4936,4 +4893,80 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->server->batchPackets($oldViewers, [$pk, $pk2, $pk3, $pk4]);
 		}
 	}
+	
+	public function removeSubClient($subClientId){
+		if(isset($this->subClients[$subClientId])){
+			unset($this->subClients[$subClientId]);
+		}	
+	}
+	
+	public function subAuth($packet, $parent){
+		$this->username = TF::clean($packet->username);
+		$this->xblName = $this->username;
+		$this->displayName = $this->username;
+		$this->setNameTag($this->username);
+		$this->iusername = strtolower($this->username);
+		
+		$this->randomClientId = $packet->clientId;
+		$this->loginData = ["clientId" => $packet->clientId, "loginData" => null];
+		$this->uuid = $packet->clientUUID;
+		if(is_null($this->uuid)){
+			$this->close("", "Sorry, your client is broken.");
+			return;
+		}
+		
+		$this->parent = $parent;
+		$this->xuid = $packet->xuid;
+		$this->rawUUID = $this->uuid->toBinary();
+		$this->clientSecret = $packet->clientSecret;
+		$this->protocol = $parent->getPlayerProtocol();
+		$this->setSkin($packet->skin, $packet->skinName, $packet->skinGeometryName, $packet->skinGeometryData, $packet->capeData);
+		$this->subClientId = $packet->targetSubClientID;
+		
+		$this->deviceType = $parent->getDeviceOS();
+		$this->inventoryType = $parent->getInventoryType();
+		$this->languageCode = $parent->languageCode;
+		$this->serverAddress = $parent->serverAddress;
+		$this->clientVersion = $parent->clientVersion;
+		$this->originalProtocol = $parent->originalProtocol;
+
+		$this->identityPublicKey = $packet->identityPublicKey;
+		
+		$pk = new PlayStatusPacket();
+		$pk->status = PlayStatusPacket::LOGIN_SUCCESS;
+		$this->dataPacket($pk);
+		
+		$this->loggedIn = true;
+		$this->completeLogin();
+		
+		return $this->loggedIn;
+	}
+	
+	private function getNonValidProtocolMessage($protocol){
+		if($protocol > ProtocolInfo::PROTOCOL_137 || ($protocol > ProtocolInfo::PROTOCOL_113 && $protocol < ProtocolInfo::PROTOCOL_120)){
+			return TF::WHITE . "We do not support this client version yet.\n" . TextFormat::WHITE ."        The update is coming soon.";
+		}else{
+			return TF::WHITE . "Please update your client version to join";
+		}
+	}
+	
+	public function sendFullPlayerList(){
+		$players = $this->server->getOnlinePlayers();
+		if(count($players) > 0){
+			$pk = new PlayerListPacket();
+			$pk->type = PlayerListPacket::TYPE_ADD;
+			$pk->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->getSkinName(), $this->getSkinData(), $this->getCapeData(), $this->getSkinGeometryName(), $this->getSkinGeometryData(), $this->getXUID()];
+			$this->server->batchPackets($players, [$pk]);
+		}
+		
+		$players[] = $this;
+		$pk = new PlayerListPacket();
+		$pk->type = PlayerListPacket::TYPE_ADD;
+		foreach($players as $player){
+			$pk->entries[] = [$player->getUniqueId(), $player->getId(), $player->getName(), $player->getSkinName(), $player->getSkinData(), $player->getCapeData(), $player->getSkinGeometryName(), $player->getSkinGeometryData(), $player->getXUID()];
+		}
+		
+		$this->server->batchPackets([$this], [$pk]);
+	}
+	
 }

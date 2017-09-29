@@ -19,11 +19,15 @@ class BinaryStream extends \stdClass{
 	public $offset;
 	public $buffer;
 	
+	protected function checkLength($len){
+		
+	}
+	
 	public function __construct($buffer = "", $offset = 0){
 		$this->buffer = $buffer;
 		$this->offset = $offset;
 	}
-
+	
 	public function reset(){
 		$this->buffer = "";
 		$this->offset = 0;
@@ -128,8 +132,7 @@ class BinaryStream extends \stdClass{
 	public function putTriad($v){
 		$this->buffer .= Binary::writeTriad($v);
 	}
-
-
+	
 	public function getLTriad(){
 		return Binary::readLTriad($this->get(3));
 	}

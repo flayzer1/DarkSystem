@@ -29,11 +29,11 @@ class BatchPacket extends PEPacket{
 	public $payload;
 	public $is110 = false;
 
-	public function decode($playerProtocol) {
-		if ($this->is110) {
+	public function decode($playerProtocol){
+		if($this->is110){
 			$playerProtocol = Info::PROTOCOL_110;
 		}
-		switch ($playerProtocol) {
+		switch($playerProtocol){
 			case Info::PROTOCOL_120:
 			case Info::PROTOCOL_110:
 				$this->payload = $this->get(true);
@@ -44,7 +44,7 @@ class BatchPacket extends PEPacket{
 		}
 	}
 
-	public function encode($playerProtocol) {
+	public function encode($playerProtocol){
 		switch ($playerProtocol) {
 			case Info::PROTOCOL_120:
 			case Info::PROTOCOL_110:

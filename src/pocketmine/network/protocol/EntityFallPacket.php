@@ -21,9 +21,6 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class EntityFallPacket extends DataPacket{
 
 	const NETWORK_ID = Info::ENTITY_FALL_PACKET;
@@ -37,12 +34,5 @@ class EntityFallPacket extends DataPacket{
 	public function encode(){
 
 	}
-
-	/**
-	 * @return PacketName|string
-     */
-	public function getName(){
-		return "PlayerFallPacket";
-	}
-
+	
 }

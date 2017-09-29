@@ -9,7 +9,7 @@
 
 # Features:
 - DarkSystem is **# 1** about speed. (We think so)
-- Fast chunk loading
+- Loads chunks region-to-region. It uses less CPU resources & loads chunks fast.
 - MobAI Support
 - Smooth Movement
 - Colored Console
@@ -50,8 +50,7 @@
 
 # Notes:
 - DarkSystem's language is currently Turkish, but you can change it from pocketmine.yml (Support +20 Languages)
-- Some plugins are not compatible with DarkSystem, Because DarkSystem uses different NBT System, ex. CompoundTag -> Compound.
-- DarkSystem is not stable now. Will be in future
+- DarkSystem is %70 stable now. Will be %90+ in future
 - /op command renamed to /operator and you can enable/disable in **pocketmine_advanced.yml**.
 
 # License:

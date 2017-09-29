@@ -76,6 +76,7 @@ use pocketmine\plugin\PluginManager;
 use pocketmine\resourcepacks\ResourcePackManager;
 use pocketmine\behaviorpacks\BehaviorPackManager;
 use pocketmine\scheduler\ServerScheduler;
+use pocketmine\scheduler\FileWriteTask;
 use pocketmine\tile\{Tile, Beacon, Bed, BrewingStand, Cauldron, Chest, CommandBlock, Dispenser, DLDetector, Dropper, EnchantTable, EnderChest, FlowerPot, Furnace, Hopper, ItemFrame, MobSpawner, Sign, Skull};
 use pocketmine\utils\Binary;
 use pocketmine\utils\Cache;
@@ -94,7 +95,6 @@ use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\nether\Nether;
 use pocketmine\level\generator\ender\Ender;
 use pocketmine\level\generator\normal\Normal;
-use pocketmine\scheduler\FileWriteTask;
 use pocketmine\entity\animal\walking\{Chicken, Cow, Mooshroom, Ocelot, Pig, Rabbit, Sheep};
 use pocketmine\entity\monster\flying\{Blaze, Ghast};
 use pocketmine\entity\monster\walking\{CaveSpider, Creeper, Enderman, IronGolem, PigZombie, Silverfish, Skeleton, SnowGolem, Spider, Wolf, Zombie, ZombieVillager};
@@ -537,72 +537,42 @@ class Server extends DarkSystem{
 		return DarkBot::PREFIX;
 	}
 	
-	/**
-	 * @return \ClassLoader
-	 */
 	public function getLoader(){
 		return $this->autoloader;
 	}
-
-	/**
-	 * @return \AttachableThreadedLogger
-	 */
+	
 	public function getLogger(){
 		return $this->konsol;
 	}
-
-	/**
-	 * @return EntityMetadataStore
-	 */
+	
 	public function getEntityMetadata(){
 		return $this->entityMetadata;
 	}
-
-	/**
-	 * @return PlayerMetadataStore
-	 */
+	
 	public function getPlayerMetadata(){
 		return $this->playerMetadata;
 	}
-
-	/**
-	 * @return LevelMetadataStore
-	 */
+	
 	public function getLevelMetadata(){
 		return $this->levelMetadata;
 	}
-
-	/**
-	 * @return PluginManager
-	 */
+	
 	public function getPluginManager(){
 		return $this->pluginMgr;
 	}
-
-	/**
-	 * @return CraftingManager
-	 */
+	
 	public function getCraftingManager(){
 		return $this->craftingMgr;
 	}
 	
-	/**
-	 * @return ResourcePackManager
-	 */
 	public function getResourcePackManager(){
 		return $this->resourceMgr;
 	}
 	
-	/**
-	 * @return BehaviorPackManager
-	 */
 	public function getBehaviorPackManager(){
 		return $this->behaviorMgr;
 	}
 	
-	/**
-	 * @return ServerScheduler
-	 */
 	public function getScheduler(){
 		return $this->scheduler;
 	}
@@ -619,55 +589,31 @@ class Server extends DarkSystem{
 		return round((array_sum($this->useAverage) / count($this->useAverage)) * 100, 2);
 	}
 	
-	/**
-	 * @param     $address
-	 * @param int $timeout
-	 */
 	public function blockAddress($address, $timeout = 300){
 		$this->network->blockAddress($address, $timeout);
 	}
-
-	/**
-	 * @param $address
-	 * @param $port
-	 * @param $payload
-	 */
+	
 	public function sendPacket($address, $port, $payload){
 		$this->network->sendPacket($address, $port, $payload);
 	}
-
-	/**
-	 * @return SourceInterface[]
-	 */
+	
 	public function getInterfaces(){
 		return $this->network->getInterfaces();
 	}
-
-	/**
-	 * @param SourceInterface $interface
-	 */
+	
 	public function addInterface(SourceInterface $interface){
 		$this->network->registerInterface($interface);
 	}
-
-	/**
-	 * @param SourceInterface $interface
-	 */
+	
 	public function removeInterface(SourceInterface $interface){
 		$interface->shutdown();
 		$this->network->unregisterInterface($interface);
 	}
-
-	/**
-	 * @return SimpleCommandMap
-	 */
+	
 	public function getCommandMap(){
 		return $this->cmdMap;
 	}
-
-	/**
-	 * @return Player[]
-	 */
+	
 	public function getOnlinePlayers(){
 		return $this->playerList;
 	}
@@ -754,11 +700,6 @@ class Server extends DarkSystem{
 		}
 	}
 	
-	/**
-	 * @param string $name
-	 *
-	 * @return OfflinePlayer|Player
-	 */
 	public function getOfflinePlayer($name){
 		$name = strtolower($name);
 		$result = $this->getPlayerExact($name);
@@ -768,12 +709,7 @@ class Server extends DarkSystem{
 
 		return $result;
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return Compound
-	 */
+	
 	public function getOfflinePlayerData($name){
 		$name = strtolower($name);
 		
@@ -841,11 +777,7 @@ class Server extends DarkSystem{
 		
 		return $nbt;
 	}
-
-	/**
-	 * @param string   $name
-	 * @param Compound $nbtTag
-	 */
+	
 	public function saveOfflinePlayerData($name, Compound $nbtTag, $async = false){
 		$nbt = new NBT(NBT::BIG_ENDIAN);
 		try{
@@ -871,12 +803,7 @@ class Server extends DarkSystem{
 			}
 		}
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return Player|null
-	 */
+	
 	public function getPlayer($name){
 		$found = null;
 		$name = strtolower($name);
@@ -898,12 +825,7 @@ class Server extends DarkSystem{
 
 		return $found;
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return Player
-	 */
+	
 	public function getPlayerExact($name){
 		$name = strtolower($name);
 		foreach($this->getOnlinePlayers() as $p){
@@ -914,12 +836,7 @@ class Server extends DarkSystem{
 
 		return null;
 	}
-
-	/**
-	 * @param string $partialName
-	 *
-	 * @return Player[]
-	 */
+	
 	public function matchPlayer($partialName){
 		$partialName = strtolower($partialName);
 		$matchedPlayers = [];
@@ -952,44 +869,25 @@ class Server extends DarkSystem{
 			}
 		}
 	}
-
-	/**
-	 * @return Level[]
-	 */
+	
 	public function getLevels(){
 		return $this->levels;
 	}
-
-	/**
-	 * @return Level
-	 */
+	
 	public function getDefaultLevel(){
 		return $this->levelDefault;
 	}
-
-	/**
-	 * @param Level $level
-	 */
+	
 	public function setDefaultLevel($level){
 		if($level === null || ($this->isLevelLoaded($level->getFolderName()) && $level !== $this->levelDefault)){
 			$this->levelDefault = $level;
 		}
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return bool
-	 */
+	
 	public function isLevelLoaded($name){
 		return $this->getLevelByName($name) instanceof Level;
 	}
-
-	/**
-	 * @param int $levelId
-	 *
-	 * @return Level
-	 */
+	
 	public function getLevel($levelId){
 		if(isset($this->levels[$levelId])){
 			return $this->levels[$levelId];
@@ -997,12 +895,7 @@ class Server extends DarkSystem{
 
 		return null;
 	}
-
-	/**
-	 * @param $name
-	 *
-	 * @return Level
-	 */
+	
 	public function getLevelByName($name){
 		foreach($this->levels as $l){
 			if($l->getFolderName() === $name){
@@ -1012,13 +905,7 @@ class Server extends DarkSystem{
 
 		return null;
 	}
-
-	/**
-	 * @param Level $level
-	 * @param bool  $forceUnload
-	 *
-	 * @return bool
-	 */
+	
 	public function unloadLevel(Level $level, $forceUnload = false, $direct = false){
 		if($direct){
 			if($level->unload($forceUnload) === true){
@@ -1031,14 +918,7 @@ class Server extends DarkSystem{
 
 		return false;
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return bool
-	 *
-	 * @throws LevelException
-	 */
+	
 	public function loadLevel($name){
 		if(trim($name) === ""){
 			throw new LevelException("Geçersiz Dünya İsmi!");
@@ -1082,14 +962,7 @@ class Server extends DarkSystem{
 		
 		return true;
 	}
-
-	/**
-	 * @param string $name
-	 * @param int    $seed
-	 * @param array  $options
-	 *
-	 * @return bool
-	 */
+	
 	public function generateLevel($name, $seed = null, $options = []){
 		if(trim($name) === "" || $this->isLevelGenerated($name)){
 			return false;
@@ -1152,12 +1025,7 @@ class Server extends DarkSystem{
 
 		return true;
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return bool
-	 */
+	
 	public function isLevelGenerated($name){
 		if(trim($name) === ""){
 			return false;
@@ -1178,12 +1046,6 @@ class Server extends DarkSystem{
 		return true;
 	}
 	
-	/**
-	 * @param string $variable
-	 * @param string $defaultValue
-	 *
-	 * @return string
-	 */
 	public function getConfigString($variable, $defaultValue = ""){
 		$v = getopt("", ["$variable::"]);
 		if(isset($v[$variable])){
@@ -1192,13 +1054,7 @@ class Server extends DarkSystem{
 
 		return $this->properties->exists($variable) ? $this->properties->get($variable): $defaultValue;
 	}
-
-	/**
-	 * @param string $variable
-	 * @param mixed  $defaultValue
-	 *
-	 * @return mixed
-	 */
+	
 	public function getProperty($variable, $defaultValue = null){
 		if(!array_key_exists($variable, $this->propertyCache)){
 			$v = getopt("", ["$variable::"]);
@@ -1211,21 +1067,11 @@ class Server extends DarkSystem{
 
 		return $this->propertyCache[$variable] === null ? $defaultValue : $this->propertyCache[$variable];
 	}
-
-	/**
-	 * @param string $variable
-	 * @param string $value
-	 */
+	
 	public function setConfigString($variable, $value){
 		$this->properties->set($variable, $value);
 	}
-
-	/**
-	 * @param string $variable
-	 * @param int    $defaultValue
-	 *
-	 * @return int
-	 */
+	
 	public function getConfigInt($variable, $defaultValue = 0){
 		$v = getopt("", ["$variable::"]);
 		if(isset($v[$variable])){
@@ -1234,21 +1080,11 @@ class Server extends DarkSystem{
 
 		return $this->properties->exists($variable) ? (int) $this->properties->get($variable): (int) $defaultValue;
 	}
-
-	/**
-	 * @param string $variable
-	 * @param int    $value
-	 */
+	
 	public function setConfigInt($variable, $value){
 		$this->properties->set($variable, (int) $value);
 	}
-
-	/**
-	 * @param string  $variable
-	 * @param boolean $defaultValue
-	 *
-	 * @return boolean
-	 */
+	
 	public function getConfigBoolean($variable, $defaultValue = false){
 		$v = getopt("", ["$variable::"]);
 		if(isset($v[$variable])){
@@ -1271,20 +1107,11 @@ class Server extends DarkSystem{
 
 		return false;
 	}
-
-	/**
-	 * @param string $variable
-	 * @param bool   $value
-	 */
+	
 	public function setConfigBool($variable, $value){
 		$this->properties->set($variable, $value == true ? "1" : "0");
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return PluginIdentifiableCommand
-	 */
+	
 	public function getPluginCommand($name){
 		if(($command = $this->cmdMap->getCommand($name)) instanceof PluginIdentifiableCommand){
 			return $command;
@@ -1292,17 +1119,11 @@ class Server extends DarkSystem{
 			return null;
 		}
 	}
-
-	/**
-	 * @return BanList
-	 */
+	
 	public function getNameBans(){
 		return $this->banByName;
 	}
-
-	/**
-	 * @return BanList
-	 */
+	
 	public function getIPBans(){
 		return $this->banByIP;
 	}
@@ -1311,9 +1132,6 @@ class Server extends DarkSystem{
 		return $this->banByCID;
 	}
 	
-	/**
-	 * @param string $name
-	 */
 	public function addOp($name){
 		$this->operators->set(strtolower($name), true);
 		if(($player = $this->getPlayerExact($name)) instanceof Player){
@@ -1322,10 +1140,7 @@ class Server extends DarkSystem{
 		
 		$this->operators->save();
 	}
-
-	/**
-	 * @param string $name
-	 */
+	
 	public function removeOp($name){
 		$this->operators->remove(strtolower($name));
 		if(($player = $this->getPlayerExact($name)) instanceof Player){
@@ -1334,44 +1149,25 @@ class Server extends DarkSystem{
 		
 		$this->operators->save();
 	}
-
-	/**
-	 * @param string $name
-	 */
+	
 	public function addWhitelist($name){
 		$this->whitelist->set(strtolower($name), true);
 		$this->whitelist->save();
 	}
-
-	/**
-	 * @param string $name
-	 */
+	
 	public function removeWhitelist($name){
 		$this->whitelist->remove(strtolower($name));
 		$this->whitelist->save();
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return bool
-	 */
+	
 	public function isWhitelisted($name){
 		return !$this->hasWhitelist() || $this->operators->exists($name, true) || $this->whitelist->exists($name, true);
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return bool
-	 */
+	
 	public function isOp($name){
 		return $this->operators->exists($name, true);
 	}
-
-	/**
-	 * @return Config
-	 */
+	
 	public function getWhitelisted(){
 		return $this->whitelist;
 	}
@@ -1379,10 +1175,7 @@ class Server extends DarkSystem{
 	public function reloadWhitelist(){
 		$this->whitelist->reload();
 	}
-
-	/**
-	 * @return string[]
-	 */
+	
 	public function getCommandAliases(){
 		$section = $this->getProperty("aliases");
 		$result = [];
@@ -1412,6 +1205,10 @@ class Server extends DarkSystem{
 	
 	public static function getInstance(){
 		return Server::$instance;
+	}
+	
+	public static function getServerId(){
+		return Server::$serverId;
 	}
 	
 	function curl($url){
@@ -1527,6 +1324,7 @@ class Server extends DarkSystem{
 				mkdir($pluginPath, 0777);
 			}
 			}
+			
 			if(\Phar::running(true) === ""){
 			   $packages = "src";
 			}else{
@@ -1825,6 +1623,8 @@ class Server extends DarkSystem{
 				@cli_set_process_title($this->getName() . " " . $this->getDarkSystemVersion());
 			}
 			
+			define("BOOTUP_RANDOM", Utils::getRandomBytes(16));
+			
 			$this->serverID = Utils::getMachineUniqueId($this->getIp() . $this->getPort());
 			
 			$this->konsol->debug("Sunucu ID: " . $this->getServerUniqueId());
@@ -2028,7 +1828,7 @@ class Server extends DarkSystem{
 		return count($recipients);
 	}
 	
-	public static function broadcastPacket(array $players, DataPacket $packet){
+	public static function broadcastPacket($players, DataPacket $packet){
 		foreach($players as $p){
 			$p->dataPacket($packet);
 		}
@@ -2038,7 +1838,55 @@ class Server extends DarkSystem{
 		}
 	}
 	
-	public function batchPackets(array $players, array $packets, $forceSync = true){
+	/*public function batchPackets($players, $packets){
+		$targets = [];
+		$neededProtocol = [];
+		$neededSubClientsId = [];
+		foreach($players as $p){
+			$protocol = $p->getPlayerProtocol();
+			$subClientId = $p->getSubClientId();
+			$playerIdentifier = $p->getIdentifier();
+			if($subClientId > 0 && ($parent = $p->getParent()) !== null){
+				$playerIdentifier = $parent->getIdentifier();
+			}
+			$targets[$playerIdentifier] = [$playerIdentifier, $protocol];
+			$neededProtocol[$protocol] = $protocol;
+			$neededSubClientsId[$subClientId] = $subClientId;
+		}
+		$protocolsCount = count($neededProtocol);
+		$newPackets = [];
+		foreach($packets as $p){
+			foreach($neededProtocol as $protocol){
+				if($p instanceof DataPacket){
+					if($protocol >= ProtocolInfo::PROTOCOL_120){
+						foreach($neededSubClientsId as $subClientId){
+							$p->senderSubClientID = $subClientId;
+							$p->encode($protocol);
+							$newPackets[$protocol][] = $p->buffer;
+						}
+					}else{
+						if(!$p->isEncoded || $protocolsCount > 1){
+							$p->senderSubClientID = 0;
+							$p->encode($protocol);
+						}
+						$newPackets[$protocol][] = $p->buffer;
+					}
+				}elseif($protocolsCount == 1){
+					$newPackets[$protocol][] = $p;
+				}
+			}
+		}
+		
+		$data = [];
+		$data["packets"] = $newPackets;
+		$data["targets"] = $targets;
+		$data["networkCompressionLevel"] = $this->networkCompressionLevel;
+		$data["isBatch"] = true;
+		
+		$this->packetMgr->pushMainToThreadPacket(serialize($data));
+	}*/
+	
+	public function batchPackets($players, $packets){
 		$targets = [];
 		$neededProtocol = [];
 		foreach($players as $p){
@@ -2046,7 +1894,7 @@ class Server extends DarkSystem{
 			$neededProtocol[$p->getPlayerProtocol()] = $p->getPlayerProtocol();
 		}
 		
-		$newPackets = array();
+		$newPackets = [];
 		foreach($packets as $p){
 			foreach($neededProtocol as $protocol){
 				if($p instanceof DataPacket){
@@ -2061,7 +1909,7 @@ class Server extends DarkSystem{
 			}
 		}
 		
-		$data = array();
+		$data = [];
 		$data["packets"] = $newPackets;
 		$data["targets"] = $targets;
 		$data["networkCompressionLevel"] = $this->networkCompressionLevel;
@@ -2108,7 +1956,7 @@ class Server extends DarkSystem{
 			throw new ServerException("CommandSender Geçerli Değil!");
 		}
 		if($this->cmdMap->dispatch($sender, $commandLine)){
-			return true;
+			return;
 		}
 		if($sender instanceof Player){
 			$message = $this->getSoftConfig("messages.unknown-command", "Unknown command!");
@@ -2118,7 +1966,7 @@ class Server extends DarkSystem{
 		}else{
 			$sender->sendMessage(TF::RED . "Unknown command!");
 		}
-		return false;
+		return;
 	}
 
 	public function reload(){
@@ -2303,7 +2151,7 @@ class Server extends DarkSystem{
 			return;
 		}
 		
-		$this->isRunning = false;
+		//$this->isRunning = false;
 		$this->hasStopped = false;
 
 		ini_set("error_reporting", 0);
@@ -2363,6 +2211,7 @@ class Server extends DarkSystem{
 		foreach($players === null ? $this->playerList : $players as $p){
 			$protocol = $p->getPlayerProtocol();
 			if(!isset($readyPackets[$protocol])){
+				//$pk->encode($protocol, $p->getSubClientId());
 				$pk->encode($protocol);
 				$batch = new BatchPacket();
 				$batch->payload = zlib_encode(Binary::writeVarInt(strlen($pk->getBuffer())) . $pk->getBuffer(), ZLIB_ENCODING_DEFLATE, 7);
@@ -2397,6 +2246,7 @@ class Server extends DarkSystem{
 				$pk->addFurnaceRecipe($r);
 			}
 			
+			//$pk->encode($p->getPlayerProtocol(), $p->getSubClientId());
 			$pk->encode($p->getPlayerProtocol());
 			$pk->isEncoded = true;
 			$this->craftList[$p->getPlayerProtocol()] = $pk;

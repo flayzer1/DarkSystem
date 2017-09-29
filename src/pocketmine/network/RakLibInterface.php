@@ -108,7 +108,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		}
 		if($this->rakLib->isTerminated()){
 			$this->network->unregisterInterface($this);
-			throw new \Exception("RakLib Crashed!");
+			throw new \Exception("RakLib Thread Crashed!");
 		}
 		return $work;
 	}
@@ -222,7 +222,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 
 	public function handleOption($name, $value){
 		if($name === "unknown" || $name === "dos" || $name === "ddos" || $name === "hack"){
-			return true;
+			return;
 		}
 		if($name === "bandwidth"){
 			$v = unserialize($value);
@@ -245,9 +245,9 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			if($needACK === true){
 				$pk->identifierACK = $this->identifiersACK[$identifier]++;
 			}
-			/*if($player->isEncryptEnable()){
+			if($player->isEncryptEnable()){
 				$pk->buffer = chr(0xfe) . $player->getEncrypt(substr($pk->buffer, 1));
-			}*/
+			}
 			if($immediate){
 				$pk->reliability = 0;
 			}
@@ -258,9 +258,9 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	
 	private function getPacket($buffer, $player){
 		$playerProtocol = $player->getPlayerProtocol();
-		/*if($player->isEncryptEnable()){
+		if($player->isEncryptEnable()){
 			$buffer = $player->getDecrypt($buffer);			
-		}*/
+		}
 		/*if($playerProtocol >= ProtocolInfo::PROTOCOL_110 || $player->getOriginalProtocol() == 0 && $this->isZlib($buffer)){
 			$pk = new BatchPacket($buffer);
 			$pk->is110 = true;
@@ -280,9 +280,9 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			$pk = new EncapsulatedPacket();
 			$pk->buffer = chr(0xfe) . $buffer;
 			$pk->reliability = 3;
-			/*if($player->isEncryptEnable()){
+			if($player->isEncryptEnable()){
 				$pk->buffer = chr(0xfe) . $player->getEncrypt(substr($pk->buffer, 1));
-			}*/
+			}
 			$this->interface->sendEncapsulated($player->getIdentifier(), $pk, RakLib::PRIORITY_NORMAL);
 		}
 	}
