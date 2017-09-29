@@ -3975,28 +3975,23 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		return $result;
 	}
 	
-	public function getExp()
-	{
+	public function getExp(){
 		return $this->exp;
 	}
 	
-	public function getExperience()
-	{
+	public function getExperience(){
 		return $this->exp;
 	}
 	
-	public function getExpLevel()
-	{
+	public function getExpLevel(){
 		return $this->expLevel;
 	}
 	
-	public function getExperienceLevel()
-	{
+	public function getExperienceLevel(){
 		return $this->expLevel;
 	}
 	
-	public function updateExperience($exp = 0, $level = 0, $checkNextLevel = true)
-	{
+	public function updateExperience($exp = 0, $level = 0, $checkNextLevel = true){
 		$this->exp = $exp;
 		$this->expLevel = $level;
 
@@ -4010,28 +4005,23 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 	}
 	
-	public function addExp($exp = 0, $level = 0, $checkNextLevel = true)
-	{
+	public function addExp($exp = 0, $level = 0, $checkNextLevel = true){
 		$this->updateExperience($this->getExperience() + $exp, $this->getExperienceLevel() + $level, $checkNextLevel);
 	}
 	
-	public function addExperience($exp = 0, $level = 0, $checkNextLevel = true)
-	{
+	public function addExperience($exp = 0, $level = 0, $checkNextLevel = true){
 		$this->updateExperience($this->getExperience() + $exp, $this->getExperienceLevel() + $level, $checkNextLevel);
 	}
 	
-	public function removeExp($exp = 0, $level = 0, $checkNextLevel = true)
-	{
+	public function removeExp($exp = 0, $level = 0, $checkNextLevel = true){
 		$this->updateExperience($this->getExperience() - $exp, $this->getExperienceLevel() - $level, $checkNextLevel);
 	}
 	
-	public function removeExperience($exp = 0, $level = 0, $checkNextLevel = true)
-	{
+	public function removeExperience($exp = 0, $level = 0, $checkNextLevel = true){
 		$this->updateExperience($this->getExperience() - $exp, $this->getExperienceLevel() - $level, $checkNextLevel);
 	}
 	
-	public function getExperienceNeeded()
-	{
+	public function getExperienceNeeded(){
 		$level = $this->getExperienceLevel();
 		if($level <= 16){
 			return (2 * $level) + 7;
@@ -4044,8 +4034,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		return PHP_INT_MAX;
 	}
 
-	public function hasEnoughExperience()
-	{
+	public function hasEnoughExperience(){
 		return $this->getExperienceNeeded() - $this->getRealExperience() <= 0;
 	}
 
@@ -4962,8 +4951,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$players[] = $this;
 		$pk = new PlayerListPacket();
 		$pk->type = PlayerListPacket::TYPE_ADD;
-		foreach($players as $player){
-			$pk->entries[] = [$player->getUniqueId(), $player->getId(), $player->getName(), $player->getSkinName(), $player->getSkinData(), $player->getCapeData(), $player->getSkinGeometryName(), $player->getSkinGeometryData(), $player->getXUID()];
+		foreach($players as $p){
+			$pk->entries[] = [$p->getUniqueId(), $p->getId(), $p->getName(), $p->getSkinName(), $p->getSkinData(), $p->getCapeData(), $p->getSkinGeometryName(), $p->getSkinGeometryData(), $p->getXUID()];
 		}
 		
 		$this->server->batchPackets([$this], [$pk]);

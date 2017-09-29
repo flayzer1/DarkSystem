@@ -51,6 +51,8 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	/** @var ServerHandler */
 	private $interface;
 	
+	private $isEncryptEnabled = false;
+	
 	public $count = 0;
 	public $maxcount = 25;
 	
@@ -245,7 +247,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			if($needACK === true){
 				$pk->identifierACK = $this->identifiersACK[$identifier]++;
 			}
-			if($player->isEncryptEnable()){
+			if($player->isEncryptEnable() && RakLibInterface::$isEncryptAllowed === true){
 				$pk->buffer = chr(0xfe) . $player->getEncrypt(substr($pk->buffer, 1));
 			}
 			if($immediate){
@@ -258,7 +260,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	
 	private function getPacket($buffer, $player){
 		$playerProtocol = $player->getPlayerProtocol();
-		if($player->isEncryptEnable()){
+		if($player->isEncryptEnable() && RakLibInterface::$isEncryptAllowed === true){
 			$buffer = $player->getDecrypt($buffer);			
 		}
 		/*if($playerProtocol >= ProtocolInfo::PROTOCOL_110 || $player->getOriginalProtocol() == 0 && $this->isZlib($buffer)){
@@ -280,7 +282,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			$pk = new EncapsulatedPacket();
 			$pk->buffer = chr(0xfe) . $buffer;
 			$pk->reliability = 3;
-			if($player->isEncryptEnable()){
+			if($player->isEncryptEnable() && RakLibInterface::$isEncryptAllowed === true){
 				$pk->buffer = chr(0xfe) . $player->getEncrypt(substr($pk->buffer, 1));
 			}
 			$this->interface->sendEncapsulated($player->getIdentifier(), $pk, RakLib::PRIORITY_NORMAL);

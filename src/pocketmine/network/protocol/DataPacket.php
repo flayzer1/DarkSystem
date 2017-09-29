@@ -12,6 +12,7 @@
 namespace pocketmine\network\protocol;
 
 use pocketmine\utils\BinaryStream;
+use pocketmine\utils\Utils;
 
 abstract class DataPacket extends BinaryStream{
 
@@ -24,11 +25,11 @@ abstract class DataPacket extends BinaryStream{
 	protected static $packetsIds = [];
 
 	public function pid(){
-		return DataPacket::NETWORK_ID;
+		return $this::NETWORK_ID;
 	}
 	
 	public function pname(){
-		return DataPacket::PACKET_NAME;
+		return $this::PACKET_NAME;
 	}
 	
 	public function setChannel($channel){
@@ -45,6 +46,21 @@ abstract class DataPacket extends BinaryStream{
 		$this->isEncoded = false;
 		$this->offset = 0;
 		return $this;
+	}
+
+	public function __debugInfo(){
+		$data = [];
+		foreach($this as $k => $v){
+			if($k === "buffer"){
+				$data[$k] = bin2hex($v);
+			}elseif(is_string($v) or (is_object($v) and method_exists($v, "__toString"))){
+				$data[$k] = Utils::printable((string) $v);
+			}else{
+				$data[$k] = $v;
+			}
+		}
+
+		return $data;
 	}
 	
 	public static function initializePackets(){

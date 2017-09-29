@@ -1886,7 +1886,7 @@ class Server extends DarkSystem{
 		$this->packetMgr->pushMainToThreadPacket(serialize($data));
 	}*/
 	
-	public function batchPackets($players, $packets){
+	/*public function batchPackets($players, $packets){
 		$targets = [];
 		$neededProtocol = [];
 		foreach($players as $p){
@@ -1914,6 +1914,38 @@ class Server extends DarkSystem{
 		$data["targets"] = $targets;
 		$data["networkCompressionLevel"] = $this->networkCompressionLevel;
 		$data["isBatch"] = true;
+		
+		$this->packetMgr->pushMainToThreadPacket(serialize($data));
+	}*/
+	
+	public function batchPackets(array $players, array $packets, $forceSync = true){
+		$targets = [];
+		$neededProtocol = [];
+		foreach($players as $p){
+			$targets[] = array($p->getIdentifier(), $p->getPlayerProtocol());
+			$neededProtocol[$p->getPlayerProtocol()] = $p->getPlayerProtocol();
+		}
+		
+		$newPackets = array();
+		foreach($packets as $p){
+			foreach($neededProtocol as $protocol){
+				if($p instanceof DataPacket){
+					if(!$p->isEncoded || count($neededProtocol) > 1){					
+						$p->encode($protocol);
+					}
+					
+					$newPackets[$protocol][] = $p->buffer;
+				}elseif(count($neededProtocol) == 1){
+					$newPackets[$protocol][] = $p;
+				}
+			}
+		}
+		
+		$data = array();
+		$data['packets'] = $newPackets;
+		$data['targets'] = $targets;
+		$data['networkCompressionLevel'] = $this->networkCompressionLevel;
+		$data['isBatch'] = true;
 		
 		$this->packetMgr->pushMainToThreadPacket(serialize($data));
 	}
