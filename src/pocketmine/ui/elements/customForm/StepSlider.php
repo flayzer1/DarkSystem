@@ -4,7 +4,7 @@ namespace pocketmine\ui\elements\customForm;
 
 use pocketmine\ui\elements\UIElement;
 
-class StepSlider extends UIElement {
+class StepSlider extends UIElement{
 	
 	/** @var string[] */
 	protected $steps = [];

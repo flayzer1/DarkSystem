@@ -5,7 +5,7 @@ namespace pocketmine\ui\windows;
 use pocketmine\ui\CustomUI;
 use pocketmine\ui\elements\UIElement;
 
-class CustomForm implements CustomUI {
+class CustomForm implements CustomUI{
 	
 	/** @var string */
 	protected $title = '';
@@ -75,5 +75,4 @@ class CustomForm implements CustomUI {
 			}
 		}
 	}
-
 }

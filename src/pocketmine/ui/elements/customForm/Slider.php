@@ -4,7 +4,7 @@ namespace pocketmine\ui\elements\customForm;
 
 use pocketmine\ui\elements\UIElement;
 
-class Slider extends UIElement {
+class Slider extends UIElement{
 	
 	/** @var float */
 	protected $min = 0;

@@ -277,7 +277,7 @@ class Network{
 					if($pk->getOffset() <= 0){
 						return;
 					}
-				} else {
+				}else{
 				}
 			}
 		}catch(\Exception $e){

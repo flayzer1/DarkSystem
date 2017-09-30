@@ -33,7 +33,7 @@ class McRegion extends BaseLevelProvider{
 	}
 	
 	public static function getProviderOrder(){
-		return self::ORDER_ZXY;
+		return McRegion::ORDER_ZXY;
 	}
 	
 	public static function usesChunkSection(){

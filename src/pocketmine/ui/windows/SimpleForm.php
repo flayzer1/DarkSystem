@@ -5,7 +5,7 @@ namespace pocketmine\ui\windows;
 use pocketmine\ui\CustomUI;
 use pocketmine\ui\elements\simpleForm\Button;
 
-class SimpleForm implements CustomUI {
+class SimpleForm implements CustomUI{
 	
 	/** @var string */
 	protected $title = '';

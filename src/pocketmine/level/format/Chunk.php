@@ -12,6 +12,7 @@
 namespace pocketmine\level\format;
 
 interface Chunk extends FullChunk{
+	
 	const SECTION_COUNT = 8;
 
 	/**
@@ -49,4 +50,5 @@ interface Chunk extends FullChunk{
 	 * @return FullChunk
 	 */
 	public static function getEmptyChunk($chunkX, $chunkZ, LevelProvider $provider = null);
+	
 }

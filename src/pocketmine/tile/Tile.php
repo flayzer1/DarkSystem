@@ -37,6 +37,7 @@ abstract class Tile extends Position{
 	const CAULDRON = "Cauldron";
 	const HOPPER = "Hopper";
 	const BEACON = "Beacon";
+	const COMMAND_BLOCK = "CommandBlock";
 	const BREWING_STAND = "BrewingStand";
 	const ENCHANT_TABLE = "EnchantTable";
 	const DL_DETECTOR = "DayLightDetector";
@@ -71,7 +72,7 @@ abstract class Tile extends Position{
 		Tile::registerTile(BrewingStand::class);
 		Tile::registerTile(Cauldron::class);
 		Tile::registerTile(Chest::class);
-		//Tile::registerTile(CommandBlock::class);
+		Tile::registerTile(CommandBlock::class);
 		Tile::registerTile(Dispenser::class);
 		Tile::registerTile(DLDetector::class);
 		Tile::registerTile(Dropper::class);

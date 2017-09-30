@@ -4,7 +4,7 @@ namespace pocketmine\ui\elements\customForm;
 
 use pocketmine\ui\elements\UIElement;
 
-class Input extends UIElement {
+class Input extends UIElement{
 	
 	/** @var string Text displaying in input without text */
 	protected $placeholder = '';

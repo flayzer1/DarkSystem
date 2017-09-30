@@ -112,4 +112,5 @@ interface Info110{
 	const STRUCTURE_BLOCK_UPDATE_PACKET = 0x5b;
 //	const SHOW_STORE_OFFER_PACKET = 0x5c;
 //	const PURCHASE_RECEIPT_PACKET = 0x5d;
+
 }

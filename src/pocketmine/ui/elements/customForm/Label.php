@@ -4,7 +4,7 @@ namespace pocketmine\ui\elements\customForm;
 
 use pocketmine\ui\elements\UIElement;
 
-class Label extends UIElement {
+class Label extends UIElement{
 	
 	/**
 	 * 
@@ -32,6 +32,7 @@ class Label extends UIElement {
 	 * @param Player $player
 	 */
 	final public function handle($value, $player) {
+		
 	}
 	
 }

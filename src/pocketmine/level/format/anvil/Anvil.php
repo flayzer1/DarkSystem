@@ -93,6 +93,7 @@ class Anvil extends McRegion{
 			'heightMap' => pack("v*", ...$chunk->getHeightMapArray()),
 			'biomeColor' => $this->convertBiomeColors($chunk->getBiomeColorArray())	
 		];
+		
 		$sections = [];
 		foreach($chunk->getSections() as $section){
 			if($section instanceof EmptyChunkSection){

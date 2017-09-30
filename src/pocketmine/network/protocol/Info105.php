@@ -107,4 +107,5 @@ interface Info105{
 //  const PLAY_SOUND_PACKET = 0x56;
 //  const STOP_SOUND_PACKET = 0x57;
 	const SET_TITLE_PACKET = 0x58;
+	
 }

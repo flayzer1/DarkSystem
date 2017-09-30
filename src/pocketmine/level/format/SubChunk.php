@@ -39,7 +39,7 @@ class SubChunk{
             substr_count($this->ids, "\x00") === 4096 and
             substr_count($this->skyLight, "\xff") === 2048 and
             substr_count($this->blockLight, "\x00") === 2048
-    );
+        );
 	}
 
 	public function getBlockId($x, $y, $z){
@@ -193,6 +193,7 @@ class SubChunk{
 	}
 
 	public function networkSerialize(){
+		//return "\x00" . $this->ids . $this->data/* . $this->skyLight . $this->blockLight*/;
 		return "\x00" . $this->ids . $this->data . $this->skyLight . $this->blockLight;
 	}
 
@@ -206,7 +207,7 @@ class SubChunk{
 
 	public static function fastDeserialize($data){
 		return new SubChunk(
-			substr($data,    0, 4096),
+			substr($data, 0, 4096),
 			substr($data, 4096, 2048),
 			substr($data, 6144, 2048),
 			substr($data, 8192, 2048)

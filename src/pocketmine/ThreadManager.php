@@ -16,21 +16,21 @@ class ThreadManager extends \Volatile{
 	private static $instance = null;
 
 	public static function init(){
-		self::$instance = new ThreadManager();
+		ThreadManager::$instance = new ThreadManager();
 	}
 	
 	public static function getInstance(){
-		return self::$instance;
+		return ThreadManager::$instance;
 	}
 	
 	public function add($thread){
-		if($thread instanceof Thread or $thread instanceof Worker){
+		if($thread instanceof Thread || $thread instanceof Worker){
 			$this->{spl_object_hash($thread)} = $thread;
 		}
 	}
 	
 	public function remove($thread){
-		if($thread instanceof Thread or $thread instanceof Worker){
+		if($thread instanceof Thread || $thread instanceof Worker){
 			unset($this->{spl_object_hash($thread)});
 		}
 	}

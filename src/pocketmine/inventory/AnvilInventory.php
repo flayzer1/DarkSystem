@@ -25,6 +25,7 @@ use pocketmine\level\Position;
 use pocketmine\Player;
 
 class AnvilInventory extends ContainerInventory{
+	
 	public function __construct(Position $pos){
 		parent::__construct(new FakeBlockMenu($this, $pos), InventoryType::get(InventoryType::ANVIL));
 	}

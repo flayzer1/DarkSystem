@@ -4,7 +4,7 @@ namespace pocketmine\ui\elements;
 
 use pocketmine\Player;
 
-abstract class UIElement {
+abstract class UIElement{
 	
 	protected $text = '';
 	

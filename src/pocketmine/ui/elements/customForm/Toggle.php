@@ -4,7 +4,7 @@ namespace pocketmine\ui\elements\customForm;
 
 use pocketmine\ui\elements\UIElement;
 
-class Toggle extends UIElement {
+class Toggle extends UIElement{
 	
 	/** @var boolean */
 	protected $defaultValue = false;

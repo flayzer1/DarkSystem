@@ -41,6 +41,7 @@ class Skull extends Spawnable{
 			$this->namedtag->Rot
 		]);
 	}
+	
 	public function getSkullType(){
 		return $this->namedtag["SkullType"];
 	}

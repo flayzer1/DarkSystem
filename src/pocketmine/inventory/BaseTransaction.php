@@ -90,5 +90,4 @@ class BaseTransaction implements Transaction {
 			$this->targetItem->clearCustomName();
 		}
 	}
-
 }

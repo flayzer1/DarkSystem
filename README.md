@@ -25,10 +25,11 @@
 - Rideable Car (indev)
 - Rideable Horse (indev)
 - Behavior Support (indev)
+- Working Command Block (made %40) (indev)
 - ModPE/BlockLauncher check (Can kick modded players) (indev)
 
 # TODO List:
-- [ ] **Command Block**
+- [x] **Command Block**
 - [ ] **Experience System (working)**
 - [ ] **Map**
 - [x] **Horse**

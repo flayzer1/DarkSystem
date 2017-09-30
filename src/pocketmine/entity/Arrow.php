@@ -53,7 +53,7 @@ class Arrow extends Projectile{
 		if($this->age > 1200){
 			$this->kill();
 			$hasUpdate = true;
-		} elseif ($this->y < 1) {
+		}elseif($this->y < 1){
 			$this->kill();
 			$hasUpdate = true;
 		}

@@ -4,7 +4,7 @@ namespace pocketmine\ui\windows;
 
 use pocketmine\ui\CustomUI;
 
-abstract class ModalWindow implements CustomUI {
+abstract class ModalWindow implements CustomUI{
 	
 	/** @var string */
 	protected $title = '';

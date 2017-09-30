@@ -188,7 +188,7 @@ class Chunk extends BaseChunk{
 	 */
 	public static function fromFastBinary($data, LevelProvider $provider = null){
 		$nbt = new NBT(NBT::BIG_ENDIAN);
-
+		
 		try {
 			$nbt->read($data);
 			$chunk = $nbt->getData();

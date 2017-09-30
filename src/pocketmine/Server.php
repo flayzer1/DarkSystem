@@ -748,8 +748,8 @@ class Server extends DarkSystem{
 			new Compound("Achievements", []),
 			new Compound("EnderItems", []),
 			new IntTag("Score", 0),
-			new IntTag("ShoulderEntityLeft", $player->getLeftShoulderEntity()),
-			new IntTag("ShoulderEntityRight", $player->getRightShoulderEntity()),
+			//new IntTag("ShoulderEntityLeft", $player->getLeftShoulderEntity()),
+			//new IntTag("ShoulderEntityRight", $player->getRightShoulderEntity()),
 			new IntTag("seenCredits", $this->isCreditsEnable()),
 			new IntTag("playerGameType", $this->getGamemode()),
 			new Enum("Motion", [
@@ -1886,7 +1886,7 @@ class Server extends DarkSystem{
 		$this->packetMgr->pushMainToThreadPacket(serialize($data));
 	}*/
 	
-	/*public function batchPackets($players, $packets){
+	public function batchPackets($players, $packets){
 		$targets = [];
 		$neededProtocol = [];
 		foreach($players as $p){
@@ -1914,38 +1914,6 @@ class Server extends DarkSystem{
 		$data["targets"] = $targets;
 		$data["networkCompressionLevel"] = $this->networkCompressionLevel;
 		$data["isBatch"] = true;
-		
-		$this->packetMgr->pushMainToThreadPacket(serialize($data));
-	}*/
-	
-	public function batchPackets(array $players, array $packets, $forceSync = true){
-		$targets = [];
-		$neededProtocol = [];
-		foreach($players as $p){
-			$targets[] = array($p->getIdentifier(), $p->getPlayerProtocol());
-			$neededProtocol[$p->getPlayerProtocol()] = $p->getPlayerProtocol();
-		}
-		
-		$newPackets = array();
-		foreach($packets as $p){
-			foreach($neededProtocol as $protocol){
-				if($p instanceof DataPacket){
-					if(!$p->isEncoded || count($neededProtocol) > 1){					
-						$p->encode($protocol);
-					}
-					
-					$newPackets[$protocol][] = $p->buffer;
-				}elseif(count($neededProtocol) == 1){
-					$newPackets[$protocol][] = $p;
-				}
-			}
-		}
-		
-		$data = array();
-		$data['packets'] = $newPackets;
-		$data['targets'] = $targets;
-		$data['networkCompressionLevel'] = $this->networkCompressionLevel;
-		$data['isBatch'] = true;
 		
 		$this->packetMgr->pushMainToThreadPacket(serialize($data));
 	}
@@ -1988,7 +1956,7 @@ class Server extends DarkSystem{
 			throw new ServerException("CommandSender Geçerli Değil!");
 		}
 		if($this->cmdMap->dispatch($sender, $commandLine)){
-			return;
+			return true;
 		}
 		if($sender instanceof Player){
 			$message = $this->getSoftConfig("messages.unknown-command", "Unknown command!");
@@ -1998,7 +1966,7 @@ class Server extends DarkSystem{
 		}else{
 			$sender->sendMessage(TF::RED . "Unknown command!");
 		}
-		return;
+		return false;
 	}
 
 	public function reload(){
@@ -2039,10 +2007,11 @@ class Server extends DarkSystem{
 	}
 	
 	public function shutdown($msg = ""){
-		$this->isRunning = false;
 		if($msg != ""){
 			$this->propertyCache["settings.shutdown-message"] = $msg;
 		}
+		$this->isRunning = false;
+		\gc_collect_cycles();
 	}
 	
 	public function forceShutdown(){
@@ -2183,7 +2152,7 @@ class Server extends DarkSystem{
 			return;
 		}
 		
-		//$this->isRunning = false;
+		$this->isRunning = false;
 		$this->hasStopped = false;
 
 		ini_set("error_reporting", 0);
@@ -2202,7 +2171,6 @@ class Server extends DarkSystem{
 		
 		//$this->shutdown();
 		$this->forceShutdown();
-		$this->isRunning = false;
 		@kill(getmypid());
 		exit(1);
 	}

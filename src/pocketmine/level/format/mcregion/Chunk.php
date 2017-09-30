@@ -293,7 +293,6 @@ class Chunk extends BaseFullChunk{
 	}
 
 	public static function fromFastBinary($data, LevelProvider $provider = null){
-
 		try{
 			$offset = 0;
 
@@ -370,8 +369,7 @@ class Chunk extends BaseFullChunk{
 
 		$nbt->Entities = new Enum("Entities", $entities);
 		$nbt->Entities->setTagType(NBT::TAG_Compound);
-
-
+		
 		$tiles = [];
 		foreach($this->getTiles() as $tile){
 			$tile->saveNBT();

@@ -129,4 +129,5 @@ interface ProtocolInfo{
 //	const BEHAVIOR_PACK_CHUNK_DATA_PACKET = 0x50;
 //	const BEHAVIOR_PACK_CHUNK_REQUEST_PACKET = 0x51;
 	const TRANSFER_PACKET = 0x53;
+	
 }

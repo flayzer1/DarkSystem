@@ -2166,17 +2166,14 @@ class Level implements ChunkManager, Metadatable{
 		$this->provider->setSeed($seed);
 	}
 	
-	public function generateChunk(int $x, int $z, bool $force = false){
+	public function generateChunk($x, $z, $force = false){
 		if(count($this->chunkGenerationQueue) >= $this->chunkGenerationQueueSize && !$force){
 			return;
 		}
-		
 		if(!isset($this->chunkGenerationQueue[$index = Level::chunkHash($x, $z)])){
-			//Timings::$generationTimer->startTiming();
 			$this->chunkGenerationQueue[$index] = true;
 			$task = new GenerationTask($this, $this->getChunk($x, $z, true));
 			$this->server->getScheduler()->scheduleAsyncTask($task);
-			//Timings::$generationTimer->stopTiming();
 		}
 	}
 	
@@ -2302,21 +2299,20 @@ class Level implements ChunkManager, Metadatable{
 			'recipient' => $recipient,
 			'time' => microtime(true)
 		);
-		
 	}
 	
 	public function mayAddPlayerHandItem($sender, $recipient){
 		if(isset($this->playerHandItemQueue[$sender->getId()][$recipient->getId()])){
 			return false;
 		}
+		
 		return true;
 	}
 	
-	public function populateChunk(int $x, int $z, bool $force = false){
+	public function populateChunk($x, $z, $force = false){
 		if(isset($this->chunkPopulationQueue[$index = Level::chunkHash($x, $z)]) || (count($this->chunkPopulationQueue) >= $this->chunkPopulationQueueSize && !$force)){
 			return false;
 		}
-
 		$chunk = $this->getChunk($x, $z, true);
 		if(!$chunk->isPopulated()){
 			$populate = true;
@@ -2328,7 +2324,6 @@ class Level implements ChunkManager, Metadatable{
 					}
 				}
 			}
-
 			if($populate){
 				if(!isset($this->chunkPopulationQueue[$index])){
 					$this->chunkPopulationQueue[$index] = true;
@@ -2341,10 +2336,8 @@ class Level implements ChunkManager, Metadatable{
 					$this->server->getScheduler()->scheduleAsyncTask($task);
 				}
 			}
-			
 			return false;
 		}
-
 		return true;
 	}
 	
