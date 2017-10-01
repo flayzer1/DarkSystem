@@ -63,6 +63,7 @@ namespace pocketmine{
 	const DARKBOT_VERSION = "1.0.0";
 	const API_VERSION = "3.0.1";
 	const TAG = "Prismarine";
+	const CURRENT_STATUS = "passing";
 	const CODENAME = "DarkSystem";
 	const CREATOR = "DarkYusuf13";
 	

@@ -1,8 +1,8 @@
 <?php
 
-namespace pocketmine\ui\elements\customForm;
+namespace pocketmine\inventory\customUI\elements\customForm;
 
-use pocketmine\ui\elements\UIElement;
+use pocketmine\inventory\customUI\elements\UIElement;
 
 class Slider extends UIElement{
 	

@@ -22,7 +22,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\command\SimpleCommandMap;
-use pocketmine\entity\{Entity, Attribute, Effect, Arrow, BlazeFireball, Camera, Car, Item as DroppedItem, Egg, EnderCrystal, EnderPearl, FallingSand, FishingHook, GhastFireball, LeashKnot, Lightning, Minecart, MinecartChest, MinecartHopper, MinecartTNT, Painting, PrimedTNT, Snowball, ThrownExpBottle, ThrownPotion, XPOrb, Herobrine, Human, Bat, BlueWitherSkull, Boat, Dragon, Donkey, ElderGuardian, EnderDragon, Endermite, EvocationFangs, Giant, Guardian, Horse, Husk, LavaSlime, Llama, MagmaCube, Mule, PolarBear, Shulker, ShulkerBullet, Slime, SkeletonHorse, Stray, Squid, Vex, Villager, Vindicator, Witch, Wither, WitherSkeleton, ZombieHorse};
+use pocketmine\entity\{Entity, Attribute, Effect, Arrow, Item as DroppedItem, Egg};
 use pocketmine\event\HandlerList;
 use pocketmine\event\level\LevelInitEvent;
 use pocketmine\event\level\LevelLoadEvent;
@@ -316,6 +316,10 @@ class Server extends DarkSystem{
 		return \pocketmine\CODENAME;
 	}
 	
+	public function getCurrentStatus(){
+		return \pocketmine\CURRENT_STATUS;
+	}
+	
 	public function getCreator(){
 		return \pocketmine\CREATOR;
 	}
@@ -571,6 +575,10 @@ class Server extends DarkSystem{
 	
 	public function getBehaviorPackManager(){
 		return $this->behaviorMgr;
+	}
+	
+	public function getQueryInformation(){
+		return $this->queryRegenerator;
 	}
 	
 	public function getScheduler(){
@@ -1046,6 +1054,22 @@ class Server extends DarkSystem{
 		return true;
 	}
 	
+	public function findEntity($entityId, Level $expectedLevel = null){
+		$levels = $this->levels;
+		if($expectedLevel !== null){
+			array_unshift($levels, $expectedLevel);
+		}
+
+		foreach($levels as $l){
+			assert(!$l->isClosed());
+			if(($entity = $l->getEntity($entityId)) instanceof Entity){
+				return $entity;
+			}
+		}
+
+		return null;
+	}
+	
 	public function getConfigString($variable, $defaultValue = ""){
 		$v = getopt("", ["$variable::"]);
 		if(isset($v[$variable])){
@@ -1457,24 +1481,13 @@ class Server extends DarkSystem{
 			$build = ProtocolInfo::DARKSYSTEM_VERSION;
 			$tag = \pocketmine\TAG;
 			$package = $packages;
-
-			/*$this->konsol->info("
+			if($this->getCurrentStatus() == "alpha" || $this->getCurrentStatus() == "beta" && !$this->getCurrentStatus() == "passing"){
+				$this->konsol->directSend("§e<?php>");
+			}else{
+				$this->konsol->directSend("§6》》》");
+			}
 			
-    §e______           _    _____           _                  
-    §6|  _  \         | |  /  ___|         | |                  
-    §e| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
-    §6| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
-    §e| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
-    §6|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
-                                 §e__/  |      
-                                 §6|___/            §eMCPE: $mcpe §b($protocol)
-                                                      §eDARKBOT: $dbotcheck (v$dbotver)
-                                                        
-      §aDarkSystem $version ($build)  *$tag*                                                
-	
-			");*/
-			
-			$this->konsol->info("
+			$this->konsol->directSend("
 			
     §b______           _    _____           _                  
     §9|  _  \         | |  /  ___|         | |                  
@@ -1678,42 +1691,48 @@ class Server extends DarkSystem{
 			LevelProviderManager::addProvider($this, McRegion::class);
 			
 			foreach((array) $this->getProperty("worlds", []) as $name => $worldSetting){
-			if($this->loadLevel($name) === false){
-				$seed = $this->getProperty("worlds.$name.seed", time());
-				if(count($options) > 0){
-					$options = [
-						"preset" => implode(":", $options),
-					];
-				}else{
-					$options = [];
+				if($this->loadLevel($name) === false){
+					$seed = $this->getProperty("worlds.$name.seed", time());
+					if(count($options) > 0){
+						$options = [
+							"preset" => implode(":", $options),
+						];
+					}else{
+						$options = [];
+					}
 				}
-
+				
 				$this->generateLevel($name, $seed, $options);
 			}
-		}
-
-		if($this->getDefaultLevel() === null){
-			$default = $this->getConfigString("level-name", "world");
-			if(trim($default) == ""){
-				$this->konsol->warning("level-name cannot be null, using default");
-				$default = "world";
-				$this->setConfigString("level-name", "world");
+			
+			if($this->getDefaultLevel() === null){
+				$default = $this->getConfigString("level-name", "world");
+				if(trim($default) == ""){
+					if(Translate::checkTurkish() === "yes"){
+						$this->konsol->warning("level-name Boş Olamaz!");
+					}else{
+						$this->konsol->warning("level-name Cannot be Null, Using Default");
+					}
+					
+					$default = "world";
+					$this->setConfigString("level-name", "world");
+				}
+				
+				if($this->loadLevel($default) === false){
+					$seed = $this->getConfigInt("level-seed", time());
+					$this->generateLevel($default, $seed === 0 ? time() : $seed);
+				}
+				
+				$this->setDefaultLevel($this->getLevelByName($default));
 			}
 			
-			if($this->loadLevel($default) === false){
-				$seed = $this->getConfigInt("level-seed", time());
-				$this->generateLevel($default, $seed === 0 ? time() : $seed);
+			$this->properties->save();
+			
+			if(!($this->getDefaultLevel() instanceof Level)){
+				$this->konsol->emergency($this->getLanguage()->translateString("pocketmine.level.defaultError"));
+				$this->forceShutdown();
+				return;
 			}
-
-			$this->setDefaultLevel($this->getLevelByName($default));
-		}
-		
-		$this->properties->save();
-		if(!($this->getDefaultLevel() instanceof Level)){
-			$this->konsol->emergency("Varsayılan Dünya Yüklenemedi!");
-			$this->forceShutdown();
-			return;
-		}
 		
 			/*if($this->netherEnabled){
 				if(!$this->loadLevel($this->netherName)){
@@ -1721,9 +1740,9 @@ class Server extends DarkSystem{
 				}
 				
 				$this->netherLevel = $this->getLevelByName($this->netherName);
-			}
+			}*/
 			
-			if($this->endEnabled){
+			/*if($this->endEnabled){
                 if(!$this->loadLevel($this->endName)){
                     $this->generateLevel($this->endName, time(), Generator::getGenerator("ender"));
                 }
@@ -1746,6 +1765,87 @@ class Server extends DarkSystem{
 		}catch(\Throwable $e){
 			$this->exceptionHandler($e);
 		}
+	}
+	
+	public function run(){	
+		DataPacket::initializePackets();
+		
+		if($this->isUseEncrypt){
+			\McpeEncrypter::generateKeyPair($this->serverPrivateKey, $this->serverPublicKey);
+		}
+		
+		if($this->getConfigBoolean("enable-query", true) === true){
+			$this->queryHandler = new QueryHandler();
+		}
+
+		foreach($this->getIPBans()->getEntries() as $ent){
+			$this->network->blockAddress($ent->getName(), -1);
+		}
+		
+		$this->tickCounter = 0;
+		
+		Effect::init();
+		
+		switch(strtolower($this->getCodename())){
+			case "priv":
+			case "private":
+				if(Translate::checkTurkish() === "yes"){
+					$this->konsol->notice("------------------ BILDIRIM ------------------");
+					$this->konsol->notice("Şuanda DarkSystem'in GIZLI Bir Sürümünü Kullanıyorsunuz.");
+					$this->konsol->notice("------------------ BILDIRIM ------------------");
+				}else{
+					$this->konsol->notice("------------------ NOTICE ------------------");
+					$this->konsol->notice("You're running a PRIVATE version of DarkSystem.");
+					$this->konsol->notice("------------------ NOTICE ------------------");
+				}
+				break;
+			case "dev":
+			case "developer":
+				if(Translate::checkTurkish() === "yes"){
+					$this->konsol->notice("--------------------- BILDIRIM ---------------------");
+					$this->konsol->notice("Şuanda DarkSystem GELIŞTIRICI'sinin Sürümünü Kullanıyorsunuz.");
+					$this->konsol->notice("            BU URUNU KULLANMAYINIZ              ");
+					$this->konsol->notice("--------------------- BILDIRIM ---------------------");
+				}else{
+					$this->konsol->notice("--------------------- NOTICE ---------------------");
+					$this->konsol->notice("You're running a DEVELOPER's version of DarkSystem.");
+					$this->konsol->notice("            DO NOT use in production              ");
+					$this->konsol->notice("--------------------- NOTICE ---------------------");
+				}
+				break;
+			case "exp":
+			case "experimental":
+				if(Translate::checkTurkish() === "yes"){
+					$this->konsol->notice("--------------------- BILDIRIM ---------------------");
+					$this->konsol->notice("Şuanda DarkSystem'in DENEYSEL Sürümünü Kullanıyorsunuz.");
+					$this->konsol->notice("            BU URUNU KULLANMAYINIZ              ");
+					$this->konsol->notice("--------------------- BILDIRIM ---------------------");
+				}else{
+					$this->konsol->notice("--------------------- NOTICE ---------------------");
+					$this->konsol->notice("You're running an EXPERIMENTAL version of DarkSystem.");
+					$this->konsol->notice("            DO NOT use in production              ");
+					$this->konsol->notice("--------------------- NOTICE ---------------------");
+				}
+				break;
+				default;
+				break;
+		}
+		
+		$this->konsol->info($this->getLanguage()->translateString("pocketmine.server.startFinished", [round(microtime(true) - \pocketmine\START_TIME, 3)]));
+
+		$this->packetMgr = new PacketManager($this->getLoader());
+		
+		$this->tickAverage = array();
+		$this->useAverage = array();
+		for($i = 0; $i < 1200; $i++){
+			$this->tickAverage[] = 20;
+			$this->useAverage[] = 0;
+		}
+
+		$this->tickProcessor();
+		$this->forceShutdown();
+
+		\gc_collect_cycles();
 	}
 	
 	public function broadcastMessage($message, $recipients = null){
@@ -1794,7 +1894,7 @@ class Server extends DarkSystem{
 		return count($recipients);
 	}
 	
-	public function broadcastTitle(string $title, string $subtitle = "", int $fadeIn = -1, int $stay = -1, int $fadeOut = -1, $recipients = null){
+	public function broadcastTitle($title, $subtitle = "", $fadeIn = -1, $stay = -1, $fadeOut = -1, $recipients = null){
 		if(!is_array($recipients)){
 			$recipients = [];
 			foreach($this->pluginMgr->getPermissionSubscriptions(Server::BROADCAST_CHANNEL_USERS) as $permissible){
@@ -2010,7 +2110,9 @@ class Server extends DarkSystem{
 		if($msg != ""){
 			$this->propertyCache["settings.shutdown-message"] = $msg;
 		}
+		
 		$this->isRunning = false;
+		
 		\gc_collect_cycles();
 	}
 	
@@ -2018,17 +2120,21 @@ class Server extends DarkSystem{
 		if($this->hasStopped){
 			return;
 		}
+		
 		try{
 			$this->hasStopped = true;
 			foreach($this->players as $p){
 				$p->close(TF::YELLOW . $p->getName() . " Oyundan Ayrıldı", $this->getProperty("settings.shutdown-message", "Sunucu Durduruldu"));
 			}
+			
 			foreach($this->network->getInterfaces() as $int){
 				$int->shutdown();
 				$this->network->unregisterInterface($int);
 			}
+			
 			$this->shutdown();
 			//$this->dbot->shutdown();
+			
 			//if(count($this->pluginMgr->getPlugins()) > 0 || $this->pluginMgr->getPlugins() === null){
 				if(Translate::checkTurkish() === "yes"){
 					$this->konsol->info("§cEklentiler Devre Dışı Bırakılıyor...");
@@ -2036,70 +2142,36 @@ class Server extends DarkSystem{
 					$this->konsol->info("§cDisabling Plugins...");
 				}
 			//}
+			
 			if($this->rcon instanceof RCON){
 				$this->rcon->stop();
 			}
+			
 			$this->pluginMgr->disablePlugins();
+			
 			foreach($this->levels as $l){
 				$l->save();
 				$this->unloadLevel($l, true, true);
 			}
+			
 			HandlerList::unregisterAll();
 			$this->scheduler->cancelAllTasks();
 			$this->scheduler->mainThreadHeartbeat(PHP_INT_MAX);
 			$this->properties->save();
 			$this->cmdReader->shutdown();
 			$this->cmdReader->notify();
+			\gc_collect_cycles();
 		}catch(\Exception $e){
 			if(Translate::checkTurkish() === "yes"){
 				$this->konsol->emergency("Sunucu Çöktü, Tüm Görevler Durduruluyor!");
 			}else{
 				$this->konsol->emergency("Server Crashed, Stopping All Threads...");
 			}
+			
 			@kill(getmypid());
 		}
 	}
 	
-	public function getQueryInformation(){
-		return $this->queryRegenerator;
-	}
-	
-	public function run(){	
-		DataPacket::initializePackets();
-		
-		if($this->isUseEncrypt){
-			\McpeEncrypter::generateKeyPair($this->serverPrivateKey, $this->serverPublicKey);
-		}
-		
-		if($this->getConfigBoolean("enable-query", true) === true){
-			$this->queryHandler = new QueryHandler();
-		}
-
-		foreach($this->getIPBans()->getEntries() as $ent){
-			$this->network->blockAddress($ent->getName(), -1);
-		}
-		
-		$this->tickCounter = 0;
-		
-		Effect::init();
-
-		$this->konsol->info($this->getLanguage()->translateString("pocketmine.server.startFinished", [round(microtime(true) - \pocketmine\START_TIME, 3)]));
-
-		$this->packetMgr = new PacketManager($this->getLoader());
-		
-		$this->tickAverage = array();
-		$this->useAverage = array();
-		for($i = 0; $i < 1200; $i++){
-			$this->tickAverage[] = 20;
-			$this->useAverage[] = 0;
-		}
-
-		$this->tickProcessor();
-		$this->forceShutdown();
-
-		\gc_collect_cycles();
-	}
-
 	public function handleSignal($signo){
 		if($signo === SIGTERM || $signo === SIGINT || $signo === SIGHUP){
 			$this->shutdown();
@@ -2377,7 +2449,7 @@ class Server extends DarkSystem{
 		if(($this->tickCounter % 1925) === 0){
 			foreach($this->levels as $l){
 				foreach($l->getEntities() as $e){
-					if($e instanceof Item){
+					if($e instanceof DroppedItem || $e instanceof Arrow){
 						$e->close();
 					}
 				}
@@ -2435,16 +2507,16 @@ class Server extends DarkSystem{
 			}else{
 				switch(mt_rand(1, 5)){
 					case 1:
-				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aServer is in safe with me!");
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aServer is safe with me!");
 				    break;
 				    case 2:
-				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aThis server is inside protection of me!");
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aThis server is in protection of me!");
 				    break;
 				    case 3:
 				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aI will join game soon!");
 				    break;
 				    case 4:
-				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aI am not only a robot!");
+				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aI am not just a robot!");
 				    break;
 				    case 5:
 				    $this->broadcastMessage($this->getDarkBotPrefix() . "§aProtection is important!");

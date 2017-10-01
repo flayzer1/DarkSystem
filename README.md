@@ -1,7 +1,7 @@
 <img src="https://raw.githubusercontent.com/DarkYusuf13/DarkSystem/master/banner.png" border="0">
 
 
-**An Advanced Server Engine/Software For Minecraft PE 1.x.x**
+**An Advanced & Feature Rich Server Engine/Software For Minecraft (PE) Bedrock Edition 1.x.x**
 
 | Travis CI | Discord |
 | :---: | :---:|
@@ -10,13 +10,15 @@
 # Features:
 - DarkSystem is **# 1** about speed. (We think so)
 - Loads chunks region-to-region. It uses less CPU resources & loads chunks fast.
-- MobAI Support
-- Smooth Movement
-- Colored Console
-- AntiForceOP
-- More Commands (/clear, /tpall, /clearchat etc.)
+- MobAI Support (Some animals and mobs can move & attack)
+- Smooth Movement (Players does not glitch or go down (:D) and while move does not throw back.)
+- Support **PIZZA!** :D (/givepizza [player] | if you write only /givepizza, will give pizza everyone) (Pizza mark can be changed from advanced config.)
+- Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, offline mode warn. etc.)
+- AntiForceOP (Hackers cannot access to OP command, you are in safe :))
+- CustomUI (Allows create customizable menus, can be added by /addui) (+1.2)
+- More Commands (/clear, /tpall, /clearchat /addui etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
-- DarkBot (Virtual Bot; Can talk, help players, move etc.)
+- DarkBot (Virtual Intelligent Bot; Can talk, help players, move etc.) (say "hi darkbot" ingame :))
 
 # Added Best Things:
 - Banner (1.2 only)
@@ -29,16 +31,17 @@
 - ModPE/BlockLauncher check (Can kick modded players) (indev)
 
 # TODO List:
-- [x] **Command Block**
+- [x] **Command Block (indev)**
 - [ ] **Experience System (working)**
 - [ ] **Map**
 - [x] **Horse**
 - [ ] **Fireworks**
 - [ ] **Armor Stand**
 - [ ] **Throwing Potions**
+- [ ] **Fully Working CustomUI**
 - [ ] **Riding Mincart and Boat**
 - [ ] **Fully Redstone System**
-- [ ] **Multi-core**
+- [ ] **Multi-core (indev, will finish)**
 - [x] **Pistons**
 - [ ] **Fully Multi-Language**
 - [ ] **Mob Spawner**
@@ -50,8 +53,9 @@
 - DarkSystem's experience system does not work correctly.
 
 # Notes:
+- DarkSystem does not support PMAnvil map format, only support Anvil and McRegion.
 - DarkSystem's language is currently Turkish, but you can change it from pocketmine.yml (Support +20 Languages)
-- DarkSystem is %70 stable now. Will be %90+ in future
+- DarkSystem is %72 stable now. Will be %90+ in future
 - /op command renamed to /operator and you can enable/disable in **pocketmine_advanced.yml**.
 
 # License:

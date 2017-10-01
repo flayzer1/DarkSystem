@@ -11,21 +11,22 @@
 
 namespace pocketmine\command\defaults;
 
+use pocketmine\inventory\customUI\CustomUI;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
-class ClearCommand extends VanillaCommand{
+class AddUICommand extends VanillaCommand{
 
     public function __construct($name){
         parent::__construct(
             $name,
-            "%pocketmine.command.clear.description",
-            "%commands.clear.usage"
+            "%pocketmine.command.addui.description",
+            "%commands.addui.usage"
         );
-        $this->setPermission("pocketmine.command.clear");
+        $this->setPermission("pocketmine.command.addui");
     }
 
     public function execute(CommandSender $sender, $currentAlias, array $args){
@@ -33,16 +34,21 @@ class ClearCommand extends VanillaCommand{
             return true;
         }
         
-        if(!$sender instanceof Player){
-			$sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
-			return false;
-		}
-		
-        $sender->getInventory()->clearAll();
-        $sender->getInventory()->sendContents($sender);
-        $sender->getInventory()->sendArmorContents($sender);
-        //$sender->getInventory()->sendContents($sender->getInventory()->getViewers());
-        $sender->sendMessage(TextFormat::GREEN . "Envanteriniz Temizlendi!");
+        $ui = CustomUI::getAPI();
+        
+        $player = $this->getServer()->getPlayer($args[0]);
+        
+        if(count($args) < 2){
+        	$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
+            return false;
+        }
+        
+        if(count($args) == 1){
+        	$ui->addUI($this->getServer(), $result);
+            return true;
+        }
+        
+        $ui->addUI($this->getServer(), $result);
         return true;
     }
 }

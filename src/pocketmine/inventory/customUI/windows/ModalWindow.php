@@ -1,8 +1,8 @@
 <?php
 
-namespace pocketmine\ui\windows;
+namespace pocketmine\inventory\customUI\windows;
 
-use pocketmine\ui\CustomUI;
+use pocketmine\inventory\customUI\CustomUI;
 
 abstract class ModalWindow implements CustomUI{
 	

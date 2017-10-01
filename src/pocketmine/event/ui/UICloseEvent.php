@@ -9,12 +9,17 @@
 #                             __/ |                       
 #                            |___/
 
-namespace pocketmine\ui;
+namespace pocketmine\event\ui;
 
-interface CustomUI{
+use pocketmine\network\protocol\DataPacket;
+use pocketmine\Player;
+use pocketmine\plugin\Plugin;
 
-	public function handle($response, $player);
-	
-	public function toJSON();
-	
+class UICloseEvent extends UIEvent{
+
+	public static $handlerList = null;
+
+	public function __construct(Plugin $plugin, DataPacket $packet, Player $player){
+		parent::__construct($plugin, $packet, $player);
+	}
 }

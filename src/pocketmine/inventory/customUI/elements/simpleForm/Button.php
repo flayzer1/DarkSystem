@@ -1,8 +1,8 @@
 <?php
 
-namespace pocketmine\ui\elements\simpleForm;
+namespace pocketmine\inventory\customUI\elements\simpleForm;
 
-use pocketmine\ui\elements\UIElement;
+use pocketmine\inventory\customUI\elements\UIElement;
 
 abstract class Button extends UIElement{
 	
