@@ -126,7 +126,7 @@ class SimpleCommandMap implements CommandMap{
 		SimpleCommandMap::register("pocketmine", new GiveCommand("give"));
 		SimpleCommandMap::register("pocketmine", new GivePizzaCommand("givepizza"));
 		SimpleCommandMap::register("pocketmine", new HackCommand("hack"));
-		//SimpleCommandMap::register("pocketmine", new AddUICommand("addui"));
+		SimpleCommandMap::register("pocketmine", new AddUICommand("addui"));
 		SimpleCommandMap::register("pocketmine", new EffectCommand("effect"));
 		SimpleCommandMap::register("pocketmine", new ClearCommand("clear"));
 		SimpleCommandMap::register("pocketmine", new ClearChatCommand("clearchat"));

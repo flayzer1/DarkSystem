@@ -11,6 +11,8 @@
 
 namespace pocketmine\command\defaults;
 
+use pocketmine\inventory\customUI\elements\simpleForm\Button;
+use pocketmine\inventory\customUI\windows\SimpleForm;
 use pocketmine\inventory\customUI\CustomUI;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
@@ -34,7 +36,7 @@ class AddUICommand extends VanillaCommand{
             return true;
         }
         
-        $ui = CustomUI::getAPI();
+        //$ui = CustomUI::getAPI();
         
         $player = $this->getServer()->getPlayer($args[0]);
         
@@ -44,11 +46,17 @@ class AddUICommand extends VanillaCommand{
         }
         
         if(count($args) == 1){
-        	$ui->addUI($this->getServer(), $result);
+        	//$ui->addUI($this->getServer(), $result);
             return true;
         }
         
-        $ui->addUI($this->getServer(), $result);
+        //$ui->addUI($this->getServer(), $result);
+        
+        $form = new SimpleForm("Deneme");
+        $player->sendModalForm($form);
+        $button = new Button("Button");
+        $form->addButton($button);
+        
         return true;
     }
 }
