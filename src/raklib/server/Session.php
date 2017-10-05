@@ -137,9 +137,9 @@ class Session{
     public function update($time){
         if(!$this->isActive and ($this->lastUpdate + 10) < $time){ //10, 15
             if(Translate::checkTurkish() === "yes"){
-        	    $this->disconnect("Timeout");
-        	}else{
         	    $this->disconnect("Zaman Aşımı");
+        	}else{
+        	    $this->disconnect("Timeout");
         	}
         
             return;
@@ -237,6 +237,7 @@ class Session{
         if($pk->needACK and $pk->messageIndex !== null){
             $this->needACK[$pk->identifierACK][$pk->messageIndex] = $pk->messageIndex;
         }
+        
         if($priority === RakLib::PRIORITY_IMMEDIATE){
             $packet = new DATA_PACKET_0();
             $packet->seqNumber = $this->sendSeqNumber++;
@@ -271,7 +272,6 @@ class Session{
      * @param int                $flags
      */
     public function addEncapsulatedToQueue(EncapsulatedPacket $packet, $flags = RakLib::PRIORITY_NORMAL){
-
         if(($packet->needACK = ($flags & RakLib::FLAG_NEED_ACK) > 0) === true){
 	        $this->needACK[$packet->identifierACK] = [];
         }

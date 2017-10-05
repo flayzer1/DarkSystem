@@ -13,9 +13,10 @@
 - MobAI Support (Some animals and mobs can move & attack)
 - Smooth Movement (Players does not glitch or go down (:D) and while move does not throw back.)
 - Support **PIZZA!** :D (/givepizza [player] | if you write only /givepizza, will give pizza everyone) (Pizza mark can be changed from advanced config.)
-- Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, offline mode warn. etc.)
+- Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, XBOX offline mode warn. etc.)
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
-- CustomUI (Allows create customizable menus, can be added by /addui) (+1.2)
+- CustomUI (Allows to create customizable menus, can be added by /addui) (+1.2)
+- Code is clean, fast and safe, coded as DarkSystem php code method.
 - More Commands (/clear, /tpall, /clearchat /addui etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
 - DarkBot (Virtual Intelligent Bot; Can talk, help players, move etc.) (say "hi darkbot" ingame :))
