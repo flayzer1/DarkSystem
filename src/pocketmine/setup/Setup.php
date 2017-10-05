@@ -23,7 +23,7 @@ class Setup{
 	const DEFAULT_PLAYERS = 100;
 	const DEFAULT_GAMEMODE = 0;
 	const DEFAULT_LEVEL_NAME = "world";
-	const DEFAULT_LEVEL_TYPE = "FLAT";
+	const DEFAULT_LEVEL_TYPE = "DEFAULT";
 	
 	const LEVEL_TYPES = [
 		"DEFAULT",

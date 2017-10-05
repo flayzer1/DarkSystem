@@ -50,7 +50,7 @@ class LoginPacket extends PEPacket{
 	public $isValidProtocol = true;
     public $inventoryType = -1;
     public $osType = -1;
-    public $xuid = '';
+    public $xuid = "";
 	public $languageCode = "unknown";
 	public $clientVersion = "unknown";
 	public $originalProtocol;
@@ -82,12 +82,13 @@ class LoginPacket extends PEPacket{
 		if($this->protocol1 >= Info::PROTOCOL_110){			
 			if(ord($data{0}) != 120 || (($decodedData = @zlib_decode($data)) === false)){
 				$body = $data;
-			} else {
+			}else{
 				$body = $decodedData;
 			}
-		} else {
+		}else{
 			$body = \zlib_decode($data);
 		}
+		
 		$this->chainsDataLength = Binary::readLInt($this->getFromString($body, 4));
 		$this->chains = json_decode($this->getFromString($body, $this->chainsDataLength), true);
 
@@ -96,7 +97,7 @@ class LoginPacket extends PEPacket{
         
 		$this->chains['data'] = array();
 		$index = 0;
-		foreach ($this->chains['chain'] as $key => $jwt){
+		foreach($this->chains['chain'] as $key => $jwt){
 			$data = self::load($jwt);
 			if(isset($data['extraData'])){
 				$dataIndex = $index;

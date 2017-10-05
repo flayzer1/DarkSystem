@@ -59,11 +59,11 @@ namespace pocketmine{
 	use pocketmine\utils\Utils;
 	use pocketmine\setup\Setup;
 
-	const VERSION = "2.1.5";
+	const VERSION = "2.1.7";
 	const DARKBOT_VERSION = "1.0.0";
 	const API_VERSION = "3.0.1";
-	const TAG = "Prismarine";
-	const CURRENT_STATUS = "passing";
+	const TAG = "dev";
+	const CURRENT_STATUS = "beta";
 	const CODENAME = "DarkSystem";
 	const CREATOR = "DarkYusuf13";
 	

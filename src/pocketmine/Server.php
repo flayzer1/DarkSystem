@@ -266,7 +266,7 @@ class Server extends DarkSystem{
 	
 	public function addSpawnedEntity($entity){
 		if($entity instanceof Player){
-			return;
+			return false;
 		}
 		
 		$this->spawnedEntity[$entity->getId()] = $entity;
@@ -758,6 +758,8 @@ class Server extends DarkSystem{
 			new IntTag("Score", 0),
 			//new IntTag("ShoulderEntityLeft", $player->getLeftShoulderEntity()),
 			//new IntTag("ShoulderEntityRight", $player->getRightShoulderEntity()),
+			new IntTag("ShoulderEntityLeft", 0),
+			new IntTag("ShoulderEntityRight", 0),
 			new IntTag("seenCredits", $this->isCreditsEnable()),
 			new IntTag("playerGameType", $this->getGamemode()),
 			new Enum("Motion", [
@@ -959,6 +961,7 @@ class Server extends DarkSystem{
 			if($this->konsol instanceof MainLogger){
 				$this->konsol->logException($e);
 			}
+			
 			return false;
 		}
 
@@ -1245,8 +1248,8 @@ class Server extends DarkSystem{
         return $response;
     }
 
-	public static function microSleep(int $microseconds){
-		Server::$sleeper->synchronized(function(int $ms){
+	public static function microSleep($microseconds){
+		Server::$sleeper->synchronized(function($ms){
 			Server::$sleeper->wait($ms);
 		}, $microseconds);
 	}
@@ -1423,7 +1426,7 @@ class Server extends DarkSystem{
 				"generator-settings" => "",
 				"level-name" => "world",
 				"level-seed" => "",
-				"level-type" => "FLAT",
+				"level-type" => "DEFAULT",
 				"enable-query" => true,
 				"enable-rcon" => false,
 				"rcon.password" => substr(base64_encode(random_bytes(20)), 3, 10),
@@ -1458,7 +1461,7 @@ class Server extends DarkSystem{
 				"generator-settings" => "",
 				"level-name" => "world",
 				"level-seed" => "",
-				"level-type" => "FLAT",
+				"level-type" => "DEFAULT",
 				"enable-query" => true,
 				"enable-rcon" => false,
 				"rcon.password" => substr(base64_encode(random_bytes(20)), 3, 10),
@@ -1481,7 +1484,8 @@ class Server extends DarkSystem{
 			$build = ProtocolInfo::DARKSYSTEM_VERSION;
 			$tag = \pocketmine\TAG;
 			$package = $packages;
-			if($this->getCurrentStatus() == "alpha" || $this->getCurrentStatus() == "beta" && !$this->getCurrentStatus() == "passing"){
+			
+			if($this->getCurrentStatus() == "alpha" || $this->getCurrentStatus() == "beta"){
 				$this->konsol->directSend("§e<?php>");
 			}else{
 				$this->konsol->directSend("§6》》》");
@@ -1786,7 +1790,7 @@ class Server extends DarkSystem{
 		
 		Effect::init();
 		
-		switch(strtolower($this->getCodename())){
+		switch(strtolower($this->getTag())){
 			case "priv":
 			case "private":
 				if(Translate::checkTurkish() === "yes"){
@@ -1938,7 +1942,7 @@ class Server extends DarkSystem{
 		}
 	}
 	
-	/*public function batchPackets($players, $packets){
+	public function batchPackets($players, $packets){
 		$targets = [];
 		$neededProtocol = [];
 		$neededSubClientsId = [];
@@ -1984,9 +1988,9 @@ class Server extends DarkSystem{
 		$data["isBatch"] = true;
 		
 		$this->packetMgr->pushMainToThreadPacket(serialize($data));
-	}*/
+	}
 	
-	public function batchPackets($players, $packets){
+	/*public function batchPackets($players, $packets){
 		$targets = [];
 		$neededProtocol = [];
 		foreach($players as $p){
@@ -2016,7 +2020,7 @@ class Server extends DarkSystem{
 		$data["isBatch"] = true;
 		
 		$this->packetMgr->pushMainToThreadPacket(serialize($data));
-	}
+	}*/
 	
 	public function enablePlugins($type){
 		foreach($this->pluginMgr->getPlugins() as $pl){
@@ -2118,7 +2122,7 @@ class Server extends DarkSystem{
 	
 	public function forceShutdown(){
 		if($this->hasStopped){
-			return;
+			return false;
 		}
 		
 		try{
@@ -2175,6 +2179,7 @@ class Server extends DarkSystem{
 	public function handleSignal($signo){
 		if($signo === SIGTERM || $signo === SIGINT || $signo === SIGHUP){
 			$this->shutdown();
+			return false;
 		}
 	}
 	
@@ -2221,7 +2226,7 @@ class Server extends DarkSystem{
 
 	public function crashReport(){
 		if($this->isRunning === false){
-			return;
+			return false;
 		}
 		
 		$this->isRunning = false;
@@ -2550,7 +2555,7 @@ class Server extends DarkSystem{
 			$this->nextTick = $tickTime;
 		}
 		$this->nextTick += 0.05;
-		return;
+		return true;
 	}
 	
 	public function isCommandBlockEnable(){

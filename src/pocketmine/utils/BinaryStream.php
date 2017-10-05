@@ -70,6 +70,7 @@ class BinaryStream extends \stdClass{
 	}
 
 	public function getInt(){
+		$this->checkLength(4);
 		return Binary::readInt($this->get(4));
 	}
 
@@ -78,6 +79,7 @@ class BinaryStream extends \stdClass{
 	}
 
 	public function getLLong(){
+		$this->checkLength(8);
 		return Binary::readLLong($this->get(8));
 	}
 
@@ -86,6 +88,7 @@ class BinaryStream extends \stdClass{
 	}
 
 	public function getLInt(){
+		$this->checkLength(4);
 		return Binary::readLInt($this->get(4));
 	}
 
@@ -94,6 +97,7 @@ class BinaryStream extends \stdClass{
 	}
 
 	public function getShort($signed = true){
+		$this->checkLength(2);
 		return $signed ? Binary::readSignedShort($this->get(2)) : Binary::readShort($this->get(2));
 	}
 
@@ -102,6 +106,7 @@ class BinaryStream extends \stdClass{
 	}
 
 	public function getFloat(){
+		$this->checkLength(4);
 		return Binary::readFloat($this->get(4));
 	}
 
@@ -110,6 +115,7 @@ class BinaryStream extends \stdClass{
 	}
 
 	public function getLShort($signed = true){
+		$this->checkLength(2);
 		return $signed ? Binary::readSignedLShort($this->get(2)) : Binary::readLShort($this->get(2));
 	}
 
@@ -118,6 +124,7 @@ class BinaryStream extends \stdClass{
 	}
 
 	public function getLFloat(){
+		$this->checkLength(4);
 		return Binary::readLFloat($this->get(4));
 	}
 
@@ -126,6 +133,7 @@ class BinaryStream extends \stdClass{
 	}
 	
 	public function getTriad(){
+		$this->checkLength(3);
 		return Binary::readTriad($this->get(3));
 	}
 
@@ -134,6 +142,7 @@ class BinaryStream extends \stdClass{
 	}
 	
 	public function getLTriad(){
+		$this->checkLength(3);
 		return Binary::readLTriad($this->get(3));
 	}
 
@@ -142,6 +151,7 @@ class BinaryStream extends \stdClass{
 	}
 
 	public function getByte(){
+		$this->checkLength(1);
 		return ord($this->buffer{$this->offset++});
 	}
 
@@ -219,6 +229,7 @@ class BinaryStream extends \stdClass{
 		$nbt = $item->getCompound();	
 		$this->putLShort(strlen($nbt));
 		$this->put($nbt);
+		
 		if($playerProtocol >= ProtocolInfo::PROTOCOL_110){
 			$this->putByte(0);
 			$this->putByte(0);

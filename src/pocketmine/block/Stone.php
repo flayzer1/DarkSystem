@@ -25,6 +25,7 @@ use pocketmine\item\Item;
 use pocketmine\item\Tool;
 
 class Stone extends Solid{
+	
 	const NORMAL = 0;
 	const GRANITE = 1;
 	const POLISHED_GRANITE = 2;
@@ -32,6 +33,7 @@ class Stone extends Solid{
 	const POLISHED_DIORITE = 4;
 	const ANDESITE = 5;
 	const POLISHED_ANDESITE = 6;
+	const UNKNOWN_STONE = 7;
 
 	protected $id = self::STONE;
 
@@ -57,7 +59,7 @@ class Stone extends Solid{
 			self::POLISHED_DIORITE => "Polished Diorite",
 			self::ANDESITE => "Andesite",
 			self::POLISHED_ANDESITE => "Polished Andesite",
-			7 => "Unknown Stone",
+			self::UNKNOWN_STONE => "Unknown Stone",
 		];
 		return $names[$this->meta & 0x07];
 	}
@@ -65,11 +67,10 @@ class Stone extends Solid{
 	public function getDrops(Item $item){
 		if($item->isPickaxe() >= Tool::TIER_WOODEN){
 			return [
-				[$this->getDamage() === 0 ? Item::STONE : Item::STONE, $this->getDamage(), 1],
+				[$this->getDamage() === 0 ? Item::COBBLESTONE : Item::STONE, $this->getDamage(), 1],
 			];
 		}else{
 			return [];
 		}
 	}
-
 }

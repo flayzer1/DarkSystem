@@ -61,6 +61,7 @@ use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\player\PlayerRespawnAfterEvent;
+use pocketmine\event\player\PlayerReceiptsReceivedEvent;
 use pocketmine\event\player\PlayerTalkEvent;
 use pocketmine\event\player\PlayerToggleFlightEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
@@ -243,6 +244,12 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	protected $isCrafting = false;
 	
+	private $hunger = 20;
+
+	protected $hungerDepletion = 0;
+
+	protected $hungerEnabled = true;
+	
 	public $loginData = [];
 
 	public $creationTime = 0;
@@ -286,7 +293,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	private $spawnPosition = null;
 
 	protected $inAirTicks = 0;
-	protected $startAirTicks = 15;
+	protected $startAirTicks = 5;
 
 	protected $autoJump = true;
 
@@ -506,7 +513,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function hidePlayer(Player $player){
 		if($player === $this){
-			return;
+			return false;
 		}
 		
 		$this->hiddenPlayers[$player->getName()] = $player;
@@ -515,7 +522,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	public function showPlayer(Player $player){
 		if($player === $this){
-			return;
+			return false;
 		}
 		
 		unset($this->hiddenPlayers[$player->getName()]);
@@ -532,7 +539,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function resetFallDistance(){
 		parent::resetFallDistance();
 		if($this->inAirTicks !== 0){
-			$this->startAirTicks = 15;
+			$this->startAirTicks = 5;
 		}
 		
 		$this->inAirTicks = 0;
@@ -639,7 +646,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 		$this->creationTime = microtime(true);
 		
-		$this->inventory = new PlayerInventory($this);
+		if($this->protocol >= ProtocolInfo::PROTOCOL_120){
+			$this->inventory = new PlayerInventory120($this);
+		}else{
+			$this->inventory = new PlayerInventory($this);
+		}
 	}
 	
 	public function setViewRadius($radius){
@@ -896,30 +907,31 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($this->connected === false){
 			return false;
 		}
-		/*if($this->subClientId > 0 && $this->parent != null){
+		if($this->subClientId > 0 && $this->parent != null){
 			$packet->senderSubClientID = $this->subClientId;
 			return $this->parent->dataPacket($packet, $needACK);
-		}*/
-		/*if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
+		}
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$disallowedPackets = Protocol120::getDisallowedPackets();
 			if(in_array(get_class($packet), $disallowedPackets)){
-				//$packet->senderSubClientID = 0;
+				$packet->senderSubClientID = 0;
 				return;
 			}
-		}*/
+		}
 		$disallowedPackets = [];
 		$protocol = $this->getPlayerProtocol();
 		if($protocol >= ProtocolInfo::PROTOCOL_120){
 			$disallowedPackets = Protocol120::getDisallowedPackets();
 		}
 		if(in_array(get_class($packet), $disallowedPackets)){
-			return true;
+			return;
 		}
 		$this->server->getPluginManager()->callEvent($ev = new DataPacketSendEvent($this, $packet));
 		if($ev->isCancelled()){
 			return false;
 		}
-		$this->interface->putPacket($this, $packet, $needACK, false);	
+		$this->interface->putPacket($this, $packet, $needACK, false);
+		$packet->senderSubClientID = 0;
 		return true;
 	}
 	
@@ -927,19 +939,19 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($this->connected === false){
 			return false;
 		}
-		/*if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$disallowedPackets = Protocol120::getDisallowedPackets();
 			if(in_array(get_class($packet), $disallowedPackets)){
 				return;
 			}
-		}*/
+		}
 		/*$disallowedPackets = [];
 		$protocol = $this->getPlayerProtocol();
 		if($protocol >= ProtocolInfo::PROTOCOL_120){
 			$disallowedPackets = Protocol120::getDisallowedPackets();
 		}
 		if(in_array(get_class($packet), $disallowedPackets)){
-			return true;
+			return;
 		}*/
 		$this->server->getPluginManager()->callEvent($ev = new DataPacketSendEvent($this, $packet));
 		if($ev->isCancelled()){
@@ -1376,7 +1388,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 		$tickDiff = $currentTick - $this->lastUpdate;
 		if($tickDiff <= 0){
-			return true;
+			return;
 		}
 		$this->messageCounter = 2;
 		$this->lastUpdate = $currentTick;
@@ -1399,7 +1411,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			if(!$this->isSpectator() && $this->speed !== null){
 				if($this->onGround || $this->isCollideWithLiquid()){
 					if($this->inAirTicks !== 0){
-						//$this->startAirTicks = 15;
+						//$this->startAirTicks = 5;
 					}
 					$this->inAirTicks = 0;
 					if($this->elytrasActivated){
@@ -1484,7 +1496,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	public function eatFoodInHand(){
 		if(!$this->spawned){
-			return;
+			return false;
 		}
 
 		$items = [
@@ -1525,7 +1537,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->server->getPluginManager()->callEvent($ev = new PlayerItemConsumeEvent($this, $slot));
 				if($ev->isCancelled()){
 					$this->inventory->sendContents($this);
-					return;
+					return true;
 				}
 
 				$pk = new EntityEventPacket();
@@ -1576,23 +1588,23 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function handleDataPacket(DataPacket $packet){
 		if($this->connected === false){
-			return;
+			return false;
 		}
 		if($packet->pname() === "DOS_PACKET" || $packet->pname() === "DDOS_PACKET" || $packet->pname() === "HACK_PACKET"){
-			return;
+			return true;
 		}
 		if($packet->pname() === "BATCH_PACKET"){
 			$this->server->getNetwork()->processBatch($packet, $this);
-			return;
+			return true;
 		}
-		$beforeLoginAvailablePackets = ["LOGIN_PACKET", "REQUEST_CHUNK_RADIUS_PACKET", "RESOURCE_PACK_CLIENT_RESPONSE_PACKET"];
+		$beforeLoginAvailablePackets = ["LOGIN_PACKET", "CLIENT_TO_SERVER_HANDSHAKE_PACKET", "REQUEST_CHUNK_RADIUS_PACKET", "RESOURCE_PACK_CLIENT_RESPONSE_PACKET"];
 		if(!$this->isOnline() && !in_array($packet->pname(), $beforeLoginAvailablePackets)){
 			return;
 		}
-		/*if($packet->targetSubClientID > 0 && isset($this->subClients[$packet->targetSubClientID])){
+		if($packet->targetSubClientID > 0 && isset($this->subClients[$packet->targetSubClientID])){
 			$this->subClients[$packet->targetSubClientID]->handleDataPacket($packet);
-			return;
-		}*/
+			return true;
+		}
 		switch($packet->pname()){
             case "SET_PLAYER_GAMETYPE_PACKET":
                 break;
@@ -1729,7 +1741,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$item = null;
 
 				//if($this->isCreative() && !$this->isSpectator() && !$this->isSurvival() && !$this->isAdventure()){
-				if($this->isCreative()){
+				if($this->isCreative() && !$this->isSpectator()){
 					$item = $packet->item;
 					$slot = Item::getCreativeItemIndex($item);
 				}else{
@@ -1769,7 +1781,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						}
 					}				
 				//}elseif($this->isCreative() && !$this->isSpectator() && !$this->isSurvival() && !$this->isAdventure()){
-				}elseif($this->isCreative()){
+				}elseif($this->isCreative() && !$this->isSpectator()){
 					$this->inventory->setHeldItemIndex($packet->selectedSlot);
 					$this->inventory->setItem($packet->selectedSlot, $item);
 					$this->inventory->setHeldItemSlot($packet->selectedSlot);
@@ -2863,8 +2875,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			case "MODAL_FORM_RESPONSE_PACKET":
 				$this->checkModal($packet->formId, json_decode($packet->data, true));
 				break;
+			case "PURCHASE_RECEIPT_PACKET":
+				$event = new PlayerReceiptsReceivedEvent($this, $packet->receipts);
+				$this->server->getPluginManager()->callEvent($event);
+				break;
 			case "SERVER_SETTINGS_REQUEST_PACKET":
 				$this->sendServerSettings();
+				break;
+			case "CLIENT_TO_SERVER_HANDSHAKE_PACKET":
+				$this->continueLoginProcess();
 				break;
 			case "SUB_CLIENT_LOGIN_PACKET":
 				$subPlayer = new static($this->interface, null, $this->ip, $this->port);
@@ -3061,13 +3080,13 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function close($message = "", $reason = "Generik Neden"){
 		$this->server->saveEverything();
-		/*if($this->parent !== null){
+		if($this->parent !== null){
 			$this->parent->removeSubClient($this->subClientId);
 		}else{
 			foreach($this->subClients as $subClient){
 				$subClient->close($message, $reason);
 			}
-		}*/
+		}
         Win10InvLogic::removeData($this);
         foreach($this->tasks as $t){
 			$t->cancel();
@@ -3185,7 +3204,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	public function kill(){
 		if($this->dead === true || $this->spawned === false){
-			return;
+			return false;
 		}
 
 		$message = "death.attack.generic";
@@ -3306,7 +3325,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->freeChunks();
 		
 		if(!$ev->getKeepInventory()){
-		//if($this->server->getSoftConfig("inventory.keep") === true){
+		//if($this->server->getSoftConfig("inventory.keep", false)){
 			foreach($ev->getDrops() as $item){
 				$this->level->dropItem($this, $item);
 			}
@@ -3335,6 +3354,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	public function setHealth($amount){
 		parent::setHealth($amount);
+		
 		if($this->spawned === true){
 			$pk = new UpdateAttributesPacket();
 			$pk->entityId = $this->id;
@@ -3347,13 +3367,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->dataPacket($pk);
 		}
 	}
-
-	private $hunger = 20;
-
-	protected $hungerDepletion = 0;
-
-	protected $hungerEnabled = true;
-
+	
 	public function setFoodEnabled($enabled){
 		$this->hungerEnabled = $enabled;
 	}
@@ -3392,13 +3406,13 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	public function attack($damage, EntityDamageEvent $source){
 		if($this->dead === true){
-			return;
+			return false;
 		}
 
-		if($this->isCreative()
-			and $source->getCause() !== EntityDamageEvent::CAUSE_MAGIC
-			and $source->getCause() !== EntityDamageEvent::CAUSE_SUICIDE
-			and $source->getCause() !== EntityDamageEvent::CAUSE_VOID
+		if($this->isCreative() || $this->isSpectator()
+			&& $source->getCause() !== EntityDamageEvent::CAUSE_MAGIC
+			&& $source->getCause() !== EntityDamageEvent::CAUSE_SUICIDE
+			&& $source->getCause() !== EntityDamageEvent::CAUSE_VOID
 		){
 			$source->setCancelled();
 		}
@@ -3406,7 +3420,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		parent::attack($damage, $source);
 
 		if($source->isCancelled()){
-			return;
+			return true;
 		}elseif($this->getLastDamageCause() === $source && $this->spawned){
 			$pk = new EntityEventPacket();
 			$pk->eid = $this->id;
@@ -3425,8 +3439,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$pk->y = $pos->y + $this->getEyeHeight();
 		$pk->z = $pos->z;
 		$pk->bodyYaw = $yaw;
-		$pk->pitch = $pitch;
 		$pk->yaw = $yaw;
+		$pk->pitch = $pitch;
 		$pk->mode = $mode;
 
 		if($targets !== null){
@@ -3467,7 +3481,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function teleport(Vector3 $pos, $yaw = null, $pitch = null){
 		if(!$this->isOnline()){
-			return;
+			return false;
 		}
 
 		$oldPos = $this->getPosition();
@@ -3581,9 +3595,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$pk->privateKey = $privateKey;
 			$this->dataPacket($pk);
 			$this->enableEncrypt($token, $privateKey, $this->identityPublicKey);
-		}else{
-			$this->continueLoginProcess();
+		//}else{
 		}
+			$this->continueLoginProcess();
+		//}
 	}
 	
 	public function continueLoginProcess(){
@@ -3795,7 +3810,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function givePizza($mark){
 		if(!$this instanceof Player){
-			return;
+			return false;
 		}
 		
 		$item = Item::get(Item::COOKIE, 0, 1);
@@ -3937,7 +3952,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	public function setSprinting($value = true, $setDefault = false){
 		if(!$setDefault && $this->isSprinting() == $value){
-			return;
+			return false;
 		}
 		
 		parent::setSprinting($value);
@@ -4158,7 +4173,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->dataPacket($pk);
 		}
 	}
-		
+	
 	public function sendNoteSound($noteId, $queue = false){
 		if($queue){
 			$this->noteSoundQueue[] = $noteId;
@@ -4180,7 +4195,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	public function hideEntity(Entity $entity){
 		if($entity instanceof Player){
-			return;
+			return false;
 		}
 		
 		$this->hiddenEntity[$entity->getId()] = $entity;
@@ -4189,7 +4204,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	public function showEntity(Entity $entity){
 		if($entity instanceof Player){
-			return;
+			return false;
 		}
 		
 		unset($this->hiddenEntity[$entity->getId()]);
@@ -4200,7 +4215,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function setOnFire($seconds, $damage = 1){
  		if($this->isSpectator()){
- 			return;
+ 			return false;
  		}
  
  		parent::setOnFire($seconds, $damage);
@@ -4208,21 +4223,21 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function attackByTargetId($targetId){
 		if($this->spawned === false || $this->dead === true || $this->blocked){
-			return;
+			return false;
 		}
 
 		$target = $this->level->getEntity($targetId);
 		if($target instanceof Player && ($this->server->getConfigBoolean("pvp", true) === false || ($target->getGamemode() & 0x01) > 0)){
-			return;
+			return true;
 		}
 
 		if(!$target instanceof Entity || $this->isSpectator() && !$this->isCreative() && !$this->isSurvival() && !$this->isAdventure() || $target->dead === true){
-			return;
+			return true;
 		}
 
 		if($target instanceof DroppedItem || $target instanceof Arrow){
 			$this->kick("Attempting to attack an invalid entity");
-			return;
+			return true;
 		}
 
 		$item = $this->inventory->getItemInHand();
@@ -4254,7 +4269,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		];
 
 		if($this->distance($target) > 4){
-			return;
+			return true;
 		}elseif($target instanceof Player){
 			$armorValues = [
 				Item::LEATHER_CAP => 1,
@@ -4295,7 +4310,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		foreach(Player::$damageTimeList as $time => $koef){
 			if($timeDiff <= $time){
 				if($koef == 0){
-					return;
+					return true;
 				}
 				
 				$damage[EntityDamageEvent::MODIFIER_BASE] *= $koef;
@@ -4311,7 +4326,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->inventory->sendContents($this);
 			}
 			
-			return;
+			return true;
 		}
 
 		if($item->isTool() && $this->isSurvival() || $this->isAdventure()/* && !$this->isCreative() && !$this->isSpectator()*/){
@@ -4461,7 +4476,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	private function breakBlock($blockPosition){
 		if($this->spawned === false || $this->blocked === true || $this->dead === true || $this->isAdventure() || $this->isSpectator()){
-			return;
+			return false;
 		}
 		$vector = new Vector3($blockPosition["x"], $blockPosition["y"], $blockPosition["z"]);
 		$item = $this->inventory->getItemInHand();
@@ -4696,16 +4711,16 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						new DoubleTag("", $this->x),
 						new DoubleTag("", $this->y + $this->getEyeHeight()),
 						new DoubleTag("", $this->z)
-							]),
+					]),
 					"Motion" => new Enum("Motion", [
 						new DoubleTag("", -sin($yawRad) * cos($pitchRad)),
 						new DoubleTag("", -sin($pitchRad)),
 						new DoubleTag("", cos($yawRad) * cos($pitchRad))
-							]),
+					]),
 					"Rotation" => new Enum("Rotation", [
 						new FloatTag("", $this->yaw),
 						new FloatTag("", $this->pitch)
-							]),
+					]),
 					"Fire" => new ShortTag("Fire", $this->isOnFire() ? 45 * 60 : 0)
 				]);
 

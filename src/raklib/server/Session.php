@@ -16,6 +16,7 @@
 namespace raklib\server;
 
 use raklib\Binary;
+use raklib\RakLib;
 use raklib\protocol\ACK;
 use raklib\protocol\CLIENT_CONNECT_DataPacket;
 use raklib\protocol\CLIENT_DISCONNECT_DataPacket;
@@ -35,7 +36,7 @@ use raklib\protocol\PONG_DataPacket;
 use raklib\protocol\SERVER_HANDSHAKE_DataPacket;
 use raklib\protocol\UNCONNECTED_PING;
 use raklib\protocol\UNCONNECTED_PONG;
-use raklib\RakLib;
+use pocketmine\Translate;
 
 class Session{
 	
@@ -135,9 +136,15 @@ class Session{
 
     public function update($time){
         if(!$this->isActive and ($this->lastUpdate + 10) < $time){ //10, 15
-            $this->disconnect("Zaman Aşımı");
+            if(Translate::checkTurkish() === "yes"){
+        	    $this->disconnect("Timeout");
+        	}else{
+        	    $this->disconnect("Zaman Aşımı");
+        	}
+        
             return;
         }
+        
         $this->isActive = false;
 
         if(count($this->ACKQueue) > 0){
@@ -399,10 +406,10 @@ class Session{
 		if($id < 0x80){
 			if($this->state === Session::STATE_CONNECTING_2){
 				if($id === CLIENT_CONNECT_DataPacket::$ID){
-					$dataPacket = new CLIENT_CONNECT_DataPacket;
+					$dataPacket = new CLIENT_CONNECT_DataPacket();
 					$dataPacket->buffer = $packet->buffer;
 					$dataPacket->decode();
-					$pk = new SERVER_HANDSHAKE_DataPacket;
+					$pk = new SERVER_HANDSHAKE_DataPacket();
 					$pk->address = $this->address;
 					$pk->port = $this->port;
 					$pk->sendPing = $dataPacket->sendPing;
@@ -414,7 +421,7 @@ class Session{
 					$sendPacket->buffer = $pk->buffer;
 					$this->addToQueue($sendPacket, RakLib::PRIORITY_IMMEDIATE);
 				}elseif($id === CLIENT_HANDSHAKE_DataPacket::$ID){
-					$dataPacket = new CLIENT_HANDSHAKE_DataPacket;
+					$dataPacket = new CLIENT_HANDSHAKE_DataPacket();
 					$dataPacket->buffer = $packet->buffer;
 					$dataPacket->decode();
 
@@ -425,13 +432,17 @@ class Session{
 					}
 				}
 			}elseif($id === CLIENT_DISCONNECT_DataPacket::$ID){
-				$this->disconnect("Manuel Çıkış");
+				if(Translate::checkTurkish() === "yes"){
+					$this->disconnect("Manuel Çıkış");
+				}else{
+					$this->disconnect("Client Disconnect");
+				}
 			}elseif($id === PING_DataPacket::$ID){
-				$dataPacket = new PING_DataPacket;
+				$dataPacket = new PING_DataPacket();
 				$dataPacket->buffer = $packet->buffer;
 				$dataPacket->decode();
 
-				$pk = new PONG_DataPacket;
+				$pk = new PONG_DataPacket();
 				$pk->pingID = $dataPacket->pingID;
 				$pk->encode();
 
@@ -491,7 +502,7 @@ class Session{
                                 }
                             }
 							$this->pingAverage[] = microtime(true) - $this->recoveryQueue[$seq]->sendTime;
-							if (count($this->pingAverage) > 20) {
+							if(count($this->pingAverage) > 20){
 								array_shift($this->pingAverage);
 							}
                             unset($this->recoveryQueue[$seq]);
