@@ -289,36 +289,21 @@ class Block extends Position implements Metadatable{
 	const STONECUTTER = 245;
 	const GLOWING_OBSIDIAN = 246;
 	const NETHER_REACTOR = 247;
-
-	/** @var \SplFixedArray */
+	
 	public static $list = null;
-	/** @var \SplFixedArray */
 	public static $fullList = null;
-
-	/** @var \SplFixedArray */
+	
 	public static $light = null;
-	/** @var \SplFixedArray */
 	public static $lightFilter = null;
-	/** @var \SplFixedArray */
 	public static $solid = null;
-	/** @var \SplFixedArray */
 	public static $hardness = null;
-	/** @var \SplFixedArray */
 	public static $transparent = null;
 
 	protected $id;
 	protected $meta = 0;
-
-	/** @var AxisAlignedBB */
+	
 	public $boundingBox = null;
-
-	/**
-	 * @deprecated
-	 *
-	 * @param string $key
-	 *
-	 * @return mixed
-	 */
+	
 	public function __get($key){
 		static $map = [
 			"hardness" => "getHardness",
@@ -333,6 +318,7 @@ class Block extends Position implements Metadatable{
 			"isActivable" => "canBeActivated",
 			"hasEntityCollision" => "hasEntityCollision"
 		];
+		
 		return isset($map[$key]) ? $this->{$map[$key]}() : null;
 	}
 

@@ -451,7 +451,7 @@ class Item{
 	const BOTTLE_ENCHANTING = 384;
 	const FIRE_CHARGE = 385;
 	const WRITABLE_BOOK = 386;
-    const WRITTEN_BOOK = 387;
+	const WRITTEN_BOOK = 387;
 	const EMERALD = 388;
 	const ITEM_FRAME = 389;
 	const FLOWER_POT = 390;
@@ -468,7 +468,7 @@ class Item{
 	const CARROT_ON_STICK = 398;
 	const PUMPKIN_PIE = 400;
 	const FIREWORK = 401;
-    const FIREWORK_STAR = 402;
+	const FIREWORK_STAR = 402;
 	const ENCHANTING_BOOK = 403;
 	const REDSTONE_COMPARATOR = 404;
 	const NETHER_BRICK = 405;
@@ -816,6 +816,8 @@ class Item{
 		377 => "Blaze powder",
 		378 => "Magma Cream",
 		383 => "Spawn Egg",
+		386 => "Writable Book",
+		387 => "Written Book",
 		388 => "Emerald",
 		390 => "Flower Pot",
 		391 => "Carrot",
@@ -827,6 +829,8 @@ class Item{
 		397 => "Mob Head",
 		398 => "Carrot on a Stick",
 		400 => "Pumpkin Pie",
+		401 => "Firework",
+		402 => "Firework Star",
 		403 => "Enchanted Book",
 		404 => "Redstone Comparator",
 		405 => "Nether Bricks",
