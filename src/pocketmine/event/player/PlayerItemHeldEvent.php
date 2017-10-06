@@ -27,6 +27,7 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 
 class PlayerItemHeldEvent extends PlayerEvent implements Cancellable{
+	
 	public static $handlerList = null;
 
 	private $item;

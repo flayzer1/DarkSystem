@@ -450,6 +450,8 @@ class Item{
 	const SPAWN_EGG = 383;
 	const BOTTLE_ENCHANTING = 384;
 	const FIRE_CHARGE = 385;
+	const WRITABLE_BOOK = 386;
+    const WRITTEN_BOOK = 387;
 	const EMERALD = 388;
 	const ITEM_FRAME = 389;
 	const FLOWER_POT = 390;
@@ -465,6 +467,8 @@ class Item{
 	const MOB_HEAD = 397;
 	const CARROT_ON_STICK = 398;
 	const PUMPKIN_PIE = 400;
+	const FIREWORK = 401;
+    const FIREWORK_STAR = 402;
 	const ENCHANTING_BOOK = 403;
 	const REDSTONE_COMPARATOR = 404;
 	const NETHER_BRICK = 405;
@@ -864,16 +868,19 @@ class Item{
 		466 => "Enchanted Golden Apple",
 		498 => "Camera",
 	];
-
-	/** @var \SplFixedArray */
+	
 	public static $list = null;
 	public static $food = null;
+	
 	protected $block;
 	protected $id;
 	protected $meta;
+	
 	private $tags = "";
 	private $cachedNBT = null;
+	
 	public $count;
+	
 	protected $durability = 0;
 	protected $name;
 	protected $obtainTime = 0;
@@ -908,6 +915,8 @@ class Item{
 			Item::$list[Item::PAINTING] = Painting::class;
 			Item::$list[Item::COAL] = Coal::class;
 			Item::$list[Item::APPLE] = Apple::class;
+			Item::$list[Item::WRITABLE_BOOK] = WritableBook::class;
+			Item::$list[Item::WRITTEN_BOOK] = WrittenBook::class;
 			Item::$list[Item::SPAWN_EGG] = SpawnEgg::class;
 			Item::$list[Item::DIAMOND] = Diamond::class;
 			Item::$list[Item::STICK] = Stick::class;

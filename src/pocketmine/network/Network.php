@@ -81,12 +81,16 @@ use pocketmine\network\protocol\BehaviorPackChunkDataPacket;
 use pocketmine\network\protocol\BehaviorPackDataInfoPacket;
 use pocketmine\network\protocol\BehaviorPackInfoPacket;
 use pocketmine\network\protocol\BehaviorPackStackPacket;
+use pocketmine\network\protocol\v120\BookEditPacket;
 use pocketmine\network\protocol\v120\CommandRequestPacket;
 use pocketmine\network\protocol\v120\InventoryContentPacket;
 use pocketmine\network\protocol\v120\InventoryTransactionPacket;
-use pocketmine\network\protocol\v120\PlayerHotbarPacket;
+use pocketmine\network\protocol\v120\LoginPacket as NewLoginPacket;
 use pocketmine\network\protocol\v120\ModalFormResponsePacket;
+use pocketmine\network\protocol\v120\PlayerHotbarPacket;
+use pocketmine\network\protocol\v120\PurchaseReceiptPacket;
 use pocketmine\network\protocol\v120\ServerSettingsRequestPacket;
+use pocketmine\network\protocol\v120\SubClientLoginPacket;
 
 class Network{
 
@@ -262,7 +266,6 @@ class Network{
 				if(strlen($buf) === 0){
 					throw new \InvalidStateException("Empty or invalid BatchPacket received");
 				}
-				
 				if(($pk = $this->getPacket(ord($buf{0}), $p->getPlayerProtocol())) !== null){
 					if($pk::NETWORK_ID === Info::BATCH_PACKET){
 						throw new \InvalidStateException("Invalid BatchPacket inside BatchPacket");
@@ -570,12 +573,16 @@ class Network{
 		$this->registerPacket120(ProtocolInfo120::CHUNK_RADIUS_UPDATE_PACKET, ChunkRadiusUpdatePacket::class);
 		$this->registerPacket120(ProtocolInfo120::AVAILABLE_COMMANDS_PACKET, AvailableCommandsPacket::class);
 		$this->registerPacket120(ProtocolInfo120::TRANSFER_PACKET, TransferPacket::class);
+		$this->registerPacket120(ProtocolInfo120::LOGIN_PACKET, NewLoginPacket::class);
 		$this->registerPacket120(ProtocolInfo120::INVENTORY_TRANSACTION_PACKET, InventoryTransactionPacket::class);
 		$this->registerPacket120(ProtocolInfo120::INVENTORY_CONTENT_PACKET, InventoryContentPacket::class);
 		$this->registerPacket120(ProtocolInfo120::PLAYER_HOTBAR_PACKET, PlayerHotbarPacket::class);
+		$this->registerPacket120(ProtocolInfo120::BOOK_EDIT_PACKET, BookEditPacket::class);
 		$this->registerPacket120(ProtocolInfo120::COMMAND_REQUEST_PACKET, CommandRequestPacket::class);
 		$this->registerPacket120(ProtocolInfo120::MODAL_FORM_RESPONSE_PACKET, ModalFormResponsePacket::class);
 		$this->registerPacket120(ProtocolInfo120::SERVER_SETTINGS_REQUEST_PACKET, ServerSettingsRequestPacket::class);
+		$this->registerPacket120(ProtocolInfo120::PURCHASE_RECEIPT_PACKET, PurchaseReceiptPacket::class);
+		$this->registerPacket120(ProtocolInfo120::SUB_CLIENT_LOGIN_PACKET, SubClientLoginPacket::class);
 		$this->registerPacket120(ProtocolInfo120::RESOURCE_PACK_DATA_INFO_PACKET, ResourcePackDataInfoPacket::class);
 		$this->registerPacket120(ProtocolInfo120::RESOURCE_PACK_INFO_PACKET, ResourcePackInfoPacket::class);
 		$this->registerPacket120(ProtocolInfo120::RESOURCE_PACK_CLIENT_RESPONSE_PACKET, ResourcePackClientResponsePacket::class);

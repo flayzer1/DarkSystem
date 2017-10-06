@@ -227,4 +227,5 @@ interface ItemIds extends BlockIds{
     const COOKED_SALMON = 463;
     const ENCHANTED_GOLDEN_APPLE = 466;
     const CAMERA = 498;
+    
 }

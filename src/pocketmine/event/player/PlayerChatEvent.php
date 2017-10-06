@@ -26,6 +26,7 @@ use pocketmine\Player;
 use pocketmine\Server;
 
 class PlayerChatEvent extends PlayerEvent implements Cancellable{
+	
 	public static $handlerList = null;
 	
 	protected $message;

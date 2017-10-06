@@ -2164,6 +2164,7 @@ class Server extends DarkSystem{
 			$this->properties->save();
 			$this->cmdReader->shutdown();
 			$this->cmdReader->notify();
+			
 			\gc_collect_cycles();
 		}catch(\Exception $e){
 			if(Translate::checkTurkish() === "yes"){
@@ -2185,7 +2186,7 @@ class Server extends DarkSystem{
 	
 	public function exceptionHandler(\Throwable $e, $trace = null){
 		if($e === null){
-			return;
+			return false;
 		}
 
 		global $lastError;
@@ -2200,6 +2201,7 @@ class Server extends DarkSystem{
 		$errline = $e->getLine();
 
 		$type = ($errno === E_ERROR || $errno === E_USER_ERROR) ? \LogLevel::ERROR : (($errno === E_USER_WARNING || $errno === E_WARNING) ? \LogLevel::WARNING : \LogLevel::NOTICE);
+		
 		if(($pos = strpos($errstr, "\n")) !== false){
 			$errstr = substr($errstr, 0, $pos);
 		}
@@ -2241,7 +2243,7 @@ class Server extends DarkSystem{
 		    $report = new CrashReport($this);
 		}catch(\Exception $e){
 			$this->konsol->critical($this->getLanguage()->translateString("pocketmine.crash.error", $e->getMessage()));
-			return;
+			return false;
 		}
 
 		$this->konsol->emergency($this->getLanguage()->translateString("pocketmine.crash.submit", [$report->getPath()]));

@@ -48,6 +48,7 @@ use pocketmine\event\player\PlayerCommandPreprocessEvent;
 use pocketmine\event\player\PlayerCommandPostprocessEvent;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
+use pocketmine\event\player\PlayerEditBookEvent;
 use pocketmine\event\player\PlayerExperienceChangeEvent;
 use pocketmine\event\player\PlayerGameModeChangeEvent;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -85,6 +86,8 @@ use pocketmine\inventory\ShapelessRecipe;
 use pocketmine\inventory\SimpleTransactionGroup;
 use pocketmine\inventory\win10\Win10InvLogic;
 use pocketmine\item\Elytra;
+use pocketmine\item\WritableBook;
+use pocketmine\item\WrittenBook;
 use pocketmine\item\Item;
 use pocketmine\item\Armor;
 use pocketmine\item\Tool;
@@ -169,6 +172,7 @@ use pocketmine\network\protocol\ResourcePackClientResponsePacket;
 use pocketmine\network\protocol\BehaviorPackClientResponsePacket;
 use pocketmine\network\protocol\LevelSoundEventPacket;
 use pocketmine\network\protocol\LevelEventPacket;
+use pocketmine\network\protocol\v120\BookEditPacket;
 use pocketmine\network\protocol\v120\PlayerSkinPacket;
 use pocketmine\network\protocol\v120\ServerSettingsResponsetPacket;
 use pocketmine\network\protocol\v120\ShowModalFormPacket;
@@ -555,7 +559,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function setOp($value){
 		if($value === $this->isOp()){
-			return;
+			return false;
 		}
 		if($value === true){
 			$this->server->addOp($this->getName());
@@ -586,7 +590,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->server->getPluginManager()->unsubscribeFromPermission(Server::BROADCAST_CHANNEL_ADMINISTRATIVE, $this);
 
 		if($this->perm === null){
-			return;
+			return false;
 		}
 
 		$this->perm->recalculatePermissions();
@@ -675,6 +679,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function setSkin($str, /*$skinId, */$skinName, $skinGeometryName = "", /*$skinGeometryId = "", */$skinGeometryData = "", $capeData = ""){
 		parent::setSkin($str, /*$skinId, */$skinName, $skinGeometryName, /*$skinGeometryId, */$skinGeometryData, $capeData);
+		
 		if($this->spawned === true){
 			$this->server->updatePlayerListData($this->getUniqueId(), $this->getId(), $this->getName(), $this->skinName, /*$this->skinId, */$this->skin, $this->skinGeometryName, /*$this->skinGeometryId, */$this->skinGeometryData, $this->capeData, $this->getXUID(), $this->getViewers());
 		}
@@ -702,6 +707,26 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function isFireProof(){
 		return $this->isCreative();
+	}
+	
+	public function getExp(){
+		return $this->exp;
+	}
+	
+	public function getExperience(){
+		return $this->exp;
+	}
+	
+	public function getExpLevel(){
+		return $this->expLevel;
+	}
+	
+	public function getExperienceLevel(){
+		return $this->expLevel;
+	}
+	
+	public function needEncrypt(){
+		return $this->protocol >= ProtocolInfo::PROTOCOL_120;
 	}
 	
 	public function sendGamemode(){
@@ -751,7 +776,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	public function sendChunk($x, $z, $payload){ //$data
 		if($this->connected === false){
-			return;
+			return false;
 		}
 		$data = $payload[$this->getPlayerProtocol()];
 		$this->usedChunks[Level::chunkHash($x, $z)] = true;
@@ -771,7 +796,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 	protected function sendNextChunk(){
 		if($this->connected === false){
-			return;
+			return false;
 		}
 		$count = 0;
 		foreach($this->loadQueue as $index => $distance){
@@ -801,7 +826,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->server->getPluginManager()->callEvent($ev = new PlayerLoginEvent($this, "Eklenti Hatası"));
 			if($ev->isCancelled()){
 				$this->close(TF::YELLOW . $this->username . " has left the game", $ev->getKickMessage());
-				return;
+				return false;
 			}
 			$this->spawned = true;
 			$this->sendSettings();
@@ -1311,11 +1336,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				}
 				if($ev->isCancelled()){
 					//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
-					//return;
+					//return false;
 				}
 				if($to->distanceSquared($ev->getTo()) > 0.01){
 					//$this->teleport($ev->getTo());
-					//return;
+					//return false;
 				}
 			}
 			$dx = $to->x - $from->x;
@@ -1537,7 +1562,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->server->getPluginManager()->callEvent($ev = new PlayerItemConsumeEvent($this, $slot));
 				if($ev->isCancelled()){
 					$this->inventory->sendContents($this);
-					return true;
+					return false;
 				}
 
 				$pk = new EntityEventPacket();
@@ -2872,6 +2897,51 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->setSkin($packet->newSkinByteData, $packet->newSkinId, $packet->newSkinGeometryName, $packet->newSkinGeometryData, $packet->newCapeByteData);
 				$this->updatePlayerSkin($packet->oldSkinName, $packet->newSkinName);
 				break;
+			/*case "BOOK_EDIT_PACKET":
+			//TODO: Fix code
+		$oldBook = $this->inventory->getItem($packet->inventorySlot - 9);
+		if($oldBook->getId() !== Item::WRITABLE_BOOK){
+			break;
+		}
+		
+		$newBook = clone $oldBook;
+		$modifiedPages = [];
+		
+		switch($packet->type){
+			case BookEditPacket::TYPE_REPLACE_PAGE:
+				$newBook->setPageText($packet->pageNumber, $packet->text);
+				$modifiedPages[] = $packet->pageNumber;
+				break;
+			case BookEditPacket::TYPE_ADD_PAGE:
+				$newBook->insertPage($packet->pageNumber, $packet->text);
+				$modifiedPages[] = $packet->pageNumber;
+				break;
+			case BookEditPacket::TYPE_DELETE_PAGE:
+				$newBook->deletePage($packet->pageNumber);
+				$modifiedPages[] = $packet->pageNumber;
+				break;
+			case BookEditPacket::TYPE_SWAP_PAGES:
+				$newBook->swapPage($packet->pageNumber, $packet->secondaryPageNumber);
+				$modifiedPages = [$packet->pageNumber, $packet->secondaryPageNumber];
+				break;
+			case BookEditPacket::TYPE_SIGN_BOOK:
+				$newBook = Item::get(Item::WRITTEN_BOOK, 0, 1, $newBook->getNamedTag());
+				$newBook->setAuthor($packet->author);
+				$newBook->setTitle($packet->title);
+				$newBook->setGeneration(WrittenBook::GENERATION_ORIGINAL);
+				break;
+				default;
+				break;
+		}
+		
+		$this->getServer()->getPluginManager()->callEvent($event = new PlayerEditBookEvent($this, $oldBook, $newBook, $packet->type, $modifiedPages));
+		if($event->isCancelled()){
+			break;
+		}
+		
+		$this->getInventory()->setItem($packet->inventorySlot - 9, $event->getNewBook());
+	}
+	break;*/
 			case "MODAL_FORM_RESPONSE_PACKET":
 				$this->checkModal($packet->formId, json_decode($packet->data, true));
 				break;
@@ -3630,7 +3700,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 		if(!$valid || $this->iusername === "rcon" || $this->iusername === "console" || $this->iusername === "sunucu" || $this->iusername === "konsol" || $this->iusername === "darkbot" || $this->iusername === "dark bot" || $this->iusername === "dbot" || $this->iusername === "d bot"){
 			$this->close("", "disconnectionScreen.invalidName", false);
-			return;
+			return false;
 		}
 		$leet = "leet";
 		$playmc = "playmc";
@@ -3638,27 +3708,27 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$usrname = $this->iusername;
 		if(strpos($usrname, $leet) || strpos($usrname, $playmc)){
 			$this->close("", "disconnectionScreen.noAdvertising", false);
-			return;
+			return false;
 		}
 		if(strlen($this->skin) !== 64 * 32 * 4 && strlen($this->skin) !== 64 * 64 * 4){
 			$this->close("", "disconnectionScreen.invalidSkin", false);
-			return;
+			return false;
 		}
 		if(count($this->server->getOnlinePlayers()) >= $this->server->getMaxPlayers() && $this->kickOnFullServer()){
 			$this->close("", "disconnectionScreen.serverFull", false);
-			return;
+			return false;
 		}
 		$this->server->getPluginManager()->callEvent($ev = new PlayerPreLoginEvent($this, "Plugin reason"));
 		if($ev->isCancelled()){
 			$this->close("", $ev->getKickMessage());
-			return;
+			return false;
 		}
 		if(!$this->server->isWhitelisted(strtolower($this->getName()))){
 			$this->close(TF::YELLOW . $this->username . " Oyundan Ayrıldı", "Sunucu Beyaz-Liste'de.");
-			return;
+			return false;
 		}elseif($this->server->getNameBans()->isBanned(strtolower($this->getName())) || $this->server->getIPBans()->isBanned($this->getAddress())){
 			$this->close(TF::YELLOW . $this->username . " Oyundan Ayrıldı", "Sunucuya Girmeniz Yasak.");
-			return;
+			return false;
 		}
 		if($this->hasPermission(Server::BROADCAST_CHANNEL_USERS)){
 			$this->server->getPluginManager()->subscribeToPermission(Server::BROADCAST_CHANNEL_USERS, $this);
@@ -3672,7 +3742,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$p->close(TF::YELLOW . $p->getName() . " has left the game", "You connected from somewhere else.");
 				}elseif($p->kick("You connected from somewhere else.") === false){
 					$this->close(TF::YELLOW . $this->getName() . " has left the game", "You connected from somewhere else.");
-					return;
+					return false;
 				}
 			}
 		}
@@ -3699,7 +3769,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 		if(!$nbt instanceof Compound){
 			$this->close(TF::YELLOW . $this->username . " has left the game", "Corrupt joining data, check your connection.");
-			return;
+			return false;
 		}
 		$this->achievements = [];
 		foreach($nbt->Achievements as $achievement){
@@ -4002,22 +4072,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 		
 		return $result;
-	}
-	
-	public function getExp(){
-		return $this->exp;
-	}
-	
-	public function getExperience(){
-		return $this->exp;
-	}
-	
-	public function getExpLevel(){
-		return $this->expLevel;
-	}
-	
-	public function getExperienceLevel(){
-		return $this->expLevel;
 	}
 	
 	public function updateExperience($exp = 0, $level = 0, $checkNextLevel = true){
@@ -4326,7 +4380,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->inventory->sendContents($this);
 			}
 			
-			return true;
+			return false;
 		}
 
 		if($item->isTool() && $this->isSurvival() || $this->isAdventure()/* && !$this->isCreative() && !$this->isSpectator()*/){
@@ -4848,10 +4902,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		
 	}
 	
-	public function needEncrypt(){
-		return $this->protocol >= ProtocolInfo::PROTOCOL_120;
-	}
-	
 	public function updatePlayerSkin($oldSkinName, $newSkinName){
 		$pk = new RemoveEntityPacket();
 		$pk->eid = $this->getId();
@@ -4930,7 +4980,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->uuid = $packet->clientUUID;
 		if(is_null($this->uuid)){
 			$this->close("", "Sorry, your client is broken.");
-			return;
+			return false;
 		}
 		
 		$this->parent = $parent;

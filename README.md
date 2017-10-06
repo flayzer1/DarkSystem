@@ -22,12 +22,13 @@
 - DarkBot (Virtual Intelligent Bot; Can talk, help players, move etc.) (say "hi darkbot" ingame :))
 
 # Added Best Things:
-- Banner (1.2 only)
 - Piston (indev)
+- Banner (1.2 only)
 - Parrots (1.2 only)
 - Rideable Car (indev)
 - Rideable Horse (indev)
 - Behavior Support (indev)
+- Writable & Written Books (1.2 only)
 - Working Command Block (made %40) (indev)
 - ModPE/BlockLauncher check (Can kick modded players) (indev)
 
@@ -39,6 +40,7 @@
 - [ ] **Fireworks**
 - [ ] **Armor Stand**
 - [ ] **Throwing Potions**
+- [x] **Writable & Written Books**
 - [ ] **Fully Working CustomUI**
 - [ ] **Riding Mincart and Boat**
 - [ ] **Fully Redstone System**
