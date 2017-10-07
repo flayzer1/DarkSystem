@@ -1,7 +1,7 @@
 <img src="https://raw.githubusercontent.com/DarkYusuf13/DarkSystem/master/banner.png" border="0">
 
 
-**An Advanced & Feature Rich Server Engine/Software For Minecraft (PE) Bedrock Edition 1.x.x**
+**An Advanced & Feature-rich Server Engine/Software For Minecraft (PE) Bedrock Edition 1.x.x**
 
 | Travis CI | Discord |
 | :---: | :---:|
@@ -19,7 +19,7 @@
 - Code is clean, fast and safe, coded as DarkSystem php code method.
 - More Commands (/clear, /tpall, /clearchat /addui etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
-- DarkBot (Virtual Intelligent Bot; Can talk, help players, move etc.) (say "hi darkbot" ingame :))
+- DarkBot (Virtual Intelligent Bot; Can talk, help players, move etc.) (say "hi darkbot" in-game :))
 
 # Added Best Things:
 - Piston (indev)
@@ -28,6 +28,7 @@
 - Rideable Car (indev)
 - Rideable Horse (indev)
 - Behavior Support (indev)
+- Armor Stand (1.2 only) (indev)
 - Writable & Written Books (1.2 only)
 - Working Command Block (made %40) (indev)
 - ModPE/BlockLauncher check (Can kick modded players) (indev)
@@ -38,7 +39,7 @@
 - [ ] **Map**
 - [x] **Horse**
 - [ ] **Fireworks**
-- [ ] **Armor Stand**
+- [x] **Armor Stand**
 - [ ] **Throwing Potions**
 - [x] **Writable & Written Books**
 - [ ] **Fully Working CustomUI**
@@ -58,8 +59,19 @@
 # Notes:
 - DarkSystem does not support PMAnvil map format, only support Anvil and McRegion.
 - DarkSystem's language is currently Turkish, but you can change it from pocketmine.yml (Support +20 Languages)
-- DarkSystem is %72 stable now. Will be %90+ in future
+- DarkSystem is %68 stable now. Will be %90+ in future
 - /op command renamed to /operator and you can enable/disable in **pocketmine_advanced.yml**.
+
+# Get DarkSystem:
+* Download the latest build from [Travis CI](https://travis-ci.org/DarkYusuf13/DarkSystem).
+* PHP Binaries [here](https://github.com/LeverylTeam/PHP7-Binaries).
+<!--* Installation instructions can be found in the [wiki](https://github.com/iTXTech/Genisys/wiki).-->
+NOTE: **The master and mcpe1.1 branches are the only officially supported.**
+_All other branches are in testing and may be unstable. Do not use builds from other branches unless you are sure you understand the risks._
+
+# Tools:
+* [DevTools](https://github.com/pmmp/PocketMine-DevTools) - Plugin and server development tools plugin
+* [Pocket Server](https://github.com/fengberd/MinecraftPEServer) - Run PocketMine-MP/Nukkit on Android devices
 
 # License:
 ```
