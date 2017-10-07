@@ -16,7 +16,7 @@ class ShowStoreOfferPacket extends PEPacket {
 	public $isShowToAll = false;
 	
 	public function decode($playerProtocol) {
-		// only we send this packet, not client
+		
 	}
 
 	public function encode($playerProtocol) {

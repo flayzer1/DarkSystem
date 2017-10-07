@@ -51,7 +51,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	/** @var ServerHandler */
 	private $interface;
 	
-	private $isEncryptAllowed = true;
+	private static $isEncryptAllowed = true;
 	
 	public $count = 0;
 	public $maxcount = 25;
@@ -225,7 +225,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 
 	public function handleOption($name, $value){
 		if($name === "unknown" || $name === "dos" || $name === "ddos" || $name === "hack"){
-			return;
+			return false;
 		}
 		if($name === "bandwidth"){
 			$v = unserialize($value);
@@ -264,7 +264,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		if($player->isEncryptEnable() && RakLibInterface::$isEncryptAllowed === true){
 			$buffer = $player->getDecrypt($buffer);			
 		}
-		/*if($playerProtocol >= ProtocolInfo::PROTOCOL_110 || $player->getOriginalProtocol() == 0 && $this->isZlib($buffer)){
+		/*if($playerProtocol >= ProtocolInfo::PROTOCOL_110){
 			$pk = new BatchPacket($buffer);
 			$pk->is110 = true;
 			return $pk;
