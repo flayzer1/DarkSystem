@@ -774,11 +774,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		//}
 	}
 
-	public function sendChunk($x, $z, $payload){ //$data
+	public function sendChunk($x, $z, $data){ //$data
 		if($this->connected === false){
 			return false;
 		}
-		$data = $payload[$this->getPlayerProtocol()];
+		//$data = $payload[$this->getPlayerProtocol()];
 		$this->usedChunks[Level::chunkHash($x, $z)] = true;
 		$this->chunkLoadCount++;
 		$pk = new BatchPacket();
