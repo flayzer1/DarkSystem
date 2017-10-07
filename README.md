@@ -8,7 +8,7 @@
 [![Build Status](https://travis-ci.org/DarkYusuf13/DarkSystem.svg?branch=master)](https://travis-ci.org/DarkYusuf13/DarkSystem) | [![Discord](https://camo.githubusercontent.com/455152269a0ed38255ed15e375084d4dd08e0c98/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636861742d6f6e253230646973636f72642d3732383944412e737667)](https://discord.gg/4TewN6v) |
 
 # Features:
-- DarkSystem is **# 1** about speed. (We think so)
+- DarkSystem is **# 1** about speed & no-lag. (We think so)
 - Loads chunks region-to-region. It uses less CPU resources & loads chunks fast.
 - MobAI Support (Some animals and mobs can move & attack)
 - Smooth Movement (Players does not glitch or go down (:D) and while move does not throw back.)
@@ -60,18 +60,18 @@
 - DarkSystem does not support PMAnvil map format, only support Anvil and McRegion.
 - DarkSystem's language is currently Turkish, but you can change it from pocketmine.yml (Support +20 Languages)
 - DarkSystem is %68 stable now. Will be %90+ in future
-- /op command renamed to /operator and you can enable/disable in **pocketmine_advanced.yml**.
+- /op command renamed to /operator and you can enable/disable this command from **pocketmine_advanced.yml**.
 
 # Get DarkSystem:
-* Download the latest build from [Travis CI](https://travis-ci.org/DarkYusuf13/DarkSystem).
-* PHP Binaries [here](https://github.com/LeverylTeam/PHP7-Binaries).
+- Download the latest build from [Travis CI](https://travis-ci.org/DarkYusuf13/DarkSystem).
+- PHP Binaries [here](https://github.com/LeverylTeam/PHP7-Binaries).
 <!--* Installation instructions can be found in the [wiki](https://github.com/iTXTech/Genisys/wiki).-->
 NOTE: **The master and mcpe1.1 branches are the only officially supported.**
 _All other branches are in testing and may be unstable. Do not use builds from other branches unless you are sure you understand the risks._
 
 # Tools:
-* [DevTools](https://github.com/pmmp/PocketMine-DevTools) - Plugin and server development tools plugin
-* [Pocket Server](https://github.com/fengberd/MinecraftPEServer) - Run PocketMine-MP/Nukkit on Android devices
+- [DevTools](https://github.com/pmmp/PocketMine-DevTools) - Plugin and server development tools plugin
+- [Pocket Server](https://github.com/fengberd/MinecraftPEServer) - Run PocketMine-MP/Nukkit on Android devices
 
 # License:
 ```
