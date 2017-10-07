@@ -110,6 +110,7 @@ class PacketManager extends Worker{
 						$pk = new MoveEntityPacket();
 						$pk->entities = [$singleMoveData];
 					}
+					$pk->senderSubClientID = $singleMoveData[8];
 					$pk->encode($moveData['playerProtocol']);
 					$moveStr .= Binary::writeVarInt(strlen($pk->buffer)) . $pk->buffer;					
 				}
@@ -125,6 +126,7 @@ class PacketManager extends Worker{
 				foreach($motionData['data'] as $singleMotionData){
 					$pk = new SetEntityMotionPacket();
 					$pk->entities = [$singleMotionData];
+					$pk->senderSubClientID = $singleMotionData[4];
 					$pk->encode($motionData['playerProtocol']);
 					$motionStr .= Binary::writeVarInt(strlen($pk->buffer)) . $pk->buffer;		
 				}

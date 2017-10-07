@@ -30,6 +30,7 @@ abstract class Tile extends Position{
 	const BANNER = "Banner";
 	const FURNACE = "Furnace";
 	const FLOWER_POT = "FlowerPot";
+	const ARMOR_STAND = "ArmorStand";
 	const MOB_SPAWNER = "MobSpawner";
 	const ITEM_FRAME = "ItemFrame";
 	const DISPENSER = "Dispenser";
@@ -66,6 +67,7 @@ abstract class Tile extends Position{
 	public $tickTimer;
 	
 	public static function init(){
+		Tile::registerTile(ArmorStand::class);
 		Tile::registerTile(Banner::class);
 		Tile::registerTile(Beacon::class);
 		Tile::registerTile(Bed::class);

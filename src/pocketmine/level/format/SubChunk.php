@@ -193,8 +193,8 @@ class SubChunk{
 	}
 
 	public function networkSerialize(){
-		//return "\x00" . $this->ids . $this->data/* . $this->skyLight . $this->blockLight*/;
-		return "\x00" . $this->ids . $this->data . $this->skyLight . $this->blockLight;
+		return "\x00" . $this->ids . $this->data/* . $this->skyLight . $this->blockLight*/;
+		//return "\x00" . $this->ids . $this->data . $this->skyLight . $this->blockLight;
 	}
 
 	public function fastSerialize(){

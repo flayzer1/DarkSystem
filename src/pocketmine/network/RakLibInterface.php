@@ -59,7 +59,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	public function setCount($count, $maxcount){
 		$this->count = $count;
 		$this->maxcount = $maxcount;
-
+		
 		$this->interface->sendOption("name",
 		$this->count . ";" . $maxcount . ";"
 		);
@@ -68,7 +68,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	public function __construct(Server $server){
 		$this->server = $server;
 		$this->identifiers = new \SplObjectStorage();
-
+		
 		$this->rakLib = new RakLibServer($this->server->getLogger(), $this->server->getLoader(), $this->server->getPort(), $this->server->getIp() === "" ? "0.0.0.0" : $this->server->getIp());
 		$this->interface = new ServerHandler($this->rakLib, $this);
 		
@@ -147,6 +147,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	public function openSession($identifier, $address, $port, $clientID){
 		$ev = new PlayerCreationEvent($this, Player::class, Player::class, null, $address, $port);
 		$this->server->getPluginManager()->callEvent($ev);
+		
 		$class = $ev->getPlayerClass();
 		$player = new $class($this, $ev->getClientId(), $ev->getAddress(), $ev->getPort());
 		$this->players[$identifier] = $player;

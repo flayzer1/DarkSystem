@@ -22,6 +22,7 @@
 namespace pocketmine\network\protocol;
 
 class StartGamePacket extends PEPacket{
+	
 	const NETWORK_ID = Info::START_GAME_PACKET;
 	const PACKET_NAME = "START_GAME_PACKET";
 
@@ -98,8 +99,12 @@ class StartGamePacket extends PEPacket{
 			$this->putByte(0);
 			$this->putSignedVarInt(1);
 			$this->putSignedVarInt(4);
+			$this->putString("3138ee93-4a4a-479b-8dca-65ca5399e075");
+			$this->putString("");
+			$this->putString("");
+			$this->putByte(0);
+			$this->putLong(0);
+			$this->putSignedVarInt(0);
 		}
-		
 	}
-
 }

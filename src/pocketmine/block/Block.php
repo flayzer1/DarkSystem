@@ -195,7 +195,7 @@ class Block extends Position implements Metadatable{
 	const COCOA = 127;
 	const SANDSTONE_STAIRS = 128;
 	const EMERALD_ORE = 129;
-    const ENDER_CHEST = 130;
+	const ENDER_CHEST = 130;
 	const TRIPWIRE_HOOK = 131;
 	const TRIPWIRE = 132;
 	const EMERALD_BLOCK = 133;
@@ -274,16 +274,22 @@ class Block extends Position implements Metadatable{
 	const DARK_OAK_DOOR_BLOCK = 197;
 	const GRASS_PATH = 198;
 	const ITEM_FRAME_BLOCK = 199;
-    const CHORUS_FLOWER = 200;
-    const PURPUR_BLOCK = 201;
-    const END_BRICKS = 206;
-    const END_ROD = 208;
-    const END_GATEWAY = 209;
-    const SHULKER_BOX = 218;
-    const CONCRETE = 236;
+	const CHORUS_FLOWER = 200;
+	const PURPUR_BLOCK = 201;
+	const PURPUR_STAIRS = 203;
+	const UNDYED_SHULKER_BOX = 205;
+	const END_BRICKS = 206;
+	const END_ROD = 208;
+	const END_GATEWAY = 209;
+	const MAGMA = 213;
+	//const NETHER_WART_BLOCK = 214;
+	const RED_NETHER_BRICK = 215;
+	const BONE_BLOCK = 216;
+	const SHULKER_BOX = 218;
+	const CONCRETE = 236;
 	const CONCRETE_POWDER = 237;
-    const CHORUS_PLANT = 240;
-    const STAINED_GLASS = 241;
+	const CHORUS_PLANT = 240;
+	const STAINED_GLASS = 241;
 	const PODZOL = 243;
 	const BEETROOT_BLOCK = 244;
 	const STONECUTTER = 245;
@@ -550,6 +556,9 @@ class Block extends Position implements Metadatable{
 			Block::$list[Block::DRAGON_EGG] = DragonEgg::class;
 			Block::$list[Block::CAULDRON_BLOCK] = Cauldron::class;
 			Block::$list[Block::COMMAND_BLOCK] = CommandBlock::class;
+			
+			Block::$list[Block::MAGMA] = Magma::class;
+			Block::$list[Block::BONE_BLOCK] = BoneBlock::class;
 			
 			Block::$list[Block::REDSTONE_LAMP] = RedstoneLamp::class;
 			Block::$list[Block::REDSTONE_LAMP_ACTIVE] = RedstoneLampActive::class;

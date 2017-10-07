@@ -12,7 +12,6 @@
 namespace pocketmine;
 
 use pocketmine\event\TranslationContainer;
-use pocketmine\utils\TextFormat;
 
 abstract class AchievementHandler{
 	

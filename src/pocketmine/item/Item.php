@@ -703,6 +703,8 @@ class Item{
 		207 => "Beetroot Block", ///
 		208 => "Grass Path",
 		209 => "End Gateway",
+		213 => "Magma",
+		216 => "Bone Block",
 		243 => "Podzol",
 		244 => "Beetroot Block", ///
 		245 => "Stonecutter",

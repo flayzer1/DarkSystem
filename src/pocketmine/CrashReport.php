@@ -242,7 +242,7 @@ class CrashReport{
 		$this->data["general"]["build"] = $version->getBuild();
 		$this->data["general"]["protocol"] = ProtocolInfo::CURRENT_PROTOCOL;
 		$this->data["general"]["api"] = \pocketmine\API_VERSION;
-		$this->data["general"]["git"] = \pocketmine\GIT_COMMIT;
+		//$this->data["general"]["git"] = \pocketmine\GIT_COMMIT;
 		$this->data["general"]["raklib"] = RakLib::VERSION;
 		$this->data["general"]["uname"] = php_uname("a");
 		$this->data["general"]["php"] = phpversion();

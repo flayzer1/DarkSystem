@@ -943,14 +943,14 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				return;
 			}
 		}
-		$disallowedPackets = [];
+		/*$disallowedPackets = [];
 		$protocol = $this->getPlayerProtocol();
 		if($protocol >= ProtocolInfo::PROTOCOL_120){
 			$disallowedPackets = Protocol120::getDisallowedPackets();
 		}
 		if(in_array(get_class($packet), $disallowedPackets)){
 			return;
-		}
+		}*/
 		$this->server->getPluginManager()->callEvent($ev = new DataPacketSendEvent($this, $packet));
 		if($ev->isCancelled()){
 			return false;
@@ -1274,7 +1274,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$distanceSquared = ($this->newPosition->x - $this->x) ** 2 + ($this->newPosition->z - $this->z) ** 2;
 		if(($distanceSquared / ($tickDiff ** 2)) > $this->movementSpeed * 225){
 			//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
-			//return;
+			//return false;
 		}
 		$newPos = $this->newPosition;
 		if($this->chunk === null || !$this->chunk->isGenerated()){
@@ -1282,7 +1282,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			if($chunk === null || !$chunk->isGenerated()){
 				//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
 				//$this->nextChunkOrderRun = 0;
-				//$return;
+				//return false;
 			}
 		}
 		$from = new Location($this->x, $this->y, $this->z, $this->lastYaw, $this->lastPitch, $this->level);
@@ -1302,7 +1302,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					if($from->y - $to->y > 0.1){
 						if(!$roundBlock->isTransparent()){
 							//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
-							//return;
+							//return false;
 						}
 					}else{
 						if(!$block->isTransparent() || !$blockUp->isTransparent()){
@@ -1311,17 +1311,17 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 								$blockLow = $from->level->getBlock(new Vector3($toX, $toY - 1, $toZ));
 								if($from->y == $to->y && !$blockLow->isTransparent()){
 									//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
-									//return;
+									//return false;
 								}
 							}else{
 								if(!$blockUpUp->isTransparent()){
 									//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
-									//return;
+									//return false;
 								}
 								$blockFrom = $from->level->getBlock(new Vector3($from->x, $from->y, $from->z));
 								if($blockFrom instanceof Liquid){
 									//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
-									//return;
+									//return false;
 								}
 							}
 						}
@@ -1652,9 +1652,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				if($this->loggedIn === true){
 					break;
 				}
+				$this->protocol = $packet->protocol1;
 				if($packet->isValidProtocol === false){
-					$this->protocol = ProtocolInfo::BASE_PROTOCOL;
-					$this->close("", TF::RED . "Oyun Sürümünüz Uyumlu Değil!");
+					//$this->close("", TF::RED . "Oyun Sürümünüz Uyumlu Değil!");
+					$this->close("", $this->getNonValidProtocolMessage($this->protocol));
 					break;
 				}
 				$this->username = TF::clean($packet->username);
@@ -1665,13 +1666,13 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->randomClientId = $packet->clientId;
 				$this->loginData = ["clientId" => $packet->clientId, "loginData" => null];
 				$this->uuid = $packet->clientUUID;
+				$this->subClientId = $packet->targetSubClientID;
 				if(is_null($this->uuid)){
 					$this->close("", "Oyununuz Hatalı, Lütfen Tekrar Yüklemeyi Deneyin.");
 					break;
 				}
 				$this->rawUUID = $this->uuid->toBinary();
 				$this->clientSecret = $packet->clientSecret;
-				$this->protocol = $packet->protocol1;
 				$this->setSkin($packet->skin, /*$packet->skinId, */$packet->skinName, $packet->skinGeometryName, /*$packet->skinGeometryId, */$packet->skinGeometryData, $packet->capeData);
                 if($packet->osType > 0){
                     $this->deviceType = $packet->osType;
@@ -1684,6 +1685,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->serverAddress = $packet->serverAddress;
 				$this->clientVersion = $packet->clientVersion;
 				$this->originalProtocol = $packet->originalProtocol;
+				//$this->identityPublicKey = $packet->identityPublicKey;
 				$this->processLogin();
 				break;
 			case "MOVE_PLAYER_PACKET":

@@ -577,16 +577,21 @@ abstract class Entity extends Location implements Metadatable{
 	public function setFlyingFlag($value = true){
 		$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_FALL_FLYING, (bool) $value);
 	}
-
-	/**
-	 * @return Effect[]
-	 */
+	
+	public function isImmobile(){
+		return $this->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_IMMOBILE);
+	}
+	
+	public function setImmobile($value = true){
+		$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_IMMOBILE, (bool) $value);
+	}
+	
 	public function getEffects(){
 		return $this->effects;
 	}
 
 	public function removeAllEffects(){
-		foreach ($this->effects as $effectId => $effect){
+		foreach($this->effects as $effectId => $effect){
 			unset($this->effects[$effectId]);
 			$effect->remove($this);
 		}
@@ -616,13 +621,12 @@ abstract class Entity extends Location implements Metadatable{
 		$effectId = $effect->getId();
 		if(isset($this->effects[$effectId])){
 			if(abs($effect->getAmplifier()) < abs($this->effects[$effectId]->getAmplifier()) || (
-					abs($effect->getAmplifier()) === abs($this->effects[$effectId]->getAmplifier()) &&
-					$effect->getDuration() <= $this->effects[$effectId]->getDuration())){
-				
+				abs($effect->getAmplifier()) === abs($this->effects[$effectId]->getAmplifier()) &&
+				$effect->getDuration() <= $this->effects[$effectId]->getDuration())){
 				return;
 			}
 			$effect->add($this, true);
-		} else {
+		}else{
 			$effect->add($this, false);
 		}
 
@@ -701,8 +705,6 @@ abstract class Entity extends Location implements Metadatable{
 	}
 
 	/**
-	 * Returns the short save name
-	 *
 	 * @return string
 	 */
 	public function getSaveId(){
@@ -752,7 +754,8 @@ abstract class Entity extends Location implements Metadatable{
 					"Amplifier" => new ByteTag("Amplifier", $effect->getAmplifier()),
 					"Duration" => new IntTag("Duration", $effect->getDuration()),
 					"Ambient" => new ByteTag("Ambient", 0),
-					"ShowParticles" => new ByteTag("ShowParticles", $effect->isVisible() ? 1 : 0)
+					//"ShowParticles" => new ByteTag("ShowParticles", $effect->isVisible() ? 1 : 0)
+					"ShowParticles" => new ByteTag("ShowParticles", 0)
 				]);
 			}
 
@@ -806,6 +809,7 @@ abstract class Entity extends Location implements Metadatable{
 		if(isset($this->hasSpawned[$player->getId()])){
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -876,9 +880,9 @@ abstract class Entity extends Location implements Metadatable{
 	public function attack($damage, EntityDamageEvent $source){
 		$cause = $source->getCause();
 		if($this->hasEffect(Effect::FIRE_RESISTANCE) && (
-				$cause === EntityDamageEvent::CAUSE_FIRE || 
-				$cause === EntityDamageEvent::CAUSE_FIRE_TICK || 
-				$cause === EntityDamageEvent::CAUSE_LAVA)){
+			$cause === EntityDamageEvent::CAUSE_FIRE || 
+			$cause === EntityDamageEvent::CAUSE_FIRE_TICK || 
+			$cause === EntityDamageEvent::CAUSE_LAVA)){
 			
 			$source->setCancelled();
 		}
@@ -917,6 +921,7 @@ abstract class Entity extends Location implements Metadatable{
 		if($source->isCancelled()){
 			return;
 		}
+		
 		$this->setHealth($this->getHealth() + $source->getAmount());
 	}
 
@@ -1068,6 +1073,7 @@ abstract class Entity extends Location implements Metadatable{
 			if($effect->canTick()){
 				$effect->applyEffect($this);
 			}
+			
 			$newDuration = $effect->getDuration() - $tickDiff;
 			if($newDuration <= 0){
 				$this->removeEffect($effect->getId());
@@ -1100,6 +1106,7 @@ abstract class Entity extends Location implements Metadatable{
 					$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_FIRE_TICK, $this->fireDamage);
 					$this->attack($ev->getFinalDamage(), $ev);
 				}
+				
 				$this->fireTicks -= $tickDiff;
 			}
 
@@ -1225,6 +1232,7 @@ abstract class Entity extends Location implements Metadatable{
 		if($onGround === true){
 			if($this->fallDistance > 0){
 				if($this instanceof Living){
+					
 				}
 
 				if(!$this->isCollideWithWater()){
@@ -1233,7 +1241,7 @@ abstract class Entity extends Location implements Metadatable{
 				
 				$this->resetFallDistance();
 			}
-		} else if($distanceThisTick < 0){
+		}elseif($distanceThisTick < 0){
 			$this->fallDistance -= $distanceThisTick;
 		}
 	}
@@ -1299,6 +1307,7 @@ abstract class Entity extends Location implements Metadatable{
 		}
 		
 		$this->chunk = null;
+		
 		return true;
 	}
 
@@ -1458,6 +1467,7 @@ abstract class Entity extends Location implements Metadatable{
 				$this->onGround = true;
 			}
 		}
+		
 		$this->isCollided = $this->onGround;
 
 		$notInAir = $this->onGround || $this->isCollideWithWater();
@@ -1516,6 +1526,7 @@ abstract class Entity extends Location implements Metadatable{
 			if($this->chunk !== null){
 				$this->chunk->removeEntity($this);
 			}
+			
 			$this->chunk = $this->level->getChunk($this->x >> 4, $this->z >> 4, true);
 
 			if(!$this->justCreated){
@@ -1527,6 +1538,7 @@ abstract class Entity extends Location implements Metadatable{
 						unset($newChunk[$player->getId()]);
 					}
 				}
+				
 				foreach($newChunk as $player){
 					if($player->canSeeEntity($this)){
 						$this->spawnTo($player);
@@ -1596,7 +1608,7 @@ abstract class Entity extends Location implements Metadatable{
 
 	public function kill(){
 		if($this->dead){
-			return;
+			return false;
 		}
 		
 		$this->dead = true;
@@ -1664,6 +1676,7 @@ abstract class Entity extends Location implements Metadatable{
 		if($this->chunk === null or $this->closed){
 			return false;
 		}
+		
 		foreach($this->level->getUsingChunk($this->chunk->getX(), $this->chunk->getZ()) as $player){
 			if($player->loggedIn === true && $player->canSeeEntity($this)){
 				$this->spawnTo($player);
@@ -1720,7 +1733,7 @@ abstract class Entity extends Location implements Metadatable{
 	 */
 	public function setLinked($type = 0, Entity $entity){
 		if($entity instanceof Boat or $entity instanceof Minecart){
-			$this->setDataProperty(57, 8, [0, 1, 0]); //This is a fast hack for Boat. TODO: Improve it
+			$this->setDataProperty(57, 8, [0, 1, 0]);
 		}
 		if($type != 0 and $entity === null){
 			return false;
@@ -1750,7 +1763,6 @@ abstract class Entity extends Location implements Metadatable{
 					$this->linkedEntity->setLinked(0, $this);
 				}
 				$this->linkedEntity = null;
-
 				return true;
 			case 1:
 				if(!$entity->isAlive()){
