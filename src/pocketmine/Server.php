@@ -2584,8 +2584,4 @@ class Server extends DarkSystem{
 		return true;
 	}
 	
-	public function __sleep(){
-		throw new \BadMethodCallException("Cannot serialize Server instance");
-	}
-	
 }
