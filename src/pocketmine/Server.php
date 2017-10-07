@@ -630,6 +630,26 @@ class Server extends DarkSystem{
 		$this->craftingMgr->registerRecipe($recipe);
 	}
 	
+	public function isCommandBlockEnable(){
+		return $this->isCmdBlockEnable;
+	}
+	
+	public function isUseEncrypt(){
+		return $this->isUseEncrypt;
+	}
+		
+	public function getServerPublicKey(){
+		return $this->serverPublicKey;
+	}
+	
+	public function getServerPrivateKey(){
+		return $this->serverPrivateKey;
+	}
+	
+	public function getServerToken(){	
+		return $this->serverToken;
+	}
+	
 	public function isCreditsEnable(){
 		$isEnable = false; //TODO: Add config
 		switch($isEnable){
@@ -1683,7 +1703,7 @@ class Server extends DarkSystem{
             //$this->pluginMgr->registerInterface(FolderPluginLoader::class);
 			$this->pluginMgr->registerInterface(ScriptPluginLoader::class);
 			
-			\set_exception_handler([$this, "exceptionHandler"]);
+			//\set_exception_handler([$this, "exceptionHandler"]);
 			
 			register_shutdown_function([$this, "crashReport"]);
 
@@ -2176,6 +2196,7 @@ class Server extends DarkSystem{
 			}
 			
 			@kill(getmypid());
+			exit(1);
 		}
 	}
 	
@@ -2293,8 +2314,8 @@ class Server extends DarkSystem{
 		foreach($players === null ? $this->playerList : $players as $p){
 			$protocol = $p->getPlayerProtocol();
 			if(!isset($readyPackets[$protocol])){
-				$pk->encode($protocol, $p->getSubClientId());
-				//$pk->encode($protocol);
+				//$pk->encode($protocol, $p->getSubClientId());
+				$pk->encode($protocol);
 				$batch = new BatchPacket();
 				$batch->payload = zlib_encode(Binary::writeVarInt(strlen($pk->getBuffer())) . $pk->getBuffer(), ZLIB_ENCODING_DEFLATE, 7);
 				$readyPackets[$protocol] = $batch;
@@ -2328,8 +2349,8 @@ class Server extends DarkSystem{
 				$pk->addFurnaceRecipe($r);
 			}
 			
-			$pk->encode($p->getPlayerProtocol(), $p->getSubClientId());
-			//$pk->encode($p->getPlayerProtocol());
+			//$pk->encode($p->getPlayerProtocol(), $p->getSubClientId());
+			$pk->encode($p->getPlayerProtocol());
 			$pk->isEncoded = true;
 			$this->craftList[$p->getPlayerProtocol()] = $pk;
 		}
@@ -2563,24 +2584,8 @@ class Server extends DarkSystem{
 		return true;
 	}
 	
-	public function isCommandBlockEnable(){
-		return $this->isCmdBlockEnable;
-	}
-	
-	public function isUseEncrypt(){
-		return $this->isUseEncrypt;
-	}
-		
-	public function getServerPublicKey(){
-		return $this->serverPublicKey;
-	}
-	
-	public function getServerPrivateKey(){
-		return $this->serverPrivateKey;
-	}
-	
-	public function getServerToken(){	
-		return $this->serverToken;
+	public function __sleep(){
+		throw new \BadMethodCallException("Cannot serialize Server instance");
 	}
 	
 }

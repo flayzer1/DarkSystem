@@ -210,9 +210,9 @@ class SessionManager{
 				$length = strlen($decoded);
 				while($stream->getOffset() < $length){
 					$buf = $stream->getString();
-					if($buf == $this->spamPacket){
+					/*if($buf == $this->spamPacket){
 						continue;
-					}
+					}*/
 					$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . $buf;
 					$this->server->pushThreadToMainPacket($buffer);
 				}
