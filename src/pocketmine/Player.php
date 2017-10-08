@@ -774,26 +774,26 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		//}
 	}
 
-	public function sendChunk($x, $z, $payload){ //$data
+	public function sendChunk($x, $z, $data){ //$data
 		if($this->connected === false){
 			return false;
 		}
 		//$data = $payload[$this->getPlayerProtocol()];
 		$this->usedChunks[Level::chunkHash($x, $z)] = true;
 		$this->chunkLoadCount++;
-		/*$pk = new BatchPacket();
+		$pk = new BatchPacket();
 		$pk->payload = $data;
 		$this->dataPacket($pk);
-		$this->server->getDefaultLevel()->useChunk($x, $z, $this);*/
-		if($payload instanceof DataPacket){
-            $this->dataPacket($payload);
-        }else{
-            $pk = new FullChunkDataPacket();
-            $pk->chunkX = $x;
-            $pk->chunkZ = $z;
-            $pk->data = $payload;
-            $this->batchDataPacket($pk);
-        }
+		$this->server->getDefaultLevel()->useChunk($x, $z, $this);
+		/*if($payload instanceof DataPacket){
+			$this->dataPacket($payload);
+		}else{
+			$pk = new FullChunkDataPacket();
+			$pk->chunkX = $x;
+			$pk->chunkZ = $z;
+			$pk->data = $payload;
+			$this->dataPacket($pk);
+		}*/
 		if($this->spawned){
 			foreach($this->level->getChunkEntities($x, $z) as $entity){
 				if($entity !== $this && !$entity->closed && !$entity->dead && $this->canSeeEntity($entity)){
@@ -844,6 +844,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->inventory->sendContents($this);
 			$this->inventory->sendArmorContents($this);
 			$this->inventory->setHeldItemIndex(0);
+			$this->setSprinting(false, true);
 			$pk = new SetTimePacket();
 			$pk->time = $this->level->getTime();
 			$pk->started = $this->level->stopTime == false;
@@ -1275,7 +1276,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->newPosition = null;*/
 	}
 	
-	protected function processMovement($tickDiff){
+	/*protected function processMovement($tickDiff){
 		if(!$this->isAlive() || !$this->spawned || $this->newPosition === null){
 			$this->setMoving(false);
 			return false;
@@ -1379,6 +1380,126 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			}
 			$this->forceMovement = null;
 		}
+		$this->newPosition = null;
+	}*/
+	
+	protected function processMovement(int $tickDiff){
+		if(!$this->isAlive() or !$this->spawned or $this->newPosition === null or $this->isSleeping()){
+			return;
+		}
+
+		assert($this->x !== null and $this->y !== null and $this->z !== null);
+		assert($this->newPosition->x !== null and $this->newPosition->y !== null and $this->newPosition->z !== null);
+
+		$newPos = $this->newPosition;
+		$distanceSquared = $newPos->distanceSquared($this);
+
+		$revert = false;
+
+		if(($distanceSquared / ($tickDiff ** 2)) > 225){
+			$revert = true;
+		}else{
+			if($this->chunk === null or !$this->chunk->isGenerated()){
+				$chunk = $this->level->getChunk($newPos->x >> 4, $newPos->z >> 4, false);
+				if($chunk === null or !$chunk->isGenerated()){
+					$revert = true;
+					$this->nextChunkOrderRun = 0;
+				}else{
+					if($this->chunk !== null){
+						$this->chunk->removeEntity($this);
+					}
+					$this->chunk = $chunk;
+				}
+			}
+		}
+
+		if(!$revert and $distanceSquared != 0){
+			$dx = $newPos->x - $this->x;
+			$dy = $newPos->y - $this->y;
+			$dz = $newPos->z - $this->z;
+
+			$this->move($dx, $dy, $dz);
+
+			$diffX = $this->x - $newPos->x;
+			$diffY = $this->y - $newPos->y;
+			$diffZ = $this->z - $newPos->z;
+
+			$diff = ($diffX ** 2 + $diffY ** 2 + $diffZ ** 2) / ($tickDiff ** 2);
+
+			if($this->isSurvival() and !$revert and $diff > 0.0625){
+				$ev = new PlayerIllegalMoveEvent($this, $newPos);
+				$ev->setCancelled(true);
+
+				$this->server->getPluginManager()->callEvent($ev);
+
+				if(!$ev->isCancelled()){
+					$revert = true;
+				}
+			}
+
+			if($diff > 0){
+				$this->x = $newPos->x;
+				$this->y = $newPos->y;
+				$this->z = $newPos->z;
+				$radius = $this->width / 2;
+				$this->boundingBox->setBounds($this->x - $radius, $this->y, $this->z - $radius, $this->x + $radius, $this->y + $this->height, $this->z + $radius);
+			}
+		}
+
+		$from = new Location($this->lastX, $this->lastY, $this->lastZ, $this->lastYaw, $this->lastPitch, $this->level);
+		$to = $this->getLocation();
+
+		$delta = (($this->lastX - $to->x) ** 2) + (($this->lastY - $to->y) ** 2) + (($this->lastZ - $to->z) ** 2);
+		$deltaAngle = abs($this->lastYaw - $to->yaw) + abs($this->lastPitch - $to->pitch);
+
+		if(!$revert and ($delta > 0.0001 or $deltaAngle > 1.0)){
+
+			$isFirst = ($this->lastX === null or $this->lastY === null or $this->lastZ === null);
+
+			$this->lastX = $to->x;
+			$this->lastY = $to->y;
+			$this->lastZ = $to->z;
+
+			$this->lastYaw = $to->yaw;
+			$this->lastPitch = $to->pitch;
+
+			if(!$isFirst){
+				$ev = new PlayerMoveEvent($this, $from, $to);
+
+				$this->server->getPluginManager()->callEvent($ev);
+
+				if(!($revert = $ev->isCancelled())){
+					if($to->distanceSquared($ev->getTo()) > 0.01){
+						$this->teleport($ev->getTo());
+					}else{
+						//$this->broadcastMovement();
+
+						$distance = $from->distance($to);
+					}
+				}
+			}
+
+			$this->speed = $to->subtract($from)->divide($tickDiff);
+		}elseif($distanceSquared == 0){
+			$this->speed = new Vector3(0, 0, 0);
+		}
+
+		if($revert){
+
+			$this->lastX = $from->x;
+			$this->lastY = $from->y;
+			$this->lastZ = $from->z;
+
+			$this->lastYaw = $from->yaw;
+			$this->lastPitch = $from->pitch;
+
+			$this->sendPosition($from, $from->yaw, $from->pitch, MovePlayerPacket::MODE_RESET);
+		}else{
+			if($distanceSquared != 0 and $this->nextChunkOrderRun > 20){
+				$this->nextChunkOrderRun = 20;
+			}
+		}
+
 		$this->newPosition = null;
 	}
 	

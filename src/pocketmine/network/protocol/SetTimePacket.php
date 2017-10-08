@@ -21,12 +21,10 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 use pocketmine\level\Level;
 
 class SetTimePacket extends PEPacket{
+	
 	const NETWORK_ID = Info::SET_TIME_PACKET;
 	const PACKET_NAME = "SET_TIME_PACKET";
 
@@ -34,7 +32,7 @@ class SetTimePacket extends PEPacket{
 	public $started = true;
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

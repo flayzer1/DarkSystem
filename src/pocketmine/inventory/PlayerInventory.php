@@ -168,7 +168,7 @@ class PlayerInventory extends BaseInventory{
 		}
 	}
 
-	public function onSlotChange($index, $before, $sendPacket){
+	public function onSlotChange($index, $before, $sendPacket = true){
 		$holder = $this->getHolder();
 		if($holder instanceof Player && !$holder->spawned){
 			return;

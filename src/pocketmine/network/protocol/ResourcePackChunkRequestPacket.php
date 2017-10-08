@@ -22,15 +22,15 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-class ResourcePackChunkRequestPacket extends DataPacket{
+class ResourcePackChunkRequestPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::RESOURCE_PACK_CHUNK_REQUEST_PACKET;
 
 	public $packId;
 	public $chunkIndex;
 
 	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->packId = $this->getString();
 		$this->chunkIndex = $this->getLInt();
 	}
@@ -40,4 +40,5 @@ class ResourcePackChunkRequestPacket extends DataPacket{
 		$this->putString($this->packId);
 		$this->putLInt($this->chunkIndex);
 	}
+	
 }

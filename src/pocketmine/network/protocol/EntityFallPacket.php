@@ -21,13 +21,14 @@
 
 namespace pocketmine\network\protocol;
 
-class EntityFallPacket extends DataPacket{
+class EntityFallPacket extends PEPacket{
 
 	const NETWORK_ID = Info::ENTITY_FALL_PACKET;
 
 	public $fallDistance;
 
 	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->fallDistance = $this->getLFloat();
 	}
 

@@ -19,7 +19,6 @@
  *
 */
 
-
 namespace pocketmine\network\protocol;
 
 class BehaviorPackChunkRequestPacket extends DataPacket{
@@ -30,6 +29,7 @@ class BehaviorPackChunkRequestPacket extends DataPacket{
 	public $chunkIndex;
 
 	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->packId = $this->getString();
 		$this->chunkIndex = $this->getLInt();
 	}

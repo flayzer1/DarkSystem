@@ -22,6 +22,7 @@
 namespace pocketmine\network\protocol;
 
 class BlockEventPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::BLOCK_EVENT_PACKET;
 	const PACKET_NAME = "BLOCK_EVENT_PACKET";
 	
@@ -32,7 +33,7 @@ class BlockEventPacket extends PEPacket{
 	public $case2;
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

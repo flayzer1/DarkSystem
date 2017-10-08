@@ -1808,8 +1808,8 @@ class Level implements ChunkManager, Metadatable{
 
 	protected function processChunkRequest(){
 		if(count($this->chunkSendQueue) > 0){
-			//$this->timings->syncChunkSendTimer->startTiming();
-
+			$protocols = [];
+			$subClientsId = [];
 			$x = null;
 			$z = null;
 			foreach($this->chunkSendQueue as $index => $players){
@@ -1817,44 +1817,52 @@ class Level implements ChunkManager, Metadatable{
 					continue;
 				}
 				Level::getXZ($index, $x, $z);
-				if(advanced_cache == true && ($cache = Cache::get("world:" . $this->getId() . ":" . $index)) !== false){
-					/** @var Player[] $players */
-					foreach($players as $player){
-						if($player->isConnected() && isset($player->usedChunks[$index])){
-							$player->sendChunk($x, $z, $cache);
+				foreach($players as $player){
+					if($player->isConnected() && isset($player->usedChunks[$index])){
+						$protocol = $player->getPlayerProtocol();
+						$subClientId = $player->getSubClientId();
+						if(advanced_cache == true){
+							$playerIndex = "{$protocol}:{$subClientId}";
+							$cache = Cache::get("world:" . $this->getId() . ":{$index}");
+							if($cache !== false && isset($cache[$playerIndex])){
+								$player->sendChunk($x, $z, $cache[$playerIndex]);
+								continue;
+							}
 						}
+						$protocols[$protocol] = $protocol;
+						$subClientsId[$subClientId] = $subClientId;
 					}
-					unset($this->chunkSendQueue[$index]);
-				}else{
+				}
+				if($protocols !== []){
 					$this->chunkSendTasks[$index] = true;
-					//$this->timings->syncChunkSendPrepareTimer->startTiming();
-					$task = $this->provider->requestChunkTask($x, $z);
+					$task = $this->provider->requestChunkTask($x, $z, $protocols, $subClientsId);
 					if($task instanceof AsyncTask){
 						$this->server->getScheduler()->scheduleAsyncTask($task);
 					}
-					//$this->timings->syncChunkSendPrepareTimer->stopTiming();
+				}else{
+					unset($this->chunkSendQueue[$index]);
 				}
 			}
-
-			//$this->timings->syncChunkSendTimer->stopTiming();
 		}
 	}
 
 	public function chunkRequestCallback($x, $z, $payload){
 		if($this->closed){
-			return;
+			return false;
 		} 
 		$index = Level::chunkHash($x, $z);
 		if(isset($this->chunkSendTasks[$index])){
-
 			if(advanced_cache == true){
-				Cache::add("world:" . $this->getId() . ":" . $index, $payload, 60);
+				$cacheId = "world:" . $this->getId() . ":{$index}";
+				if(($cache = Cache::get($cacheId)) !== false){
+					$payload = array_merge($cache, $payload);
+				}
+				Cache::add($cacheId, $payload, 60);
 			}
 			foreach($this->chunkSendQueue[$index] as $player){
-				/** @var Player $player */
-				if($player->isConnected() && isset($player->usedChunks[$index])){
-					$player->sendChunk($x, $z, $payload);
-					
+				$playerIndex = $player->getPlayerProtocol() . ":" . $player->getSubClientId();
+				if($player->isConnected() && isset($player->usedChunks[$index]) && isset($payload[$playerIndex])){
+					$player->sendChunk($x, $z, $payload[$playerIndex]);
 				}
 			}
 			unset($this->chunkSendQueue[$index]);
@@ -2267,26 +2275,41 @@ class Level implements ChunkManager, Metadatable{
 	public function addEntityMotion($viewers, $entityId, $x, $y, $z){	
 		$motion = [$entityId, $x, $y, $z];
 		foreach($viewers as $p){
-			if(!isset($this->motionToSend[$p->getIdentifier()])){
-				$this->motionToSend[$p->getIdentifier()] = array(
-					'data' => array(),
-					'playerProtocol' => $p->getPlayerProtocol()
-				);
+			$subClientId = $p->getSubClientId();
+			if($subClientId > 0 && ($parent = $p->getParent()) !== null){
+				$playerIdentifier = $parent->getIdentifier();
+			}else{
+				$playerIdentifier = $p->getIdentifier();
 			}
-			$this->motionToSend[$p->getIdentifier()]['data'][] = $motion;
+			
+			if(!isset($this->motionToSend[$playerIdentifier])){
+				$this->motionToSend[$playerIdentifier] = [
+					'data' => [],
+					'playerProtocol' => $p->getPlayerProtocol()
+				];
+			}
+			$motion[4] = $subClientId;
+			$this->motionToSend[$playerIdentifier]['data'][] = $motion;
 		}
 	}
 
 	public function addEntityMovement($viewers, $entityId, $x, $y, $z, $yaw, $pitch, $headYaw = null, $isPlayer = false){
 		$move = [$entityId, $x, $y, $z, $yaw, $headYaw === null ? $yaw : $headYaw, $pitch, $isPlayer];
 		foreach($viewers as $p){
-			if(!isset($this->moveToSend[$p->getIdentifier()])){
-				$this->moveToSend[$p->getIdentifier()] = array(
-					'data' => array(),
-					'playerProtocol' => $p->getPlayerProtocol()
-				);
+			$subClientId = $p->getSubClientId();
+			if($subClientId > 0 && ($parent = $p->getParent()) !== null){
+				$playerIdentifier = $parent->getIdentifier();
+			}else{
+				$playerIdentifier = $p->getIdentifier();
 			}
-			$this->moveToSend[$p->getIdentifier()]['data'][] = $move;
+			if(!isset($this->moveToSend[$playerIdentifier])){
+				$this->moveToSend[$playerIdentifier] = [
+					'data' => [],
+					'playerProtocol' => $p->getPlayerProtocol()
+				];
+			}
+			$move[8] = $subClientId;
+			$this->moveToSend[$playerIdentifier]['data'][] = $move;
 		}
 	}
 		
@@ -2342,13 +2365,23 @@ class Level implements ChunkManager, Metadatable{
 	}
 	
 	public function updateChunk($x, $z){
-		$index = Level::chunkHash($x, $z);
-		$this->chunkSendTasks[$index] = true;
-		$this->provider->requestChunkTask($x, $z);
+		$index = self::chunkHash($x, $z);
+		$this->chunkSendTasks[$index] = true;		
 		$this->chunkSendQueue[$index] = [];
+		$protocols = [];
+		$subClientsId = [];
 		foreach($this->getUsingChunk($x, $z) as $player){
 			$this->chunkSendQueue[$index][spl_object_hash($player)] = $player;
+			$protocol = $player->getPlayerProtocol();
+			if(!isset($protocols[$protocol])){
+				$protocols[$protocol] = $protocol;
+			}
+			$subClientId = $player->getSubClientId();
+			if(!isset($subClientsId[$subClientId])){
+				$subClientsId[$subClientId] = $subClientId;
+			}
 		}
+		$this->provider->requestChunkTask($x, $z, $protocols, $subClientsId);
 	}
 	
 	public function getYMask(){

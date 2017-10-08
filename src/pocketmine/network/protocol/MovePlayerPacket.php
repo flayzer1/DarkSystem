@@ -28,8 +28,8 @@ class MovePlayerPacket extends PEPacket{
 
 	const MODE_NORMAL = 0;
 	const MODE_RESET = 1;
-	const MODE_TELEPORT= 2;
-	const MODE_ROTATION = 3;
+	const MODE_TELEPORT = 2;
+	const MODE_PITCH = 3, const MODE_ROTATION = 3;
 
 	public $eid;
 	public $x;
@@ -39,8 +39,9 @@ class MovePlayerPacket extends PEPacket{
 	public $bodyYaw;
 	public $pitch;
 	public $mode = self::MODE_NORMAL;
-	public $onGround;
-
+	public $onGround = false;
+	public $ridingEid = 0;
+	
 	public function clean(){
 		$this->teleport = false;
 		return parent::clean();
@@ -56,7 +57,8 @@ class MovePlayerPacket extends PEPacket{
 		$this->yaw = $this->getLFloat();
 		$this->bodyYaw = $this->getLFloat();
 		$this->mode = $this->getByte();
-		$this->onGround = $this->getByte() > 0;
+		$this->onGround = $this->getBool();
+		$this->ridingEid = $this->getVarInt();
 	}
 
 	public function encode($playerProtocol){
@@ -69,7 +71,8 @@ class MovePlayerPacket extends PEPacket{
 		$this->putLFloat($this->yaw);
 		$this->putLFloat($this->bodyYaw);
 		$this->putByte($this->mode);
-		$this->putByte($this->onGround > 0);
+		$this->putBool($this->onGround);
+		$this->putVarInt($this->ridingEid);
 	}
 
 }

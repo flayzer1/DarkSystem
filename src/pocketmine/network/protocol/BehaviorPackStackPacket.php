@@ -8,7 +8,7 @@ class BehaviorPackStackPacket extends PEPacket{
 	const PACKET_NAME = "BEHAVIOR_PACK_STACK_PACKET";
 
 	public function decode($playerProtocol) {
-		
+		$this->getHeader($playerProtocol);
 	}
 	
 	public function encode($playerProtocol) {

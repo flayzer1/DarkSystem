@@ -8,7 +8,7 @@ class ResourcePackStackPacket extends PEPacket{
 	const PACKET_NAME = "RESOURCE_PACK_STACK_PACKET";
 
 	public function decode($playerProtocol) {
-		
+		$this->getHeader($playerProtocol);
 	}
 	
 	public function encode($playerProtocol) {
