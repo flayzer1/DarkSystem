@@ -1815,7 +1815,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->serverAddress = $packet->serverAddress;
 				$this->clientVersion = $packet->clientVersion;
 				$this->originalProtocol = $packet->originalProtocol;
-				//$this->identityPublicKey = $packet->identityPublicKey;
+				$this->identityPublicKey = $packet->identityPublicKey;
 				$this->processLogin();
 				break;
 			case "MOVE_PLAYER_PACKET":
