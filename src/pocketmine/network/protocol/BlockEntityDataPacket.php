@@ -21,10 +21,7 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
-class BlockEntityDataPacket extends DataPacket{
+class BlockEntityDataPacket extends PEPacket{
 
 	const NETWORK_ID = Info::BLOCK_ENTITY_DATA_PACKET;
 
@@ -34,6 +31,7 @@ class BlockEntityDataPacket extends DataPacket{
 	public $namedtag;
 
 	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->getBlockCoords($this->x, $this->y, $this->z);
 		$this->namedtag = $this->get(true);
 	}
@@ -43,12 +41,5 @@ class BlockEntityDataPacket extends DataPacket{
 		$this->putBlockCoords($this->x, $this->y, $this->z);
 		$this->put($this->namedtag);
 	}
-
-	/**
-	 * @return PacketName|string
-     */
-	public function getName(){
-		return "BlockEntityDataPacket";
-	}
-
+	
 }

@@ -46,9 +46,10 @@ class AddPlayerPacket extends PEPacket{
 	public $commandPermission = 0;
 	public $actionPermissions = AdventureSettingsPacket::ACTION_FLAG_DEFAULT_LEVEL_PERMISSIONS;
 	public $permissionLevel = AdventureSettingsPacket::PERMISSION_LEVEL_MEMBER;
- 
+	public $storedCustomPermissions = 0;
+	
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){
@@ -75,6 +76,7 @@ class AddPlayerPacket extends PEPacket{
 			$this->putVarInt($this->commandPermission);
 			$this->putVarInt($this->actionPermissions);
 			$this->putVarInt($this->permissionLevel);
+			$this->putVarInt($this->storedCustomPermissions);
 			if($this->eid & 1){
 				$this->putLLong(-1 * (($this->eid + 1) >> 1));
 			}else{

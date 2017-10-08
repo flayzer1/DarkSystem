@@ -22,6 +22,7 @@
 namespace pocketmine\inventory;
 
 class InventoryType{
+	
 	const CHEST = 0;
 	const DOUBLE_CHEST = 1;
 	const PLAYER = 2;
@@ -37,6 +38,7 @@ class InventoryType{
 	const HOPPER = 12;
 	const ENDER_CHEST = 13;
 	const BEACON = 14;
+	const COMMAND_BLOCK = 15;
 
 	private static $default = [];
 
@@ -55,22 +57,23 @@ class InventoryType{
 
 	public static function init(){
 		if(count(static::$default) > 0){
-			return;
+			return false;
 		}
 		
 		static::$default[static::CHEST] = new InventoryType(27, "Chest", 0);
-		static::$default[static::DOUBLE_CHEST] = new InventoryType(27 + 27, "Double Chest", 0);
-		static::$default[static::PLAYER] = new InventoryType(41, "Player", 0); //27 CONTAINER, 4 ARMOR (9 reference HOTBAR slots), 1 OFFHAND
+		static::$default[static::DOUBLE_CHEST] = new InventoryType(54, "Double Chest", 0);
+		static::$default[static::PLAYER] = new InventoryType(41, "Player", 0);
 		static::$default[static::FURNACE] = new InventoryType(3, "Furnace", 2);
-		static::$default[static::CRAFTING] = new InventoryType(5, "Crafting", 1); //4 CRAFTING slots, 1 RESULT
-		static::$default[static::WORKBENCH] = new InventoryType(10, "Crafting", 1); //9 CRAFTING slots, 1 RESULT
-		static::$default[static::STONECUTTER] = new InventoryType(10, "Crafting", 1); //9 CRAFTING slots, 1 RESULT
-		static::$default[static::ENCHANT_TABLE] = new InventoryType(2, "Enchant", 3); //1 INPUT/OUTPUT, 1 LAPIS
-		static::$default[static::BREWING_STAND] = new InventoryType(4, "Brewing", 4); //1 INPUT, 3 POTION
-		static::$default[static::ANVIL] = new InventoryType(3, "Anvil", 5); //2 INPUT, 1 OUTPUT
-		static::$default[static::DISPENSER] = new InventoryType(9, "Dispenser", 6); //9 CONTAINER
-		static::$default[static::DROPPER] = new InventoryType(9, "Dropper", 7); //9 CONTAINER
-		static::$default[static::HOPPER] = new InventoryType(5, "Hopper", 8); //5 CONTAINER
+		static::$default[static::CRAFTING] = new InventoryType(5, "Crafting", 1);
+		static::$default[static::WORKBENCH] = new InventoryType(10, "Crafting", 1);
+		static::$default[static::STONECUTTER] = new InventoryType(10, "Crafting", 1);
+		static::$default[static::ENCHANT_TABLE] = new InventoryType(2, "Enchant", 3);
+		static::$default[static::BREWING_STAND] = new InventoryType(4, "Brewing", 4);
+		static::$default[static::ANVIL] = new InventoryType(3, "Anvil", 5);
+		static::$default[static::DISPENSER] = new InventoryType(9, "Dispenser", 6);
+		static::$default[static::DROPPER] = new InventoryType(9, "Dropper", 7);
+		static::$default[static::HOPPER] = new InventoryType(5, "Hopper", 8);
+		static::$default[static::COMMAND_BLOCK] = new InventoryType(0, "Command Block", 1);
 		static::$default[static::ENDER_CHEST] = new InventoryType(27, "Ender Chest", 0);
 		static::$default[static::BEACON] = new InventoryType(0, "Beacon", 13);
 	}

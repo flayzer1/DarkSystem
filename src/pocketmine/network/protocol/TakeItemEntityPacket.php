@@ -21,10 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class TakeItemEntityPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::TAKE_ITEM_ENTITY_PACKET;
 	const PACKET_NAME = "TAKE_ITEM_ENTITY_PACKET";
 
@@ -32,7 +30,7 @@ class TakeItemEntityPacket extends PEPacket{
 	public $eid;
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

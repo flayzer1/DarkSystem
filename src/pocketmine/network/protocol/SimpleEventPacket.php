@@ -21,23 +21,19 @@
 
 namespace pocketmine\network\protocol;
 
-use pocketmine\network\mcpe\NetworkSession;
-
 class SimpleEventPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::SIMPLE_EVENT_PACKET;
 
 	public $unknownShort1;
 
-	public function decodePayload(){
+	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->unknownShort1 = $this->getLShort();
 	}
 
-	public function encodePayload(){
+	public function encode(){
 		$this->putLShort($this->unknownShort1);
-	}
-
-	public function handle(NetworkSession $session){
-		return $session->handleSimpleEvent($this);
 	}
 	
 }

@@ -21,10 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class AddItemEntityPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::ADD_ITEM_ENTITY_PACKET;
 	const PACKET_NAME = "ADD_ITEM_ENTITY_PACKET";
 
@@ -38,7 +36,7 @@ class AddItemEntityPacket extends PEPacket{
 	public $speedZ;
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

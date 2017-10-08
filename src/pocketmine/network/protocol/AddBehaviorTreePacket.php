@@ -21,24 +21,20 @@
 
 namespace pocketmine\network\protocol;
 
-use pocketmine\network\mcpe\NetworkSession;
-
 class AddBehaviorTreePacket extends PEPacket{
 	
 	const NETWORK_ID = Info::ADD_BEHAVIOR_TREE_PACKET;
+	const PACKET_NAME = "ADD_BEHAVIOR_TREE_PACKET";
 	
 	public $unknownString1;
 
-	public function decodePayload(){
+	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->unknownString1 = $this->getString();
 	}
 
-	public function encodePayload(){
+	public function encode($playerProtocol){
 		$this->putString($this->unknownString1);
-	}
-
-	public function handle(NetworkSession $session) : bool{
-		return $session->handleAddBehaviorTree($this);
 	}
 	
 }

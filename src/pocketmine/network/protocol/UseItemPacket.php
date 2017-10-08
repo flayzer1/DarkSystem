@@ -21,10 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class UseItemPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::USE_ITEM_PACKET;
 	const PACKET_NAME = "USE_ITEM_PACKET";
 
@@ -43,6 +41,7 @@ class UseItemPacket extends PEPacket{
 	public $interactBlockId;
 
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->x = $this->getSignedVarInt();
 		$this->y = $this->getVarInt();
 		$this->z = $this->getSignedVarInt();

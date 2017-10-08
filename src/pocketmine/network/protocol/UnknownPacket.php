@@ -19,17 +19,13 @@
  *
 */
 
-declare(strict_types=1);
+namespace pocketmine\network\protocol;
 
-
-namespace pocketmine\network\mcpe\protocol;
-
-
-use pocketmine\network\mcpe\NetworkSession;
-
-class UnknownPacket extends DataPacket{
-	const NETWORK_ID = -1; //Invalid, do not try to write this
-
+class UnknownPacket extends PEPacket{
+	
+	const NETWORK_ID = -1;
+	const PACKET_NAME = "UNKNOWN_PACKET";
+	
 	public $payload;
 
 	public function pid(){
@@ -38,21 +34,14 @@ class UnknownPacket extends DataPacket{
 		}
 		return self::NETWORK_ID;
 	}
-
-	public function getName() : string{
-		return "unknown packet";
-	}
-
-	public function decode(){
+	
+	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->payload = $this->getRemaining();
 	}
 
-	public function encode(){
-		//Do not reset the buffer, this class does not have a valid NETWORK_ID constant.
+	public function encode($playerProtocol){
 		$this->put($this->payload);
 	}
-
-	public function handle(NetworkSession $session) : bool{
-		return false;
-	}
+	
 }

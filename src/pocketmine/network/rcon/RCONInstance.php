@@ -16,9 +16,11 @@ use pocketmine\utils\Binary;
 use pocketmine\utils\MainLogger;
 
 class RCONInstance extends Thread{
+	
 	public $stop;
 	public $cmd;
 	public $response;
+	
 	private $socket;
 	private $password;
 	private $maxClients;

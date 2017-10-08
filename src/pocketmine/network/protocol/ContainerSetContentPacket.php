@@ -21,10 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class ContainerSetContentPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::CONTAINER_SET_CONTENT_PACKET;
 	const PACKET_NAME = "CONTAINER_SET_CONTENT_PACKET";
 
@@ -45,6 +43,7 @@ class ContainerSetContentPacket extends PEPacket{
 	}
 
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->windowid = $this->getByte();
 		$count = $this->getVarInt();
 		for($s = 0; $s < $count and !$this->feof(); ++$s){

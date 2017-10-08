@@ -41,6 +41,7 @@ class HelpCommand extends VanillaCommand{
 			if($pageNumber <= 0){
 				$pageNumber = 1;
 			}
+			
 			$command = implode(" ", $args);
 		}else{
 			$command = implode(" ", $args);
@@ -60,12 +61,14 @@ class HelpCommand extends VanillaCommand{
 					$commands[$command->getName()] = $command;
 				}
 			}
+			
 			ksort($commands, SORT_NATURAL | SORT_FLAG_CASE);
 			$commands = array_chunk($commands, $pageHeight);
 			$pageNumber = (int) min(count($commands), $pageNumber);
 			if($pageNumber < 1){
 				$pageNumber = 1;
 			}
+			
 			$sender->sendMessage(new TranslationContainer("commands.help.header", [$pageNumber, count($commands)]));
 			if(isset($commands[$pageNumber - 1])){
 				foreach($commands[$pageNumber - 1] as $command){
@@ -81,14 +84,13 @@ class HelpCommand extends VanillaCommand{
 					$message .= TextFormat::GOLD . "Açıklama: " . TextFormat::WHITE . $cmd->getDescription() . "\n";
 					$message .= TextFormat::GOLD . "Kullanış: " . TextFormat::WHITE . implode("\n" . TextFormat::WHITE, explode("\n", $cmd->getUsage())) . "\n";
 					$sender->sendMessage($message);
-
 					return true;
 				}
 			}
+			
 			$sender->sendMessage(TextFormat::RED . "Bulunamadı: " . strtolower($command));
-
+			
 			return true;
 		}
 	}
-
 }

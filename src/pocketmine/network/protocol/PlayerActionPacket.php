@@ -21,10 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class PlayerActionPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::PLAYER_ACTION_PACKET;
 	const PACKET_NAME = "PLAYER_ACTION_PACKET";
 
@@ -36,6 +34,7 @@ class PlayerActionPacket extends PEPacket{
 	public $face;
 
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->eid = $this->getVarInt();
 		$this->action = $this->getSignedVarInt();
 		$this->x = $this->getSignedVarInt();

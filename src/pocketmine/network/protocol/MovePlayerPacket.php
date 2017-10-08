@@ -22,6 +22,7 @@
 namespace pocketmine\network\protocol;
 
 class MovePlayerPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::MOVE_PLAYER_PACKET;
 	const PACKET_NAME = "MOVE_PLAYER_PACKET";
 
@@ -46,6 +47,7 @@ class MovePlayerPacket extends PEPacket{
 	}
 
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->eid = $this->getVarInt();
 		$this->x = $this->getLFloat();
 		$this->y = $this->getLFloat();

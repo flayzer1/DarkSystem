@@ -21,9 +21,7 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-class ShowCreditsPacket extends DataPacket{
+class ShowCreditsPacket extends PEPacket{
 
 	const NETWORK_ID = Info::SHOW_CREDITS_PACKET;
 
@@ -39,12 +37,5 @@ class ShowCreditsPacket extends DataPacket{
 		$this->putEntityId($this->eid);
 		$this->putVarInt($this->type);
 	}
-
-	/**
-	 * @return PacketName|string
-     */
-	public function getName(){
-		return "ShowCreditsPacket";
-	}
-
+	
 }

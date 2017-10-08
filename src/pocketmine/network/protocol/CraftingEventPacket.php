@@ -21,10 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class CraftingEventPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::CRAFTING_EVENT_PACKET;
 	const PACKET_NAME = "CRAFTING_EVENT_PACKET";
 
@@ -41,6 +39,7 @@ class CraftingEventPacket extends PEPacket{
 	}
 
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->windowId = $this->getByte();
 		$this->type = $this->getSignedVarInt();
 		$this->id = $this->getUUID();

@@ -217,40 +217,33 @@ class AxisAlignedBB{
 		$v4 = $pos1->getIntermediateWithYValue($pos2, $this->maxY);
 		$v5 = $pos1->getIntermediateWithZValue($pos2, $this->minZ);
 		$v6 = $pos1->getIntermediateWithZValue($pos2, $this->maxZ);
-
 		$f = -1;
 		$vector = null;
-		if ($v1 !== null && $this->isVectorInYZ($v1)) {
+		if($v1 !== null && $this->isVectorInYZ($v1)){
 			$vector = $v1;
 			$f = 4;
 		}
-
-		if ($v2 !== null && $this->isVectorInYZ($v2) && ($vector === null || $pos1->distanceSquared($v2) < $pos1->distanceSquared($vector))) {
+		if($v2 !== null && $this->isVectorInYZ($v2) && ($vector === null || $pos1->distanceSquared($v2) < $pos1->distanceSquared($vector))){
 			$vector = $v2;
 			$f = 5;
 		}
-
-		if ($v3 !== null && $this->isVectorInXZ($v3) && ($vector === null || $pos1->distanceSquared($v3) < $pos1->distanceSquared($vector))) {
+		if($v3 !== null && $this->isVectorInXZ($v3) && ($vector === null || $pos1->distanceSquared($v3) < $pos1->distanceSquared($vector))){
 			$vector = $v3;
 			$f = 0;
 		}
-
-		if ($v4 !== null && $this->isVectorInXZ($v4) && ($vector === null || $pos1->distanceSquared($v4) < $pos1->distanceSquared($vector))) {
+		if($v4 !== null && $this->isVectorInXZ($v4) && ($vector === null || $pos1->distanceSquared($v4) < $pos1->distanceSquared($vector))){
 			$vector = $v4;
 			$f = 1;
 		}
-
-		if ($v5 !== null && $this->isVectorInXY($v5) && ($vector === null || $pos1->distanceSquared($v5) < $pos1->distanceSquared($vector))) {
+		if($v5 !== null && $this->isVectorInXY($v5) && ($vector === null || $pos1->distanceSquared($v5) < $pos1->distanceSquared($vector))){
 			$vector = $v5;
 			$f = 2;
 		}
-
-		if ($v6 !== null && $this->isVectorInXY($v6) && ($vector === null || $pos1->distanceSquared($v6) < $pos1->distanceSquared($vector))) {
+		if($v6 !== null && $this->isVectorInXY($v6) && ($vector === null || $pos1->distanceSquared($v6) < $pos1->distanceSquared($vector))){
 			$vector = $v6;
 			$f = 3;
 		}
-
-		if ($vector === null) {
+		if($vector === null){
 			return null;
 		}
 		return MovingObjectPosition::fromBlock(0, 0, 0, $f, $vector);

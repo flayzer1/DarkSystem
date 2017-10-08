@@ -17,6 +17,7 @@ use pocketmine\Server;
 use pocketmine\utils\Utils;
 
 class RCON{
+	
 	const PROTOCOL_VERSION = 3;
 	
 	private $server;

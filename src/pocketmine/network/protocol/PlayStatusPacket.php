@@ -21,10 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class PlayStatusPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::PLAY_STATUS_PACKET;
 	const PACKET_NAME = "PLAY_STATUS_PACKET";
 	
@@ -38,7 +36,7 @@ class PlayStatusPacket extends PEPacket{
 	public $status;
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

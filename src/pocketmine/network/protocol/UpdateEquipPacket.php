@@ -19,24 +19,20 @@
  *
 */
 
-declare(strict_types=1);
+namespace pocketmine\network\protocol;
 
-namespace pocketmine\network\mcpe\protocol;
-
-#include <rules/DataPacket.h>
-
-use pocketmine\network\mcpe\NetworkSession;
-
-class UpdateEquipPacket extends DataPacket{
-	const NETWORK_ID = ProtocolInfo::UPDATE_EQUIP_PACKET;
+class UpdateEquipPacket extends PEPacket{
+	
+	const NETWORK_ID = Info::UPDATE_EQUIP_PACKET;
 
 	public $windowId;
 	public $windowType;
-	public $unknownVarint; //TODO: find out what this is (vanilla always sends 0)
+	public $unknownVarint;
 	public $entityUniqueId;
 	public $namedtag;
 
-	public function decodePayload(){
+	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->windowId = $this->getByte();
 		$this->windowType = $this->getByte();
 		$this->unknownVarint = $this->getVarInt();
@@ -44,15 +40,12 @@ class UpdateEquipPacket extends DataPacket{
 		$this->namedtag = $this->get(true);
 	}
 
-	public function encodePayload(){
+	public function encode(){
 		$this->putByte($this->windowId);
 		$this->putByte($this->windowType);
 		$this->putVarInt($this->unknownVarint);
 		$this->putEntityUniqueId($this->entityUniqueId);
 		$this->put($this->namedtag);
 	}
-
-	public function handle(NetworkSession $session) : bool{
-		return $session->handleUpdateEquip($this);
-	}
+	
 }

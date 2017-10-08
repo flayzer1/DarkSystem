@@ -21,29 +21,25 @@
 
 namespace pocketmine\network\protocol;
 
-use pocketmine\network\mcpe\NetworkSession;
-
-class PurchaseReceiptPacket extends DataPacket{
-	const NETWORK_ID = ProtocolInfo::PURCHASE_RECEIPT_PACKET;
+class PurchaseReceiptPacket extends PEPacket{
+	
+	const NETWORK_ID = Info::PURCHASE_RECEIPT_PACKET;
 
 	/** @var string[] */
 	public $entries = [];
 
-	public function decodePayload(){
+	public function decode(){
+		$this->getHeader($playerProtocol);
 		$count = $this->getUnsignedVarInt();
 		for($i = 0; $i < $count; ++$i){
 			$this->entries[] = $this->getString();
 		}
 	}
 
-	public function encodePayload(){
+	public function encode(){
 		$this->putUnsignedVarInt(count($this->entries));
 		foreach($this->entries as $entry){
 			$this->putString($entry);
 		}
-	}
-
-	public function handle(NetworkSession $session) : bool{
-		return $session->handlePurchaseReceipt($this);
 	}
 }

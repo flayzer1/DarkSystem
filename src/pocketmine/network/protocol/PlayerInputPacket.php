@@ -21,10 +21,7 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
-class PlayerInputPacket extends DataPacket{
+class PlayerInputPacket extends PEPacket{
 
 	const NETWORK_ID = Info::PLAYER_INPUT_PACKET;
 
@@ -34,6 +31,7 @@ class PlayerInputPacket extends DataPacket{
 	public $unknownBool2;
 
 	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->motionX = $this->getLFloat();
 		$this->motionY = $this->getLFloat();
 		$this->unknownBool1 = $this->getBool();

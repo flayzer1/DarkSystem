@@ -24,6 +24,7 @@ namespace pocketmine\network\protocol;
 use pocketmine\utils\Binary;
 
 class AddEntityPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::ADD_ENTITY_PACKET;
 	const PACKET_NAME = "ADD_ENTITY_PACKET";
 
@@ -42,7 +43,7 @@ class AddEntityPacket extends PEPacket{
 	public $attributes = [];
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

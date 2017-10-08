@@ -32,6 +32,7 @@ use pocketmine\item\enchantment\EnchantmentList;
 use pocketmine\utils\BinaryStream;
 
 class CraftingDataPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::CRAFTING_DATA_PACKET;
 	const PACKET_NAME = "CRAFTING_DATA_PACKET";
 
@@ -142,7 +143,7 @@ class CraftingDataPacket extends PEPacket{
 	}
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

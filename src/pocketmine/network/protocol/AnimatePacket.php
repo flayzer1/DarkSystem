@@ -21,10 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class AnimatePacket extends PEPacket{
+	
 	const NETWORK_ID = Info::ANIMATE_PACKET;
 	const PACKET_NAME = "ANIMATE_PACKET";
 
@@ -32,6 +30,7 @@ class AnimatePacket extends PEPacket{
 	public $eid;
 
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->action = $this->getVarInt();
 		$this->eid = $this->getVarInt();
 	}

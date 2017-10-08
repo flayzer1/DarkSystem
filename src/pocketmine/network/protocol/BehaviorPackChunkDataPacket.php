@@ -31,6 +31,7 @@ class BehaviorPackChunkDataPacket extends DataPacket{
 	public $data;
 
 	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->packId = $this->getString();
 		$this->chunkIndex = $this->getLInt();
 		$this->progress = $this->getLLong();

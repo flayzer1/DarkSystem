@@ -6,6 +6,7 @@ class ResourcePackClientResponsePacket extends PEPacket{
 
 	const NETWORK_ID = Info::RESOURCE_PACK_CLIENT_RESPONSE_PACKET;
 	const PACKET_NAME = "RESOURCE_PACK_CLIENT_RESPONSE_PACKET";
+	
 	const STATUS_REFUSED = 1;
 	const STATUS_SEND_PACKS = 2;
 	const STATUS_HAVE_ALL_PACKS = 3;
@@ -15,6 +16,7 @@ class ResourcePackClientResponsePacket extends PEPacket{
 	public $packIds = [];
 
 	public function decode($playerProtocol) {
+		$this->getHeader($playerProtocol);
 		$this->status = $this->getByte();
 		$entryCount = $this->getLShort();
 		while ($entryCount-- > 0) {

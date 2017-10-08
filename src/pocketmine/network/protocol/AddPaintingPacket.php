@@ -34,7 +34,7 @@ class AddPaintingPacket extends PEPacket{
 	public $title;
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

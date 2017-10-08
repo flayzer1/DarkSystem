@@ -22,12 +22,13 @@
 namespace pocketmine\network\protocol;
 
 class MoveEntityPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::MOVE_ENTITY_PACKET;
 	const PACKET_NAME = "MOVE_ENTITY_PACKET";
 	
 	public $entities = [];
 	
-	public function __construct() {
+	public function __construct(){
 		parent::__construct("", 0);
 	}
 
@@ -37,19 +38,19 @@ class MoveEntityPacket extends PEPacket{
 	}
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){
 		$this->reset($playerProtocol);
 		foreach($this->entities as $d){
-			$this->putVarInt($d[0]); //eid
-			$this->putLFloat($d[1]); //x
-			$this->putLFloat($d[2]); //y
-			$this->putLFloat($d[3]); //z
-			$this->putByte($d[6] * 0.71111); //pitch
-			$this->putByte($d[5] * 0.71111); //headYaw
-			$this->putByte($d[4] * 0.71111); //yaw
+			$this->putVarInt($d[0]);
+			$this->putLFloat($d[1]);
+			$this->putLFloat($d[2]);
+			$this->putLFloat($d[3]);
+			$this->putByte($d[6] * 0.71111);
+			$this->putByte($d[5] * 0.71111);
+			$this->putByte($d[4] * 0.71111);
 		}
 	}
 }

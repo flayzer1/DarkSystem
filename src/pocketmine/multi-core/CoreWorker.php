@@ -4,7 +4,7 @@ namespace pocketmine\multi-core;
 
 use pocketmine\Worker;
 
-class CoreWorker extends Worker {
+class CoreWorker extends Worker{
 	
 	private $logger;
 	
@@ -32,4 +32,5 @@ class CoreWorker extends Worker {
 	public function getThreadName() {
 		return "Asynchronous Worker";
 	}
+	
 }

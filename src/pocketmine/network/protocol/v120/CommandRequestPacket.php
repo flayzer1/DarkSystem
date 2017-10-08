@@ -28,6 +28,7 @@ class CommandRequestPacket extends PEPacket{
 	public $playerId = '';
 	
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->command = $this->getString();
 		$this->commandType = $this->getVarInt();
 		$this->requestId = $this->getString();

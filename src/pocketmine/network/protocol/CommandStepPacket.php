@@ -36,6 +36,7 @@ class CommandStepPacket extends PEPacket{
 	public $outputJson;
 	
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->command = $this->getString();
 		$this->overload = $this->getString();
 		$this->uvarint1 = $this->getVarInt();

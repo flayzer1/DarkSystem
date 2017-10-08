@@ -22,7 +22,7 @@ class PurchaseReceiptPacket extends PEPacket {
 	}
 
 	public function encode($playerProtocol) {
-		// only client send this packet, not we
+		
 	}
 
 }

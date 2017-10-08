@@ -21,7 +21,7 @@
 
 namespace pocketmine\network\protocol;
 
-class BossEventPacket extends DataPacket{
+class BossEventPacket extends PEPacket{
 
 	const NETWORK_ID = Info::BOSS_EVENT_PACKET;
 
@@ -29,7 +29,7 @@ class BossEventPacket extends DataPacket{
 	public $type;
 
 	public function decode(){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode(){

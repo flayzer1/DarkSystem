@@ -21,10 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class ContainerOpenPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::CONTAINER_OPEN_PACKET;
 	const PACKET_NAME = "CONTAINER_OPEN_PACKET";
 
@@ -37,14 +35,14 @@ class ContainerOpenPacket extends PEPacket{
 	public $z;
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){
 		$this->reset($playerProtocol);
 		$this->putByte($this->windowid);
 		$this->putByte($this->type);
-		if ($playerProtocol < Info::PROTOCOL_110) {
+		if($playerProtocol < Info::PROTOCOL_110){
 			$this->putSignedVarInt($this->slots);
 		}
 		$this->putSignedVarInt($this->x);
@@ -52,5 +50,5 @@ class ContainerOpenPacket extends PEPacket{
 		$this->putSignedVarInt($this->z);
 		$this->putSignedVarInt(-1);
 	}
-
+	
 }

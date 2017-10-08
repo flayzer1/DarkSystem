@@ -19,11 +19,12 @@
 */
 namespace pocketmine\network\protocol;
 
-use pocketmine\network\protocol\Info as ProtocolInfo;
 use pocketmine\utils\Color;
 
-class ClientboundMapItemDataPacket extends DataPacket {
-	const NETWORK_ID = ProtocolInfo::CLIENTBOUND_MAP_ITEM_DATA_PACKET;
+class ClientboundMapItemDataPacket extends PEPacket{
+	
+	const NETWORK_ID = Info::CLIENTBOUND_MAP_ITEM_DATA_PACKET;
+	
 	const BITFLAG_TEXTURE_UPDATE = 0x02;
 	const BITFLAG_DECORATION_UPDATE = 0x04;
 	const BITFLAG_ENTITY_UPDATE = 0x08;
@@ -36,15 +37,16 @@ class ClientboundMapItemDataPacket extends DataPacket {
 	public $height;
 	public $xOffset = 0;
 	public $yOffset = 0;
-	/** @var Color[][] */
 	public $colors = [];
+	
 	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->mapId = $this->getVarInt();
 		$this->type = $this->getUnsignedVarInt();
 		if(($this->type & self::BITFLAG_ENTITY_UPDATE) !== 0){
 			$count = $this->getUnsignedVarInt();
 			for($i = 0; $i < $count; ++$i){
-				$this->eids[] = $this->getVarInt(); //entity unique ID, signed var-int
+				$this->eids[] = $this->getVarInt();
 			}
 		}
 		if(($this->type & (self::BITFLAG_DECORATION_UPDATE | self::BITFLAG_TEXTURE_UPDATE)) !== 0){ //Decoration bitflag or colour bitflag
@@ -76,7 +78,7 @@ class ClientboundMapItemDataPacket extends DataPacket {
 	}
 	public function encode(){
 		$this->reset();
-		$this->putVarInt($this->mapId); //entity unique ID, signed var-int
+		$this->putVarInt($this->mapId);
 		$type = 0;
 		if(($eidsCount = count($this->eids)) > 0){
 			$type |= self::BITFLAG_ENTITY_UPDATE;

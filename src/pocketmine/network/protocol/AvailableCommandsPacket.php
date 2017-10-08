@@ -22,6 +22,7 @@ class AvailableCommandsPacket extends PEPacket{
 	//public $unknown;
 	
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 	}
 	
 	public function encode($playerProtocol){

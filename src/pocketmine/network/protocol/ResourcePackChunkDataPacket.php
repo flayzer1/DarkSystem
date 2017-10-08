@@ -22,9 +22,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-class ResourcePackChunkDataPacket extends DataPacket{
+class ResourcePackChunkDataPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::RESOURCE_PACK_CHUNK_DATA_PACKET;
 
 	public $packId;
@@ -33,6 +32,7 @@ class ResourcePackChunkDataPacket extends DataPacket{
 	public $data;
 
 	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->packId = $this->getString();
 		$this->chunkIndex = $this->getLInt();
 		$this->progress = $this->getLLong();
@@ -47,4 +47,5 @@ class ResourcePackChunkDataPacket extends DataPacket{
 		$this->putLInt(strlen($this->data));
 		$this->put($this->data);
 	}
+	
 }

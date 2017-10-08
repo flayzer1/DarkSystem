@@ -62,6 +62,7 @@ class LoginPacket extends PEPacket{
 	}
 
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$acceptedProtocols = Info::ACCEPTED_PROTOCOLS;
 		$tmpData = Binary::readInt(substr($this->buffer, 1, 4));
 		if($tmpData == 0){
@@ -102,9 +103,11 @@ class LoginPacket extends PEPacket{
 			if(isset($data['extraData'])){
 				$dataIndex = $index;
 			}
+			
 			$this->chains['data'][$index] = $data;
 			$index++;
 		}
+		
 		if(!isset($dataIndex)){
 			$this->isValidProtocol = false;
 			return;
@@ -163,6 +166,7 @@ class LoginPacket extends PEPacket{
 			$payload = json_decode(base64_decode(strtr($parts[1], '-_', '+/')), true);
 			return $payload;
 		}
+		
 		return "";
 	}
 }

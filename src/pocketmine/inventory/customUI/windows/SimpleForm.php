@@ -5,7 +5,7 @@ namespace pocketmine\inventory\customUI\windows;
 use pocketmine\inventory\customUI\CustomUI;
 use pocketmine\inventory\customUI\elements\simpleForm\Button;
 
-class SimpleForm implements CustomUI{
+class SimpleForm implements CustomUI, \JsonSerializable{
 	
 	/** @var string */
 	protected $title = '';

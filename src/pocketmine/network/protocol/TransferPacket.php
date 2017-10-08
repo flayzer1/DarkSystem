@@ -30,7 +30,7 @@ class TransferPacket extends PEPacket{
 	public $port = 19132;
 
 	public function decode($playerProtocol){
-		
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

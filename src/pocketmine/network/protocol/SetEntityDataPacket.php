@@ -21,14 +21,10 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-#ifndef COMPILE
 use pocketmine\utils\Binary;
 
-#endif
-
 class SetEntityDataPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::SET_ENTITY_DATA_PACKET;
 	const PACKET_NAME = "SET_ENTITY_DATA_PACKET";
 
@@ -36,7 +32,7 @@ class SetEntityDataPacket extends PEPacket{
 	public $metadata;
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

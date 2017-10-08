@@ -19,28 +19,21 @@
  *
 */
 
-declare(strict_types=1);
+namespace pocketmine\network\protocol;
 
-namespace pocketmine\network\mcpe\protocol;
-
-#include <rules/DataPacket.h>
-
-use pocketmine\network\mcpe\NetworkSession;
-
-class ShowStoreOfferPacket extends DataPacket{
-	const NETWORK_ID = ProtocolInfo::SHOW_STORE_OFFER_PACKET;
+class ShowStoreOfferPacket extends PEPacket{
+	
+	const NETWORK_ID = Info::SHOW_STORE_OFFER_PACKET;
 
 	public $offerId;
 
-	public function decodePayload(){
+	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->offerId = $this->getString();
 	}
 
-	public function encodePayload(){
+	public function encode(){
 		$this->putString($this->offerId);
 	}
-
-	public function handle(NetworkSession $session) : bool{
-		return $session->handleShowStoreOffer($this);
-	}
+	
 }

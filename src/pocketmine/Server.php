@@ -180,7 +180,7 @@ class Server extends DarkSystem{
 	private $network;
 
 	private $networkCompressionAsync = true;
-	public $networkCompressionLevel = 6;
+	public $networkCompressionLevel = 7;
 	
 	private $autoSaveTicker = 0;
 	private $autoSaveTicks = 6000;
@@ -662,6 +662,14 @@ class Server extends DarkSystem{
 		}
 		
 		return $result;
+	}
+	
+	public function isSupportProtocol($protocol){
+		if(in_array($protocol, ProtocolInfo::ACCEPTED_PROTOCOLS) || $protocol == ProtocolInfo::CURRENT_PROTOCOL){
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public function clearChat(){
@@ -1502,8 +1510,7 @@ class Server extends DarkSystem{
 			$mcpe = $this->getVersion();
 			$protocol = ProtocolInfo::CURRENT_PROTOCOL;
 			$build = ProtocolInfo::DARKSYSTEM_VERSION;
-			$tag = \pocketmine\TAG;
-			$package = $packages;
+			$tag = $this->getTag();
 			
 			if($this->getCurrentStatus() == "alpha" || $this->getCurrentStatus() == "beta"){
 				$this->konsol->directSend("§e<?php>");
@@ -1583,7 +1590,7 @@ class Server extends DarkSystem{
 				Network::$BATCH_THRESHOLD = -1;
 			}
 			
-			$this->networkCompressionLevel = $this->getProperty("network.compression-level", 6);
+			$this->networkCompressionLevel = $this->getProperty("network.compression-level", 7);
 			$this->networkCompressionAsync = $this->getProperty("network.async-compression", true);
 
 			$this->autoTickRate = (bool) $this->getProperty("level-settings.auto-tick-rate", true);

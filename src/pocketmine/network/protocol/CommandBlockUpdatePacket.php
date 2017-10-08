@@ -22,7 +22,8 @@
 
 namespace pocketmine\network\protocol;
 
-class CommandBlockUpdatePacket extends DataPacket{
+class CommandBlockUpdatePacket extends PEPacket{
+	
 	const NETWORK_ID = Info::COMMAND_BLOCK_UPDATE_PACKET;
 
 	public $isBlock;
@@ -39,6 +40,8 @@ class CommandBlockUpdatePacket extends DataPacket{
 	public $shouldTrackOutput;
 
 	public function decode(){
+		$this->getHeader($playerProtocol);
+		
 		$this->isBlock = $this->getBool();
 
 		if($this->isBlock){

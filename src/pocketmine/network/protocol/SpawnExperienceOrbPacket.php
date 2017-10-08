@@ -1,10 +1,8 @@
 <?php
+
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
-class SpawnExperienceOrbPacket extends DataPacket{
+class SpawnExperienceOrbPacket extends PEPacket{
 
 	const NETWORK_ID = Info::SPAWN_EXPERIENCE_ORB_PACKET;
 
@@ -14,7 +12,7 @@ class SpawnExperienceOrbPacket extends DataPacket{
 	public $amount;
 
 	public function decode(){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode(){
@@ -22,12 +20,5 @@ class SpawnExperienceOrbPacket extends DataPacket{
 		$this->putVector3f($this->x, $this->y, $this->z);
 		$this->putVarInt($this->amount);
 	}
-
-	/**
-	 * @return PacketName|string
-     */
-	public function getName(){
-		return "SpawnExperienceOrbPacket";
-	}
-
+	
 }

@@ -19,10 +19,4 @@ interface CustomUI{
 	
 	public function close($player);
 	
-	public static function getAPI(){
-		//$api = new API();
-		$api = API;
-		return $api;
-	}
-	
 }

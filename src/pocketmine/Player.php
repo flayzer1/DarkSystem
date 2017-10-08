@@ -778,13 +778,22 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($this->connected === false){
 			return false;
 		}
-		$data = $payload[$this->getPlayerProtocol()];
+		//$data = $payload[$this->getPlayerProtocol()];
 		$this->usedChunks[Level::chunkHash($x, $z)] = true;
 		$this->chunkLoadCount++;
-		$pk = new BatchPacket();
+		/*$pk = new BatchPacket();
 		$pk->payload = $data;
 		$this->dataPacket($pk);
-		$this->server->getDefaultLevel()->useChunk($x, $z, $this);
+		$this->server->getDefaultLevel()->useChunk($x, $z, $this);*/
+		if($payload instanceof DataPacket){
+            $this->dataPacket($payload);
+        }else{
+            $pk = new FullChunkDataPacket();
+            $pk->chunkX = $x;
+            $pk->chunkZ = $z;
+            $pk->data = $payload;
+            $this->batchDataPacket($pk);
+        }
 		if($this->spawned){
 			foreach($this->level->getChunkEntities($x, $z) as $entity){
 				if($entity !== $this && !$entity->closed && !$entity->dead && $this->canSeeEntity($entity)){

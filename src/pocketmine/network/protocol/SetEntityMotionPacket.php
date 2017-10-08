@@ -22,12 +22,13 @@
 namespace pocketmine\network\protocol;
 
 class SetEntityMotionPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::SET_ENTITY_MOTION_PACKET;
 	const PACKET_NAME = "SET_ENTITY_MOTION_PACKET";
 	
 	public $entities = [];
 	
-	public function __construct() {
+	public function __construct(){
 		parent::__construct("", 0);
 	}
 
@@ -37,16 +38,16 @@ class SetEntityMotionPacket extends PEPacket{
 	}
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){
 		$this->reset($playerProtocol);
 		foreach($this->entities as $d){
-			$this->putVarInt($d[0]); //eid
-			$this->putLFloat($d[1]); //motX
-			$this->putLFloat($d[2]); //motY
-			$this->putLFloat($d[3]); //motZ
+			$this->putVarInt($d[0]);
+			$this->putLFloat($d[1]);
+			$this->putLFloat($d[2]);
+			$this->putLFloat($d[3]);
 		}
 	}
 

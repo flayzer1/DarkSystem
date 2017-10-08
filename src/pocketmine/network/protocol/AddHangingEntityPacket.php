@@ -33,7 +33,7 @@ class AddHangingEntityPacket extends DataPacket{
 	public $unknown;
 
 	public function decode(){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode(){

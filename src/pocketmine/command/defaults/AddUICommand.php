@@ -18,6 +18,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
 use pocketmine\Player;
+use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
 class AddUICommand extends VanillaCommand{
@@ -36,23 +37,16 @@ class AddUICommand extends VanillaCommand{
             return true;
         }
         
-        //$ui = CustomUI::getAPI();
+        $this->server = Server::getInstance();
         
-        $player = $this->getServer()->getPlayer($args[0]);
+        $player = $this->server->getPlayer($args[0]);
         
-        if(count($args) < 2){
+        if(count($args) < 1){
         	$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
             return false;
         }
         
-        if(count($args) == 1){
-        	//$ui->addUI($this->getServer(), $result);
-            return true;
-        }
-        
-        //$ui->addUI($this->getServer(), $result);
-        
-        $form = new SimpleForm("Deneme");
+        $form = new SimpleForm("Test");
         $player->sendModalForm($form);
         $button = new Button("Button");
         $form->addButton($button);

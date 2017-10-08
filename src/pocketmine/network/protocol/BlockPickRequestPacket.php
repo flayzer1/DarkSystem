@@ -21,9 +21,6 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class BlockPickRequestPacket extends DataPacket{
 
 	const NETWORK_ID = Info::BLOCK_PICK_REQUEST_PACKET;
@@ -34,6 +31,7 @@ class BlockPickRequestPacket extends DataPacket{
 	public $unknown;
 
 	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->getBlockCoords($this->x, $this->y, $this->z);
 		$this->unknown = $this->getByte();
 	}
@@ -41,12 +39,5 @@ class BlockPickRequestPacket extends DataPacket{
 	public function encode(){
 
 	}
-
-	/**
-	 * @return PacketName|string
-     */
-	public function getName(){
-		return "BlockPickRequestPacket";
-	}
-
+	
 }

@@ -21,20 +21,16 @@
 
 namespace pocketmine\network\protocol;
 
-use pocketmine\network\mcpe\NetworkSession;
-
 class StructureBlockUpdatePacket extends PEPacket{
-	const NETWORK_ID = ProtocolInfo::STRUCTURE_BLOCK_UPDATE_PACKET;
+	
+	const NETWORK_ID = Info::STRUCTURE_BLOCK_UPDATE_PACKET;
 
-	public function decodePayload(){
+	public function decode(){
+		$this->getHeader($playerProtocol);
+	}
+
+	public function encode(){
 		
 	}
-
-	public function encodePayload(){
-		
-	}
-
-	public function handle(NetworkSession $session){
-		return $session->handleStructureBlockUpdate($this);
-	}
+	
 }

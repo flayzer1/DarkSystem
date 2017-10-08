@@ -21,15 +21,15 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-class StopSoundPacket extends DataPacket{
+class StopSoundPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::STOP_SOUND_PACKET;
 
 	public $sound;
 	public $stopAll;
 
 	public function decode(){
+		$this->getHeader($playerProtocol);
 		$this->sound = $this->getString();
 		$this->stopAll = $this->getBool();
 	}

@@ -21,14 +21,14 @@
 
 namespace pocketmine\network\protocol;
 
-class ReplaceItemInSlotPacket extends DataPacket{
+class ReplaceItemInSlotPacket extends PEPacket{
 
 	const NETWORK_ID = Info::REPLACE_ITEM_IN_SLOT_PACKET;
 
 	public $item;
 
 	public function decode(){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode(){

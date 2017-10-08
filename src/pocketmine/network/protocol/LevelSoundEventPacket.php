@@ -127,6 +127,7 @@ class LevelSoundEventPacket extends PEPacket{
 	public $unknownBool = false;
 
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->eventId = $this->getByte();
 		$this->getVector3f($this->x, $this->y, $this->z);
 		$this->extraData = $this->getVarInt();

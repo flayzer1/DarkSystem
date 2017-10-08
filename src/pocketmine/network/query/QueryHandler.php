@@ -17,6 +17,7 @@ use pocketmine\utils\Binary;
 use pocketmine\utils\Utils;
 
 class QueryHandler{
+	
 	private $server, $lastToken, $token, $longData, $shortData, $timeout;
 
 	const HANDSHAKE = 9;

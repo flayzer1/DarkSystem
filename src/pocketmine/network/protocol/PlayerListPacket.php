@@ -38,7 +38,7 @@ class PlayerListPacket extends PEPacket{
 	}
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

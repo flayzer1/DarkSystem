@@ -21,10 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class SetSpawnPositionPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::SET_SPAWN_POSITION_PACKET;
 	const PACKET_NAME = "SET_SPAWN_POSITION_PACKET";
 
@@ -33,7 +31,7 @@ class SetSpawnPositionPacket extends PEPacket{
 	public $z;
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){

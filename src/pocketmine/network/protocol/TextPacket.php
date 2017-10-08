@@ -43,6 +43,7 @@ class TextPacket extends PEPacket{
 	public $isLocalize = true;
 
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->type = $this->getByte();
 		if($playerProtocol >= Info::PROTOCOL_120){
 			$this->isLocalize = $this->getByte();

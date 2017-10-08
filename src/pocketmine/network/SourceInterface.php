@@ -15,31 +15,13 @@ use pocketmine\network\protocol\DataPacket;
 use pocketmine\Player;
 
 interface SourceInterface{
-
-	/**
-	 * @param Player     $player
-	 * @param DataPacket $packet
-	 * @param bool       $needACK
-	 * @param bool       $immediate
-	 *
-	 * @return int
-	 */
+	
 	public function putPacket(Player $player, DataPacket $packet, $needACK = false, $immediate = true);
-
-	/**
-	 * @param Player $player
-	 * @param string $reason
-	 */
-	public function close(Player $player, $reason = "unknown reason");
-
-	/**
-	 * @param string $name
-	 */
+	
+	public function close(Player $player, $reason = "Unknown Reason");
+	
 	public function setName($name);
-
-	/**
-	 * @return bool
-	 */
+	
 	public function process();
 
 	public function shutdown();

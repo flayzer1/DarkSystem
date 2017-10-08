@@ -24,6 +24,7 @@ class PlaySoundPacket extends PEPacket{
 	public $float;
 
 	public function decode($playerProtocol){
+		$this->getHeader($playerProtocol);
 		$this->sound = $this->getString();
 		$this->getBlockPos($this->x, $this->y, $this->z);
 		$this->volume = $this->getFloat();

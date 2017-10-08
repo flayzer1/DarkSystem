@@ -22,6 +22,7 @@
 namespace pocketmine\network\protocol;
 
 class LevelEventPacket extends PEPacket{
+	
 	const NETWORK_ID = Info::LEVEL_EVENT_PACKET;
 	const PACKET_NAME = "LEVEL_EVENT_PACKET";
 
@@ -100,7 +101,7 @@ class LevelEventPacket extends PEPacket{
 	public $data = 0;
 
 	public function decode($playerProtocol){
-
+		$this->getHeader($playerProtocol);
 	}
 
 	public function encode($playerProtocol){
