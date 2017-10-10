@@ -141,8 +141,14 @@ abstract class Tile extends Position{
 		$this->x = (int) $this->namedtag["x"];
 		$this->y = (int) $this->namedtag["y"];
 		$this->z = (int) $this->namedtag["z"];
-
-		$this->chunk->addTile($this);
+		
+		try{ //Bad method
+			$this->chunk->addTile($this);
+		}catch(\Exception $e){
+			$this->server->getLogger()->emergency("There was an error about current world. Please control your world of server and try again.");
+			$this->server->getLogger()->critical("If still not fixed, please contant our developers about problem.");
+		}
+		
 		$level->addTile($this);
 		$this->tickTimer = Timings::getTileEntityTimings($this);
 	}

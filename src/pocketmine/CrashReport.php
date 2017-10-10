@@ -12,11 +12,11 @@
 namespace pocketmine;
 
 use pocketmine\network\protocol\Info as ProtocolInfo;
-use pocketmine\plugin\PluginBase;
 use pocketmine\plugin\PluginLoadOrder;
 use pocketmine\plugin\PluginManager;
-use pocketmine\utils\Utils;
+use pocketmine\plugin\PluginBase;
 use pocketmine\utils\VersionString;
+use pocketmine\utils\Utils;
 use raklib\RakLib;
 
 class CrashReport{
@@ -50,16 +50,31 @@ class CrashReport{
 		
 		$this->fp = @fopen($this->path, "wb");
 		if(!is_resource($this->fp)){
-			throw new \RuntimeException("Çökme Arşivi Oluşturulamadı!");
+			if(Translate::checkTurkish() === "yes"){
+				throw new \RuntimeException("Çökme Arşivi Oluşturulamadı!");
+			}else{
+				throw new \RuntimeException("Could not Create Crash Report!");
+			}
 		}
 		
 		$this->data["time"] = $this->time;
-		$this->addLine($this->server->getName() . " Çökme Arşivi " . date("D M j H:i:s T Y", $this->time));
+		
+		if(Translate::checkTurkish() === "yes"){
+			$this->addLine($this->server->getName() . " Çökme Arşivi " . date("D M j H:i:s T Y", $this->time));
+		}else{
+			$this->addLine($this->server->getName() . " Crash Report " . date("D M j H:i:s T Y", $this->time));
+		}
+		
 		$this->addLine();
 		try{
 			$this->baseCrash();
 		}catch(\Exception $e){
-			$this->addLine("Çökme Arşivi Oluşturulurken Bir Hata Oluştu ve İşlem Durduruldu!");
+			if(Translate::checkTurkish() === "yes"){
+				$this->addLine("Çökme Arşivi Oluşturulurken Bir Hata Oluştu ve İşlem Durduruldu!");
+			}else{
+				$this->addLine("Crash Report Crashed While Generating Base Crash Data!");
+			}
+			
 			$this->addLine();
 		}
 		
@@ -83,21 +98,40 @@ class CrashReport{
 
 	private function encodeData(){
 		$this->addLine();
-		$this->addLine("----------------------RAPOR-----------------------");
-		$this->addLine();
-		$this->addLine("===ÇÖKME ARŞİVİ===");
+		
+		if(Translate::checkTurkish() === "yes"){
+			$this->addLine("----------------------RAPOR-----------------------");
+			$this->addLine();
+			$this->addLine("===ÇÖKME ARŞİVİ===");
+		}else{
+			$this->addLine("----------------------REPORT THE DATA BELOW THIS LINE-----------------------");
+			$this->addLine();
+			$this->addLine("===BEGIN CRASH REPORT===");
+		}
+		
 		$this->encodedData = zlib_encode(json_encode($this->data, JSON_UNESCAPED_SLASHES), ZLIB_ENCODING_DEFLATE, 9);
+		
 		foreach(str_split(base64_encode($this->encodedData), 76) as $line){
 			$this->addLine($line);
 		}
 		
-		$this->addLine("===SON===");
+		if(Translate::checkTurkish() === "yes"){
+			$this->addLine("===SON===");
+		}else{
+			$this->addLine("===END CRASH REPORT===");
+		}
 	}
 
 	private function pluginsData(){
 		if($this->server->getPluginManager() instanceof PluginManager){
 			$this->addLine();
-			$this->addLine("Yüklenmiş Eklentiler:");
+			
+			if(Translate::checkTurkish() === "yes"){
+				$this->addLine("Yüklenmiş Eklentiler:");
+			}else{
+				$this->addLine("Loaded Plugins:");
+			}
+			
 			$this->data["plugins"] = [];
 			foreach($this->server->getPluginManager()->getPlugins() as $p){
 				$d = $p->getDescription();
@@ -122,6 +156,7 @@ class CrashReport{
 	private function extraData(){
 		global $arguments;
 		
+		if(Translate::checkTurkish() === "yes"){
 		if($this->server->getProperty("auto-report.send-settings", true) !== false){
 			$this->data["parameters"] = (array) $arguments;
 			$this->data["sunucu.properties"] = @file_get_contents($this->server->getDataPath() . "sunucu.properties");
@@ -132,6 +167,18 @@ class CrashReport{
 			$this->data["sunucu.properties"] = "";
 			$this->data["parameters"] = [];
 		}
+		}else{
+		if($this->server->getProperty("auto-report.send-settings", true) !== false){
+			$this->data["parameters"] = (array) $arguments;
+			$this->data["server.properties"] = @file_get_contents($this->server->getDataPath() . "server.properties");
+			$this->data["server.properties"] = preg_replace("#^rcon\\.password=(.*)$#m", "rcon.password=******", $this->data["server.properties"]);
+			$this->data["pocketmine.yml"] = @file_get_contents($this->server->getDataPath() . "pocketmine.yml");
+		}else{
+			$this->data["pocketmine.yml"] = "";
+			$this->data["server.properties"] = "";
+			$this->data["parameters"] = [];
+		}
+		}
 		
 		$extensions = [];
 		foreach(get_loaded_extensions() as $ext){
@@ -139,6 +186,7 @@ class CrashReport{
 		}
 		
 		$this->data["extensions"] = $extensions;
+		
 		if($this->server->getProperty("auto-report.send-phpinfo", true) !== false){
 			ob_start();
 			phpinfo();
@@ -155,7 +203,10 @@ class CrashReport{
 		}else{
 			$error = (array) error_get_last();
 			$error["trace"] = @getTrace(3);
+			
+			if(Translate::checkTurkish() === "yes"){
 			$errorConversion = [
+				0 => "EXCEPTION",
 				E_ERROR => "E_HATA",
 				E_WARNING => "E_UYARI",
 				E_PARSE => "E_OKUMA",
@@ -172,6 +223,26 @@ class CrashReport{
 				E_DEPRECATED => "E_DEPRECATED",
 				E_USER_DEPRECATED => "E_KULLANICI_DEPRECATED",
 			];
+		}else{
+			$errorConversion = [
+				0 => "EXCEPTION",
+				E_ERROR => "E_ERROR",
+				E_WARNING => "E_WARNING",
+				E_PARSE => "E_PARSE",
+				E_NOTICE => "E_NOTICE",
+				E_CORE_ERROR => "E_CORE_ERROR",
+				E_CORE_WARNING => "E_CORE_WARNING",
+				E_COMPILE_ERROR => "E_COMPILE_ERROR",
+				E_COMPILE_WARNING => "E_COMPILE_WARNING",
+				E_USER_ERROR => "E_USER_ERROR",
+				E_USER_WARNING => "E_USER_WARNING",
+				E_USER_NOTICE => "E_USER_NOTICE",
+				E_STRICT => "E_STRICT",
+				E_RECOVERABLE_ERROR => "E_RECOVERABLE_ERROR",
+				E_DEPRECATED => "E_DEPRECATED",
+				E_USER_DEPRECATED => "E_USER_DEPRECATED",
+			];
+			}
 			
 			$error["fullFile"] = $error["file"];
 			$error["file"] = cleanPath($error["file"]);
@@ -186,16 +257,31 @@ class CrashReport{
 		}
 
 		$this->data["error"] = $error;
+		
 		unset($this->data["error"]["fullFile"]);
 		unset($this->data["error"]["trace"]);
-		$this->addLine("Hata: " . $error["message"]);
-		$this->addLine("Dosya: " . $error["file"]);
-		$this->addLine("Satır: " . $error["line"]);
-		$this->addLine("Tür: " . $error["type"]);
-
+		
+		if(Translate::checkTurkish() === "yes"){
+			$this->addLine("Hata: " . $error["message"]);
+			$this->addLine("Dosya: " . $error["file"]);
+			$this->addLine("Satır: " . $error["line"]);
+			$this->addLine("Tür: " . $error["type"]);
+		}else{
+			$this->addLine("Error: " . $error["message"]);
+			$this->addLine("File: " . $error["file"]);
+			$this->addLine("Line: " . $error["line"]);
+			$this->addLine("Type: " . $error["type"]);
+		}
+		
 		if(strpos($error["file"], "src/pocketmine/") === false and strpos($error["file"], "src/raklib/") === false and file_exists($error["fullFile"])){
 			$this->addLine();
-			$this->addLine("SUNUCU BİR EKLENTİ YÜZÜNDEN ÇÖKTÜ");
+			
+			if(Translate::checkTurkish() === "yes"){
+				$this->addLine("SUNUCU BİR EKLENTİ YÜZÜNDEN ÇÖKTÜ");
+			}else{
+				$this->addLine("THIS CRASH WAS CAUSED BY A PLUGIN");
+			}
+			
 			$this->data["plugin"] = true;
 
 			$reflection = new \ReflectionClass(PluginBase::class);
@@ -205,7 +291,11 @@ class CrashReport{
 				$filePath = \pocketmine\cleanPath($file->getValue($plugin));
 				if(strpos($error["file"], $filePath) === 0){
 					$this->data["plugin"] = $plugin->getName();
-					$this->addLine("KÖTÜ EKLENTİ: " . $plugin->getDescription()->getFullName());
+					if(Translate::checkTurkish() === "yes"){
+						$this->addLine("KÖTÜ EKLENTİ: " . $plugin->getDescription()->getFullName());
+					}else{
+						$this->addLine("BAD PLUGIN: " . $plugin->getDescription()->getFullName());
+					}
 					break;
 				}
 			}
@@ -226,7 +316,13 @@ class CrashReport{
 		}
 		
 		$this->addLine();
-		$this->addLine("Ayrıntı:");
+		
+		if(Translate::checkTurkish() === "yes"){
+			$this->addLine("Ayrıntı:");
+		}else{
+			$this->addLine("Backtrace:");
+		}
+		
 		foreach(($this->data["trace"] = $error["trace"]) as $line){
 			$this->addLine($line);
 		}
@@ -242,17 +338,29 @@ class CrashReport{
 		$this->data["general"]["build"] = $version->getBuild();
 		$this->data["general"]["protocol"] = ProtocolInfo::CURRENT_PROTOCOL;
 		$this->data["general"]["api"] = \pocketmine\API_VERSION;
-		//$this->data["general"]["git"] = \pocketmine\GIT_COMMIT;
 		$this->data["general"]["raklib"] = RakLib::VERSION;
 		$this->data["general"]["uname"] = php_uname("a");
 		$this->data["general"]["php"] = phpversion();
 		$this->data["general"]["zend"] = zend_version();
 		$this->data["general"]["php_os"] = PHP_OS;
 		$this->data["general"]["os"] = Utils::getOS();
-		$this->addLine($this->server->getName() . " Sürüm: " . $version->get(false) . " #" . $version->getBuild() . " [Protokol " . ProtocolInfo::CURRENT_PROTOCOL . "; API " . API_VERSION . "]");
-		$this->addLine("PHP Sürümü: " . phpversion());
-		$this->addLine("Zend Sürümü: " . zend_version());
-		$this->addLine("İşletim Sistemi: " . PHP_OS . ", " . Utils::getOS());
+		if(Translate::checkTurkish() === "yes"){
+			$this->addLine($this->server->getName() . " Sürüm: " . $version->get(false) . " #" . $version->getBuild() . " [Protokol " . ProtocolInfo::CURRENT_PROTOCOL . "; API " . API_VERSION . "]");
+			$this->addLine("PHP Sürümü: " . phpversion());
+			$this->addLine("Zend Sürümü: " . zend_version());
+			$this->addLine("İşletim Sistemi: " . PHP_OS . ", " . Utils::getOS());
+			$this->addLine();
+			$this->addLine("Yüklenmiş Dünya Sayısı: " . count($this->server->getLevels()));
+			$this->addLine("Aktif Oyuncular: " . count($this->server->getOnlinePlayers()) . "/" . $this->server->getMaxPlayers());
+		}else{
+			$this->addLine($this->server->getName() . " Version: " . $version->get(false) . " #" . $version->getBuild() . " [Protocol " . ProtocolInfo::CURRENT_PROTOCOL . "; API " . API_VERSION . "]");
+			$this->addLine("PHP Version: " . phpversion());
+			$this->addLine("Zend Version: " . zend_version());
+			$this->addLine("Operating System: " . PHP_OS . ", " . Utils::getOS());
+			$this->addLine();
+			$this->addLine("Number of Loaded Worlds: " . count($this->server->getLevels()));
+			$this->addLine("Players Online: " . count($this->server->getOnlinePlayers()) . "/" . $this->server->getMaxPlayers());
+		}
 	}
 
 	public function addLine($line = ""){

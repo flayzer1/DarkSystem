@@ -596,7 +596,7 @@ class Level implements ChunkManager, Metadatable{
 			}
 		}
 		$this->processChunkRequest();
-		$data = array();
+		$data = [];
 		$data['moveData'] = $this->moveToSend;
 		$data['motionData'] = $this->motionToSend;
 		$this->server->packetMgr->pushMainToThreadPacket(serialize($data));
@@ -2315,7 +2315,7 @@ class Level implements ChunkManager, Metadatable{
 		
 	public function addPlayerHandItem($sender, $recipient){
 		if(!isset($this->playerHandItemQueue[$sender->getId()])){
-			$this->playerHandItemQueue[$sender->getId()] = array();
+			$this->playerHandItemQueue[$sender->getId()] = [];
 		}
 		$this->playerHandItemQueue[$sender->getId()][$recipient->getId()] = array(
 			'sender' => $sender,

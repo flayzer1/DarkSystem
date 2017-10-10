@@ -482,7 +482,13 @@ abstract class Entity extends Location implements Metadatable{
 			$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_HAS_COLLISION, true);
 		}
 		
-		$this->chunk->addEntity($this);
+		try{ //Bad method
+			$this->chunk->addEntity($this);
+		}catch(\Exception $e){
+			$this->server->getLogger()->emergency("There was an error about current world. Please control your world of server and try again.");
+			$this->server->getLogger()->critical("If still not fixed, please contant our developers about problem.");
+		}
+		
 		$level->addEntity($this);
 		$this->initEntity();
 		$this->lastUpdate = $this->server->getTick();

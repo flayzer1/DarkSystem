@@ -11,13 +11,14 @@
 
 namespace pocketmine\scheduler;
 
-use pocketmine\plugin\Plugin;
 use pocketmine\Server;
+use pocketmine\plugin\Plugin;
 use pocketmine\utils\MainLogger;
 use pocketmine\utils\PluginException;
 use pocketmine\utils\ReversePriorityQueue;
 
 class ServerScheduler{
+	
 	public static $WORKERS = 2;
 	
 	protected $queue;
@@ -212,20 +213,17 @@ class ServerScheduler{
 	public function mainThreadHeartbeat($currentTick){
 		$this->currentTick = $currentTick;
 		while($this->isReady($this->currentTick)){
-			/** @var TaskHandler $task */
 			$task = $this->queue->extract();
 			if($task->isCancelled()){
 				unset($this->tasks[$task->getTaskId()]);
 				continue;
 			}else{
-				//$task->timings->startTiming();
 				try{
 					$task->run($this->currentTick);
 				}catch(\Throwable $e){
 					Server::getInstance()->getLogger()->critical("Could not execute task " . $task->getTaskName() . ": " . $e->getMessage());
 					Server::getInstance()->getLogger()->logException($e);
 				}
-				//$task->timings->stopTiming();
 			}
 			if($task->isRepeating()){
 				$task->setNextRun($this->currentTick + $task->getPeriod());

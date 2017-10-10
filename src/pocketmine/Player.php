@@ -4174,12 +4174,12 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$pairTransaction = new BaseTransaction($inventory, $targetSlot, $items[$targetSlot], $targetItem);
 			$trGroup->addTransaction($pairTransaction);
 			
-			try {
+			try{
 				$isExecute = $trGroup->execute();
 				if(!$isExecute){
 					$trGroup->sendInventories();
 				}
-			} catch (\Exception $ex){
+			}catch(\Exception $e){
 				$trGroup->sendInventories();
 			}
 		}else{
@@ -4808,12 +4808,13 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			
 			$trGroup->addTransaction($transaction);
 		}
+		
 		try{
 			if(!$trGroup->execute()){
 				$trGroup->sendInventories();
 			}else{
 			}
-		}catch(\Exception $ex){
+		}catch(\Exception $e){
 			$trGroup->sendInventories();
 		}
 	}

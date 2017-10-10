@@ -44,17 +44,12 @@ abstract class Task{
 	}
 
 	/**
-	 * Actions to execute when run
-	 *
 	 * @param $currentTick
 	 *
 	 * @return void
 	 */
 	public abstract function onRun($currentTick);
-
-	/**
-	 * Actions to execute if the Task is cancelled
-	 */
+	
 	public function onCancel(){
 
 	}

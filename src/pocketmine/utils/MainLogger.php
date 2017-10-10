@@ -114,7 +114,7 @@ class MainLogger extends \AttachableThreadedLogger{
 
 	public function debug($message, $name = "ONARIM"){
 		if($this->logDebug === false){
-			return;
+			return false;
 		}
 		if(Translate::checkTurkish() === "yes"){
 			$this->send($message, \LogLevel::DEBUG, $name, TextFormat::GRAY);
@@ -135,6 +135,7 @@ class MainLogger extends \AttachableThreadedLogger{
 		$errfile = $e->getFile();
 		$errno = $e->getCode();
 		$errline = $e->getLine();
+		if(Translate::checkTurkish() === "yes"){
 		$errorConversion = [
 			0 => "EXCEPTION",
 			E_ERROR => "E_HATA",
@@ -153,6 +154,26 @@ class MainLogger extends \AttachableThreadedLogger{
 			E_DEPRECATED => "E_DEPRECATED",
 			E_USER_DEPRECATED => "E_KULLANICI_DEPRECATED",
 		];
+		}else{
+		$errorConversion = [
+			0 => "EXCEPTION",
+			E_ERROR => "E_ERROR",
+			E_WARNING => "E_WARNING",
+			E_PARSE => "E_PARSE",
+			E_NOTICE => "E_NOTICE",
+			E_CORE_ERROR => "E_CORE_ERROR",
+			E_CORE_WARNING => "E_CORE_WARNING",
+			E_COMPILE_ERROR => "E_COMPILE_ERROR",
+			E_COMPILE_WARNING => "E_COMPILE_WARNING",
+			E_USER_ERROR => "E_USER_ERROR",
+			E_USER_WARNING => "E_USER_WARNING",
+			E_USER_NOTICE => "E_USER_NOTICE",
+			E_STRICT => "E_STRICT",
+			E_RECOVERABLE_ERROR => "E_RECOVERABLE_ERROR",
+			E_DEPRECATED => "E_DEPRECATED",
+			E_USER_DEPRECATED => "E_USER_DEPRECATED",
+		];
+		}
 		if($errno === 0){
 			$type = LogLevel::CRITICAL;
 		}else{

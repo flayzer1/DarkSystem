@@ -1868,8 +1868,8 @@ class Server extends DarkSystem{
 
 		$this->packetMgr = new PacketManager($this->getLoader());
 		
-		$this->tickAverage = array();
-		$this->useAverage = array();
+		$this->tickAverage = [];
+		$this->useAverage = [];
 		for($i = 0; $i < 1200; $i++){
 			$this->tickAverage[] = 20;
 			$this->useAverage[] = 0;
