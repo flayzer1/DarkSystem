@@ -178,7 +178,7 @@ class WritableBook extends Item{
 	 *
 	 * @return bool
 	 */
-	private function pushPages($pageId, Compound $namedTag, 0$downwards = true){
+	private function pushPages($pageId, Compound $namedTag, $downwards = true){
 		if(empty($this->getPages())){
 			return false;
 		}

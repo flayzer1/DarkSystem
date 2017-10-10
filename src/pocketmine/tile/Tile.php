@@ -34,8 +34,9 @@ abstract class Tile extends Position{
 	const MOB_SPAWNER = "MobSpawner";
 	const ITEM_FRAME = "ItemFrame";
 	const DISPENSER = "Dispenser";
-	const DROPPER = "Dropper";
 	const CAULDRON = "Cauldron";
+	const JUKEBOX = "Jukebox";
+	const DROPPER = "Dropper";
 	const HOPPER = "Hopper";
 	const BEACON = "Beacon";
 	const COMMAND_BLOCK = "CommandBlock";
@@ -84,9 +85,21 @@ abstract class Tile extends Position{
 		Tile::registerTile(Furnace::class);
 		Tile::registerTile(Hopper::class);
 		Tile::registerTile(ItemFrame::class);
+		Tile::registerTile(Jukebox::class);
 		//Tile::registerTile(MobSpawner::class);
 		Tile::registerTile(Sign::class);
 		Tile::registerTile(Skull::class);
+	}
+	
+	public static function createTileFromPosition($type, Position $pos, ...$args){
+		$nbt = new Compound("", [
+			new StringTag("id", $type),
+			new IntTag("x", (int) $pos->x),
+			new IntTag("y", (int) $pos->y),
+			new IntTag("z", (int) $pos->z),
+		]);
+		
+		return Tile::createTile($type, $pos->level, $nbt, ...$args);
 	}
 	
 	public static function createTile($type, Level $level, Compound $nbt, ...$args){

@@ -170,6 +170,7 @@ class Item{
 	const CLAY_BLOCK = 82;
 	const REEDS = 83;
 	const SUGARCANE_BLOCK = 83;
+	const JUKEBOX = 84;
 	const FENCE = 85;
 	const PUMPKIN = 86;
 	const NETHERRACK = 87;
@@ -516,6 +517,18 @@ class Item{
 	const ENCHANTED_GOLDEN_APPLE = 466;
 	const END_PEARL = 468;
 	const CAMERA = 498;
+	const MUSIC_DISC_13 = 500;
+	const MUSIC_DISC_CAT = 501;
+	const MUSIC_DISC_BLOCKS = 502;
+	const MUSIC_DISC_CHIRP = 503;
+	const MUSIC_DISC_FAR = 504;
+	const MUSIC_DISC_MALL = 505;
+	const MUSIC_DISC_MELLOHI = 506;
+	const MUSIC_DISC_STAL = 507;
+	const MUSIC_DISC_STRAD = 508;
+	const MUSIC_DISC_WARD = 509;
+	const MUSIC_DISC_11 = 510;
+	const MUSIC_DISC_WAIT = 511;
 	
 	protected static $names = [
 		0 => "Air",
@@ -595,6 +608,7 @@ class Item{
 		81 => "Cactus",
 		82 => "Clay Block",
 		83 => "Sugarcane Block",
+		84 => "Jukebox",
 		85 => "Fence",
 		86 => "Pumpkin Block",
 		87 => "Netherrack",
@@ -993,7 +1007,17 @@ class Item{
 			Item::$list[Item::PRISMARINE_CRYSTAL] = PrismarineCrystal::class;
 			Item::$list[Item::CHORUS_FRUIT] = ChorusFruit::class;
 			Item::$list[Item::POTION] = Potion::class;
-			
+			Item::$list[Item::MUSIC_DISC_13] = MusicDisc13::class;
+			Item::$list[Item::MUSIC_DISC_CAT] = MusicDiscCat::class;
+			Item::$list[Item::MUSIC_DISC_BLOCKS] = MusicDiscBlocks::class;
+			Item::$list[Item::MUSIC_DISC_STRAD] = MusicDiscStrad::class;
+			Item::$list[Item::MUSIC_DISC_WARD] = MusicDiscWard::class;
+			Item::$list[Item::MUSIC_DISC_STAL] = MusicDiscStal::class;
+			Item::$list[Item::MUSIC_DISC_WAIT] = MusicDiscWait::class;
+			Item::$list[Item::MUSIC_DISC_MALL] = MusicDiscMall::class;
+			Item::$list[Item::MUSIC_DISC_CHIRP] = MusicDiscChirp::class;
+			Item::$list[Item::MUSIC_DISC_MELLOHI] = MusicDiscMellohi::class;
+			Item::$list[Item::MUSIC_DISC_FAR] = MusicDiscFar::class;
 			for($i = 0; $i < 256; ++$i){
 				if(Block::$list[$i] !== null){
 					Item::$list[$i] = Block::$list[$i];

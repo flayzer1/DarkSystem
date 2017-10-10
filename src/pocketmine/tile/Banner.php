@@ -75,7 +75,7 @@ class Banner extends Spawnable{
 	const COLOR_ORANGE = 14;
 	const COLOR_WHITE = 15;
 
-	public function __construct(Level $level, CompoundTag $nbt){
+	public function __construct(Level $level, Compound $nbt){
 		if(!isset($nbt->Base) or !($nbt->Base instanceof IntTag)){
 			$nbt->Base = new IntTag("Base", 15);
 		}

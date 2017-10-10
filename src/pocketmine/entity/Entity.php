@@ -194,9 +194,14 @@ abstract class Entity extends Location implements Metadatable{
 	//const DATA_FLAG_IDLING = 39;
 	const DATA_FLAG_EVOKER_SPELL = 40;
 	const DATA_FLAG_CHARGE_ATTACK = 41;
-	const DATA_FLAG_IS_WASD_CONTROLLED = 43;
+	//const DATA_FLAG_WASD_CONTROLLED = 42, DATA_FLAG_IS_WASD_CONTROLLED = 42;
+	const DATA_FLAG_WASD_CONTROLLED = 43, DATA_FLAG_IS_WASD_CONTROLLED = 43;
 	const DATA_FLAG_CAN_POWER_JUMP = 44;
 	const DATA_FLAG_LINGER = 45;
+	const DATA_FLAG_HAS_COLLISION = 45;
+	const DATA_FLAG_AFFECTED_BY_GRAVITY = 46;
+	const DATA_FLAG_FIRE_IMMUNE = 47;
+	const DATA_FLAG_DANCING = 48;
 	
 	/*
 	const DATA_FLAG_CAN_CLIMBING = 19;
@@ -471,7 +476,12 @@ abstract class Entity extends Location implements Metadatable{
 		$this->invulnerable = $this->namedtag["Invulnerable"] > 0 ? true : false;
 
 		$this->attributeMap = new AttributeMap();
-
+		
+		if($this->server->isSupportProtocol("120")){
+			$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_AFFECTED_BY_GRAVITY, true);
+			$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_HAS_COLLISION, true);
+		}
+		
 		$this->chunk->addEntity($this);
 		$level->addEntity($this);
 		$this->initEntity();
@@ -1087,6 +1097,7 @@ abstract class Entity extends Location implements Metadatable{
 		if($block !== false){
 			$block->onEntityCollide($this);
 		}
+		
 		$block = $this->isCollideWithTransparent();
 		if($block !== false){
 			$block->onEntityCollide($this);
@@ -1437,7 +1448,7 @@ abstract class Entity extends Location implements Metadatable{
 		}
 	}
 	
-	public function fastMove($dx, $dy, $dz){
+	/*public function fastMove($dx, $dy, $dz){
 		if($dx == 0 and $dz == 0 and $dy == 0){
 			return true;
 		}
@@ -1473,9 +1484,46 @@ abstract class Entity extends Location implements Metadatable{
 		$notInAir = $this->onGround || $this->isCollideWithWater();
 		$this->updateFallState($dy, $notInAir);
 		return true;
-	}
+	}*/
+	
+	public function fastMove($dx, $dy, $dz){
+		$this->blocksAround = null;
 
-	public function move($dx, $dy, $dz){	
+		if($dx == 0 and $dz == 0 and $dy == 0){
+			return true;
+		}
+		
+		$newBB = $this->boundingBox->getOffsetBoundingBox($dx, $dy, $dz);
+
+		$list = $this->level->getCollisionCubes($this, $newBB, false);
+
+		if(count($list) === 0){
+			$this->boundingBox = $newBB;
+		}
+
+		$this->x = ($this->boundingBox->minX + $this->boundingBox->maxX) / 2;
+		$this->y = $this->boundingBox->minY - $this->ySize;
+		$this->z = ($this->boundingBox->minZ + $this->boundingBox->maxZ) / 2;
+
+		$this->checkChunks();
+
+		if(!$this->onGround or $dy != 0){
+			$bb = clone $this->boundingBox;
+			$bb->minY -= 0.75;
+			$this->onGround = false;
+
+			if(count($this->level->getCollisionBlocks($bb)) > 0){
+				$this->onGround = true;
+			}
+		}
+		
+		$this->isCollided = $this->onGround;
+		$this->updateFallState($dy, $this->onGround);
+		
+		return true;
+	}
+	
+	/*public function move($dx, $dy, $dz){	
 		if($dx == 0 and $dz == 0 and $dy == 0){
 			return true;
 		}
@@ -1500,6 +1548,122 @@ abstract class Entity extends Location implements Metadatable{
 				
 				$this->isCollided = $this->onGround;
 				$this->updateFallState($dy, $this->onGround);
+			}
+			
+			return true;
+		}
+	}*/
+	
+	public function move($dx, $dy, $dz){
+		$this->blocksAround = null;
+
+		if($dx == 0 and $dz == 0 and $dy == 0){
+			return true;
+		}
+
+		if($this->keepMovement){
+			$this->boundingBox->offset($dx, $dy, $dz);
+			$this->setPosition($this->temporalVector->setComponents(($this->boundingBox->minX + $this->boundingBox->maxX) / 2, $this->boundingBox->minY, ($this->boundingBox->minZ + $this->boundingBox->maxZ) / 2));
+			$this->onGround = $this->isPlayer ? true : false;
+			
+			return true;
+		}else{
+			$this->ySize *= 0.4;
+			
+			$movX = $dx;
+			$movY = $dy;
+			$movZ = $dz;
+
+			$axisalignedbb = clone $this->boundingBox;
+			
+			assert(abs($dx) <= 20 and abs($dy) <= 20 and abs($dz) <= 20, "Movement distance is excessive: dx=$dx, dy=$dy, dz=$dz");
+			
+			$tickRate = 1;
+			
+			$list = $this->level->getCollisionCubes($this, $tickRate > 1 ? $this->boundingBox->getOffsetBoundingBox($dx, $dy, $dz) : $this->boundingBox->addCoord($dx, $dy, $dz), false);
+
+			foreach($list as $bb){
+				$dy = $bb->calculateYOffset($this->boundingBox, $dy);
+			}
+
+			$this->boundingBox->offset(0, $dy, 0);
+
+			$fallingFlag = ($this->onGround or ($dy != $movY and $movY < 0));
+
+			foreach($list as $bb){
+				$dx = $bb->calculateXOffset($this->boundingBox, $dx);
+			}
+
+			$this->boundingBox->offset($dx, 0, 0);
+
+			foreach($list as $bb){
+				$dz = $bb->calculateZOffset($this->boundingBox, $dz);
+			}
+
+			$this->boundingBox->offset(0, 0, $dz);
+			
+			if($this->stepHeight > 0 and $fallingFlag and $this->ySize < 0.05 and ($movX != $dx or $movZ != $dz)){
+				$cx = $dx;
+				$cy = $dy;
+				$cz = $dz;
+				$dx = $movX;
+				$dy = $this->stepHeight;
+				$dz = $movZ;
+
+				$axisalignedbb1 = clone $this->boundingBox;
+
+				$this->boundingBox->setBB($axisalignedbb);
+
+				$list = $this->level->getCollisionCubes($this, $this->boundingBox->addCoord($dx, $dy, $dz), false);
+
+				foreach($list as $bb){
+					$dy = $bb->calculateYOffset($this->boundingBox, $dy);
+				}
+
+				$this->boundingBox->offset(0, $dy, 0);
+
+				foreach($list as $bb){
+					$dx = $bb->calculateXOffset($this->boundingBox, $dx);
+				}
+
+				$this->boundingBox->offset($dx, 0, 0);
+
+				foreach($list as $bb){
+					$dz = $bb->calculateZOffset($this->boundingBox, $dz);
+				}
+
+				$this->boundingBox->offset(0, 0, $dz);
+
+				if(($cx ** 2 + $cz ** 2) >= ($dx ** 2 + $dz ** 2)){
+					$dx = $cx;
+					$dy = $cy;
+					$dz = $cz;
+					$this->boundingBox->setBB($axisalignedbb1);
+				}else{
+					$this->ySize += 0.5;
+				}
+
+			}
+
+			$this->x = ($this->boundingBox->minX + $this->boundingBox->maxX) / 2;
+			$this->y = $this->boundingBox->minY - $this->ySize;
+			$this->z = ($this->boundingBox->minZ + $this->boundingBox->maxZ) / 2;
+
+			$this->checkChunks();
+			$this->checkBlockCollision();
+			//$this->checkGroundState($movX, $movY, $movZ, $dx, $dy, $dz);
+			$this->updateFallState($dy, $this->onGround);
+
+			if($movX != $dx){
+				$this->motionX = 0;
+			}
+
+			if($movY != $dy){
+				$this->motionY = 0;
+			}
+
+			if($movZ != $dz){
+				$this->motionZ = 0;
 			}
 			
 			return true;
@@ -1632,6 +1796,7 @@ abstract class Entity extends Location implements Metadatable{
 		$from = Position::fromObject($this, $this->level);
 		$to = Position::fromObject($pos, $pos instanceof Position ? $pos->getLevel() : $this->level);
 		$this->server->getPluginManager()->callEvent($ev = new EntityTeleportEvent($this, $from, $to));
+		
 		if($ev->isCancelled()){
 			return true;
 		}
@@ -1640,8 +1805,10 @@ abstract class Entity extends Location implements Metadatable{
 		$pos = $ev->getTo();
 
 		$this->setMotion(new Vector3(0, 0.1, 0));
+		
 		if($this->setPositionAndRotation($pos, $yaw === null ? $this->yaw : $yaw, $pitch === null ? $this->pitch : $pitch, true) !== false){
 			$this->resetFallDistance();
+			
 			$this->onGround = true;
 
 			$this->lastX = $this->x;

@@ -613,6 +613,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function sendCommandData(){
 		$data = new \stdClass();
 		$count = 0;
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
+			//TODO
+		}
 		foreach($this->server->getCommandMap()->getCommands() as $command){
 			if($this->hasPermission($command->getPermission()) || $command->getPermission() == null){
 			    if(($cmdData = $command->generateCustomCommandData($this)) !== null){
@@ -650,7 +653,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 		$this->creationTime = microtime(true);
 		
-		if($this->protocol >= ProtocolInfo::PROTOCOL_120){
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$this->inventory = new PlayerInventory120($this);
 		}else{
 			$this->inventory = new PlayerInventory($this);
@@ -726,7 +729,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function needEncrypt(){
-		return $this->protocol >= ProtocolInfo::PROTOCOL_120;
+		return $this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120;
 	}
 	
 	public function sendGamemode(){
@@ -1106,28 +1109,43 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		return true;
 	}
 	
-	/*public function sendSettings(){
+	public function sendSettings(){
 		$flags = 0;
-		if($this->isAdventure()){
-			$flags |= 0x01;
-		}
-		if($this->autoJump){
-			$flags |= 0x20;
-		}
-		if($this->allowFlight){
-			$flags |= 0x40;
-		}
-		if($this->isSpectator()){
-			$flags |= 0x80;
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
+			if($this->isAdventure()){
+				$flags |= 0x02;
+			}
+			if($this->autoJump){
+				$flags |= 0x20;
+			}
+			if($this->allowFlight){
+				$flags |= 0x40;
+			}
+			if($this->isSpectator()){
+				$flags |= 0x80;
+			}
+		}else{
+			if($this->isAdventure()){
+				$flags |= 0x02;
+			}
+			if($this->autoJump){
+				$flags |= 0x20;
+			}
+			if($this->allowFlight){
+				$flags |= 0x40;
+			}
+			if($this->isSpectator()){
+				$flags |= 0x80;
+			}
 		}
 		$flags |= 0x02;
 		$flags |= 0x04;
 		$pk = new AdventureSettingsPacket();
 		$pk->flags = $flags;
 		$this->dataPacket($pk);
-	}*/
+	}
 	
-	public function sendSettings(){
+	public function sndSettings(){
 		$pk = new AdventureSettingsPacket();
 
 		$pk->setFlag(AdventureSettingsPacket::WORLD_IMMUTABLE, $this->isSpectator());
@@ -1135,12 +1153,91 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$pk->setFlag(AdventureSettingsPacket::AUTO_JUMP, $this->autoJump);
 		$pk->setFlag(AdventureSettingsPacket::ALLOW_FLIGHT, $this->allowFlight);
 		$pk->setFlag(AdventureSettingsPacket::NO_CLIP, $this->isSpectator());
-		//$pk->setFlag(AdventureSettingsPacket::FLYING, $this->flying);
+		$pk->setFlag(AdventureSettingsPacket::FLYING, $this->allowFlight);
 
 		$pk->commandPermission = ($this->isOp() ? AdventureSettingsPacket::PERMISSION_OPERATOR : AdventureSettingsPacket::PERMISSION_NORMAL);
 		$pk->playerPermission = ($this->isOp() ? PlayerPermissions::OPERATOR : PlayerPermissions::MEMBER);
 		$pk->eid = $this->getId();
 
+		$this->dataPacket($pk);
+	}
+	
+	public function senSettings(){
+		$pk = new AdventureSettingsPacket();
+		$pk->flags = 0;
+		$pk->worldImmutable = $this->isAdventure();
+		$pk->autoJump = $this->autoJump;
+		$pk->allowFlight = $this->allowFlight;
+		$pk->noClip = $this->isSpectator();
+		$pk->worldBuilder = !($this->isAdventure());
+		$pk->isFlying = $this->flying;
+		$pk->userPermission = ($this->isOp() ? AdventureSettingsPacket::PERMISSION_OPERATOR : AdventureSettingsPacket::PERMISSION_NORMAL);
+		$this->dataPacket($pk);
+	}
+	
+	public function sedSettings(){
+		/*
+		bit mask | flag name
+		0x00000001 world_inmutable
+		0x00000002 no_pvp
+		0x00000004 no_pvm
+		0x00000008 no_mvp
+		0x00000010 static_time
+		0x00000020 nametags_visible
+		0x00000040 auto_jump
+		0x00000080 allow_fly
+		0x00000100 noclip
+		0x00000200 ?
+		0x00000400 ?
+		0x00000800 ?
+		0x00001000 ?
+		0x00002000 ?
+		0x00004000 ?
+		0x00008000 ?
+		0x00010000 ?
+		0x00020000 ?
+		0x00040000 ?
+		0x00080000 ?
+		0x00100000 ?
+		0x00200000 ?
+		0x00400000 ?
+		0x00800000 ?
+		0x01000000 ?
+		0x02000000 ?
+		0x04000000 ?
+		0x08000000 ?
+		0x10000000 ?
+		0x20000000 ?
+		0x40000000 ?
+		0x80000000 ?
+		*/
+		$flags = 0;
+		if($this->isAdventure()){
+			$flags |= 0x01; //Do not allow placing/breaking blocks, adventure mode
+		}
+
+		/*if($nametags !== false){
+			$flags |= 0x20; //Show Nametags
+		}*/
+
+		if($this->autoJump){
+			$flags |= 0x20;
+		}
+
+		if($this->allowFlight){
+			$flags |= 0x40;
+		}
+
+		if($this->isSpectator()){
+			$flags |= 0x80;
+		}
+		
+		$flags |= 0x02;
+		$flags |= 0x04;
+		
+		$pk = new AdventureSettingsPacket();
+		$pk->flags = $flags;
+		$pk->userId = $this->getId();
 		$this->dataPacket($pk);
 	}
 	
@@ -1261,7 +1358,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						$this->inventory->addItem(clone $item);
 						$entity->kill();
 						
-						if($this->inventoryType == Player::INVENTORY_CLASSIC && $this->protocol < ProtocolInfo::PROTOCOL_120){
+						if($this->inventoryType == Player::INVENTORY_CLASSIC && $this->getPlayerProtocol() < ProtocolInfo::PROTOCOL_120){
 							Win10InvLogic::playerPickUpItem($this, $item);
 						}
 					}
@@ -1519,13 +1616,16 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$pk->entities[] = [$this->id, $mot->x, $mot->y, $mot->z];
 				$this->dataPacket($pk);
 			}
+			
 			return true;
 		}
+		
 		return false;
 	}
 	
 	public function sendAttributes($sendAll = false){
 		$entries = $sendAll ? $this->attributeMap->getAll() : $this->attributeMap->needSend();
+		
 		if(count($entries) > 0){
 			$pk = new UpdateAttributesPacket();
 			$pk->entityId = $this->id;
@@ -1587,7 +1687,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					}	
 				}
 			}
-			if($this->starvationTick >= 20 && !strpos($this->level->getFolderName(), "RPG")){ //For something
+			if($this->starvationTick >= 20 && !strpos($this->level->getFolderName(), "RPG") && !$this->server->getDifficulty() == 3){ //For something
 				$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_CUSTOM, 1);
 				$this->attack(1, $ev);
 				$this->starvationTick = 0;
@@ -1861,7 +1961,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				}
 				
 				if($packet->windowId == Win10InvLogic::WINDOW_ID_PLAYER_OFFHAND){
-					if($this->protocol >= ProtocolInfo::PROTOCOL_120){
+					if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 						break;
 					}
 					
@@ -1890,7 +1990,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$packet->slot -= 9;
 				}
 				
-				if($this->inventoryType == Player::INVENTORY_CLASSIC && $this->protocol < ProtocolInfo::PROTOCOL_120){
+				if($this->inventoryType == Player::INVENTORY_CLASSIC && $this->getPlayerProtocol() < ProtocolInfo::PROTOCOL_120){
 					Win10InvLogic::packetHandler($packet, $this);
 					break;
 				}
@@ -2191,7 +2291,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						if($this->currentWindow instanceof EnchantInventory){
 							if($this->expLevel > 0){
 								$enchantLevel = abs($packet->theThing);
-								if($this->protocol >= ProtocolInfo::PROTOCOL_120){
+								if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 									$this->currentWindow->setEnchantingLevel($enchantLevel);
 									return;
 								}
@@ -2222,7 +2322,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					break;
 				}
 				
-				if($this->inventoryType == Player::INVENTORY_CLASSIC && $this->protocol < ProtocolInfo::PROTOCOL_120 && !$this->isCreative()){
+				if($this->inventoryType == Player::INVENTORY_CLASSIC && $this->getPlayerProtocol() < ProtocolInfo::PROTOCOL_120 && !$this->isCreative()){
 					Win10InvLogic::packetHandler($packet, $this);
 				}
 
@@ -2723,7 +2823,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					}
 				}
 				
-				if($this->protocol >= ProtocolInfo::PROTOCOL_120){
+				if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 					$craftSlots = $this->inventory->getCraftContents();
 					try{
 						$this->tryApplyCraft($craftSlots, $recipe);
@@ -2833,7 +2933,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					break;
 				}
 				
-				if($this->inventoryType == Player::INVENTORY_CLASSIC && $this->protocol < ProtocolInfo::PROTOCOL_120){
+				if($this->inventoryType == Player::INVENTORY_CLASSIC && $this->getPlayerProtocol() < ProtocolInfo::PROTOCOL_120){
 					Win10InvLogic::packetHandler($packet, $this);
 					break;
 				}
@@ -3066,7 +3166,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				break;
 		}
 		
-		$this->getServer()->getPluginManager()->callEvent($event = new PlayerEditBookEvent($this, $oldBook, $newBook, $packet->type, $modifiedPages));
+		$this->server->getPluginManager()->callEvent($event = new PlayerEditBookEvent($this, $oldBook, $newBook, $packet->type, $modifiedPages));
 		if($event->isCancelled()){
 			break;
 		}
@@ -4330,7 +4430,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
     }
 	
 	public function setTitle($text, $subtext = "", $time = 36000){
-		if($this->protocol >= ProtocolInfo::PROTOCOL_105){		
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_105){
 			$pk = new SetTitlePacket();
 			$pk->type = SetTitlePacket::TITLE_TYPE_TIMES;
 			$pk->text = "";
@@ -4353,7 +4453,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 
 	public function clearTitle(){
-		if($this->protocol >= ProtocolInfo::PROTOCOL_105){
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_105){
 			$pk = new SetTitlePacket();
 			$pk->type = SetTitlePacket::TITLE_TYPE_CLEAR;
 			$pk->text = "";
@@ -4860,7 +4960,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	private function setMayMove($state){
-		if($this->protocol >= ProtocolInfo::PROTOCOL_120){
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$this->setDataFlag(Player::DATA_FLAGS, 46, $state);
 			$this->isMayMove = $state;
 		}else{
@@ -5002,7 +5102,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function showModal($modalWindow){
-		if($this->protocol >= ProtocolInfo::PROTOCOL_120){
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$pk = new ShowModalFormPacket();
 			$pk->formId = $this->lastModalId++;
 			$pk->data = $modalWindow->toJSON();
@@ -5022,7 +5122,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	protected function sendServerSettingsModal($modalWindow){
-		if($this->protocol >= ProtocolInfo::PROTOCOL_120){
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$pk = new ServerSettingsResponsetPacket();
 			$pk->formId = $this->lastModalId++;
 			$pk->data = $modalWindow->toJSON();

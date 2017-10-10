@@ -10,6 +10,7 @@
 #                            |___/   Unleash Your Power Turkey!
 
 namespace{
+	
 	function safe_var_dump(){
 		static $cnt = 0;
 		foreach(func_get_args() as $var){
@@ -59,7 +60,7 @@ namespace pocketmine{
 	use pocketmine\utils\Utils;
 	use pocketmine\setup\Setup;
 
-	const VERSION = "2.1.7";
+	const VERSION = "2.1.8";
 	const DARKBOT_VERSION = "1.0.0";
 	const API_VERSION = "3.0.1";
 	const TAG = "dev";
@@ -73,31 +74,81 @@ namespace pocketmine{
 		@define("pocketmine\\PATH", getcwd() . DIRECTORY_SEPARATOR);
 	}
 	
-	if(!strpos(VERSION, ".")){
-		echo "[HATA] Geçersiz DarkSystem Sürümü!" . PHP_EOL;
-		exit(1);
-	}
+	//TODO: Check license
 	
-	if(!strpos(DARKBOT_VERSION, ".")){
-		echo "[HATA] Geçersiz DarkBot Sürümü!" . PHP_EOL;
-		exit(1);
-	}
-	
-	if(!strpos(API_VERSION, ".")){
-		echo "[HATA] Geçersiz API Sürümü!" . PHP_EOL;
-		exit(1);
-	}
-	
-	$codename = "DarkSystem"; //WARNING: Do not change!
-	if(CODENAME !== $codename){
-		echo "[HATA] Orjinal Olmayan DarkSystem Yüklemesi Bulundu!" . PHP_EOL;
-		exit(1);
-	}
-	
-	$creator = "DarkYusuf13"; //WARNING: Do not change!
-	if(CREATOR !== $creator){
-		echo "[HATA] Orjinal Olmayan DarkSystem Yüklemesi Bulundu!" . PHP_EOL;
-		exit(1);
+	function checkLicense(){
+		$result = "";
+		$issues = 0;
+		/* Do Not Change! */
+		$codename = "DarkSystem";
+		$creator = "DarkYusuf13";
+		if(!strpos(VERSION, ".")){
+			$result = "invalid_ds_ver";
+			++$issues;
+		}
+		
+		if(!strpos(DARKBOT_VERSION, ".")){
+			$result = "invalid_dbot_ver";
+			++$issues;
+		}
+		
+		if(!strpos(API_VERSION, ".")){
+			$result = "invalid_api_ver";
+			++$issues;
+		}
+		
+		if(CODENAME !== $codename){
+			$result = "unofficial";
+			++$issues;
+		}
+		
+		if(CREATOR !== $creator){
+			$result = "unofficial";
+			++$issues;
+		}
+		
+		if(count($issues) >= 1){
+			if(strpos($result, "in" || strpos($result, "un"))){
+				switch($result){
+					case "invalid_ds_ver":
+					if(Translate::checkTurkish() === "yes"){
+						echo "[HATA] Geçersiz DarkSystem Sürümü!" . PHP_EOL;
+					}else{
+						echo "[ERROR] Invalid DarkSystem Version!" . PHP_EOL;
+					}
+					exit(1);
+					break;
+					case "invalid_dbot_ver":
+					if(Translate::checkTurkish() === "yes"){
+						echo "[HATA] Geçersiz DarkBot Sürümü!" . PHP_EOL;
+					}else{
+						echo "[ERROR] Invalid DarkBot Version!" . PHP_EOL;
+					}
+					exit(1);
+					break;
+					case "invalid_api_ver":
+					if(Translate::checkTurkish() === "yes"){
+						echo "[HATA] Geçersiz API Sürümü!" . PHP_EOL;
+					}else{
+						echo "[ERROR] Invalid API Version!" . PHP_EOL;
+					}
+					exit(1);
+					break;
+					case "unofficial":
+					if(Translate::checkTurkish() === "yes"){
+						echo "[HATA] Orjinal Olmayan DarkSystem Yüklemesi Bulundu!" . PHP_EOL;
+					}else{
+						echo "[ERROR] Un-Official DarkSystem Install Found!" . PHP_EOL;
+					}
+					exit(1);
+					break;
+					default;
+					$result = "";
+					$issues = 0;
+					break;
+				}
+			}
+		}
 	}
 	
 	if(version_compare("7.0", PHP_VERSION) > 0){

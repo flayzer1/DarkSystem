@@ -195,7 +195,7 @@ class Level implements ChunkManager, Metadatable{
 	/** @var \SplFixedArray */
 	private $blockStates;
 	
-	protected $playerHandItemQueue = array();
+	protected $playerHandItemQueue = [];
 	
 	private $chunkGenerationQueue = [];
 	private $chunkGenerationQueueSize = 8;
@@ -204,10 +204,10 @@ class Level implements ChunkManager, Metadatable{
 	private $chunkPopulationLock = [];
 	private $chunkPopulationQueueSize = 2;
 
-	protected $chunkTickRadius;
+	protected $chunkTickRadius = 4;
 	protected $chunkTickList = [];
-	protected $chunksPerTick;
-	protected $clearChunksOnTick;
+	protected $chunksPerTick = 4;
+	protected $clearChunksOnTick = false;
 	protected $randomTickBlocks = [
 		Block::GRASS => Grass::class,
 		Block::SAPLING => Sapling::class,

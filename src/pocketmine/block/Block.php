@@ -137,6 +137,7 @@ class Block extends Position implements Metadatable{
 	const CLAY_BLOCK = 82;
 	const REEDS = 83;
 	const SUGARCANE_BLOCK = 83;
+	const JUKEBOX = 84;
 	const FENCE = 85;
 	const PUMPKIN = 86;
 	const NETHERRACK = 87;
@@ -549,6 +550,7 @@ class Block extends Position implements Metadatable{
 			Block::$list[Block::STAINED_GLASS] = StainedGlass::class;
 			Block::$list[Block::STAINED_GLASS_PANE] = StainedGlassPane::class;
 			
+			Block::$list[Block::JUKEBOX] = Jukebox::class;
 			Block::$list[Block::DISPENSER] = Dispenser::class;
 			Block::$list[Block::DROPPER] = Dropper::class;
 			Block::$list[Block::BEACON] = Beacon::class;

@@ -309,7 +309,7 @@ class Server extends DarkSystem{
 	}
 	
 	public function getFormattedVersion($prefix = ""){
-		return (\pocketmine\VERSION !== ""? $prefix . \pocketmine\VERSION : "");
+		return (\pocketmine\VERSION !== "" ? $prefix . \pocketmine\VERSION : "");
 	}
 	
 	public function getCodename(){
