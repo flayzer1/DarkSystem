@@ -1,7 +1,7 @@
 <img src="https://raw.githubusercontent.com/DarkYusuf13/DarkSystem/master/banner.png" border="0">
 
 
-**An Advanced & Feature-rich Server Engine/Software For Minecraft (PE) Bedrock Edition 1.x.x**
+**An Advanced & Feature-rich Server Engine/Software For Minecraft (PE) Bedrock Edition 1.x.x & W10**
 
 | Travis CI | Discord Chat Server |
 | :---: | :---: |
@@ -85,6 +85,10 @@ _All other branches are in testing and may be unstable. Do not use builds from o
 # Tools:
 - [DevTools](https://github.com/pmmp/PocketMine-DevTools) - Plugin and server development tools plugin
 - [Pocket Server](https://github.com/fengberd/MinecraftPEServer) - Run PocketMine-MP/Nukkit on Android devices
+
+# Resources
+Your DarkSystem Server needs Visual Studio C++ Redistributable 2015 (For Windows).<br>
+It can be downloaded [here](https://www.microsoft.com/en-us/download/details.aspx?id=48145)<br>
 
 # License:
 ```
