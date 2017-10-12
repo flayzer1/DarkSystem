@@ -1,32 +1,13 @@
 <?php
 
-/*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
-
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\Enum;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
@@ -60,7 +41,7 @@ class TrappedChest extends Solid
         return false;
     }
 
-    public function canBeActivated(): bool
+    public function canBeActivated()
     {
         return true;
     }
@@ -75,7 +56,7 @@ class TrappedChest extends Solid
         return $this->getHardness() * 5;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Trapped Chest";
     }
@@ -126,8 +107,8 @@ class TrappedChest extends Solid
         }
 
         $this->getLevel()->setBlock($block, $this, true, true);
-        $nbt = new CompoundTag("", [
-            new ListTag("Items", []),
+        $nbt = new Compound("", [
+            new Enum("Items", []),
             new StringTag("id", Tile::CHEST),
             new IntTag("x", $this->x),
             new IntTag("y", $this->y),
@@ -179,8 +160,8 @@ class TrappedChest extends Solid
             if ($t instanceof TileChest) {
                 $chest = $t;
             } else {
-                $nbt = new CompoundTag("", [
-                    new ListTag("Items", []),
+                $nbt = new Compound("", [
+                    new Enum("Items", []),
                     new StringTag("id", Tile::CHEST),
                     new IntTag("x", $this->x),
                     new IntTag("y", $this->y),
@@ -195,17 +176,14 @@ class TrappedChest extends Solid
                     return true;
                 }
             }
-
-            if ($player->isCreative() and $player->getServer()->limitedCreative) {
-                return true;
-            }
+            
             $player->addWindow($chest->getInventory());
         }
 
         return true;
     }
 
-    public function getDrops(Item $item): array
+    public function getDrops(Item $item)
     {
         return [
             [$this->id, 0, 1],

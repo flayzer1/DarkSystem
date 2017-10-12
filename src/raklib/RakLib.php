@@ -12,6 +12,7 @@
 namespace raklib;
 
 $errors = 0;
+
 if(version_compare("7.0", PHP_VERSION) > 0){
     echo "[CRITICAL] Use PHP >= 7.0" . PHP_EOL;
     ++$errors;
@@ -81,4 +82,5 @@ abstract class RakLib{
     public static function bootstrap(\ClassLoader $loader){
         $loader->addPath(dirname(__FILE__) . DIRECTORY_SEPARATOR . "..");
     }
+    
 }

@@ -26,12 +26,12 @@ class PlayerGlassBottleEvent extends PlayerEvent implements Cancellable{
     private $item;
 
     /**
-     * @param Player $Player
+     * @param Player $player
      * @param Block  $target
      * @param Item   $itemInHand
      */
-    public function __construct(Player $Player, Block $target, Item $itemInHand){
-        $this->player = $Player;
+    public function __construct(Player $player, Block $target, Item $itemInHand){
+        $this->player = $player;
         $this->target = $target;
         $this->item = $itemInHand;
     }
@@ -56,12 +56,5 @@ class PlayerGlassBottleEvent extends PlayerEvent implements Cancellable{
     public function getBlock(){
         return $this->target;
     }
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "PlayerGlassBottleEvent";
-	}
-
+    
 }

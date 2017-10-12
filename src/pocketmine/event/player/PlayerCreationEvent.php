@@ -26,6 +26,7 @@ use pocketmine\network\SourceInterface;
 use pocketmine\Player;
 
 class PlayerCreationEvent extends Event{
+	
 	public static $handlerList = null;
 
 	/** @var SourceInterface */
@@ -39,6 +40,7 @@ class PlayerCreationEvent extends Event{
 
 	/** @var Player::class */
 	private $baseClass;
+	
 	/** @var Player::class */
 	private $playerClass;
 

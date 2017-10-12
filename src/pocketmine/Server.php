@@ -77,7 +77,7 @@ use pocketmine\resourcepacks\ResourcePackManager;
 use pocketmine\behaviorpacks\BehaviorPackManager;
 use pocketmine\scheduler\ServerScheduler;
 use pocketmine\scheduler\FileWriteTask;
-use pocketmine\tile\{Tile, Beacon, Bed, BrewingStand, Cauldron, Chest, CommandBlock, Dispenser, DLDetector, Dropper, EnchantTable, EnderChest, FlowerPot, Furnace, Hopper, ItemFrame, MobSpawner, Sign, Skull};
+use pocketmine\tile\Tile;
 use pocketmine\utils\Binary;
 use pocketmine\utils\Cache;
 use pocketmine\utils\Config;
@@ -2321,8 +2321,8 @@ class Server extends DarkSystem{
 		foreach($players === null ? $this->playerList : $players as $p){
 			$protocol = $p->getPlayerProtocol();
 			if(!isset($readyPackets[$protocol])){
-				//$pk->encode($protocol, $p->getSubClientId());
-				$pk->encode($protocol);
+				$pk->encode($protocol, $p->getSubClientId());
+				//$pk->encode($protocol);
 				$batch = new BatchPacket();
 				$batch->payload = zlib_encode(Binary::writeVarInt(strlen($pk->getBuffer())) . $pk->getBuffer(), ZLIB_ENCODING_DEFLATE, 7);
 				$readyPackets[$protocol] = $batch;
@@ -2356,8 +2356,8 @@ class Server extends DarkSystem{
 				$pk->addFurnaceRecipe($r);
 			}
 			
-			//$pk->encode($p->getPlayerProtocol(), $p->getSubClientId());
-			$pk->encode($p->getPlayerProtocol());
+			$pk->encode($p->getPlayerProtocol(), $p->getSubClientId());
+			//$pk->encode($p->getPlayerProtocol());
 			$pk->isEncoded = true;
 			$this->craftList[$p->getPlayerProtocol()] = $pk;
 		}

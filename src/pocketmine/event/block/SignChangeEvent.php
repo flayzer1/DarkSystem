@@ -25,10 +25,8 @@ use pocketmine\block\Block;
 use pocketmine\event\Cancellable;
 use pocketmine\Player;
 
-/**
- * Called when a sign is changed by a player.
- */
 class SignChangeEvent extends BlockEvent implements Cancellable{
+	
 	public static $handlerList = null;
 
 	/** @var \pocketmine\Player */
@@ -77,4 +75,5 @@ class SignChangeEvent extends BlockEvent implements Cancellable{
 	public function setLine($index, $line){
 		$this->lines[$index] = $line;
 	}
+	
 }

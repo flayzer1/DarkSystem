@@ -15,6 +15,7 @@ use pocketmine\event\Cancellable;
 use pocketmine\Player;
 
 class PlayerAnimationEvent extends PlayerEvent implements Cancellable{
+	
 	public static $handlerList = null;
 
 	const ARM_SWING = 1;

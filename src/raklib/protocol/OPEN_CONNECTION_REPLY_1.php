@@ -15,12 +15,10 @@
 
 namespace raklib\protocol;
 
-#include <rules/RakLibPacket.h>
-
-
 use raklib\RakLib;
 
 class OPEN_CONNECTION_REPLY_1 extends Packet{
+	
     public static $ID = 0x06;
 
     public $serverID;
@@ -30,15 +28,15 @@ class OPEN_CONNECTION_REPLY_1 extends Packet{
         parent::encode();
         $this->put(RakLib::MAGIC);
         $this->putLong($this->serverID);
-        $this->putByte(0); //Server security
+        $this->putByte(0);
         $this->putShort($this->mtuSize);
     }
 
     public function decode(){
         parent::decode();
-        $this->offset += 16; //Magic
+        $this->offset += 16;
         $this->serverID = $this->getLong();
-        $this->getByte(); //security
+        $this->getByte();
         $this->mtuSize = $this->getShort();
     }
 }

@@ -19,8 +19,10 @@ class BlockTeleportEvent extends BlockEvent implements Cancellable{
 	
 	public static $handlerList = null;
 	
-	protected $oldPosition, $newPosition;
-
+	protected $oldPosition;
+	
+	protected $newPosition;
+	
 	public function __construct(Block $block, Position $oldPosition, Position $newPosition){
 		$this->block = $block;
 		$this->oldPosition = $oldPosition;

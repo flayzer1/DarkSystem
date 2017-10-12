@@ -256,6 +256,7 @@ class MainLogger extends \AttachableThreadedLogger{
 				$this->notify();
 			});
 		}
+		return true;
 	}
 	
 	public function directSend($message){
@@ -266,6 +267,7 @@ class MainLogger extends \AttachableThreadedLogger{
 		}else{
 			echo $message . PHP_EOL;
 		}
+		return true;
 	}
 	
 	public static function clear(){
