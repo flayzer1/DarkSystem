@@ -91,14 +91,15 @@ class DragonEgg extends Fallable{
 		$pos = new Position($x, $y, $z, $level);
 		$newpos = clone $pos;
 
-		($ev = new BlockTeleportEvent($this, $oldpos, $newpos))->callEvent();
+		$ev = new BlockTeleportEvent($this, $oldpos, $newpos);
+		$this->getServer()->getPluginManager()->callEvent($ev);
 		if(!$ev->isCancelled()){
 			$level->setBlock($pos, $this, true, true);
 			$posdistance = new Position($newpos->x - $oldpos->x, $newpos->y - $oldpos->y, $newpos->z - $oldpos->z, $this->getLevel());
 			$intdistance = $oldpos->distance($newpos);
 			for($c = 0; $c <= $intdistance; $c++){
 				$progress = $c / $intdistance;
-				$this->getLevel()->addSound(new GenericSound(new Position($oldpos->x + $posdistance->x * $progress, 1.62 + $oldpos->y + $posdistance->y * $progress, $oldpos->z + $posdistance->z * $progress, $this->getLevel()), LevelEventPacket::EVENT_PARTICLE_PORTAL_1));
+				$this->level->addSound(new GenericSound(new Position($oldpos->x + $posdistance->x * $progress, 1.62 + $oldpos->y + $posdistance->y * $progress, $oldpos->z + $posdistance->z * $progress, $this->getLevel()), LevelEventPacket::EVENT_PARTICLE_PORTAL_1));
 			}
 		}
 		

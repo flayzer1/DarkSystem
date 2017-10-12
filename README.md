@@ -12,6 +12,7 @@
 - Loads chunks region-to-region. It uses less CPU resources & loads chunks fast.
 - MobAI Support (So much animals and mobs can move & attack)
 - Smooth Movement (Players does not glitch or go down (:D) while moving and does not throw back.)
+- MCPE 1.2 Support (DarkSystem is compatible with MC: Bedrock Edition/Better together update)
 - Support **PIZZA!** (/givepizza [player] | if you write only /givepizza, will give pizza everyone) (Pizza mark can be changed from advanced config.)
 - Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, XBOX offline mode warn. etc.)
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
@@ -64,6 +65,10 @@
 # Known Bugs:
 - When DarkSystem crash, server does not stop. (Solved %90)
 - DarkSystem's experience system does not work correctly.
+
+# MCPE 1.2 Bugs:
+- Moving is glitchy.
+- Breaking block does not work.
 
 # Notes:
 - DarkSystem does not support PMAnvil map format, only support Anvil and McRegion.

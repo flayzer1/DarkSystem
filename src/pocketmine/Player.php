@@ -2377,13 +2377,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			case "SET_HEALTH_PACKET":
 				break;
 			case "ENTITY_EVENT_PACKET":
-				//Timings::$timerEntityEventPacket->startTiming();
 				if($this->spawned === false || $this->blocked === true || $this->dead === true){
-					//Timings::$timerEntityEventPacket->stopTiming();
 					break;
 				}
 				
-				$this->setDataFlag(Player::DATA_FLAGS, Player::DATA_FLAG_ACTION, false); //TODO: check if this should be true
+				$this->setDataFlag(Player::DATA_FLAGS, Player::DATA_FLAG_ACTION, false);
 
 				switch($packet->event){
 					case EntityEventPacket::USE_ITEM:
@@ -2444,10 +2442,12 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$this->inventory->sendContents($this);
 					break;
 				}
+				
 				if($this->isSpectator()){
 					$this->inventory->sendSlot($slot, $this);
 					break;
 				}
+				
 				$item = $this->inventory->getItem($slot);
 				$ev = new PlayerDropItemEvent($this, $packet->item);
 				$this->server->getPluginManager()->callEvent($ev);
@@ -2500,7 +2500,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 								break;
 								case "darkbot how are you":
 								case "#how are you":
-								$this->server->broadcastMessage($dbotprefix . "I fine, thanks!");
+								$this->server->broadcastMessage($dbotprefix . "I am fine, thanks!");
 								break;
 								case "darkbot what are you doing":
 								case "#what are you doing":
@@ -3225,7 +3225,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				break;
 			case "COMMAND_REQUEST_PACKET":
 				if($packet->command[0] != "/"){
-					$this->sendMessage("§cBilinmeyen Komut!");
+					$this->sendMessage(TF::RED . "Bilinmeyen Komut!");
 					break;
 				}
 				$commandLine = substr($packet->command, 1);
@@ -3321,17 +3321,17 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->server->getPluginManager()->callEvent($ev = new PlayerKickEvent($this, $reason, TF::YELLOW . $this->username . " has left the game"));
 		if(!$ev->isCancelled()){
 			$this->close($ev->getQuitMessage(), $reason);
-			return;
+			return true;
 		}
 		
-		return;
+		return false;
 	}
 	
 	public function sendMessage($message){
 		if($message instanceof TextContainer){
 			if($message instanceof TranslationContainer){
 				$this->sendTranslation($message->getText(), $message->getParameters());
-				return;
+				return true;
 			}
 			$message = $message->getText();
 		}
@@ -3363,9 +3363,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->server->getPluginManager()->callEvent($ev);
 		if(!$ev->isCancelled()){
 			$this->dataPacket($pk);
-			return;
+			return true;
 		}
-		return;
+		return false;
 	}
 
 	public function sendPopup($message){
@@ -3542,7 +3542,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 			$this->interface->close($this, $reason);
 
-			$chunkX = $chunkZ = null;
+			$chunkX = null;
+			$chunkZ = null;
 			foreach($this->usedChunks as $index => $d){
 				Level::getXZ($index, $chunkX, $chunkZ);
 				$this->level->freeChunk($chunkX, $chunkZ, $this);
@@ -3568,7 +3569,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->loadQueue = [];
 			$this->hasSpawned = [];
 			$this->spawnPosition = null;
-			unset($this->buffer);
 		}
 			
 		$this->perm->clearPermissions();
@@ -3581,6 +3581,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 
 		parent::saveNBT();
+		
 		if($this->level instanceof Level){
 			$this->namedtag->Level = new StringTag("Level", $this->level->getName());
 			if($this->spawnPosition instanceof Position && $this->spawnPosition->getLevel() instanceof Level){
@@ -3608,17 +3609,18 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
     }
 	
 	public function freeChunks(){
-		$x = $z = null;
+		$chunkX = null;
+		$chunkZ = null;
 		foreach($this->usedChunks as $index => $chunk){
-			Level::getXZ($index, $x, $z);
-			$this->level->freeChunk($x, $z, $this);
+			Level::getXZ($index, $chunkX, $chunkZ);
+			$this->level->freeChunk($chunkX, $chunkZ, $this);
 			unset($this->usedChunks[$index]);
 			unset($this->loadQueue[$index]);
 		}
 	}
 
 	public function kill(){
-		if($this->dead === true || $this->spawned === false){
+		if($this->dead === true || $this->spawned === false || !$this->isLiving()){
 			return false;
 		}
 
@@ -3815,7 +3817,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			return false;
 		}
 		
-		if($this->hunger - $amount < 0) return;
+		if($this->hunger - $amount < 0){
+			return true;
+		}
+		
 		$this->setFood($this->getFood() - $amount);
 	}
 
@@ -3940,19 +3945,24 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($this->currentWindow === $inventory){
 			return $this->currentWindowId;
 		}
+		
 		if(!is_null($this->currentWindow)){
 			$this->removeWindow($this->currentWindow);
 		}
+		
 		$this->currentWindow = $inventory;
 		$this->currentWindowId = !is_null($forceId) ? $forceId : rand(Player::MIN_WINDOW_ID, 98);
+		
 		if(!$inventory->open($this)){
 			$this->removeWindow($inventory);
 		}
+		
 		return $this->currentWindowId;
 	}
 
 	public function removeWindow(Inventory $inventory){
 		if($this->currentWindow !== $inventory){
+			
 		}else{
 			$inventory->close($this);
 			$this->currentWindow = null;

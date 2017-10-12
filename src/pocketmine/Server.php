@@ -248,7 +248,7 @@ class Server extends DarkSystem{
 	
 	public $keepInventory = false;
 	public $netherEnabled = false;
-	public $netherName = "cehennem";
+	public $netherName = "nether";
 	public $weatherRandomDurationMin = 6000;
 	public $weatherRandomDurationMax = 12000;
 	public $lightningTime = 200;
@@ -630,6 +630,18 @@ class Server extends DarkSystem{
 		$this->craftingMgr->registerRecipe($recipe);
 	}
 	
+	public function getLanguage(){
+		return $this->language;
+	}
+	
+	public function isLanguageForced(){
+		return $this->forceLanguage;
+	}
+	
+	public function getNetwork(){
+		return $this->network;
+	}
+	
 	public function isCommandBlockEnable(){
 		return $this->isCmdBlockEnable;
 	}
@@ -674,6 +686,8 @@ class Server extends DarkSystem{
 	
 	public function clearChat(){
 		foreach($this->getOnlinePlayers() as $p){
+			$p->sendMessage(str_repeat(" \n", 60));
+			/*$p->sendMessage(" ");
 			$p->sendMessage(" ");
 			$p->sendMessage(" ");
 			$p->sendMessage(" ");
@@ -733,6 +747,7 @@ class Server extends DarkSystem{
 			$p->sendMessage(" ");
 			$p->sendMessage(" ");
 			$p->sendMessage(" ");
+			$p->sendMessage(" ");*/
 		}
 	}
 	
@@ -1512,6 +1527,8 @@ class Server extends DarkSystem{
 			$build = ProtocolInfo::DARKSYSTEM_VERSION;
 			$tag = $this->getTag();
 			
+			$splash = $this->getSplash();
+			
 			if($this->getCurrentStatus() == "alpha" || $this->getCurrentStatus() == "beta"){
 				$this->konsol->directSend("§e<?php>");
 			}else{
@@ -1529,7 +1546,8 @@ class Server extends DarkSystem{
                                  §b__/  |      
                                  §9|___/            §6MCPE: $mcpe §e($protocol)
                                                       §6DARKBOT: $dbotcheck (v$dbotver)
-                                                        
+      $splash
+                                      
       §3DarkSystem $version ($build)  *$tag*                                                
 	
 			");
@@ -1881,7 +1899,43 @@ class Server extends DarkSystem{
 		\gc_collect_cycles();
 	}
 	
+	protected function getSplash(){
+		$messages = [
+			"Fast!",
+			"Made by Code Editor",
+			"For MCPE!",
+			"Sponsored by DarkBot!",
+			"Clean!"
+		];
+		
+		$rand = array_rand($messages, 5);
+		switch(mt_rand(1, 3)){
+			case 1;
+			$result = "Test1";
+			break;
+			case 2;
+			$result = "Test2";
+			break;
+			case 3;
+			$result = "Test3";
+			break;
+			default;
+			$result = "DarkSystem";
+			break;
+		}
+		
+		//return $result;
+		return "";
+	}
+	
 	public function broadcastMessage($message, $recipients = null){
+		if(strpos($message, $this->getDarkBotPrefix())){
+			foreach($this->getOnlinePlayers() as $p){
+				$p->sendMessage($message);
+				return true;
+			}
+		}
+		
 		if(!is_array($recipients)){
 			return $this->broadcast($message, Server::BROADCAST_CHANNEL_USERS);
 		}
@@ -2394,18 +2448,6 @@ class Server extends DarkSystem{
 		foreach($this->levels as $l){
 			$l->doChunkGarbageCollection();
 		}
-	}
-	
-	public function getLanguage(){
-		return $this->language;
-	}
-	
-	public function isLanguageForced(){
-		return $this->forceLanguage;
-	}
-	
-	public function getNetwork(){
-		return $this->network;
 	}
 	
 	public function handlePacket($address, $port, $payload){
