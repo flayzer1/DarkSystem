@@ -1,9 +1,9 @@
 <img src="https://raw.githubusercontent.com/DarkYusuf13/DarkSystem/master/banner.png" border="0">
 
 
-**An Advanced & Feature-rich Server Engine/Software For Minecraft (PE) Bedrock Edition 1.x.x**
+**An Advanced & Feature-rich Server Engine/Software For Minecraft (PE) Bedrock Edition 1.x.x & W10**
 
-| Travis CI | Discord Chat Group/Server |
+| Travis CI | Discord Chat Server |
 | :---: | :---: |
 [![Build Status](https://travis-ci.org/DarkYusuf13/DarkSystem.svg?branch=master)](https://travis-ci.org/DarkYusuf13/DarkSystem) | [![Discord](https://camo.githubusercontent.com/455152269a0ed38255ed15e375084d4dd08e0c98/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636861742d6f6e253230646973636f72642d3732383944412e737667)](https://discord.gg/4TewN6v) |
 
@@ -20,7 +20,7 @@
 - MultiVersion® support (**What is this?** We support **1.0.x, 1.1.x, 1.2.x** versions of Minecraft (PE) Bedrock Edition)
 - Always up-to-date. We always add new block, items to DarkSystem. You can find new things on here when out.
 - No junk tasks/threads on Background. Nothing cannot occupy the CPU resources and Performance.
-- Zoom Support (indev) (Maybe usefull for PvP servers. Simply write /zoom.)
+- Zoom Support (indev) (Maybe useful for PvP servers. Simply write /zoom.)
 - TextUtils (Idea from MiNET, Code taken from Turanic. Allows to create more beautiful texts. Example, **TextUtils::center($message)** makes message in center.)
 - BlockLauncher join Blocking (indev) (If you hate hackers this is for you. How to use? It is fully automatic. But not implemented yet. Does not work.)
 - Code is clean, fast and safe, coded as DarkSystem PHP code method.
@@ -79,12 +79,16 @@
 - Download the latest build from [Travis CI](https://travis-ci.org/DarkYusuf13/DarkSystem).
 - PHP Binaries [here](https://github.com/LeverylTeam/PHP7-Binaries).
 <!--* Installation instructions can be found in the [wiki](https://github.com/iTXTech/Genisys/wiki).-->
-NOTE: **The master and mcpe1.1 branches are the only officially supported.**
+NOTE: **The master branch is the only officially supported.**
 _All other branches are in testing and may be unstable. Do not use builds from other branches unless you are sure you understand the risks._
 
 # Tools:
 - [DevTools](https://github.com/pmmp/PocketMine-DevTools) - Plugin and server development tools plugin
 - [Pocket Server](https://github.com/fengberd/MinecraftPEServer) - Run PocketMine-MP/Nukkit on Android devices
+
+# Resources
+Your DarkSystem Server needs Visual Studio C++ Redistributable 2015 (For Windows).<br>
+It can be downloaded [here](https://www.microsoft.com/en-us/download/details.aspx?id=48145)<br>
 
 # License:
 ```
