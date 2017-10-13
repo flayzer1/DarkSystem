@@ -28,4 +28,5 @@ class GarbageCollectionTask extends Task{
 		memory_get_usage();
 		memory_get_usage(true);
 	}
+	
 }

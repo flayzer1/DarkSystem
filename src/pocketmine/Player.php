@@ -306,6 +306,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	protected $allowFlight = false;
 	
+	protected $flying = false;
+	
+	protected $jumping = false;
+	
 	protected $tasks = [];
 	
 	private $perm = null;
@@ -480,6 +484,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function isFlying(){
 		return $this->flying;
+	}
+	
+	public function setJumping($value){
+		$this->jumping = $value;
+		$this->sendSettings();
+	}
+	
+	public function isJumping(){
+		return $this->jumping;
 	}
 	
 	public function setAutoJump($value){
@@ -1041,7 +1054,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function setSpawn(Vector3 $pos){
-		if(!($pos instanceof Position)){
+		if(!$pos instanceof Position){
 			$level = $this->level;
 		}else{
 			$level = $pos->getLevel();
@@ -1308,6 +1321,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		return ($this->isSurvival() || $this->isAdventure());
 	}
 	
+	public function isNotLiving(){
+		return ($this->isCreative() || $this->isSpectator());
+	}
+	
 	public function getDrops(){
 		if(!$this->isCreative() || !$this->isSpectator()){
 			return parent::getDrops();
@@ -1406,6 +1423,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->sendTip(TF::GOLD . "Moving Maybe Buggy on 1.2 Version");
 			}
 		}
+		//$this->setJumping(false);
 		$distanceSquared = ($this->newPosition->x - $this->x) ** 2 + ($this->newPosition->z - $this->z) ** 2;
 		if(($distanceSquared / ($tickDiff ** 2)) > $this->movementSpeed * 225){
 			//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
@@ -1433,7 +1451,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$toZ = floor($to->z);
 					$block = $from->level->getBlock(new Vector3($toX, $toY, $toZ));
 					$blockUp = $from->level->getBlock(new Vector3($toX, $toY + 1, $toZ));
+					$blockFrom = $from->level->getBlock(new Vector3($from->x, $from->y, $from->z));
 					$roundBlock = $from->level->getBlock(new Vector3($toX, round($to->y), $toZ));
+					$downBlock = $this->level->getBlock(new Vector3($this->x, $this->y - 1, $this->z));
 					if($from->y - $to->y > 0.1){
 						if(!$roundBlock->isTransparent()){
 							//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
@@ -1453,7 +1473,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 									//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
 									//return false;
 								}
-								$blockFrom = $from->level->getBlock(new Vector3($from->x, $from->y, $from->z));
 								if($blockFrom instanceof Liquid){
 									//$this->revertMovement($this, $this->lastYaw, $this->lastPitch);
 									//return false;
@@ -1483,8 +1502,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$dz = $to->z - $from->z;
 			$this->fastMove($dx, $dy, $dz);
 			if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120 && $this->isLiving()){
-				$this->speed = new Vector3(0.1, 0.1, 0.1);
-				$downBlock = $this->level->getBlock(new Vector3($this->x, $this->y - 1, $this->z));
+				//$this->speed = new Vector3(0.1, 0.1, 0.1);
 				if(!$downBlock->isTransparent()){
 					$this->setFlying(false);
 				}else{
@@ -1497,8 +1515,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$posBlockX = new Vector3($blockX->x, $blockX->y, $blockX->z);
 				$posBlockZ = new Vector3($blockZ->x, $blockZ->y, $blockZ->z);
 				if($blockLow->isTransparent()){
-					if($blockLow->y < $to->y){
-						$this->speed = new Vector3(0, 0, 0);
+					if($blockLow->y - $to->y > 0.1){
+					//if($blockLow->y < $to->y){
+						//$this->speed = new Vector3(0, 0, 0);
 						$this->setMotion(new Vector3(0, -0.1, 0));
 						//$this->setMoving(false);
 					}
@@ -1506,82 +1525,77 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				if(!$blockX->isTransparent() && $this->isMoving()){
 					$this->setMotion(new Vector3($blockX->x, $blockX->y + 0.1, $blockX->z));
 					if($playerPosition != $posBlockX){
-						//$this->teleport(new Vector3($blockX->x, $blockX->y + 1, $blockX->z));
+						//$this->teleport(new Vector3($blockX->x, $blockX->y + 0.1, $blockX->z));
 					}
-					$this->setMotion(new Vector3(0, 0, 0));
+					//$this->setMotion(new Vector3(0, 0, 0));
 				}
 				if(!$blockZ->isTransparent() && $this->isMoving()){
 					$this->setMotion(new Vector3($blockZ->x, $blockZ->y + 0.1, $blockZ->z));
 					if($playerPosition != $posBlockX){
-						//$this->teleport(new Vector3($blockX->x, $blockX->y + 1, $blockX->z));
+						//$this->teleport(new Vector3($blockX->x, $blockX->y + 0.1, $blockX->z));
 					}
-					$this->setMotion(new Vector3(0, 0, 0));
+					//$this->setMotion(new Vector3(0, 0, 0));
 				}
-				if($this->isSpectator()){
-					if($this->y > 2){
-						$this->setMotion(new Vector3(0, -1.9, 0));
+				if($this->isCreative() || $this->isSpectator()){
+					if($this->isFlying()){
+						$this->setFlyingFlag(true);
+						//TODO: Handle Fly Movement
 					}
-					if($this->y > 3){
-						$this->setMotion(new Vector3(0, -2.9, 0));
+				}elseif($this->isLiving()){
+					//$this->setFlyingFlag(false);
+					/*if($this->y > 2.6){
+						if($downBlock->isTransparent()){
+							$this->setMotion(new Vector3(0, 0.1, 0));
+						}
+					}*/
+					$a = 0.2;
+					$b = 0.3;
+					$c = 0.4;
+					$d = 0.5;
+					$rocket = 30;
+					$downBlock2 = $this->level->getBlock(new Vector3($this->x, $this->y + 1, $this->z));
+					if($this->isJumping()){
+						switch($this->y){ //TODO: Improve
+							case $a;
+							$this->setMotion(new Vector3(0, -$a, 0));
+							break;
+							case $b;
+							$this->setMotion(new Vector3(0, -$b, 0));
+							break;
+							case $c;
+							$this->setMotion(new Vector3(0, -$c, 0));
+							break;
+							case $d;
+							$this->setMotion(new Vector3(0, -$d, 0));
+							break;
+							default;
+							$this->sendPopup(TF::AQUA . "DEBUG: jump error");
+							break;
+						}
+						$this->setJumping(false); //Bad method
+					}elseif($downBlock2->y + 1 && !$downBlock2->isTransparent() > $rocket){ //For rocket bug
+						if($d * 2 * 30 !== $rocket){
+							$this->setMotion(new Vector3(0, -$rocket, 0));
+						}else{
+							$this->setMotion(new Vector3(0, -$d * 2 * 30, 0));
+						}
+						$this->sendPopup(TF::RED . "DEBUG: rocket error");
 					}
-					if($this->y > 4){
-						$this->setMotion(new Vector3(0, -3.9, 0));
+					if($this->y > 0.2){
+						$this->setMotion(new Vector3(0, -0.2, 0));
+					}
+					if($this->y > 0.3){
+						$this->setMotion(new Vector3(0, -0.3, 0));
+					}
+					if($this->y > 0.4){
+						$this->setMotion(new Vector3(0, -0.4, 0));
+					}
+					if($this->y > 0.5){
+						$this->setMotion(new Vector3(0, -0.5, 0));
 					}
 				}
-				if(!$this->isFlying()){
-					if($this->isCreative()){
-						if($this->y > 0.3){
-							$this->setMotion(new Vector3(0, 0.1, 0));
-							$this->setMotion(new Vector3(0, -0.3, 0));
-						}
-						if($this->y > 0.4){
-							$this->setMotion(new Vector3(0, 0.1, 0));
-							$this->setMotion(new Vector3(0, -0.4, 0));
-						}
-						if($this->y > 0.5){
-							$this->setMotion(new Vector3(0, 0.1, 0));
-							$this->setMotion(new Vector3(0, -0.5, 0));
-						}
-						$this->setMotion(new Vector3(0, 0, 0));
-					}else{
-						//$this->setMotion(new Vector3(0, 0, 0));
-					}
-				}else{
-					$this->setFlyingFlag(true);
-				}
-				if($this->isFlying()){
-					if($this->isCreative()){
-						if($this->y > 0.3){
-							$this->setMotion(new Vector3(0, 0.1, 0));
-							$this->setMotion(new Vector3(0, -0.3, 0));
-						}
-						if($this->y > 0.4){
-							$this->setMotion(new Vector3(0, 0.1, 0));
-							$this->setMotion(new Vector3(0, -0.4, 0));
-						}
-						if($this->y > 0.5){
-							$this->setMotion(new Vector3(0, 0.1, 0));
-							$this->setMotion(new Vector3(0, -0.5, 0));
-						}
-					}
-				}else{
-					$this->setFlyingFlag(false);
-				}
-				if($this->y > 0.3){
-					$this->setMotion(new Vector3(0, 0.1, 0));
-					$this->setMotion(new Vector3(0, -0.3, 0));
-				}
-				if($this->y > 0.4){
-					$this->setMotion(new Vector3(0, 0.1, 0));
-					$this->setMotion(new Vector3(0, -0.4, 0));
-				}
-				if($this->y > 0.5){
-					$this->setMotion(new Vector3(0, 0.1, 0));
-					$this->setMotion(new Vector3(0, -0.5, 0));
-				}
-				//parent::resetFallDistance();
-				return true;
-			} //We will add creative here
+				//return true;
+			}
 			$this->x = $to->x;
 			$this->y = $to->y;
 			$this->z = $to->z;
@@ -1909,7 +1923,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				2 => 1,
 				3 => 1
 			],
-            Item::CHORUS_FRUIT => 2,
+            Item::CHORUS_FRUIT => 2
 		];
 
 		$slot = $this->inventory->getItemInHand();
@@ -2194,7 +2208,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				break;
 			case "USE_ITEM_PACKET":
 				//Timings::$timerUseItemPacket->startTiming();
-				if($this->spawned === false || $this->dead === true || $this->blocked){
+				if($this->spawned === false || $this->dead === true || $this->blocked === true){
 					//Timings::$timerUseItemPacket->stopTiming();
 					break;
 				}
@@ -3185,8 +3199,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					case ResourcePackClientResponsePacket::STATUS_COMPLETED:
 						$this->completeLogin();
 						break;
-					default:
-						return false;
+						default;
+						break;
 				}
 				break;
 			case "RESOURCE_PACK_CHUNK_REQUEST_PACKET":
@@ -3194,7 +3208,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$pack = $manager->getPackById($packet->packId);
 				if(!$pack instanceof ResourcePack){
 					$this->close("", "disconnectionScreen.resourcePack", true);
-					return true;
+					break;
 				}
 
 				$pk = new ResourcePackChunkDataPacket();
@@ -3637,7 +3651,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 
 	public function kill(){
-		if($this->dead === true || $this->spawned === false || !$this->isLiving()){
+		if($this->dead === true || $this->spawned === false || $this->isNotLiving()){
 			return false;
 		}
 
@@ -3842,12 +3856,12 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			return false;
 		}
 
-		if($this->isCreative() || $this->isSpectator()
+		if($this->isNotLiving()
 			&& $source->getCause() !== EntityDamageEvent::CAUSE_MAGIC
 			&& $source->getCause() !== EntityDamageEvent::CAUSE_SUICIDE
 			&& $source->getCause() !== EntityDamageEvent::CAUSE_VOID
 		){
-			$source->setCancelled();
+			$source->setCancelled(true);
 		}
 
 		parent::attack($damage, $source);
@@ -4254,6 +4268,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$item = Item::get(Item::COOKIE, 0, 1);
 		$pizza = $item->setCustomName(TF::AQUA . $mark . " §6Pizzası");
 		$this->inventory->addItem(clone $pizza);
+		
+		return true;
 	}
 	
 	public function transfer($address, $port = false){
@@ -4552,9 +4568,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function sendPing(){
-		if($this->ping <= 150){
+		if($this->getPing() <= 150){
 			$this->sendMessage(TF::GREEN . "Bağlantı: İyi ({$this->ping}ms)");
-		}elseif($this->ping <= 250){
+		}elseif($this->getPing() <= 250){
 			$this->sendMessage(TF::YELLOW . "Bağlantı: Orta ({$this->ping}ms)");
 		}else{
 			$this->sendMessage(TF::RED . "Bağlantı: Kötü ({$this->ping}ms)");
@@ -4600,7 +4616,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function sendNoteSound($noteId, $queue = false){
 		if($queue){
 			$this->noteSoundQueue[] = $noteId;
-			return;
+			return true;
 		}
 		
 		$pk = new LevelSoundEventPacket();
@@ -4645,7 +4661,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
  	}
 	
 	public function attackByTargetId($targetId){
-		if($this->spawned === false || $this->dead === true || $this->blocked){
+		if($this->spawned === false || $this->dead === true || $this->blocked === true){
 			return false;
 		}
 
@@ -4684,11 +4700,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			Item::GOLD_SHOVEL => 1,
 			Item::STONE_SHOVEL => 2,
 			Item::IRON_SHOVEL => 3,
-			Item::DIAMOND_SHOVEL => 4,
+			Item::DIAMOND_SHOVEL => 4
 		];
 		
 		$damage = [
-			EntityDamageEvent::MODIFIER_BASE => isset($damageTable[$item->getId()]) ? $damageTable[$item->getId()] : 1,
+			EntityDamageEvent::MODIFIER_BASE => isset($damageTable[$item->getId()]) ? $damageTable[$item->getId()] : 1
 		];
 
 		if($this->distance($target) > 4){
@@ -4714,7 +4730,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				Item::DIAMOND_HELMET => 3,
 				Item::DIAMOND_CHESTPLATE => 8,
 				Item::DIAMOND_LEGGINGS => 6,
-				Item::DIAMOND_BOOTS => 3,
+				Item::DIAMOND_BOOTS => 3
 			];
 			
 			$points = 0;
@@ -4733,7 +4749,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		foreach(Player::$damageTimeList as $time => $koef){
 			if($timeDiff <= $time){
 				if($koef == 0){
-					return true;
+					break;
 				}
 				
 				$damage[EntityDamageEvent::MODIFIER_BASE] *= $koef;
@@ -4745,14 +4761,16 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$target->attack($ev->getFinalDamage(), $ev);
 		$this->level->addSound(new LaunchSound($this), $this->getViewers());
 		if($ev->isCancelled()){
-			if($item->isTool() && $this->isSurvival() || $this->isAdventure() && !$this->isCreative() && !$this->isSpectator()){
+			//if($item->isTool() && $this->isSurvival() || $this->isAdventure() && !$this->isCreative() && !$this->isSpectator()){
+			if($item->isTool() && $this->isLiving()){
 				$this->inventory->sendContents($this);
 			}
 			
 			return false;
 		}
 
-		if($item->isTool() && $this->isSurvival() || $this->isAdventure()/* && !$this->isCreative() && !$this->isSpectator()*/){
+		//if($item->isTool() && $this->isSurvival() || $this->isAdventure()/* && !$this->isCreative() && !$this->isSpectator()*/){
+		if($item->isTool() && $this->isLiving()){
 			if($item->useOn($target) && $item->getDamage() >= $item->getMaxDurability()){
 				$this->inventory->setItemInHand(Item::get(Item::AIR, 0, 1), $this);
 			}elseif($this->inventory->getItemInHand()->getId() == $item->getId()){
@@ -4777,7 +4795,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 				}elseif($this->isCreative()/* && !$this->isSpectator() && !$this->isSurvival() && !$this->isAdventure()*/){
 					if($this->level->useItemOn($blockVector, $itemInHand, $face, $clickPosition["x"], $clickPosition["y"], $clickPosition["z"], $this) === true){
-						return;
+						break;
 					}
 				}elseif(!$itemInHand->deepEquals($item)){
 				}else{
@@ -4788,21 +4806,21 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 							$this->inventory->sendHeldItem($this->hasSpawned);
 						}
 						
-						return;
+						break;
 					}
 				}
 
 				$this->inventory->sendHeldItem($this);
 
 				if($blockVector->distanceSquared($this) > 10000){
-					return;
+					break;
 				}
 				
 				$target = $this->level->getBlock($blockVector);
 				$block = $target->getSide($face);
 
 				$this->level->sendBlocks([$this], [$target, $block], UpdateBlockPacket::FLAG_ALL_PRIORITY);
-				return;
+				break;
 			case 0xff:
 			case -1:
 				if($this->isSpectator() && !$this->isCreative() && !$this->isSurvival() && !$this->isAdventure()){
@@ -4811,14 +4829,14 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						$this->inventory->sendContents($this);
 					}
 					
-					return;
+					break;
 				}
 
 				$itemInHand = $this->inventory->getItemInHand();
 				if(!$itemInHand->deepEquals($item)){
 					$this->inventory->sendHeldItem($this);
 					//Timings::$timerUseItemPacket->stopTiming();
-					return;
+					break;
 				}
 
 				if($blockPosition["x"] != 0 || $blockPosition["y"] != 0 || $blockPosition["z"] != 0){
@@ -4836,7 +4854,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						$this->inventory->sendContents($this);
 					}
 					
-					return;
+					break;
 				}
 				
 				if($itemInHand->getId() === Item::SNOWBALL || $itemInHand->getId() === Item::EGG/* || $itemInHand->getId() === Item::BOAT*/){
@@ -4893,7 +4911,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 				$this->setDataFlag(Player::DATA_FLAGS, Player::DATA_FLAG_ACTION, true);
 				$this->startAction = $this->server->getTick();
-				return;
+				break;
 		}
 	}
 	
@@ -4911,7 +4929,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$this->inventory->sendHeldItem($this->hasSpawned);
 				}
 			}
-			return;
+			return true;
 		}
 		$this->inventory->sendContents($this);
 		$target = $this->level->getBlock($vector);
@@ -4928,18 +4946,18 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		foreach($packet->transactions as $trData){
 			if($trData->isDropItemTransaction()){
 				$this->tryDropItem($packet->transactions);
-				return;
+				return true;
 			}
 			
 			if($trData->isCompleteEnchantTransaction()){
 				$this->tryEnchant($packet->transactions);
-				return;
+				return true;
 			}
 			
 			$transaction = $trData->convertToTransaction($this);
 			if($transaction == null){
 				$trGroup->sendInventories();
-				return;
+				return false;
 			}
 			
 			$trGroup->addTransaction($transaction);
@@ -4949,6 +4967,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			if(!$trGroup->execute()){
 				$trGroup->sendInventories();
 			}else{
+				
 			}
 		}catch(\Exception $e){
 			$trGroup->sendInventories();
@@ -4972,21 +4991,21 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->currentWindow->sendContents($this);
 			}
 			
-			return;
+			return true;
 		}
 		
 		$inventory = $transaction->getInventory();
 		$item = $inventory->getItem($transaction->getSlot());
 		if(!$item->equals($dropItem) || $item->count < $dropItem->count){
 			$inventory->sendContents($this);
-			return;
+			return false;
 		}
 		
 		$ev = new PlayerDropItemEvent($this, $dropItem);
 		$this->server->getPluginManager()->callEvent($ev);
 		if($ev->isCancelled()){
 			$inventory->sendContents($this);
-			return;
+			return false;
 		}
 		
 		if($item->count == $dropItem->count){
@@ -5055,7 +5074,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$blockPos = [
 			"x" => $packet->x,
 			"y" => $packet->y,
-			"z" => $packet->z,
+			"z" => $packet->z
 		];
 		$isNeedSendSound = $this->actionsNum["CRACK_BLOCK"] % 4 == 0;
 		$this->actionsNum["CRACK_BLOCK"]++;
@@ -5096,10 +5115,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->dataPacket($pk);
 	}
 	
-	private function setMayMove($state){
+	private function setMayMove($value){
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
-			$this->setDataFlag(Player::DATA_FLAGS, 46, $state);
-			$this->isMayMove = $state;
+			$this->setDataFlag(Player::DATA_FLAGS, 46, $value);
+			$this->isMayMove = $value;
 		}else{
 			$this->isMayMove = true;
 		}
@@ -5109,32 +5128,33 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		
 	}
 	
-	public function fall($fallDistance){
+	public function fall($distance){
 		if(!$this->allowFlight){
-			parent::fall($fallDistance);
+			parent::fall($distance);
 		}
 	}
 	
 	protected function advancedJump(){
+		$this->jumping = true;
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			if($this->isMoving()){
-				$this->speed = new Vector3(0.1, 0.1, 0.1);
-				//$this->setMotion(0, 0, 0);
-				//TODO: Handle Jumping while Moving
+				//$this->speed = new Vector3(0.1, 0.1, 0.1);
+				$this->setMotion(0.1, 0.3, 0);
 			}else{
-				$this->setMotion(0, 0.1, 0);
-				$this->setMotion(0, 0.2, 0);
+				//$this->setMotion(0, 0.1, 0);
+				//$this->setMotion(0, 0.2, 0);
 				$this->setMotion(0, 0.3, 0);
 				$this->setSprinting(false);
-				$this->speed = new Vector3(0, 0, 0);
+				//$this->speed = new Vector3(0, 0, 0);
 			}
 		}
 		$this->server->getPluginManager()->callEvent(new PlayerJumpEvent($this));
 		parent::jump();
+		$this->jumping = false;
 	}
 	
 	protected function onJump(){
- 		
+		//$this->jumping = What we'll write here?
  	}
 	
 	 protected function releaseUseItem(){
@@ -5172,7 +5192,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$ev = new EntityShootBowEvent($this, $bow, Entity::createEntity("Arrow", $this->level, $nbt, $this, $f == 2 ? true : false), $f);
 
 				if($f < 0.1 || $diff < 5){
-					$ev->setCancelled();
+					$ev->setCancelled(true);
 				}
 
 				$this->server->getPluginManager()->callEvent($ev);
