@@ -66,7 +66,7 @@
 - When DarkSystem crash, server does not stop. (Solved %90)
 - DarkSystem's experience system does not work correctly.
 
-# MCPE 1.2 Bugs:
+# Known Bugs in 1.2:
 - Moving is glitchy.
 - Breaking block does not work.
 

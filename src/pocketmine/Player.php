@@ -155,7 +155,7 @@ use pocketmine\tile\Sign;
 use pocketmine\tile\Spawnable;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat as TF;
-use pocketmine\scheduler\SendPlayerFaceTask;
+//use pocketmine\scheduler\SendPlayerFaceTask;
 use pocketmine\network\protocol\SetPlayerGameTypePacket;
 use pocketmine\network\protocol\SetCommandsEnabledPacket;
 use pocketmine\network\protocol\AvailableCommandsPacket;
@@ -490,7 +490,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function hasAutoJump(){
 		return $this->autoJump;
 	}
-
+	
+	public function getFood(){
+		return $this->hunger;
+	}
+	
 	public function spawnTo(Player $player){
 		if($this->spawned === true && $player->spawned === true && $this->dead !== true && $player->dead !== true && $player->getLevel() === $this->level && $player->canSee($this) && !$this->isSpectator()){
 			parent::spawnTo($player);
@@ -1502,21 +1506,30 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				if(!$blockX->isTransparent() && $this->isMoving()){
 					$this->setMotion(new Vector3($blockX->x, $blockX->y + 0.1, $blockX->z));
 					if($playerPosition != $posBlockX){
-						$this->teleport(new Vector3($blockX->x, $blockX->y + 1, $blockX->z));
+						//$this->teleport(new Vector3($blockX->x, $blockX->y + 1, $blockX->z));
 					}
 					$this->setMotion(new Vector3(0, 0, 0));
 				}
 				if(!$blockZ->isTransparent() && $this->isMoving()){
 					$this->setMotion(new Vector3($blockZ->x, $blockZ->y + 0.1, $blockZ->z));
 					if($playerPosition != $posBlockX){
-						$this->teleport(new Vector3($blockX->x, $blockX->y + 1, $blockX->z));
+						//$this->teleport(new Vector3($blockX->x, $blockX->y + 1, $blockX->z));
 					}
 					$this->setMotion(new Vector3(0, 0, 0));
 				}
-				if(!$this->isLiving()){
-				} //TODO: Handle Creative Movement
+				if($this->isSpectator()){
+					if($this->y > 2){
+						$this->setMotion(new Vector3(0, -1.9, 0));
+					}
+					if($this->y > 3){
+						$this->setMotion(new Vector3(0, -2.9, 0));
+					}
+					if($this->y > 4){
+						$this->setMotion(new Vector3(0, -3.9, 0));
+					}
+				}
 				if(!$this->isFlying()){
-					if(!$this->isLiving()){
+					if($this->isCreative()){
 						if($this->y > 0.3){
 							$this->setMotion(new Vector3(0, 0.1, 0));
 							$this->setMotion(new Vector3(0, -0.3, 0));
@@ -1537,7 +1550,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$this->setFlyingFlag(true);
 				}
 				if($this->isFlying()){
-					if(!$this->isLiving()){
+					if($this->isCreative()){
 						if($this->y > 0.3){
 							$this->setMotion(new Vector3(0, 0.1, 0));
 							$this->setMotion(new Vector3(0, -0.3, 0));
@@ -1568,7 +1581,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				}
 				//parent::resetFallDistance();
 				return true;
-			}
+			} //We will add creative here
 			$this->x = $to->x;
 			$this->y = $to->y;
 			$this->z = $to->z;
@@ -2200,7 +2213,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$action = MultiversionEnums::getPlayerAction($this->protocol, $packet->action);
 				switch($action){
 					case "START_JUMP":
-						$this->jump();
+						$this->advancedJump();
 						break;
 					case "START_DESTROY_BLOCK":
 						$this->actionsNum["CRACK_BLOCK"] = 0;
@@ -2335,6 +2348,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						$this->elytrasActivated = false;
 						break;
 					case "CRACK_BLOCK":
+						if($this->isAdventure() || $this->isSpectator()){
+							break;
+						}
+						
 						$this->crackBlock($packet);
 						break;
 				}
@@ -2360,9 +2377,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				}
 				break;
 			case "ANIMATE_PACKET":
-				/*if($this->spawned === false || $this->dead === true){
+				if($this->spawned === false || $this->dead === true){
 					break;
-				}*/
+				}
 
 				$this->server->getPluginManager()->callEvent($ev = new PlayerAnimationEvent($this, $packet->action));
 				if($ev->isCancelled()){
@@ -3807,11 +3824,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		
 		$this->hunger = $amount;
 	}
-
-	public function getFood(){
-		return $this->hunger;
-	}
-
+	
 	public function subtractFood($amount){
 		if(!$this->getFoodEnabled()){
 			return false;
@@ -5102,13 +5115,19 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 	}
 	
-	protected function jump(){
+	protected function advancedJump(){
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
-			$this->setMotion(0, 0.1, 0);
-			$this->setMotion(0, 0.2, 0);
-			$this->setMotion(0, 0.3, 0);
-			$this->setSprinting(false);
-			$this->speed = new Vector3(0, 0, 0);
+			if($this->isMoving()){
+				$this->speed = new Vector3(0.1, 0.1, 0.1);
+				//$this->setMotion(0, 0, 0);
+				//TODO: Handle Jumping while Moving
+			}else{
+				$this->setMotion(0, 0.1, 0);
+				$this->setMotion(0, 0.2, 0);
+				$this->setMotion(0, 0.3, 0);
+				$this->setSprinting(false);
+				$this->speed = new Vector3(0, 0, 0);
+			}
 		}
 		$this->server->getPluginManager()->callEvent(new PlayerJumpEvent($this));
 		parent::jump();
@@ -5391,7 +5410,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	private function getNonValidProtocolMessage($protocol){
 		if($protocol > ProtocolInfo::PROTOCOL_137 || ($protocol > ProtocolInfo::PROTOCOL_113 && $protocol < ProtocolInfo::PROTOCOL_120)){
-			return TF::WHITE . "We do not support this client version yet.\n" . TextFormat::WHITE ."        The update is coming soon.";
+			return TF::WHITE . "We do not support this client version yet.\n" . TF::WHITE ."        The update is coming soon.";
 		}else{
 			return TF::WHITE . "Please update your client version to join";
 		}
