@@ -57,7 +57,7 @@ abstract class WalkingEntity extends BaseEntity {
 				$z = mt_rand(20, 100);
 				$this->moveTime = mt_rand(300, 1200);
 				$this->baseTarget = new Vector3($this->getX() + (mt_rand(0, 1) ? $x : -$x), $this->getY(), $this->getZ() + (mt_rand(0, 1) ? $z : -$z));
-				$y =  $this->level->getHighestBlockAt($this->baseTarget->getX(), $this->baseTarget->getZ());
+				$y = $this->level->getHighestBlockAt($this->baseTarget->getX(), $this->baseTarget->getZ());
 				$this->baseTarget->y = $y;
 				$block = $this->level->getBlock($this->baseTarget);
 				if(!($block instanceof Water)){

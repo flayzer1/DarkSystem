@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class EvocationFangs extends Animal
 {
-	const NETWORK_ID = 103;
+	const NETWORK_ID = 103; //33
 
 	public function getName()
 	{

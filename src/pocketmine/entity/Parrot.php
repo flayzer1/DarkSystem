@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class Parrot extends Animal
 {
-	const NETWORK_ID = 69;
+	const NETWORK_ID = 30;
 
 	public function getName()
 	{

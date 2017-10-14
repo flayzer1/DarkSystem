@@ -7,7 +7,7 @@ use pocketmine\entity\Creature;
 
 class Parrot extends FlyingAnimal{
 	
-    const NETWORK_ID = 69;
+    const NETWORK_ID = 30;
 
     public $width = 0.5;
     public $length = 0.484;

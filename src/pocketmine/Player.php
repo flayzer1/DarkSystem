@@ -359,7 +359,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	private $actionsNum = [];
 	
-	private $isMayMove = false;
+	private $mayMove = false;
 	
 	protected $serverAddress = "";
 	
@@ -467,7 +467,47 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function hasPlayedBefore(){
 		return $this->namedtag instanceof Compound;
 	}
+	
+	public function setMetadata($metadataKey, MetadataValue $metadataValue){
+		$this->server->getPlayerMetadata()->setMetadata($this, $metadataKey, $metadataValue);
+	}
 
+	public function getMetadata($metadataKey){
+		return $this->server->getPlayerMetadata()->getMetadata($this, $metadataKey);
+	}
+
+	public function hasMetadata($metadataKey){
+		return $this->server->getPlayerMetadata()->hasMetadata($this, $metadataKey);
+	}
+
+	public function removeMetadata($metadataKey, Plugin $plugin){
+		$this->server->getPlayerMetadata()->removeMetadata($this, $metadataKey, $plugin);
+	}
+	
+	public function setLastMessageFrom($name){
+		$this->lastMessageReceivedFrom = (string)$name;
+	}
+
+	public function getLastMessageFrom(){
+		return $this->lastMessageReceivedFrom;
+	}
+	
+	public function setIdentifier($identifier){
+		$this->identifier = $identifier;
+	}
+	
+	public function getIdentifier(){
+		return $this->identifier;
+	}	
+	
+	public function getVisibleEyeHeight(){
+		return $this->eyeHeight;
+	}
+	
+	public function kickOnFullServer(){
+		return true;
+	}
+	
 	public function setAllowFlight($value){
 		$this->allowFlight = (bool) $value;
 		$this->sendSettings();
@@ -1349,6 +1389,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 
 	protected function checkNearEntities($tickDiff){
+		if($this->isSpectator()){
+			return false;
+		}
+		
 		foreach($this->level->getNearbyEntities($this->boundingBox->grow(1, 0.5, 1), $this) as $entity){
 			$entity->scheduleUpdate();
 			if(!$entity->isAlive()){
@@ -1412,7 +1456,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	protected function processMovement($tickDiff){
-		if(!$this->isAlive() || !$this->spawned || $this->newPosition === null || $this->isSleeping()){
+		if(!$this->isAlive() || $this->spawned === false || $this->newPosition === null || $this->isSleeping()){
 			$this->setMoving(false);
 			return false;
 		}
@@ -1485,7 +1529,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$ev = new PlayerMoveEvent($this, $from, $to);
 				$this->setMoving(true);
 				$this->server->getPluginManager()->callEvent($ev);
-				if($this->isTeleportedForMoveEvent){
+				if($this->isTeleportedForMoveEvent === true){
 					return false;
 				}
 				if($ev->isCancelled()){
@@ -1502,11 +1546,21 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$dz = $to->z - $from->z;
 			$this->fastMove($dx, $dy, $dz);
 			if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120 && $this->isLiving()){
+				$this->setMayMove(true);
 				//$this->speed = new Vector3(0.1, 0.1, 0.1);
-				if(!$downBlock->isTransparent()){
+				if(!$downBlock->isTransparent() && $this->isNotLiving()){
+				//if(!$downBlock->isTransparent()){
 					$this->setFlying(false);
 				}else{
 					$this->setFlying(true);
+				}
+				if($downBlock->isTransparent() && $this->isLiving() && !$this->isFlying() && $this->y < 5 && !$this->y > 6){
+					$this->setJumping(true);
+				}else{
+					$this->setJumping(false);
+				}
+				if($distanceSquared >= 0.5 && $this->isLiving()){
+					$this->setJumping(true);
 				}
 				$playerPosition = new Vector3($this->x, $this->y - 1, $this->z);
 				$blockLow = $from->level->getBlock(new Vector3($toX, $toY - 1, $toZ));
@@ -1536,10 +1590,23 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					}
 					//$this->setMotion(new Vector3(0, 0, 0));
 				}
-				if($this->isCreative() || $this->isSpectator()){
+				if($this->isNotLiving()){
 					if($this->isFlying()){
 						$this->setFlyingFlag(true);
 						//TODO: Handle Fly Movement
+					}else{
+						if($this->y > 0.2){
+							$this->setMotion(new Vector3(0, -0.2, 0));
+						}
+						if($this->y > 0.3){
+							$this->setMotion(new Vector3(0, -0.3, 0));
+						}
+						if($this->y > 0.4){
+							$this->setMotion(new Vector3(0, -0.4, 0));
+						}
+						if($this->y > 0.5){
+							$this->setMotion(new Vector3(0, -0.5, 0));
+						}
 					}
 				}elseif($this->isLiving()){
 					//$this->setFlyingFlag(false);
@@ -1553,27 +1620,40 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$c = 0.4;
 					$d = 0.5;
 					$rocket = 30;
-					$downBlock2 = $this->level->getBlock(new Vector3($this->x, $this->y + 1, $this->z));
+					$rocketBlock = $this->level->getBlock(new Vector3($this->x, $this->y + 1, $this->z));
+					$highBlock = $this->level->getHighestBlockAt($this->x, $this->z);
 					if($this->isJumping()){
-						switch($this->y){ //TODO: Improve
+						/*
+						//switch($this->y){ //TODO: Improve
+						//switch($highBlock){ //TODO: Improve
 							case $a;
-							$this->setMotion(new Vector3(0, -$a, 0));
+							//$this->setMotion(new Vector3(0, -$a, 0));
+							$this->setMotion(new Vector3(0, $highBlock + $a - 0.1, 0));
 							break;
 							case $b;
-							$this->setMotion(new Vector3(0, -$b, 0));
+							//$this->setMotion(new Vector3(0, -$b, 0));
+							$this->setMotion(new Vector3(0, $highBlock + $a - 0.1, 0));
 							break;
 							case $c;
-							$this->setMotion(new Vector3(0, -$c, 0));
+							//$this->setMotion(new Vector3(0, -$c, 0));
+							$this->setMotion(new Vector3(0, $highBlock + $a - 0.1, 0));
 							break;
 							case $d;
-							$this->setMotion(new Vector3(0, -$d, 0));
+							//$this->setMotion(new Vector3(0, -$d, 0));
+							$this->setMotion(new Vector3(0, $highBlock + $a - 0.1, 0));
 							break;
 							default;
 							$this->sendPopup(TF::AQUA . "DEBUG: jump error");
 							break;
+						//$this->setJumping(false); //Bad method
+						}*/
+						if($this->y > $a || $this->y > $b || $this->y > $c || $this->y > $d){
+						//if($highBlock->y > $a || $highBlock->y > $b || $highBlock->y > $c || $highBlock->y > $d){ //How do we'll get y?
+							//$this->setMotion(new Vector3(0, $highBlock->y + 0.1, 0)); //???
+							$this->setMotion(new Vector3(0, -$this->y + 0.1, 0));
+							$this->setJumping(false); //Bad method
 						}
-						$this->setJumping(false); //Bad method
-					}elseif($downBlock2->y + 1 && !$downBlock2->isTransparent() > $rocket){ //For rocket bug
+					}elseif(!$rocketBlock->isTransparent() && $rocketBlock->y + 1 > $rocket && $this->isLiving() && !$this->isFlying()){ //For rocket bug
 						if($d * 2 * 30 !== $rocket){
 							$this->setMotion(new Vector3(0, -$rocket, 0));
 						}else{
@@ -1623,7 +1703,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	protected function procesMovement($tickDiff){
-		if(!$this->isAlive() or !$this->spawned or $this->newPosition === null or $this->isSleeping()){
+		if(!$this->isAlive() || $this->spawned === false || $this->newPosition === null || $this->isSleeping()){
 			return;
 		}
 
@@ -1665,7 +1745,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 			$diff = ($diffX ** 2 + $diffY ** 2 + $diffZ ** 2) / ($tickDiff ** 2);
 
-			if($this->isSurvival() and !$revert and $diff > 0.0625){
+			if($this->isLiving() and !$revert and $diff > 0.0625){
 				$ev = new PlayerIllegalMoveEvent($this, $newPos);
 				$ev->setCancelled(true);
 
@@ -2076,7 +2156,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						if($packet->yaw < 0){
 							$packet->yaw += 360;
 						}
-						if(!$this->isMayMove){
+						if(!$this->isMayMove()){
 							if($this->yaw != $packet->yaw || $this->pitch != $packet->pitch || abs($this->x - $packet->x) >= 0.05 || abs($this->z - $packet->z) >= 0.05){
 								$this->setMayMove(true);
 								$spawn = $this->getSpawn();
@@ -2285,7 +2365,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 						$this->teleport($ev->getRespawnPosition());
 
-						$this->setSprinting(false, true);
+						$this->setSprinting(false);
 						$this->setSneaking(false);
 
 						$this->extinguish();
@@ -3996,46 +4076,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->currentWindowId = -1;
 		}
 	}
-
-	public function setMetadata($metadataKey, MetadataValue $metadataValue){
-		$this->server->getPlayerMetadata()->setMetadata($this, $metadataKey, $metadataValue);
-	}
-
-	public function getMetadata($metadataKey){
-		return $this->server->getPlayerMetadata()->getMetadata($this, $metadataKey);
-	}
-
-	public function hasMetadata($metadataKey){
-		return $this->server->getPlayerMetadata()->hasMetadata($this, $metadataKey);
-	}
-
-	public function removeMetadata($metadataKey, Plugin $plugin){
-		$this->server->getPlayerMetadata()->removeMetadata($this, $metadataKey, $plugin);
-	}
-	
-	public function setLastMessageFrom($name){
-		$this->lastMessageReceivedFrom = (string)$name;
-	}
-
-	public function getLastMessageFrom(){
-		return $this->lastMessageReceivedFrom;
-	}
-	
-	public function setIdentifier($identifier){
-		$this->identifier = $identifier;
-	}
-	
-	public function getIdentifier(){
-		return $this->identifier;
-	}	
-	
-	public function getVisibleEyeHeight(){
-		return $this->eyeHeight;
-	}
-	
-	public function kickOnFullServer(){
-		return true;
-	}
 	
 	public function processLogin(){
 		if($this->server->isUseEncrypt() && $this->needEncrypt()){
@@ -5118,12 +5158,16 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	private function setMayMove($value){
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$this->setDataFlag(Player::DATA_FLAGS, 46, $value);
-			$this->isMayMove = $value;
+			$this->mayMove = $value;
 		}else{
-			$this->isMayMove = true;
+			$this->mayMove = true;
 		}
 	}
-
+	
+	private function isMayMove(){
+		return $this->mayMove;
+	}
+	
 	public function customInteract($packet){
 		
 	}
@@ -5139,18 +5183,20 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			if($this->isMoving()){
 				//$this->speed = new Vector3(0.1, 0.1, 0.1);
-				$this->setMotion(0.1, 0.3, 0);
+				$this->setMotion(new Vector3(0.2, 0.4, 0));
 			}else{
-				//$this->setMotion(0, 0.1, 0);
-				//$this->setMotion(0, 0.2, 0);
-				$this->setMotion(0, 0.3, 0);
+				//$this->setMotion(new Vector3(0, 0.1, 0));
+				//$this->setMotion(new Vector3(0, 0.2, 0));
+				//$this->setMotion(new Vector3(0, 0.3, 0));
+				$this->setMotion(new Vector3(0, 0.4, 0));
 				$this->setSprinting(false);
+				$this->setSneaking(false);
 				//$this->speed = new Vector3(0, 0, 0);
 			}
 		}
 		$this->server->getPluginManager()->callEvent(new PlayerJumpEvent($this));
-		parent::jump();
-		$this->jumping = false;
+		$this->onJump();
+		//$this->jumping = false;
 	}
 	
 	protected function onJump(){
