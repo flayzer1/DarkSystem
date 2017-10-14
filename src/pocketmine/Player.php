@@ -1628,19 +1628,19 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						//switch($highBlock){ //TODO: Improve
 							case $a;
 							//$this->setMotion(new Vector3(0, -$a, 0));
-							$this->setMotion(new Vector3(0, $highBlock + $a - 0.1, 0));
+							$this->setMotion(new Vector3(0, $highBlock->y + $a - 0.1, 0));
 							break;
 							case $b;
 							//$this->setMotion(new Vector3(0, -$b, 0));
-							$this->setMotion(new Vector3(0, $highBlock + $a - 0.1, 0));
+							$this->setMotion(new Vector3(0, $highBlock->y + $a - 0.1, 0));
 							break;
 							case $c;
 							//$this->setMotion(new Vector3(0, -$c, 0));
-							$this->setMotion(new Vector3(0, $highBlock + $a - 0.1, 0));
+							$this->setMotion(new Vector3(0, $highBlock->y + $a - 0.1, 0));
 							break;
 							case $d;
 							//$this->setMotion(new Vector3(0, -$d, 0));
-							$this->setMotion(new Vector3(0, $highBlock + $a - 0.1, 0));
+							$this->setMotion(new Vector3(0, $highBlock->y + $a - 0.1, 0));
 							break;
 							default;
 							$this->sendPopup(TF::AQUA . "DEBUG: jump error");

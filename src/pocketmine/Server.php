@@ -801,8 +801,8 @@ class Server extends DarkSystem{
 			new IntTag("Score", 0),
 			//new IntTag("ShoulderEntityLeft", $player->getLeftShoulderEntity()),
 			//new IntTag("ShoulderEntityRight", $player->getRightShoulderEntity()),
-			new IntTag("ShoulderEntityLeft", 30),
-			new IntTag("ShoulderEntityRight", 30),
+			//new IntTag("ShoulderEntityLeft", 0),
+			//new IntTag("ShoulderEntityRight", 0),
 			new IntTag("seenCredits", $this->isCreditsEnable()),
 			new IntTag("playerGameType", $this->getGamemode()),
 			new Enum("Motion", [
