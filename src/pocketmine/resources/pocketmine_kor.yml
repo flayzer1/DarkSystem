@@ -162,7 +162,7 @@ spawn-limits:
 
 auto-report:
  #처리를 위해 충돌 보고서 보내기
- enabled: true
+ enabled: false
  send-code: true
  send-settings: true
  send-phpinfo: false

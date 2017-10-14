@@ -16,12 +16,12 @@ class Range{
 	public $minValue;
 	public $maxValue;
 
-	public function __construct(int $min, int $max){
+	public function __construct($min, $max){
 		$this->minValue = $min;
 		$this->maxValue = $max;
 	}
 
-	public function isInRange(int $v){
+	public function isInRange($v){
 		return $v >= $this->minValue && $v <= $this->maxValue;
 	}
 	

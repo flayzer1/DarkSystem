@@ -148,7 +148,11 @@ class CrashReport{
 					"website" => $d->getWebsite()
 				];
 				
-				$this->addLine($d->getName() . " " . $d->getVersion() . " Yapan " . implode(", ", $d->getAuthors()) . " API(ler) " . implode(", ", $d->getCompatibleApis()));
+				if(Translate::checkTurkish() === "yes"){
+					$this->addLine($d->getName() . " " . $d->getVersion() . " Yapan " . implode(", ", $d->getAuthors()) . " API(ler) " . implode(", ", $d->getCompatibleApis()));
+				}else{
+					$this->addLine($d->getName() . " " . $d->getVersion() . " by " . implode(", ", $d->getAuthors()) . " API(s) " . implode(", ", $d->getCompatibleApis()));
+				}
 			}
 		}
 	}
@@ -187,7 +191,7 @@ class CrashReport{
 		
 		$this->data["extensions"] = $extensions;
 		
-		if($this->server->getProperty("auto-report.send-phpinfo", true) !== false){
+		if($this->server->getProperty("auto-report.send-phpinfo", false) !== false){
 			ob_start();
 			phpinfo();
 			$this->data["phpinfo"] = ob_get_contents();
@@ -304,7 +308,13 @@ class CrashReport{
 		}
 
 		$this->addLine();
-		$this->addLine("Kod:");
+		
+		if(Translate::checkTurkish() === "yes"){
+			$this->addLine("Kod:");
+		}else{
+			$this->addLine("Code:");
+		}
+		
 		$this->data["code"] = [];
 
 		if($this->server->getProperty("auto-report.send-code", true) !== false){

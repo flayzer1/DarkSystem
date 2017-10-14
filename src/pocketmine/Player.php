@@ -154,6 +154,7 @@ use pocketmine\plugin\Plugin;
 use pocketmine\tile\Sign;
 use pocketmine\tile\Spawnable;
 use pocketmine\tile\Tile;
+use pocketmine\utils\Utils;
 use pocketmine\utils\TextFormat as TF;
 //use pocketmine\scheduler\SendPlayerFaceTask;
 use pocketmine\network\protocol\SetPlayerGameTypePacket;
@@ -1659,6 +1660,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						}else{
 							$this->setMotion(new Vector3(0, -$d * 2 * 30, 0));
 						}
+						$this->sendPopup(TF::RED . "DEBUG: rocket error");
+					}
+					if($this->y > $rocket + 10){
+						$this->setMotion(new Vector3(0, -40, 0));
 						$this->sendPopup(TF::RED . "DEBUG: rocket error");
 					}
 					if($this->y > 0.2){
@@ -4188,6 +4193,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$nbt["Pos"][2] = $this->level->getSpawnLocation()->z;
 		}else{
 			$this->setLevel($level, true);
+		}
+		if(Utils::checkMod() === true){ //BlockLauncher Checking
+			$this->close(TF::YELLOW . $this->username . " has left the game", "Please do not join with BlockLauncher.");
 		}
 		if(!$nbt instanceof Compound){
 			$this->close(TF::YELLOW . $this->username . " has left the game", "Corrupt joining data, check your connection.");

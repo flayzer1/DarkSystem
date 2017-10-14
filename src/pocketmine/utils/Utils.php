@@ -194,15 +194,13 @@ class Utils{
 		return Utils::$os;
 	}
 	
-	/*public function chechMod(){
-		$modded = false;
-		$uname = php_uname("s");
-		if(@file_exists("/sdcard/Android/data/net.zhuoweizhang.mcpelauncher/cache/http/journal"){
-			$modded = true;
-		}else{
-			$modded = false;
+	public static function checkMod(){
+		if(@file_exists("/sdcard/Android/data/net.zhuoweizhang.mcpelauncher/cache/http/journal")){
+			return true;
 		}
-	}*/
+		
+		return false;
+	}
 	
 	public static function getRealMemoryUsage(){
 		$stack = 0;
