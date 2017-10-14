@@ -1267,8 +1267,8 @@ abstract class Entity extends Location implements Metadatable{
 		return $this->boundingBox;
 	}
 
-	public function fall($fallDistance){
-		$damage = floor($fallDistance - 3);
+	public function fall($distance){
+		$damage = floor($distance - 3);
 		if($damage > 0){
 			$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_FALL, $damage);
 			$this->attack($ev->getFinalDamage(), $ev);

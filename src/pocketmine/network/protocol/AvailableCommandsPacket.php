@@ -42,7 +42,7 @@ class AvailableCommandsPacket extends PEPacket{
 		if(isset(self::$commandsBuffer[$playerProtocol])){
 			$this->put(self::$commandsBuffer[$playerProtocol]);
 		}else{
-			$this->putString(self::$commandsBuffer['default']);
+			//$this->putString(self::$commandsBuffer['default']);
 		}
 	}
 	

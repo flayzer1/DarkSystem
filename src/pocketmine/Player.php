@@ -5181,7 +5181,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	protected function advancedJump(){
 		$this->jumping = true;
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
-			if($this->isMoving()){
+			if($this->isMoving() && $this->isJumping()){
 				//$this->speed = new Vector3(0.1, 0.1, 0.1);
 				$this->setMotion(new Vector3(0.2, 0.4, 0));
 			}else{
@@ -5189,7 +5189,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				//$this->setMotion(new Vector3(0, 0.2, 0));
 				//$this->setMotion(new Vector3(0, 0.3, 0));
 				$this->setMotion(new Vector3(0, 0.4, 0));
-				$this->setSprinting(false);
+				//$this->setSprinting(false);
 				$this->setSneaking(false);
 				//$this->speed = new Vector3(0, 0, 0);
 			}
