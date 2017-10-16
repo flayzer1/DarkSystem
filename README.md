@@ -102,9 +102,9 @@ Your DarkSystem Server needs Visual Studio C++ Redistributable 2015 (For Windows
 It can be downloaded [here](https://www.microsoft.com/en-us/download/details.aspx?id=48145)<br>
 
 # Converting to .phar
-- 1. Download DevTools plugin.
-- 2. Start your server 
-- 3. Run _makeserver_ command in console.
+- Download DevTools plugin.
+- Start your server 
+- Run '_makeserver_' command in console.
 
 It will drop DarkSystem.phar into DevTools folder.
 
