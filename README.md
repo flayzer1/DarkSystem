@@ -16,6 +16,7 @@
 - Support **PIZZA!** (/givepizza [player] | If you write only /givepizza, gives pizza everyone. NOTE: Our pizzas does not contain harmful substances lol :D) (Pizza mark can be changed from advanced config.)
 - Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, XBOX offline mode warn. etc.)
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
+- Floating Text as Entity (On DarkSystem, floating text is not a particle it is an entity. So it is blocks floating text hack or others. Also dissappearing of floating text is not possible.)
 - Auto Lag Cleaner (How does it works? It automaticly removes items and arrows from ground without occuping CPU.)
 - CustomUI (Allows to create fully customizable menus, can be added by /addui) (only +1.2)
 - /addui Command (You can easily test CustomUI's with this) (/addui {player} {type:shop/alert/image/slider/dropdown/input/mix})
@@ -70,7 +71,7 @@
 - DarkSystem's experience system does not work correctly. (Not so problem :D)
 
 # Known Bugs in 1.2:
-- Moving is glitchy.
+- Moving is glitchy. (Seen on Android OS)
 - Breaking block does not work.
 - AvailableCommandPackets is die on 1.2. (On 1.1 works perfect)
 
@@ -94,11 +95,18 @@ _All other branches are in testing and may be unstable. Do not use builds from o
 
 # Tools:
 - [DevTools](https://github.com/pmmp/PocketMine-DevTools) - Plugin and server development tools plugin
-- [Pocket Server](https://github.com/fengberd/MinecraftPEServer) - Run PocketMine-MP/Nukkit on Android devices
+- [Pocket Server](https://github.com/fengberd/MinecraftPEServer) - Run DarkSystem on Android devices
 
 # Resources
 Your DarkSystem Server needs Visual Studio C++ Redistributable 2015 (For Windows).<br>
 It can be downloaded [here](https://www.microsoft.com/en-us/download/details.aspx?id=48145)<br>
+
+# Converting to .phar
+- 1. Download DevTools plugin.
+- 2. Start your server 
+- 3. Run _makeserver_ command in console.
+
+It will drop DarkSystem.phar into DevTools folder.
 
 # License:
 ```
