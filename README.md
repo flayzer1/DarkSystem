@@ -83,9 +83,7 @@
 - Splash potions and mob spawners are not supported yet. Sorry for this, them will be added soon...
 
 # Test Server
-**__**
 - **COMING SOON**
-**__**
 
 # Get DarkSystem:
 - Download the latest build from [Travis CI](https://travis-ci.org/DarkYusuf13/DarkSystem).
