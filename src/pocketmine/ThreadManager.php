@@ -43,4 +43,5 @@ class ThreadManager extends \Volatile{
 
 		return $array;
 	}
+	
 }

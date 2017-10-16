@@ -162,4 +162,5 @@ class Language{
 
 		return $newString;
 	}
+	
 }

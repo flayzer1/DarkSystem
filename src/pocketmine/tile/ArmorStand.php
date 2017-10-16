@@ -16,6 +16,8 @@ use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 
+//WE WILL MOVE ARMOR STAND TO ENTITY, ITS AN ENTITY
+
 class ArmorStand extends Spawnable{
 	
 	public function __construct(Level $level, Compound $nbt){

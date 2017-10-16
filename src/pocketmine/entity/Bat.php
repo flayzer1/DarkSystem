@@ -63,9 +63,10 @@ class Bat extends FlyingAnimal
 
     public function onUpdate($currentTick)
     {
-        if ($this->age > 20 * 60 * 10) {
+        if($this->age > 20 * 60 * 10){
             $this->kill();
         }
+        
         return parent::onUpdate($currentTick);
     }
 

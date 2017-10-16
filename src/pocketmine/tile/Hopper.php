@@ -39,15 +39,20 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 		if(!isset($nbt->TransferCooldown) or !($nbt->TransferCooldown instanceof IntTag)){
 			$nbt->TransferCooldown = new IntTag("TransferCooldown", 0);
 		}
+		
 		parent::__construct($level, $nbt);
+		
 		$this->inventory = new HopperInventory($this);
+		
 		if(!isset($this->namedtag->Items) or !($this->namedtag->Items instanceof Enum)){
 			$this->namedtag->Items = new Enum("Items", []);
 			$this->namedtag->Items->setTagType(NBT::TAG_Compound);
 		}
+		
 		for($i = 0; $i < $this->getSize(); ++$i){
 			$this->inventory->setItem($i, $this->getItem($i));
 		}
+		
 		$this->scheduleUpdate();
 	}
 
@@ -56,6 +61,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 			foreach($this->getInventory()->getViewers() as $player){
 				$player->removeWindow($this->getInventory());
 			}
+			
 			parent::close();
 		}
 	}
@@ -80,14 +86,14 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 		if(!($this->getBlock() instanceof HopperBlock)){
 			return false;
 		}
-		//Pickup dropped items
-		//This can happen at any time regardless of cooldown
-		$area = clone $this->getBlock()->getBoundingBox(); //Area above hopper to draw items from
-		$area->maxY = ceil($area->maxY) + 1; //Account for full block above, not just 1 + 5/8
+		
+		$area = clone $this->getBlock()->getBoundingBox();
+		$area->maxY = ceil($area->maxY) + 1;
 		foreach($this->getLevel()->getChunkEntities($this->getBlock()->x >> 4, $this->getBlock()->z >> 4) as $entity){
 			if(!($entity instanceof DroppedItem) or !$entity->isAlive()){
 				continue;
 			}
+			
 			if(!$entity->boundingBox->intersectsWith($area)){
 				continue;
 			}
@@ -96,6 +102,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 			if(!$item instanceof Item){
 				continue;
 			}
+			
 			if($item->getCount() < 1){
 				$entity->kill();
 				continue;
@@ -107,12 +114,11 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 			}
 		}
 
-		if(!$this->canUpdate()){ //Hoppers only update CONTENTS every 8th tick
+		if(!$this->canUpdate()){
 			$this->namedtag->TransferCooldown->setValue($this->namedtag->TransferCooldown->getValue() - 1);
 			return true;
 		}
 		
-		//Suck items from above tile inventories
 		$source = $this->getLevel()->getTile($this->getBlock()->getSide(Vector3::SIDE_UP));
 		if($source instanceof Tile and $source instanceof InventoryHolder){
 			$inventory = $source->getInventory();
@@ -128,8 +134,6 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 			}
 		}
 		
-		//Feed item into target inventory
-		//Do not do this if there's a hopper underneath this hopper, to follow vanilla behaviour
 		if(!($this->getLevel()->getTile($this->getBlock()->getSide(Vector3::SIDE_DOWN)) instanceof Hopper)){
 			$target = $this->getLevel()->getTile($this->getBlock()->getSide($this->getBlock()->getDamage()));
 			if($target instanceof Tile and $target instanceof InventoryHolder){
@@ -138,6 +142,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 					if($item->getId() === Item::AIR or $item->getCount() < 1){
 						continue;
 					}
+					
 					$targetItem = clone $item;
 					$targetItem->setCount(1);
 					
@@ -148,9 +153,9 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 						if($target instanceof Hopper){
 							$target->resetCooldownTicks();
 						}
+						
 						break;
 					}
-					
 				}
 			}
 		}
@@ -209,6 +214,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 					break;
 				}
 			}
+			
 			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
 		}else{
 			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
@@ -240,7 +246,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 		}
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return isset($this->namedtag->CustomName) ? $this->namedtag->CustomName->getValue() : "Hopper";
 	}
 
@@ -253,10 +259,10 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 			unset($this->namedtag->CustomName);
 			return;
 		}
+		
 		$this->namedtag->CustomName = new StringTag("CustomName", $str);
 	}
-
-
+	
 	public function hasLock(){
 		return isset($this->namedtag->Lock);
 	}
@@ -266,6 +272,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 			unset($this->namedtag->Lock);
 			return;
 		}
+		
 		$this->namedtag->Lock = new StringTag("Lock", $itemName);
 	}
 	
@@ -284,10 +291,12 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 		if($this->hasName()){
 			$c->CustomName = $this->namedtag->CustomName;
 		}
+		
 		if($this->hasLock()){
 			$c->Lock = $this->namedtag->Lock;
 		}
 
 		return $c;
 	}
+	
 }

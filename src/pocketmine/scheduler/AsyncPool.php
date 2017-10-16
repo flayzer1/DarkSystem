@@ -101,18 +101,10 @@ class AsyncPool{
 	}
 
 	public function collectTasks(){
-		foreach($this->tasks as $task){
-			if($task->isFinished()){
-				$task->onCompletion($this->server);
-				$this->removeTask($task);
-			}elseif($task->isTerminated()){
-				$this->removeTask($task);
-				$this->server->getLogger()->critical("Could not execute asynchronous task " . get_class($task));				
-			}
+		foreach($this->workers as $worker){
+			$worker->collect();
 		}
 	}
-	
-	
 	
 	public function getSize(){
 		return $this->size;

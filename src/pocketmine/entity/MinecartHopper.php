@@ -52,4 +52,5 @@ class MinecartHopper extends Minecart{
 
 		Entity::spawnTo($player);
 	}
+	
 }

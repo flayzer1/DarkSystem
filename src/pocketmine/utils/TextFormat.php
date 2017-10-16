@@ -13,7 +13,7 @@ namespace pocketmine\utils;
 
 abstract class TextFormat{
 	
-	const ESCAPE = "\xc2\xa7";
+	const ESCAPE = "\xc2\xa7"; //§
 
 	const BLACK = "§0";
 	const DARK_BLUE = "§1";
@@ -449,4 +449,5 @@ abstract class TextFormat{
 
 		return $newString;
 	}
+	
 }

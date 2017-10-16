@@ -26,9 +26,8 @@ use pocketmine\math\AxisAlignedBB;
 use pocketmine\Player;
 
 abstract class Stair extends Transparent{
-
-	/*
-	public function collidesWithBB(AxisAlignedBB $bb, &$list = []){
+	
+	/*public function collidesWithBB(AxisAlignedBB $bb, &$list = []){
 		$damage = $this->getDamage();
 		$j = $damage & 0x03;
 
@@ -100,11 +99,9 @@ abstract class Stair extends Transparent{
 				$list[] = $bb2;
 			}
 		}
-	}
-	*/
-
+	}*/
+	
 	protected function recalculateBoundingBox(){
-
 		if(($this->getDamage() & 0x04) > 0){
 			return new AxisAlignedBB(
 				$this->x,
@@ -133,10 +130,12 @@ abstract class Stair extends Transparent{
 			2 => 1,
 			3 => 3,
 		];
+		
 		$this->meta = $faces[$player->getDirection()] & 0x03;
 		if(($fy > 0.5 and $face !== 1) or $face === 0){
-			$this->meta |= 0x04; //Upside-down stairs
+			$this->meta |= 0x04;
 		}
+		
 		$this->getLevel()->setBlock($block, $this, true, true);
 
 		return true;

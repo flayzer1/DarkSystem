@@ -108,4 +108,5 @@ class StandingBanner extends Transparent{
 		
 		return parent::onBreak($item, $player);
 	}
+	
 }

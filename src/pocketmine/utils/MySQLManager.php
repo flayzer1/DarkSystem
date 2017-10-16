@@ -31,6 +31,7 @@ class MySQLManager extends DataBase{
 			$this->db->query($sql);
 			$sql = "CREATE TABLE IF NOT EXISTS PlayerData (name VARCHAR(20) NOT NULL,gametype INT(1) NOT NULL,lastplayed INT(10) NOT NULL,hunger Int(2) NOT NULL,health Int(3) NOT NULL,maxhealth Int(3) NOT NULL,exp Int(1000000) NOT NULL,explevel Int(1000) NOT NULL,PRIMARY KEY (name))";
 			$this->db->query($sql);
+			
 			return true;
 		}
 	}

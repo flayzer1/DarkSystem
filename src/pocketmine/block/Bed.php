@@ -1,23 +1,13 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
- *
-*/
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\block;
 
@@ -31,6 +21,7 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\tile\Bed as TileBed;
 use pocketmine\tile\Tile;
+use pocketmine\Translate;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
@@ -164,6 +155,7 @@ class Bed extends Transparent{
 				2 => 2,
 				3 => 5,
 			];
+			
 			$d = $player instanceof Player ? $player->getDirection() : 0;
 			$next = $this->getSide($faces[(($d + 3) % 4)]);
 			$downNext = $this->getSide(0);
@@ -179,6 +171,7 @@ class Bed extends Transparent{
 					new IntTag("y", $block->y),
 					new IntTag("z", $block->z),
 				]);
+				
 				$nbt2 = clone $nbt;
 				$nbt2["x"] = $next->x;
 				$nbt2["z"] = $next->z;
@@ -220,6 +213,7 @@ class Bed extends Transparent{
 				$this->getLevel()->setBlock($next, new Air(), true, true);
 			}
 		}
+		
 		$this->getLevel()->setBlock($this, new Air(), true, true);
 
 		return true;

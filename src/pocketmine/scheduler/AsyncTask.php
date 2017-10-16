@@ -36,7 +36,7 @@ abstract class AsyncTask extends Collectable{
 
 		$this->onRun();
 		$this->isFinished = true;
-		//$this->setGarbage();
+		$this->setGarbage();
 	}
 
 	/**
@@ -167,6 +167,8 @@ abstract class AsyncTask extends Collectable{
 				$this->{$p} = null;
 			}
 		}
+		
+		$this->setGarbage();
 	}
 
 	public function saveToThreadStore($identifier, $value){

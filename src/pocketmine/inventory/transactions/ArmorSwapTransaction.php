@@ -6,7 +6,7 @@ use pocketmine\inventory\BaseTransaction;
 use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
 
-class ArmorSwapTransaction extends BaseTransaction {
+class ArmorSwapTransaction extends BaseTransaction{
 
 	protected $foundTransactions = [
 		'source' => false,
@@ -26,7 +26,6 @@ class ArmorSwapTransaction extends BaseTransaction {
 	}
 	
 	/**
-	 * 
 	 * @param BaseTransaction $ts
 	 * @return bool
 	 */
@@ -70,4 +69,5 @@ class ArmorSwapTransaction extends BaseTransaction {
 	public function isFoundAll() {
 		return $this->foundTransactions['source'] && $this->foundTransactions['target'];
 	}
+	
 }

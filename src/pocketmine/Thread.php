@@ -69,4 +69,5 @@ abstract class Thread extends \Thread{
 	public function getThreadName(){
 		return (new \ReflectionClass($this))->getShortName();
 	}
+	
 }

@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 interface SourceInterface{
 	
-	public function putPacket(Player $player, DataPacket $packet, $needACK = false, $immediate = true);
+	public function putPacket(Player $player, DataPacket $packet, $immediate = true);
 	
 	public function close(Player $player, $reason = "Unknown Reason");
 	

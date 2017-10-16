@@ -20,6 +20,7 @@ use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\IntTag;
 
 class DLDetector extends Spawnable{
+	
 	private $lastType = 0;
 
 	public function __construct(Level $level, Compound $nbt){

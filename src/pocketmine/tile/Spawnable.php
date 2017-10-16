@@ -42,6 +42,7 @@ abstract class Spawnable extends Tile{
 
 	public function __construct(Level $level, Compound $nbt){
 		parent::__construct($level, $nbt);
+		
 		$this->spawnToAll();
 	}
 	

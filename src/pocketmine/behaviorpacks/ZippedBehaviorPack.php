@@ -108,4 +108,5 @@ class ZippedBehaviorPack implements BehaviorPack{
 		
 		return fread($this->fileResource, $length);
 	}
+	
 }

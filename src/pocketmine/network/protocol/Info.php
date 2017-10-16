@@ -11,34 +11,16 @@
 
 namespace pocketmine\network\protocol;
 
-interface Info{
+interface Info extends ProtocolConverter{
 	
 	const DARKSYSTEM_VERSION = "v1";
 	const DARKSYSTEM_CODENAME = "DarkSystem"; //WARNING: Do not change!
 	const MINECRAFT_VERSION = "v1.x";
 	const MINECRAFT_VERSION_NETWORK = "1.2";
-	const CURRENT_PROTOCOL = 101;
-	const ACCEPTED_PROTOCOLS = [101, 102, 105, 106, 107, 110, 111, 112, 113, 120, 121, 130, 131, 132, 133, 134, 135, 136, 137];
+	const CURRENT_PROTOCOL = 138;
+	const ACCEPTED_PROTOCOLS = [101, 102, 105, 106, 107, 110, 111, 112, 113, 120, 121, 130, 131, 132, 133, 134, 135, 136, 137, 138];
 	
-	const BASE_PROTOCOL = 101;
-	
-	const PROTOCOL_105 = 105;
-	const PROTOCOL_106 = 106;
-	const PROTOCOL_107 = 107;
-	const PROTOCOL_110 = 110;
-	const PROTOCOL_111 = 111;
-	const PROTOCOL_112 = 112;
-	const PROTOCOL_113 = 113;
-	const PROTOCOL_120 = 120;
-	const PROTOCOL_121 = 121;
-	const PROTOCOL_130 = 130;
-	const PROTOCOL_131 = 131;
-	const PROTOCOL_132 = 132;
-	const PROTOCOL_133 = 133;
-	const PROTOCOL_134 = 134;
-	const PROTOCOL_135 = 135;
-	const PROTOCOL_136 = 136;
-	const PROTOCOL_137 = 137;
+	const BASE_PROTOCOL = 138;
 	
 	const LOGIN_PACKET = 0x01;
 	const PLAY_STATUS_PACKET = 0x02;

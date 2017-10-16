@@ -49,4 +49,5 @@ interface Transaction{
 	 * @return float
 	 */
 	public function getCreationTime();
+	
 }

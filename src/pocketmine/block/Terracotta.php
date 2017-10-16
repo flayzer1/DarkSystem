@@ -15,7 +15,6 @@ use pocketmine\item\Tool;
 
 class Terracotta extends Solid
 {
-
     protected $id = self::TERRACOTTA;
 
     const TERRACOTTA_WHITE = 0;
@@ -50,7 +49,7 @@ class Terracotta extends Solid
         return Tool::TYPE_PICKAXE;
     }
 
-    public function getName(): string
+    public function getName()
     {
         static $names = [
             0 => "White Terracotta",
@@ -70,6 +69,7 @@ class Terracotta extends Solid
             14 => "Red Terracotta",
             15 => "Black Terracotta",
         ];
+        
         return $names[$this->meta & 0x0f];
     }
 

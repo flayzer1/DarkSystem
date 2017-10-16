@@ -99,4 +99,5 @@ class ItemFrame extends Spawnable{
 		
 		return $tag;
 	}
+	
 }

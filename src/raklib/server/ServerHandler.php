@@ -1,23 +1,19 @@
 <?php
 
-/*
- * RakLib network library
- *
- *
- * This project is not affiliated with Jenkins Software LLC nor RakNet.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace raklib\server;
 
 use raklib\Binary;
-use raklib\protocol\EncapsulatedPacket;
 use raklib\RakLib;
+use raklib\protocol\EncapsulatedPacket;
 
 class ServerHandler{
 
@@ -65,10 +61,11 @@ class ServerHandler{
         $this->server->pushMainToThreadPacket($buffer);
         $this->server->shutdown();
         $this->server->synchronized(function(){
-			if (!is_null($this->server)) {
+			if(!is_null($this->server)){
 				$this->server->wait(20000);
 			}
         });
+        
         $this->server->join();
     }
 
@@ -90,13 +87,12 @@ class ServerHandler{
             $id = ord($packet{0});
             $offset = 1;
             if($id === RakLib::PACKET_ENCAPSULATED){
-//				var_dump(debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 20));
                 $len = ord($packet{$offset++});
                 $identifier = substr($packet, $offset, $len);
                 $offset += $len;
                 $buffer = substr($packet, $offset);
                 $this->instance->handleEncapsulated($identifier, $buffer);
-			} elseif ($id === RakLib::PACKET_PING) {
+			}elseif($id === RakLib::PACKET_PING){
 				$len = ord($packet{$offset++});
 				$identifier = substr($packet, $offset, $len);
 				$offset += $len;
@@ -139,13 +135,7 @@ class ServerHandler{
                 $len = ord($packet{$offset++});
                 $identifier = substr($packet, $offset, $len);
                 $this->instance->closeSession($identifier, "Invalid session");
-            }elseif($id === RakLib::PACKET_ACK_NOTIFICATION){
-                $len = ord($packet{$offset++});
-                $identifier = substr($packet, $offset, $len);
-                $offset += $len;
-                $identifierACK = Binary::readInt(substr($packet, $offset, 4));
-                $this->instance->notifyACK($identifier, $identifierACK);
-            } 
+            }
 
             return true;
         }

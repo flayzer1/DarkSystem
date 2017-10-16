@@ -417,7 +417,6 @@ class Config{
 			}
 			$content .= $k . "=" . $v . "\r\n";
 		}
-
 		return $content;
 	}
 
@@ -447,5 +446,4 @@ class Config{
 			}
 		}
 	}
-
 }

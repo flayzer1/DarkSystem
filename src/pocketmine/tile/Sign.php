@@ -48,6 +48,7 @@ class Sign extends Spawnable{
 
 	public function saveNBT(){
 		parent::saveNBT();
+		
 		unset($this->namedtag->Creator);
 	}
 
@@ -60,6 +61,7 @@ class Sign extends Spawnable{
 		if(advanced_cache == true){
 			$this->getLevel()->chunkCacheClear($this->x >> 4, $this->z >> 4);
 		}
+		
 		return true;
 	}
 
@@ -84,5 +86,4 @@ class Sign extends Spawnable{
 			new IntTag("z", (int) $this->z)
 		]);
 	}
-
 }

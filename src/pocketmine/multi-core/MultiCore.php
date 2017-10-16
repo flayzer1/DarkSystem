@@ -23,14 +23,17 @@ class MultiCore{
 	
 	/** @var \Pool */
 	private $pool;
+	
 	/** @var AsyncTask[] */
 	private $tasks = [ ];
+	
 	protected $size;
+	
 	public function __construct(Server $server, $size) {
 		$this->server = $server;
 		$this->size = ( int ) $size;
 		$this->pool = new \Pool ( $size, CoreWorker::class, [ 
-				$this->server->getLogger () 
+			$this->server->getLogger () 
 		] );
 		for($i = 0; $i < $size; $i ++)
 			$this->pool->submit ( new InitialTask () );

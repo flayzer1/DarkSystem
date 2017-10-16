@@ -4,18 +4,24 @@ namespace pocketmine\inventory\customUI\elements;
 
 use pocketmine\Player;
 
-abstract class UIElement{
-	
+abstract class UIElement implements \JsonSerializable{
+
 	protected $text = '';
-	
+
 	/**
+	 * Returns an array of item stack properties that can be serialized to json.
+	 *
 	 * @return array
 	 */
-	abstract public function getDataToJson();
-	
+	public function jsonSerialize(){
+		return [];
+	}
+
 	/**
+	 * @param $value
 	 * @param Player $player
+	 * @return mixed
 	 */
-	abstract public function handle($value, $player);
-	
+	abstract public function handle($value, Player $player);
+
 }

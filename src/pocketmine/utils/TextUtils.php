@@ -34,4 +34,5 @@ class TextUtils{
         
         return $count;
     }
+    
 }

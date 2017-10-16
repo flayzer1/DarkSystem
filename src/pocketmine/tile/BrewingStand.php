@@ -283,6 +283,7 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 				}
 			}
 		}
+		
 		$this->lastUpdate = microtime(true);
 
 		$this->timings->stopTiming();
@@ -303,6 +304,8 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 		if($this->hasName()){
 			$nbt->CustomName = $this->namedtag->CustomName;
 		}
+		
 		return $nbt;
 	}
+	
 }

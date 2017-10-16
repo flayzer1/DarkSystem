@@ -1,17 +1,13 @@
 <?php
 
-/*
- * RakLib network library
- *
- *
- * This project is not affiliated with Jenkins Software LLC nor RakNet.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace raklib\server;
 
@@ -85,10 +81,7 @@ class Session{
 
 	/** @var DataPacket[][] */
 	private $splitPackets = [];
-
-    /** @var int[][] */
-    private $needACK = [];
-
+	
     /** @var DataPacket */
     private $sendQueue;
 
@@ -142,7 +135,7 @@ class Session{
         	    $this->disconnect("Timeout");
         	}
         
-            return;
+            return true;
         }
         
         $this->isActive = false;
@@ -178,15 +171,6 @@ class Session{
 			if(count($this->packetToSend) > Session::$WINDOW_SIZE){
 				$this->packetToSend = [];
 			}
-        }
-
-        if(count($this->needACK) > 0){
-            foreach($this->needACK as $identifierACK => $indexes){
-                if(count($indexes) === 0){
-                    unset($this->needACK[$identifierACK]);
-                    $this->sessionManager->notifyACK($this, $identifierACK);
-                }
-            }
         }
         
 		foreach($this->recoveryQueue as $seq => $pk){
@@ -234,10 +218,6 @@ class Session{
      */
     private function addToQueue(EncapsulatedPacket $pk, $flags = RakLib::PRIORITY_NORMAL){
         $priority = $flags & 0b0000111;
-        if($pk->needACK and $pk->messageIndex !== null){
-            $this->needACK[$pk->identifierACK][$pk->messageIndex] = $pk->messageIndex;
-        }
-        
         if($priority === RakLib::PRIORITY_IMMEDIATE){
             $packet = new DATA_PACKET_0();
             $packet->seqNumber = $this->sendSeqNumber++;
@@ -251,7 +231,7 @@ class Session{
             $this->sendPacket($packet);
             $packet->sendTime = microtime(true);
             $this->recoveryQueue[$packet->seqNumber] = $packet;
-            return;
+            return true;
         }
         
         $length = $this->sendQueue->length();
@@ -272,10 +252,6 @@ class Session{
      * @param int                $flags
      */
     public function addEncapsulatedToQueue(EncapsulatedPacket $packet, $flags = RakLib::PRIORITY_NORMAL){
-        if(($packet->needACK = ($flags & RakLib::FLAG_NEED_ACK) > 0) === true){
-	        $this->needACK[$packet->identifierACK] = [];
-        }
-
 		if(
 			$packet->reliability === 2 or
 			$packet->reliability === 3 or
@@ -454,6 +430,7 @@ class Session{
 		}elseif($this->state === Session::STATE_CONNECTED){
 			$this->sessionManager->streamEncapsulated($this, $packet);
 		}else{
+			
 		}
 	}
 
@@ -520,11 +497,9 @@ class Session{
                     }
                 }
             }
-
         }elseif($packet::$ID > 0x00 and $packet::$ID < 0x80){
             $packet->decode();
             if($packet instanceof OPEN_CONNECTION_REQUEST_1){
-                $packet->protocol;
                 $pk = new OPEN_CONNECTION_REPLY_1();
                 $pk->mtuSize = $packet->mtuSize;
                 $pk->serverID = $this->sessionManager->getID();
@@ -554,4 +529,5 @@ class Session{
 	public function getPing(){
 		return round((array_sum($this->pingAverage) / count($this->pingAverage)) * 1000);
 	}
+	
 }

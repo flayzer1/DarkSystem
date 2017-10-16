@@ -10,20 +10,20 @@
 # Features:
 - DarkSystem is **# 1** about speed & no-lag. (We think so)
 - Loads chunks region-to-region. It uses less CPU resources & loads chunks fast.
-- MobAI Support (So much animals and mobs can move & attack)
-- Smooth Movement (Players does not glitch or go down (:D) while moving and does not throw back.)
+- MobAI Support (So much animals and mobs can move & attack) (Support Attacking Movement)
+- Smooth Movement (Players does not glitch or go down (if not 1.2 :D) while moving and does not throw back.)
 - MCPE 1.2 Support (DarkSystem is compatible with MC: Bedrock Edition/Better together update)
-- Support **PIZZA!** (/givepizza [player] | if you write only /givepizza, will give pizza everyone) (Pizza mark can be changed from advanced config.)
+- Support **PIZZA!** (/givepizza [player] | If you write only /givepizza, gives pizza everyone. NOTE: Our pizzas does not contain harmful substances lol :D) (Pizza mark can be changed from advanced config.)
 - Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, XBOX offline mode warn. etc.)
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
 - CustomUI (Allows to create fully customizable menus, can be added by /addui) (only +1.2)
-- Fully Turkish Language (DarkSystem Support %79 Turkish Language. How to set language to Turkish? Simple, you will choose language to **tur** on set-up wizard. After you will set **language:** to **tur** on **pocketmine.yml**)
+- Fully Turkish Language (DarkSystem Support %79 Turkish Language. How to set language to Turkish? Simple, choose language to **tur** on set-up wizard. After set **language:** to **tur** on **pocketmine.yml**)
 - MultiVersion® support (**What is this?** We support **1.0.x, 1.1.x, 1.2.x** versions of Minecraft (PE) Bedrock Edition)
-- Always up-to-date. We always add new block, items to DarkSystem. You can find new things on here when out.
-- No junk tasks/threads on Background. Nothing cannot occupy the CPU resources and Performance.
+- Always up-to-date. We always add new block, items to DarkSystem. You can find new things here when out.
+- No junk tasks/threads on background. Anything cannot occupy the CPU resources and performance.
 - Zoom Support (indev) (Maybe useful for PvP servers. Simply write /zoom.)
 - TextUtils (Idea from MiNET, Code taken from Turanic. Allows to create more beautiful texts. Example, **TextUtils::center($message)** makes message in center.)
-- BlockLauncher join Blocking (indev) (If you hate hackers this is for you. How to use? It is fully automatic. But not implemented yet. Does not work.)
+- BlockLauncher join Blocking (indev) (If you hate hackers, this is for you. How to use? It is fully automatic. But not implemented yet. Does not work.)
 - Code is clean, fast and safe, coded as DarkSystem PHP code method.
 - More & Advanced Commands (/clear, /tpall, /clearchat /addui /zoom etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
@@ -36,7 +36,7 @@
 - Rideable Car (indev)
 - Rideable Horse (indev)
 - Behavior Support (indev)
-- Armor Stand (1.2 only) (indev)
+- Armor Stand (1.2 only) (indev) (as tile, we will make it as entity)
 - Writable & Written Books (1.2 only)
 - Jukebox & Music Discs (1.2 only)
 - Working Command Block (made %40) (indev)
@@ -69,6 +69,7 @@
 # Known Bugs in 1.2:
 - Moving is glitchy.
 - Breaking block does not work.
+- AvailableCommandPackets is die on 1.2. (On 1.1 works perfect)
 
 # Notes:
 - DarkSystem does not support PMAnvil map format, only support Anvil and McRegion.

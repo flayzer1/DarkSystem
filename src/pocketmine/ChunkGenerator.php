@@ -160,7 +160,7 @@ class ChunkGenerator extends Worker{
 				$data['tiles'];
 		}
 		
-		$result = array();
+		$result = [];
 		$result['chunkX'] = $data['chunkX'];
 		$result['chunkZ'] = $data['chunkZ'];
 		$protocols = isset($data['protocols']) ? $data['protocols'] : ChunkGenerator::SUPPORTED_PROTOCOLS;

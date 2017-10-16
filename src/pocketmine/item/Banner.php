@@ -12,6 +12,7 @@ class Banner extends Item{
 
 	public function __construct($meta = 0){
 		$this->block = Block::get(Block::STANDING_BANNER);
+		
 		parent::__construct(self::BANNER, $meta, "Banner");
 	}
 
@@ -23,7 +24,7 @@ class Banner extends Item{
 		return $this->getNamedTag()->Base->getValue();
 	}
 	
-	public function setBaseColor(int $color){
+	public function setBaseColor($color){
 		$namedTag = $this->getNamedTag();
 		$namedTag->Base->setValue($color & 0x0f);
 		$this->setNamedTag($namedTag);

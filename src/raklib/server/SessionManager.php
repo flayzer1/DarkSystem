@@ -1,17 +1,13 @@
 <?php
 
-/*
- * RakLib network library
- *
- *
- * This project is not affiliated with Jenkins Software LLC nor RakNet.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace raklib\server;
 
@@ -117,7 +113,7 @@ class SessionManager{
 		$time = microtime(true);
 		foreach($this->sessions as $session){
 			$session->update($time);
-			if(($this->ticks % 40) === 0){
+			if(($this->ticks % 70) === 0){ //40
 				$this->streamPing($session);
 			}
 		}
@@ -250,12 +246,7 @@ class SessionManager{
         $buffer = chr(RakLib::PACKET_OPEN_SESSION) . chr(strlen($identifier)) . $identifier . chr(strlen($session->getAddress())) . $session->getAddress() . Binary::writeShort($session->getPort()) . Binary::writeLong($session->getID());
         $this->server->pushThreadToMainPacket($buffer);
     }
-
-    protected function streamACK($identifier, $identifierACK){
-        $buffer = chr(RakLib::PACKET_ACK_NOTIFICATION) . chr(strlen($identifier)) . $identifier . Binary::writeInt($identifierACK);
-        $this->server->pushThreadToMainPacket($buffer);
-    }
-
+    
     protected function streamOption($name, $value){
         $buffer = chr(RakLib::PACKET_SET_OPTION) . chr(strlen($name)) . $name . $value;
         $this->server->pushThreadToMainPacket($buffer);
@@ -337,7 +328,6 @@ class SessionManager{
                 foreach($this->sessions as $session){
                     $this->removeSession($session);
                 }
-
                 $this->socket->close();
                 $this->shutdown = true;
             }elseif($id === RakLib::PACKET_EMERGENCY_SHUTDOWN){
@@ -345,10 +335,8 @@ class SessionManager{
             }else{
 	            return false;
             }
-
             return true;
         }
-
         return false;
     }
 
@@ -358,7 +346,7 @@ class SessionManager{
             if($timeout === -1){
                 $final = PHP_INT_MAX;
             }else{
-                $this->getLogger()->notice("Blocked $address for $timeout seconds");
+                $this->getLogger()->notice("Blocked $address for $timeout seconds"); //TODO: Translate
             }
             $this->block[$address] = $final;
         }elseif($this->block[$address] < $final){
@@ -394,11 +382,7 @@ class SessionManager{
     public function openSession(Session $session){
         $this->streamOpen($session);
     }
-
-    public function notifyACK(Session $session, $identifierACK){
-        $this->streamACK($session->getAddress() . ":" . $session->getPort(), $identifierACK);
-    }
-
+    
     public function getName(){
         return $this->name;
     }
@@ -452,4 +436,5 @@ class SessionManager{
         $this->registerPacket(NACK::$ID, NACK::class);
         $this->registerPacket(ACK::$ID, ACK::class);
     }
+    
 }

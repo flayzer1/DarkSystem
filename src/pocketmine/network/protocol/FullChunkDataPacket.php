@@ -42,7 +42,7 @@ class FullChunkDataPacket extends PEPacket{
 		$this->reset($playerProtocol);
 		$this->putSignedVarInt($this->chunkX);
 		$this->putSignedVarInt($this->chunkZ);
-//		$this->putByte($this->order);
+		//$this->putByte($this->order);
 		$this->putString($this->data);
 	}
 

@@ -34,6 +34,7 @@ class Arrow extends Projectile{
 	
 	public function __construct(Level $level, Compound $nbt, Entity $shootingEntity = null, $critical = false){
 		$this->isCritical = (bool) $critical;
+		
 		parent::__construct($level, $nbt, $shootingEntity);
 	}
 	
@@ -41,6 +42,7 @@ class Arrow extends Projectile{
 		if($this->closed){
 			return false;
 		}
+		
 		$hasUpdate = parent::onUpdate($currentTick);
 		if(!$this->hadCollision and $this->isCritical){
 			/*$this->level->addParticle(new CriticalParticle($this->add(
@@ -50,6 +52,7 @@ class Arrow extends Projectile{
 		}elseif($this->onGround){
 			$this->isCritical = false;
 		}
+		
 		if($this->age > 1200){
 			$this->kill();
 			$hasUpdate = true;
@@ -57,6 +60,7 @@ class Arrow extends Projectile{
 			$this->kill();
 			$hasUpdate = true;
 		}
+		
 		return $hasUpdate;
 	}
 	
@@ -79,4 +83,5 @@ class Arrow extends Projectile{
 		$bb = clone parent::getBoundingBox();
 		return $bb->expand(1, 1, 1);
 	}
+	
 }

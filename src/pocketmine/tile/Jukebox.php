@@ -58,6 +58,7 @@ class Jukebox extends Spawnable{
 
     public function saveNBT(){
         parent::saveNBT();
+        
         $this->namedtag->record = new IntTag("record", $this->record);
         $this->namedtag->recordItem = ($this->recordItem instanceof MusicDisc ? $this->recordItem->nbtSerialize() : (Item::get(0))->nbtSerialize());
     }

@@ -197,13 +197,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	public function sendRawPacket($address, $port, $payload){
 		$this->interface->sendRaw($address, $port, $payload);
 	}
-
-	public function notifyACK($identifier, $identifierACK){
-		if(isset($this->players[$identifier])){
-			$this->players[$identifier]->handleACK($identifierACK);
-		}
-	}
-
+	
 	public function setName($name){
 		//$info = $this->server->getQueryInformation();
 		//$pc = $info->getMaxPlayerCount();
@@ -233,7 +227,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		}
 	}
 	
-	public function putPacket(Player $player, DataPacket $packet, $needACK = false, $immediate = false){
+	public function putPacket(Player $player, DataPacket $packet, $immediate = false){
 		if(isset($this->identifiers[$player])){			
 			$protocol = $player->getPlayerProtocol();							
 			$packet->encode($protocol);
@@ -245,16 +239,16 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			$pk = new EncapsulatedPacket();				
 			$pk->buffer = chr(0xfe) . $this->getPacketBuffer($packet, $protocol);
 			$pk->reliability = 3;
-			if($needACK === true){
+			/*if($needACK === true){
 				$pk->identifierACK = $this->identifiersACK[$identifier]++;
-			}
+			}*/
 			if($player->isEncryptEnable() && RakLibInterface::$isEncryptAllowed === true){
 				$pk->buffer = chr(0xfe) . $player->getEncrypt(substr($pk->buffer, 1));
 			}
 			if($immediate){
 				$pk->reliability = 0;
 			}
-			$this->interface->sendEncapsulated($identifier, $pk, ($needACK === true ? RakLib::FLAG_NEED_ACK : 0) | ($immediate === true ? RakLib::PRIORITY_IMMEDIATE : RakLib::PRIORITY_NORMAL));
+			$this->interface->sendEncapsulated($identifier, $pk, (!($packet instanceof BatchPacket) ? RakLib::FLAG_NEED_ZLIB : 0) | ($immediate === true ? RakLib::PRIORITY_IMMEDIATE : RakLib::PRIORITY_NORMAL));
 		}
 		return null;
 	}

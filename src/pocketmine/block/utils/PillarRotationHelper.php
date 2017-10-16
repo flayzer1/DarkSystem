@@ -24,4 +24,5 @@ class PillarRotationHelper{
 
 		return ($meta & 0x03) | $faces[$face & ~0x01];
 	}
+	
 }

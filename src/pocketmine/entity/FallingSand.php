@@ -44,6 +44,7 @@ class FallingSand extends Entity{
 
 	protected function initEntity(){
 		parent::initEntity();
+		
 		if(isset($this->namedtag->TileID)){
 			$this->blockId = $this->namedtag["TileID"];
 		}elseif(isset($this->namedtag->Tile)){
@@ -57,7 +58,7 @@ class FallingSand extends Entity{
 
 		if($this->blockId === 0){
 			$this->close();
-			return;
+			return false;
 		}
 
 		$this->setDataProperty(self::DATA_BLOCK_INFO, self::DATA_TYPE_INT, $this->getBlock() | ($this->getDamage() << 8));

@@ -21,11 +21,11 @@
 
 namespace pocketmine\inventory;
 
-
 use pocketmine\item\Item;
 use pocketmine\tile\Furnace;
 
 class FurnaceInventory extends ContainerInventory{
+	
 	public function __construct(Furnace $tile){
 		parent::__construct($tile, InventoryType::get(InventoryType::FURNACE));
 	}
@@ -90,4 +90,5 @@ class FurnaceInventory extends ContainerInventory{
 
 		$this->getHolder()->scheduleUpdate();
 	}
+	
 }

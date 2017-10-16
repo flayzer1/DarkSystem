@@ -1,34 +1,25 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
- *
-*/
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace raklib\server;
 
 class UDPServerSocket{
+	
     /** @var \Logger */
     protected $logger;
     protected $socket;
 
     public function __construct(\ThreadedLogger $logger, $port = 19132, $interface = "0.0.0.0"){
         $this->socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-        //socket_set_option($this->socket, SOL_SOCKET, SO_BROADCAST, 1); //Allow sending broadcast messages
+        //socket_set_option($this->socket, SOL_SOCKET, SO_BROADCAST, 1);
         if(@socket_bind($this->socket, $interface, $port) === true){
             socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 0);
             $this->setSendBuffer(1024 * 1024 * 8)->setRecvBuffer(1024 * 1024 * 8);
@@ -37,6 +28,7 @@ class UDPServerSocket{
             $logger->critical("Perhaps a server is already running on that port?", true, true, 0);
             exit(1);
         }
+        
         socket_set_nonblock($this->socket);
     }
 
@@ -88,10 +80,8 @@ class UDPServerSocket{
      */
     public function setRecvBuffer($size){
         @socket_set_option($this->socket, SOL_SOCKET, SO_RCVBUF, $size);
-
+        
         return $this;
     }
 
 }
-
-?>

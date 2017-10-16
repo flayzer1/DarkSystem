@@ -23,11 +23,13 @@ class Skull extends Spawnable{
 		if(!isset($nbt->SkullType)){
 			$nbt->SkullType = new StringTag("SkullType", 0);
 		}
+		
 		parent::__construct($level, $nbt);
 	}
 	
 	public function saveNBT(){
 		parent::saveNBT();
+		
 		unset($this->namedtag->Creator);
 	}
 	
@@ -45,4 +47,5 @@ class Skull extends Spawnable{
 	public function getSkullType(){
 		return $this->namedtag["SkullType"];
 	}
+	
 }

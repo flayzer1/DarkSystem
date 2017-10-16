@@ -113,7 +113,7 @@ abstract class Tile extends Position{
 	
 	public static function registerTile($className){
 		$class = new \ReflectionClass($className);
-		if(is_a($className, Tile::class, true) and !$class->isAbstract()){
+		if(is_a($className, Tile::class, true) && !$class->isAbstract()){
 			Tile::$knownTiles[$class->getShortName()] = $className;
 			Tile::$shortNames[$className] = $class->getShortName();
 			return true;
@@ -127,14 +127,17 @@ abstract class Tile extends Position{
 	}
 
 	public function __construct(Level $level, Compound $nbt){
+		if($level === null || $level->getProvider() === null){
+			throw new ChunkException("Invalid garbage Chunk/Level given to Tile");
+		}
+		
 		$this->timings = Timings::getTileEntityTimings($this);
-
+		
+		$this->chunk = $level->getChunk($this->namedtag["Pos"][0] >> 4, $this->namedtag["Pos"][2] >> 4);
+		$this->setLevel($level);
+		$this->server = $level->getServer();
+		
 		$this->namedtag = $nbt;
-        $this->server = $level->getServer();
-        $this->setLevel($level);
-        $this->chunk = $level->getChunk($this->namedtag["x"] >> 4, $this->namedtag["z"] >> 4, false);
-        assert($this->chunk !== null);
-
 		$this->name = "";
 		$this->lastUpdate = microtime(true);
 		$this->id = Tile::$tileCount++;

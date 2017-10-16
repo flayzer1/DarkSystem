@@ -34,7 +34,8 @@ class Horse extends Living
             ItemItem::get(0, 0),
             ItemItem::get(0, 0)
         ];
-        foreach ($this->level->getPlayers() as $player) {
+        
+        foreach($this->level->getPlayers() as $player){
             $player->dataPacket($pk);
         }
     }

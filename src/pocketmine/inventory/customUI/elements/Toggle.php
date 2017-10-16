@@ -1,37 +1,35 @@
 <?php
 
-namespace pocketmine\inventory\customUI\elements\customForm;
+namespace pocketmine\inventory\customUI\elements;
 
-use pocketmine\inventory\customUI\elements\UIElement;
+use pocketmine\Player;
 
 class Toggle extends UIElement{
-	
+
 	/** @var boolean */
 	protected $defaultValue = false;
-	
+
 	/**
-	 * 
+	 *
 	 * @param string $text
 	 * @param bool $value
 	 */
-	public function __construct($text, bool $value = false) {
+	public function __construct($text, $value = false){
 		$this->text = $text;
 		$this->defaultValue = $value;
 	}
-	
+
 	/**
-	 * 
 	 * @param bool $value
 	 */
-	public function setDefaultValue(bool $value) {
+	public function setDefaultValue($value){
 		$this->defaultValue = $value;
 	}
-	
+
 	/**
-	 * 
 	 * @return array
 	 */
-	final public function getDataToJson() {
+	public function jsonSerialize(){
 		return [
 			"type" => "toggle",
 			"text" => $this->text,
@@ -39,8 +37,13 @@ class Toggle extends UIElement{
 		];
 	}
 
-	public function handle($value, $player) {
-		
+	/**
+	 * @param null $value
+	 * @param Player $player
+	 * @return mixed
+	 */
+	public function handle($value, Player $player){
+		return $value;
 	}
 
 }

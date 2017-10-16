@@ -30,7 +30,7 @@ class FloatingText extends Entity{
 
 		$this->setNameTagVisible();
 		$this->setNameTagAlwaysVisible();
-		$this->setScale(0.01);
+		$this->setScale(0);
 	}
 
 	public function getTitle(){
@@ -65,7 +65,7 @@ class FloatingText extends Entity{
 	}
 
 	public function onUpdate($currentTick){
-		return true;
+		return false;
 	}
 
 	public function canCollideWith(Entity $entity){

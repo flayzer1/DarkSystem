@@ -144,4 +144,5 @@ class ResourcePackManager{
 	public function getPackIdList() : array{
 		return array_keys($this->uuidList);
 	}
+	
 }

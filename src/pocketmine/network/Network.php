@@ -28,7 +28,6 @@ use pocketmine\network\protocol\CraftingEventPacket;
 use pocketmine\network\protocol\DataPacket;
 use pocketmine\network\protocol\DropItemPacket;
 use pocketmine\network\protocol\FullChunkDataPacket;
-use pocketmine\network\protocol\Info;
 use pocketmine\network\protocol\SetEntityLinkPacket;
 use pocketmine\network\protocol\TileEntityDataPacket;
 use pocketmine\network\protocol\EntityEventPacket;
@@ -267,7 +266,7 @@ class Network{
 					throw new \InvalidStateException("Empty or invalid BatchPacket received");
 				}
 				if(($pk = $this->getPacket(ord($buf{0}), $p->getPlayerProtocol())) !== null){
-					if($pk::NETWORK_ID === Info::BATCH_PACKET){
+					if($pk::NETWORK_ID === ProtocolInfo::BATCH_PACKET){
 						throw new \InvalidStateException("Invalid BatchPacket inside BatchPacket");
 					}
 					$offset = 1;
@@ -301,13 +300,13 @@ class Network{
 	 */
 	public function getPacket($id, $playerProtocol){
 		switch($playerProtocol){
-			case Info::PROTOCOL_120:
+			case ProtocolInfo::PROTOCOL_120:
 				$class = $this->packetPool120[$id];
 				break;
-			case Info::PROTOCOL_110:
+			case ProtocolInfo::PROTOCOL_110:
 				$class = $this->packetPool110[$id];
 				break;
-			case Info::PROTOCOL_105:
+			case ProtocolInfo::PROTOCOL_105:
 				$class = $this->packetPool105[$id];
 				break;
 			default:

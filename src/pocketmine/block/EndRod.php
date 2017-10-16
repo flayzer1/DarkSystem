@@ -41,12 +41,15 @@ class EndRod extends Transparent{
         if($target->isTransparent()){
             return false;
         }
+        
         if($face < 2){
             $this->meta = $face;
         }else{
             $this->meta = $face + (($face % 2 == 0) ? 1 : -1);
         }
+        
         $this->getLevel()->setBlock($block, $this, true, true);
+        
         return true;
     }
     

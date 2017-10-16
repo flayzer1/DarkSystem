@@ -39,7 +39,7 @@ class StainedGlass extends Solid{
 	}
     
     public function getName(){
-        return $this->getColorName() . 'Stained Glass';
+        return $this->getColorName() . "Stained Glass";
     }
     
     public function getHardness(){
@@ -51,42 +51,42 @@ class StainedGlass extends Solid{
     }
     
     protected function getColorName(){
-		switch ($this->meta) {
+		switch($this->meta){
 			case self::WHITE:
-				return 'White ';
+				return "White ";
 			case self::ORANGE:
-				return 'Orange ';
+				return "Orange ";
 			case self::MAGENTA:
-				return 'Magenta ';
+				return "Magenta ";
 			case self::LIGHT_BLUE:
-				return 'Light blue ';
+				return "Light blue ";
 			case self::YELLOW:
-				return 'Yellow ';
+				return "Yellow ";
 			case self::LIME:
-				return 'Lime ';
+				return "Lime ";
 			case self::PINK:
-				return 'Pink ';
+				return "Pink ";
 			case self::GRAY:
-				return 'Gray ';
+				return "Gray ";
 			case self::LIGHT_GRAY:
-				return 'Light gray ';
+				return "Light gray ";
 			case self::CYAN:
-				return 'Cyan ';
+				return "Cyan ";
 			case self::PURPLE:
-				return 'Purple ';
+				return "Purple ";
 			case self::BLUE:
-				return 'Blue ';
+				return "Blue ";
 			case self::BROWN:
-				return 'Brown ';
+				return "Brown ";
 			case self::GREEN:
-				return 'Green ';
+				return "Green ";
 			case self::RED:
-				return 'Red ';
+				return "Red ";
 			case self::BLACK:
-				return 'Black ';
+				return "Black ";
 		}
 		
-        return '';
+        return "";
     }
     
 }

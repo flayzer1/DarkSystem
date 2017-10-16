@@ -243,7 +243,7 @@ class PlayerInventory120 extends PlayerInventory{
 	 * @param integer $slotIndex
 	 * @return boolean
 	 */
-	public function clear($slotIndex){
+	public function clear($slotIndex, $sendPacket = true){
 		if(isset($this->slots[$slotIndex])){
 			if($this->isArmorSlot($slotIndex)){
 				$ev = new EntityArmorChangeEvent($this->holder, $this->slots[$slotIndex], clone $this->air, $slotIndex);
@@ -267,9 +267,8 @@ class PlayerInventory120 extends PlayerInventory{
 			}else{
 				unset($this->slots[$slotIndex]);
 			}
-			$this->onSlotChange($slotIndex, $oldItem);
+			$this->onSlotChange($slotIndex, $oldItem, $sendPacket);
 		}
 		return true;
 	}
-	
 }

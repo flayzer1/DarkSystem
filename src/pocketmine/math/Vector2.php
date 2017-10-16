@@ -22,6 +22,7 @@
 namespace pocketmine\math;
 
 class Vector2{
+	
 	public $x;
 	public $y;
 

@@ -108,4 +108,5 @@ class Color{
 	public function __toString(){
 		return "Color(Red:" . $this->red . ", Green:" . $this->green . ", Blue:" . $this->blue . ")";
 	}
+	
 }

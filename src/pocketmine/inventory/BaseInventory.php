@@ -14,8 +14,9 @@ namespace pocketmine\inventory;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityInventoryChangeEvent;
 use pocketmine\event\inventory\InventoryOpenEvent;
-use pocketmine\item\Item;
+use pocketmine\event\inventory\InventoryCloseEvent;
 use pocketmine\network\multiversion\Multiversion;
+use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\Server;
 
@@ -115,7 +116,7 @@ abstract class BaseInventory implements Inventory{
 		}
 	}
 
-	public function setItem($index, Item $item){
+	public function setItem($index, Item $item, $sendPacket = true){
 		$item = clone $item;
 		if($index < 0 || $index >= $this->size){
 			return false;
@@ -133,7 +134,7 @@ abstract class BaseInventory implements Inventory{
 		}
 		$old = $this->getItem($index);
 		$this->slots[$index] = clone $item;
-		$this->onSlotChange($index, $old);
+		$this->onSlotChange($index, $old, $sendPacket);
 		return true;
 	}
 
@@ -333,9 +334,9 @@ abstract class BaseInventory implements Inventory{
 		return true;
 	}
 
-	public function clearAll(/*$send = true*/){
+	public function clearAll(){
 		foreach($this->getContents() as $index => $i){
-			$this->clear($index/*, $send*/);
+			$this->clear($index);
 		}
 	}
 	
@@ -361,7 +362,12 @@ abstract class BaseInventory implements Inventory{
 	}
 
 	public function close(Player $who){
+		$who->getServer()->getPluginManager()->callEvent($ev = new InventoryCloseEvent($this, $who));
+		if($ev->isCancelled()){
+			return false;
+		}
 		$this->onClose($who);
+		return true;
 	}
 
 	public function onOpen(Player $who){
@@ -372,10 +378,21 @@ abstract class BaseInventory implements Inventory{
 		unset($this->viewers[spl_object_hash($who)]);
 	}
 
-	public function onSlotChange($index, $before, $sendPacket = true){
-        if ($sendPacket) {
-            $this->sendSlot($index, $this->getViewers());
-        }
+	public function onSlotChange($index, $before, $sendPacket){
+		if($sendPacket){
+			$this->sendSlot($index, $this->getViewers());
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * @param Transaction $transaction
+	 *
+	 * @return bool
+	 */
+	public function processSlotChange(Transaction $transaction){
+		return true;
 	}
 	
 	/**

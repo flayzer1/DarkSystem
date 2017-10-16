@@ -1,22 +1,19 @@
 <?php
 
-#______           _    _____           _                  
-#|  _  \         | |  /  ___|         | |                 
-#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
-#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
-#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
-#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
-#                             __/ |                       
-#                            |___/
-
 namespace pocketmine\inventory\customUI;
+
+use pocketmine\Player;
 
 interface CustomUI{
 
-	public function handle($response, $player);
+	public function handle($response, Player $player);
+
+	public function jsonSerialize();
 	
-	public function toJSON();
-	
-	public function close($player);
+	public function close(Player $player);
+
+	public function getTitle();
+
+	public function getContent();
 	
 }

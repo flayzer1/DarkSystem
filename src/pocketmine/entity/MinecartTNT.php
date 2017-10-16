@@ -52,4 +52,5 @@ class MinecartTNT extends Minecart{
 
 		Entity::spawnTo($player);
 	}
+	
 }

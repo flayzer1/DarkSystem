@@ -65,6 +65,7 @@ class MagmaCube extends Slime
 
 			$drops[] = ItemItem::get(ItemItem::MAGMA_CREAM, 0, $creams);
 		}
+		
 		return $drops;
 	}
 }

@@ -48,4 +48,5 @@ class AttributeMap implements \ArrayAccess{
 	public function offsetUnset($offset){
 		throw new \RuntimeException("Could not unset an attribute from an attribute map");
 	}
+	
 }

@@ -9,11 +9,8 @@ use pocketmine\network\protocol\v120\InventoryTransactionPacket;
 use pocketmine\network\protocol\v120\Protocol120;
 use pocketmine\Player;
 
-class SimpleTransactionData {
+class SimpleTransactionData{
 	
-	/**
-	 * @INPORTANT don't use constants ACTION_ outside this class, it will change with new spec 
-	 */
 	const ACTION_CRAFT_PUT_SLOT = 3;
 	const ACTION_CRAFT_GET_SLOT = 5;
 	const ACTION_CRAFT_GET_RESULT = 7;

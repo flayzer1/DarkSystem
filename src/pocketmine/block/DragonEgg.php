@@ -16,6 +16,7 @@ use pocketmine\item\Item;
 use pocketmine\level\Position;
 use pocketmine\level\sound\GenericSound;
 use pocketmine\network\protocol\LevelEventPacket;
+use pocketmine\Server;
 use pocketmine\Player;
 
 class DragonEgg extends Fallable{
@@ -92,7 +93,7 @@ class DragonEgg extends Fallable{
 		$newpos = clone $pos;
 
 		$ev = new BlockTeleportEvent($this, $oldpos, $newpos);
-		$this->getServer()->getPluginManager()->callEvent($ev);
+		Server::getPluginManager()->callEvent($ev);
 		if(!$ev->isCancelled()){
 			$level->setBlock($pos, $this, true, true);
 			$posdistance = new Position($newpos->x - $oldpos->x, $newpos->y - $oldpos->y, $newpos->z - $oldpos->z, $this->getLevel());

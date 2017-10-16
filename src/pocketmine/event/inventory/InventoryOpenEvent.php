@@ -38,6 +38,7 @@ class InventoryOpenEvent extends InventoryEvent implements Cancellable{
 	 */
 	public function __construct(Inventory $inventory, Player $who){
 		$this->who = $who;
+		
 		parent::__construct($inventory);
 	}
 

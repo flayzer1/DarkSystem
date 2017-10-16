@@ -261,4 +261,5 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 
 		return $c;
 	}
+	
 }

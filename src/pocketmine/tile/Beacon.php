@@ -28,10 +28,13 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder{
 		if(!isset($nbt->primary)){
 			$nbt->primary = new IntTag("primary", 0);
 		}
+		
 		if(!isset($nbt->secondary)){
 			$nbt->secondary = new IntTag("secondary", 0);
 		}
+		
 		$this->inventory = new BeaconInventory($this);
+		
 		parent::__construct($level, $nbt);
 	}
 	
@@ -47,9 +50,11 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder{
 			new IntTag("y", (int)$this->y),
 			new IntTag("z", (int)$this->z)
 		]);
+		
 		if($this->hasName()){
 			$c->CustomName = $this->namedtag->CustomName;
 		}
+		
 		return $c;
 	}
 	
@@ -66,10 +71,12 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder{
 			unset($this->namedtag->CustomName);
 			return;
 		}
+		
 		$this->namedtag->CustomName = new StringTag("CustomName", $str);
 	}
 	
 	public function getInventory(){
 		return $this->inventory;
 	}
+	
 }

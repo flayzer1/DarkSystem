@@ -16,6 +16,7 @@ use pocketmine\level\sound\ButtonClickSound;
 use pocketmine\Player;
 
 class StoneButton extends WoodenButton{
+	
 	protected $id = self::STONE_BUTTON;
 
 	/**
@@ -39,6 +40,8 @@ class StoneButton extends WoodenButton{
 			$this->activate();
 			$this->getLevel()->scheduleUpdate($this, 40);
 		}
+		
 		return true;
 	}
+	
 }

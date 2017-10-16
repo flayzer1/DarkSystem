@@ -52,6 +52,7 @@ class StoneBricks extends Solid{
 			2 => "Cracked Stone Bricks",
 			3 => "Chiseled Stone Bricks",
 		];
+		
 		return $names[$this->meta & 0x03];
 	}
 	
@@ -64,5 +65,4 @@ class StoneBricks extends Solid{
 			return [];
 		}
 	}
-
 }

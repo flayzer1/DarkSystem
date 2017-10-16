@@ -2,77 +2,97 @@
 
 namespace pocketmine\inventory\customUI\windows;
 
+use pocketmine\Player;
 use pocketmine\inventory\customUI\CustomUI;
 use pocketmine\inventory\customUI\elements\UIElement;
 
-class CustomForm implements CustomUI{
-	
+class CustomForm implements CustomUI, \JsonSerializable{
+
 	/** @var string */
 	protected $title = '';
 	/** @var UIElement[] */
 	protected $elements = [];
-	/** @var string */
-	protected $json = '';
-	/** @var string Only for server settings*/
+	/** @var string Only for server settings */
 	protected $iconURL = '';
-	
-	public function __construct($title) {
+
+	/**
+	 * CustomForm is a totally custom and dynamic form
+	 * @param $title
+	 */
+	public function __construct($title){
 		$this->title = $title;
 	}
-	
+
 	/**
 	 * Add element to form
-	 * 
-	 * @param Button $button
+	 * @param UIElement $element
 	 */
-	public function addElement(UIElement $element) {
+	public function addElement(UIElement $element){
 		$this->elements[] = $element;
-		$this->json = '';
 	}
-	
+
 	/**
 	 * Only for server settings
 	 * @param string $url
 	 */
-	public function addIconUrl($url) {
+	public function setIconUrl($url){
 		$this->iconURL = $url;
 	}
-	
-	final public function toJSON() {
-		if ($this->json != '') {
-			return $this->json;
-		}
+
+	final public function jsonSerialize(){
 		$data = [
 			'type' => 'custom_form',
 			'title' => $this->title,
 			'content' => []
 		];
-		if ($this->iconURL != '') {
+		if ($this->iconURL != ''){
 			$data['icon'] = [
 				"type" => "url",
 				"data" => $this->iconURL
 			];
 		}
-		foreach ($this->elements as $element) {
-			$data['content'][] = $element->getDataToJson();
+		foreach ($this->elements as $element){
+			$data['content'][] = $element;
 		}
-		return $this->json = json_encode($data);
+		return $data;
 	}
-	
+
 	/**
-	 * @notice It not final because some logic may 
-	 * depends on some elements at the same time
-	 * 
-	 * @param array $response
+	 * To handle manual closing
 	 * @param Player $player
 	 */
-	public function handle($response, $player) {
-		foreach ($response as $elementKey => $elementValue) {
-			if (isset($this->elements[$elementKey])) {
+	public function close(Player $player){
+	}
+
+	/**
+	 * @param array $response
+	 * @param Player $player
+	 * @return array containing the options, data, responses etc
+	 */
+	public function handle($response, Player $player){
+		foreach ($response as $elementKey => $elementValue){
+			if (isset($this->elements[$elementKey])){
 				$this->elements[$elementKey]->handle($elementValue, $player);
-			} else {
+			} else{
 				error_log(__CLASS__ . '::' . __METHOD__ . " Element with index {$elementKey} doesn't exists.");
 			}
 		}
+
+		$return = [];
+		foreach ($response as $elementKey => $elementValue){
+			if (isset($this->elements[$elementKey])){
+				if (!is_null($value = $this->elements[$elementKey]->handle($elementValue, $player))) $return[] = $value;
+			}
+		}
+		return $return;
 	}
+
+	final public function getTitle(){
+		return $this->title;
+	}
+
+	public function getContent(){
+		return $this->elements;
+	}
+	
 }

@@ -263,7 +263,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	protected $randomClientId;
 
 	protected $lastMovement = 0;
-	protected $forceMovement = null;
 	
 	protected $connected = true;
 	protected $ip;
@@ -326,8 +325,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	private static $damageTimeList = ["0.1" => 0, "0.15" => 0.4, "0.2" => 0.6, "0.25" => 0.8];
 	
 	protected $lastDamageTime = 0;
-	
-	protected $lastTeleportTime = 0;
 	
 	protected $isTeleportedForMoveEvent = false;
 	
@@ -572,7 +569,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}*/
 
 	/*public function setScreenLineHeight(int $height = null){
-		if($height !== null and $height < 1){
+		if($height !== null && $height < 1){
 			throw new \InvalidArgumentException("Line height must be at least 1");
 		}
 		
@@ -709,10 +706,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->port = $port;
 		$this->clientID = $clientID;
 		//$this->chunksPerTick = (int) $this->server->getProperty("chunk-sending.per-tick", 4);
-		$this->spawnPosition = null;
+		//$this->spawnPosition = null;
 		$this->gamemode = $this->server->getGamemode();
 		$this->setLevel($this->server->getDefaultLevel(), true);
-		$this->newPosition = new Vector3(0, 0, 0);
+		//$this->newPosition = new Vector3(0, 0, 0);
 		//$this->checkMovement = (bool) $this->server->getAdvancedProperty("main.check-movement", true);
 		$this->boundingBox = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
@@ -939,7 +936,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					}
 				}
 			}
-			$this->teleport($pos);
 			$this->server->getPluginManager()->callEvent($ev = new PlayerJoinEvent($this, ""));
 			//if(!$ev->isCancelled()){
 				foreach($this->server->getOnlinePlayers() as $p){
@@ -1011,13 +1007,13 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		return true;
 	}
 	
-	public function dataPacket(DataPacket $packet, $needACK = false){
+	public function dataPacket(DataPacket $packet){
 		if($this->connected === false){
 			return false;
 		}
 		if($this->subClientId > 0 && $this->parent != null){
 			$packet->senderSubClientID = $this->subClientId;
-			return $this->parent->dataPacket($packet, $needACK);
+			return $this->parent->dataPacket($packet);
 		}
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$disallowedPackets = Protocol120::getDisallowedPackets();
@@ -1038,12 +1034,12 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($ev->isCancelled()){
 			return false;
 		}
-		$this->interface->putPacket($this, $packet, $needACK, false);
+		$this->interface->putPacket($this, $packet, false);
 		$packet->senderSubClientID = 0;
 		return true;
 	}
 	
-	public function directDataPacket(DataPacket $packet, $needACK = false){
+	public function directDataPacket(DataPacket $packet){
 		if($this->connected === false){
 			return false;
 		}
@@ -1065,7 +1061,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($ev->isCancelled()){
 			return false;
 		}
-		$this->interface->putPacket($this, $packet, $needACK, true);
+		$this->interface->putPacket($this, $packet, true);
 		return true;
 	}
 	
@@ -1211,6 +1207,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 		$flags |= 0x02;
 		$flags |= 0x04;
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
+			//$flags |= 0x100;
+		}
 		$pk = new AdventureSettingsPacket();
 		$pk->flags = $flags;
 		$this->dataPacket($pk);
@@ -1224,7 +1223,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$pk->setFlag(AdventureSettingsPacket::AUTO_JUMP, $this->autoJump);
 		$pk->setFlag(AdventureSettingsPacket::ALLOW_FLIGHT, $this->allowFlight);
 		$pk->setFlag(AdventureSettingsPacket::NO_CLIP, $this->isSpectator());
-		$pk->setFlag(AdventureSettingsPacket::FLYING, $this->allowFlight);
+		$pk->setFlag(AdventureSettingsPacket::FLYING, $this->flying);
 
 		$pk->commandPermission = ($this->isOp() ? AdventureSettingsPacket::PERMISSION_OPERATOR : AdventureSettingsPacket::PERMISSION_NORMAL);
 		$pk->playerPermission = ($this->isOp() ? PlayerPermissions::OPERATOR : PlayerPermissions::MEMBER);
@@ -1452,7 +1451,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	protected function revertMovement(Vector3 $pos, $yaw = 0, $pitch = 0){
 		/*$this->sendPosition($pos, $yaw, $pitch, MovePlayerPacket::MODE_RESET);
-		$this->forceMovement = $pos;
 		$this->newPosition = null;*/
 	}
 	
@@ -1461,7 +1459,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->setMoving(false);
 			return false;
 		}
-		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
+		$advancedMove = true;
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120 && $advancedMove === true){
 			if(Translate::checkTurkish() === "yes"){
 				$this->sendTip(TF::GOLD . "Yürüme 1.2 Sürümünde Hatalı Olabilir");
 			}else{
@@ -1487,7 +1486,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$to = new Location($newPos->x, $newPos->y, $newPos->z, $this->yaw, $this->pitch, $this->level);
 		$deltaAngle = abs($from->yaw - $to->yaw) + abs($from->pitch - $to->pitch);
 		$distanceSquared = ($this->newPosition->x - $this->x) ** 2 + ($this->newPosition->y - $this->y) ** 2 + ($this->newPosition->z - $this->z) ** 2;
-		if($distanceSquared > 0.0625 || $deltaAngle > 10){
+		if($distanceSquared > /*0.0625*/0.0001 || $deltaAngle > 1.0){ //10
 			$isFirst = ($this->lastX === null || $this->lastY === null || $this->lastZ === null);
 			if(!$isFirst){
 				if(!$this->isSpectator()){
@@ -1546,7 +1545,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$dy = $to->y - $from->y;
 			$dz = $to->z - $from->z;
 			$this->fastMove($dx, $dy, $dz);
-			if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120 && $this->isLiving()){
+			if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120 && $this->isLiving() && $advancedMove === true){
 				$this->setMayMove(true);
 				//$this->speed = new Vector3(0.1, 0.1, 0.1);
 				if(!$downBlock->isTransparent() && $this->isNotLiving()){
@@ -1655,15 +1654,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 							$this->setJumping(false); //Bad method
 						}
 					}elseif(!$rocketBlock->isTransparent() && $rocketBlock->y + 1 > $rocket && $this->isLiving() && !$this->isFlying()){ //For rocket bug
-						if($d * 2 * 30 !== $rocket){
+						if($d * 2 * 30 != $rocket){
 							$this->setMotion(new Vector3(0, -$rocket, 0));
 						}else{
 							$this->setMotion(new Vector3(0, -$d * 2 * 30, 0));
 						}
 						$this->sendPopup(TF::RED . "DEBUG: rocket error");
 					}
-					if($this->y > $rocket + 10){
-						$this->setMotion(new Vector3(0, -40, 0));
+					if($downBlock->isTransparent() && $downBlock->y > $rocket + 70){
+						$this->setMotion(new Vector3(0, -100, 0));
 						$this->sendPopup(TF::RED . "DEBUG: rocket error");
 					}
 					if($this->y > 0.2){
@@ -1702,7 +1701,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$this->nextChunkOrderRun = 20;
 				}
 			}
-			$this->forceMovement = null;
 		}
 		$this->newPosition = null;
 	}
@@ -1712,8 +1710,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			return;
 		}
 
-		assert($this->x !== null and $this->y !== null and $this->z !== null);
-		assert($this->newPosition->x !== null and $this->newPosition->y !== null and $this->newPosition->z !== null);
+		assert($this->x !== null && $this->y !== null && $this->z !== null);
+		assert($this->newPosition->x !== null && $this->newPosition->y !== null && $this->newPosition->z !== null);
 
 		$newPos = $this->newPosition;
 		$distanceSquared = $newPos->distanceSquared($this);
@@ -1723,9 +1721,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if(($distanceSquared / ($tickDiff ** 2)) > 225){
 			$revert = true;
 		}else{
-			if($this->chunk === null or !$this->chunk->isGenerated()){
+			if($this->chunk === null || !$this->chunk->isGenerated()){
 				$chunk = $this->level->getChunk($newPos->x >> 4, $newPos->z >> 4, false);
-				if($chunk === null or !$chunk->isGenerated()){
+				if($chunk === null || !$chunk->isGenerated()){
 					$revert = true;
 					$this->nextChunkOrderRun = 0;
 				}else{
@@ -1737,12 +1735,12 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			}
 		}
 
-		if(!$revert and $distanceSquared != 0){
+		if(!$revert && $distanceSquared != 0){
 			$dx = $newPos->x - $this->x;
 			$dy = $newPos->y - $this->y;
 			$dz = $newPos->z - $this->z;
 
-			$this->move($dx, $dy, $dz);
+			$this->fastMove($dx, $dy, $dz);
 
 			$diffX = $this->x - $newPos->x;
 			$diffY = $this->y - $newPos->y;
@@ -1750,7 +1748,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 			$diff = ($diffX ** 2 + $diffY ** 2 + $diffZ ** 2) / ($tickDiff ** 2);
 
-			if($this->isLiving() and !$revert and $diff > 0.0625){
+			if($this->isLiving() && !$revert && $diff > 0.0625){
 				$ev = new PlayerIllegalMoveEvent($this, $newPos);
 				$ev->setCancelled(true);
 
@@ -1776,8 +1774,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$delta = (($this->lastX - $to->x) ** 2) + (($this->lastY - $to->y) ** 2) + (($this->lastZ - $to->z) ** 2);
 		$deltaAngle = abs($this->lastYaw - $to->yaw) + abs($this->lastPitch - $to->pitch);
 
-		if(!$revert and ($delta > 0.0001 or $deltaAngle > 1.0)){
-			$isFirst = ($this->lastX === null or $this->lastY === null or $this->lastZ === null);
+		if(!$revert && ($delta > 0.0001 || $deltaAngle > 1.0)){
+			$isFirst = ($this->lastX === null || $this->lastY === null || $this->lastZ === null);
 
 			$this->lastX = $to->x;
 			$this->lastY = $to->y;
@@ -1817,7 +1815,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 			$this->sendPosition($from, $from->yaw, $from->pitch, MovePlayerPacket::MODE_RESET);
 		}else{
-			if($distanceSquared != 0 and $this->nextChunkOrderRun > 20){
+			if($distanceSquared != 0 && $this->nextChunkOrderRun > 20){
 				$this->nextChunkOrderRun = 20;
 			}
 		}
@@ -2092,15 +2090,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
             case "UPDATE_ATTRIBUTES_PACKET":
                 break;
             case "ADVENTURE_SETTINGS_PACKET":
-            	if($packet->eid !== $this->getId()){
-            	    break;
-            	}
                 $isHacker = ($this->allowFlight === false && ($packet->flags >> 9) & 0x01 === 1) || 
                     (!$this->isSpectator() && ($packet->flags >> 7) & 0x01 === 1);
                 if($isHacker){
-                	$this->kick("Lütfen Hile Kullanmayınız!");
-                }
-                if($packet->getFlag(AdventureSettingsPacket::NO_CLIP) && !$this->isSpectator()){
                 	$this->kick("Lütfen Hile Kullanmayınız!");
                 }
                 break;
@@ -2145,43 +2137,31 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->processLogin();
 				break;
 			case "MOVE_PLAYER_PACKET":
-				$revert = false;
-				if($this->dead === true || $this->spawned !== true){
-					//$revert = true;
-					$revert = false;
-					//$this->forceMovement = new Vector3($this->x, $this->y, $this->z);
-				}
-				if($revert){
-					$this->sendPosition($this->forceMovement, $packet->yaw, $packet->pitch, MovePlayerPacket::MODE_RESET);
+				$newPos = new Vector3($packet->x, $packet->y - $this->getEyeHeight(), $packet->z);
+				//if((!$this->isAlive() || $this->spawned === false || $this->newPosition === null || $this->isSleeping()) && $newPos->distanceSquared($this) > 0.01){
+				if(!$this->isAlive() || $this->spawned === false || /*$this->newPosition === null || */$this->isSleeping()){
+					$this->sendPosition($this, null, null, MovePlayerPacket::MODE_RESET);
 				}else{
-					$newPos = new Vector3($packet->x, $packet->y - $this->getEyeHeight(), $packet->z);
-					if(!($this->forceMovement instanceof Vector3) || $newPos->distanceSquared($this->forceMovement) <= 0.1){
-						$packet->yaw %= 360;
-						$packet->pitch %= 360;
-						if($packet->yaw < 0){
-							$packet->yaw += 360;
-						}
-						if(!$this->isMayMove()){
-							if($this->yaw != $packet->yaw || $this->pitch != $packet->pitch || abs($this->x - $packet->x) >= 0.05 || abs($this->z - $packet->z) >= 0.05){
-								$this->setMayMove(true);
-								$spawn = $this->getSpawn();
-								$spawn->y += 0.1;
-								$this->teleport($spawn);
-							}
-						}
-						$this->setRotation($packet->yaw, $packet->pitch);
-						$this->newPosition = $newPos;	
-						$this->forceMovement = null;
-					}elseif(microtime(true) - $this->lastTeleportTime > 3){
-						$this->forceMovement = new Vector3($this->x, $this->y, $this->z);
-						$this->sendPosition($this->forceMovement, $packet->yaw, $packet->pitch, MovePlayerPacket::MODE_RESET);
-						$this->lastTeleportTime = microtime(true);
+					$packet->yaw %= 360;
+					$packet->pitch %= 360;
+					if($packet->yaw < 0){
+						$packet->yaw += 360;
 					}
+					if(!$this->isMayMove()){
+						if($this->yaw != $packet->yaw || $this->pitch != $packet->pitch || abs($this->x - $packet->x) >= 0.05 || abs($this->z - $packet->z) >= 0.05){
+							$this->setMayMove(true);
+							$spawn = $this->getSpawn();
+							$spawn->y += 0.1;
+							$this->teleport($spawn);
+						}
+					}
+					$this->setRotation($packet->yaw, $packet->pitch);
+					$this->newPosition = $newPos;
 				}
 				break;
 			case "MOB_EQUIPMENT_PACKET":
 				//Timings::$timerMobEqipmentPacket->startTiming();
-				if($this->spawned === false || $this->dead === true){
+				if($this->spawned === false || $this->blocked === true || $this->dead === true){
 					//Timings::$timerMobEqipmentPacket->stopTiming();
 					break;
 				}
@@ -2205,7 +2185,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 							break;
 						}
 						
-						$this->addTransaction($transaction);	
+						$this->addTransaction($transaction);
 						break;
 					}
 				}
@@ -2304,9 +2284,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				//Timings::$timerUseItemPacket->stopTiming();
 				break;
 			case "PLAYER_ACTION_PACKET":
-				//Timings::$timerActionPacket->startTiming();
 				if($this->spawned === false || $this->blocked === true){
-					//Timings::$timerActionPacket->stopTiming();
 					break;
 				}
 				$action = MultiversionEnums::getPlayerAction($this->protocol, $packet->action);
@@ -2315,6 +2293,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						$this->advancedJump();
 						break;
 					case "START_DESTROY_BLOCK":
+						if($this->isSpectator()){
+							break;
+						}
 						$this->actionsNum["CRACK_BLOCK"] = 0;
 						if(!$this->isCreative()){
 							$block = $this->level->getBlock(new Vector3($packet->x, $packet->y, $packet->z));
@@ -2336,6 +2317,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						break;
 					case "ABORT_DESTROY_BLOCK":
 					case "STOP_DESTROY_BLOCK":
+						if($this->isSpectator()){
+							break;
+						}
 						$this->actionsNum["CRACK_BLOCK"] = 0;
 						$pk = new LevelEventPacket();
 						$pk->evid = LevelEventPacket::EVENT_STOP_BLOCK_CRACKING;
@@ -2349,6 +2333,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						}
 						break;
 					case "RELEASE_USE_ITEM":
+						if($this->isSpectator()){
+							break;
+						}
 						$this->releaseUseItem();
 						break;
 					case "STOP_SLEEPING":
@@ -2470,13 +2457,16 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				break;
 			case "INTERACT_PACKET":
 				if($packet->action === InteractPacket::ACTION_DAMAGE){
+					if($this->isSpectator()){
+						break;
+					}
 					$this->attackByTargetId($packet->target);
 				}else{
 					$this->customInteract($packet);
 				}
 				break;
 			case "ANIMATE_PACKET":
-				if($this->spawned === false || $this->dead === true){
+				if($this->spawned === false || $this->blocked === true || $this->dead === true){
 					break;
 				}
 
@@ -2594,401 +2584,22 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->sendSound(LevelSoundEventPacket::SOUND_POP, $position, 63);
 				break;
 			case "TEXT_PACKET":
-				if($this->spawned === false || $this->dead === true){
+				if($this->spawned === false || $this->blocked === true || $this->dead === true){
 					break;
-				} //TODO: Move to ChatHandler
-				$dbotprefix = $this->server->getDarkBotPrefix();
-				$msg = "§aSizin İsteğiniz Benim İçin Bir Emirdir!";
+				}
 				//$externalIP = Utils::getIP();
 				//$internalIP = gethostbyname(trim('hostname'));
 				$leetcc = ".leet.cc";
 				$playmcpe = ".playmc.pe";
-				$operators = ["DarkYusuf13", "calci123", "BluishCoot11", "Kayra_OyunYT"]; //You can add operators of your server here
 				if($packet->type === TextPacket::TYPE_CHAT){
 					$packet->message = TF::clean($packet->message, $this->removeFormat);
 					foreach(explode("\n", $packet->message) as $message){
 						if($this->server->getName() == "DarkSystem"){
-							switch($message){
-								/* English */
-								case "darkbot hi":
-								case "#hi":
-								$this->server->broadcastMessage($dbotprefix . "Hi!");
-								break;
-								case "darkbot how are you":
-								case "#how are you":
-								$this->server->broadcastMessage($dbotprefix . "I am fine, thanks!");
-								break;
-								case "darkbot what are you doing":
-								case "#what are you doing":
-								$this->server->broadcastMessage($dbotprefix . "Nothing.");
-								break;
-								/* Korean */
-								case "안녕":
-								case "darkbot 안녕":
-								$this->server->broadcastMessage($dbotprefix . "안녕");
-								break;
-								case "darkbot 잘 지냈어요":
-								case "darkbot 너는 어떻게 지내니":
-								case "darkbot 안녕하십니까":
-								case "darkbot 스폰으로 이동 하였습니다":
-								$this->server->broadcastMessage($dbotprefix . "난 괜찮아");
-								break;
-								/* Turkish */
-								case "dbot gm1":
-								case "gm1 dbot":
-								case "darkbot gm1":
-								case "gm1 darkbot":
-								case "darkbot gm1 ver":
-								case "darkbot bana gm1 ver":
-								if(/*$this->server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-									$this->setGamemode(1);
-									$this->server->broadcastMessage($dbotprefix . $msg);
-								}
-								//return true;
-								break;
-								case "dbot gm0":
-								case "gm0 dbot":
-								case "darkbot gm0":
-								case "gm0 darkbot":
-								case "darkbot gm0 ver":
-								case "darkbot bana gm0 ver":
-								if(/*$this->server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-									$this->setGamemode(0);
-									$this->server->broadcastMessage($dbotprefix . $msg);
-								}
-								//return true;
-								break;
-								case "dbot spawn":
-								case "spawn dbot":
-								case "darkbot spawn":
-								case "spawn darkbot":
-								case "darkbot spawna ışınla":
-								case "darkbot beni spawna ışınla":
-								$this->teleport($this->server->getDefaultLevel()->getSafeSpawn());
-								$this->server->broadcastMessage($dbotprefix . $msg);
-								//return true;
-								break;
-								case "dbot kill":
-								case "kill dbot":
-								case "darkbot kill":
-								case "kill darkbot":
-								case "darkbot kill çek":
-								case "darkbot bana kill çek":
-								case "darkbot beni öldür":
-								if(/*$this->server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-									$this->kill();
-									$this->server->broadcastMessage($dbotprefix . $msg);
-								}
-								//return true;
-								break;
-								case "dbot sabah yap":
-								case "darkbot sabah yap":
-								case "sabah yap dbot":
-								case "sabah yap darkbot":
-								if(/*$this->server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-									$this->level->setTime(3000);
-									$this->server->broadcastMessage($dbotprefix . $msg);
-								}
-								break;
-								case "dbot akşam yap":
-								case "darkbot akşam yap":
-								case "akşam yap dbot":
-								case "akşam yap darkbot":
-								if(/*$this->server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-									$this->level->setTime(14000);
-									$this->server->broadcastMessage($dbotprefix . $msg);
-								}
-								break;
-								case "dbot ddos at":
-								case "ddos at dbot":
-								case "darkbot ddos":
-								case "ddos darkbot":
-								case "darkbot ddos at":
-								case "darkbot dos at":
-								if(/*$this->server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-									$this->server->broadcastMessage($dbotprefix . " ");
-									$this->server->broadcastMessage($dbotprefix . "§aSunucu DDoS İçin Hazırlanıyor...");
-									$this->server->broadcastMessage($dbotprefix . " ");
-									$this->server->broadcastMessage($dbotprefix . "§aBağlantı Hızlandırılıyor...");
-									$this->server->broadcastMessage($dbotprefix . " ");
-									$this->server->broadcastMessage($dbotprefix . "§aIP Tespit Ediliyor...");
-									$this->server->broadcastMessage($dbotprefix . " ");
-									$this->server->broadcastMessage($dbotprefix . " ");
-									$this->server->broadcastMessage($dbotprefix . "§aHedef IP Belirlendi.");
-									$this->server->broadcastMessage($dbotprefix . "§6DDoSing.");
-									$this->server->broadcastMessage($dbotprefix . "§6DDoSing..");
-									$this->server->broadcastMessage($dbotprefix . "§6DDoSing...");
-									$this->server->broadcastMessage($dbotprefix . "§6DDoSing.");
-									$this->server->broadcastMessage($dbotprefix . "§6DDoSing..");
-									$this->server->broadcastMessage($dbotprefix . "§aDDoS Başarılı!");
-								}
-								//return true;
-								break;
-								//$efendim = 0;
-								case "dbot":
-								case "Dbot":
-								case "darkbot":
-								case "Darkbot":
-								case "dark bot":
-								case "Dark bot":
-								case "#dbot":
-								case "#Dbot":
-								case "#darkbot":
-								case "#Darkbot":
-								case "#dark bot":
-								case "#Dark bot":
-								$this->server->broadcastMessage($dbotprefix . "§aEfendim?");
-								/*++$efendim;
-								if($efendim > 1){
-									$this->server->broadcastMessage($dbotprefix . "§aLan ne Vaaarrr?!?");
-								}*/
-								break;
-								case "#sana demedim":
-								case "#sana demedim dbot":
-								case "#sana demedim darkbot":
-								$this->server->broadcastMessage($dbotprefix . "§aHa, Tamam.");
-								break;
-								case "dbot naber":
-								case "darkbot naber":
-								case "dbot nasılsın":
-								case "darkbot nasılsın":
-								case "dbot nasilsin":
-								case "darkbot nasilsin":
-								case "#naber":
-								case "#darkbot naber":
-								$this->server->broadcastMessage($dbotprefix . "§aİyiyim, Peki ya Sen?");
-								break;
-								case "dbot sen delisin":
-								case "darkbot sen delisin":
-								case "#sen delisin":
-								case "#darkbot sen delisin":
-								$this->server->broadcastMessage($dbotprefix . "§aDeli sensin!");
-								break;
-								case "dbot iyimisin":
-								case "dbot iyi misin":
-								case "darkbot iyimisin":
-								case "darkbot iyi misin":
-								case "#iyimisin":
-								case "#iyi misin":
-								case "#darkbot iyimisin":
-								case "#darkbot iyi misin":
-								$this->server->broadcastMessage($dbotprefix . "§aEvet, Peki Ya sen?");
-								break;
-								case "bende iyiyim dbot":
-								case "bende iyiyim darkbot":
-								case "#bende":
-								case "#bnde":
-								case "#bende iyiyim":
-								case "#bende iyiyim dbot":
-								case "#bende iyiyim darkbot":
-								$this->server->broadcastMessage($dbotprefix . "§aBuna Sevindim.");
-								break;
-								case "alım varmı":
-								case "alım var mı":
-								case "alim varmi":
-								case "alim var mi":
-								case "alım varmi":
-								case "alım var mi":
-								case "alım varmı":
-								case "alım var mı":
-								case "yetki ver":
-								case "yetki verirmisin":
-								case "yetki verir misin":
-								case "#alım varmı":
-								case "#alım var mı":
-								case "#alim varmi":
-								case "#alim var mi":
-								case "#alım varmi":
-								case "#alım var mi":
-								case "#alım varmı":
-								case "#alım var mı":
-								case "#yetki ver":
-								case "#yetki verirmisin":
-								case "#yetki verir misin":
-								$this->server->broadcastMessage($dbotprefix . "§aHayır.");
-								break;
-								case "darkbot canım sıkıldı":
-								case "canım sıkıldı darkbot":
-								case "#canım sıkıldı":
-								case "#darkbot canım sıkıldı":
-								case "#canım sıkıldı darkbot":
-								$this->server->broadcastMessage($dbotprefix . "§aBenim de. Hadi Sohbet Edelim!");
-								break;
-								case "#ok":
-								case "#OK":
-								case "#tmm":
-								case "#tamam":
-								$this->server->broadcastMessage($dbotprefix . "§aTamam.");
-								break;
-								case "#easter":
-								$this->server->broadcastMessage($dbotprefix . "§aNe diyon olm");
-								break;
-								case "darkbot günaydın":
-								case "günaydın darkbot":
-								case "#günaydın":
-								case "#darkbot günaydın":
-								case "#günaydın darkbot":
-								$this->server->broadcastMessage($dbotprefix . "§aSanada.");
-								break;
-								case "darkbot by":
-								case "darkbot bb":
-								case "#by":
-								case "#bb":
-								$this->server->broadcastMessage($dbotprefix . "§aBay, Görüşürüz!");
-								break;
-								case "darkbot iyi akşamlar":
-								case "iyi akşamlar darkbot":
-								case "#iyi akşamlar":
-								case "#darkbot iyi akşamlar":
-								case "#iyi akşamlar darkbot":
-								$this->server->broadcastMessage($dbotprefix . "§aSanada İyi Akşamlar!");
-								break;
-								case "darkbot senin sürümün kaç":
-								case "darkbot senin sürümün kaç?":
-								case "senin sürümün kaç darkbot":
-								case "senin sürümün kaç darkbot?":
-								case "#senin sürümün kaç":
-								case "#senin sürümün kaç?":
-								$this->server->broadcastMessage($dbotprefix . TF::GREEN . $this->server->getDarkBotVersion());
-								break;
-								case "darkbot seni kim yaptı":
-								case "darkbot seni kim yaptı?":
-								case "seni kim yaptı darkbot":
-								case "seni kim yaptı darkbot?":
-								case "#seni kim yaptı":
-								case "#seni kim yaptı?":
-								$this->server->broadcastMessage($dbotprefix . "§9DarkYusuf13!");
-								break;
-								case "darkbot sen kimsin":
-								case "darkbot sen nesin":
-								case "#sen kimsin":
-								case "#sen nesin":
-								$this->server->broadcastMessage($dbotprefix . "§aBen Yapay Bir Zekaya Sahip, DarkSystem'i Ve Onun Sunucularını Korumak İçin Kodlanmış Sanal Bir Robotum.");
-								break;
-								case "darkbot napıyon":
-								case "darkbot napıyosun":
-								case "darkbot napıyorsun":
-								case "#darkbot napıyon":
-								case "#darkbot napıyosun":
-								case "#darkbot napıyorsun":
-								$this->server->broadcastMessage($dbotprefix . "§aHiiç, Ne Olsun.");
-								break;
-								case "darkbot yardım et":
-								case "darkbot yardımet":
-								case "darkbot yardim et":
-								case "darkbot yardimet":
-								case "#darkbot yardım et":
-								case "#darkbot yardımet":
-								case "#darkbot yardim et":
-								case "#darkbot yardimet":
-								$this->server->broadcastMessage($dbotprefix . "§aNoldu?!");
-								break;
-								case "#elinin körü":
-								case "#elinin körü :D":
-								$this->server->broadcastMessage($dbotprefix . "§a.d");
-								break;
-								case "darkbot gul":
-								case "darkbot gül":
-								case "#darkbot gul":
-								case "#darkbot gül":
-								$this->server->broadcastMessage($dbotprefix . "§aMuhaaaahaaaa");
-								break;
-								//$sent = false;
-								case "sa":
-								case "s.a":
-								case "s.a.":
-								case "s,a":
-								case "s,a,":
-								case "sea":
-								case "#sa":
-								case "#s.a":
-								case "#s.a.":
-								case "#s,a":
-								case "#s,a,":
-								case "#sea":
-								/*$sent = true;
-								if($sent = true){
-									$this->server->broadcastMessage($dbotprefix . "§aAleyküm Selam");
-								}*/
-								if($this->getName() == "BluishCoot11"){ //For something
-									break;
-								}
-								//$this->server->broadcastMessage($dbotprefix . "§aAleyküm Selam");
-								switch(mt_rand(1, 3)){
-									case 1:
-									$this->server->broadcastMessage($dbotprefix . "§aAleyküm Selam");
-									break;
-									case 2:
-									$this->server->broadcastMessage($dbotprefix . "§aAleyküm Selam, Hoş Geldin");
-									break;
-									case 3:
-									$this->server->broadcastMessage($dbotprefix . "§aas");
-									break;
-									default;
-									break;
-								}
-								break;
-								case "darkbot espri":
-								case "darkbot espiri":
-								case "darkbot espri yap":
-								case "darkbot espiri yap":
-								case "darkbot bir espri yap":
-								case "darkbot bir espiri yap":
-								case "#espri":
-								case "#espiri":
-								case "#espri yap":
-								case "#espiri yap":
-								case "#bir espri yap":
-								case "#bir espiri yap":
-								case "#darkbot espri":
-								case "#darkbot espiri":
-								case "#darkbot espri yap":
-								case "#darkbot espiri yap":
-								case "#darkbot bir espri yap":
-								case "#darkbot bir espiri yap":
-								switch(mt_rand(1, 11)){
-									case 1:
-									$this->server->broadcastMessage($dbotprefix . "§aTamam Madem Çok İstedin: Adamın Biri Varmış İkinci Dönem Düzeltmiş :D :D Hadi Gülün");
-									break;
-									case 2:
-									$this->server->broadcastMessage($dbotprefix . "§aSize Deniz Anası Taklidi Yapayım mı? Deniiiiz Gel Kızım Geeel.. :D sjsjjs (Robot Olmama Rağmen Gülüyorum Sizde Gülün :D)");
-									break;
-									case 3:
-									$this->server->broadcastMessage($dbotprefix . "§aHmm, Aklıma Gelmedi Sonra Tekrar Sor.");
-									break;
-									case 4:
-									$this->server->broadcastMessage($dbotprefix . "§aTemel Ayakkabıcıya Gitmiş Ayakkabıcı Sıkıyosa Alma Demiş Temel de Korkmuş Almış :D :D");
-									break;
-									case 5:
-									$this->server->broadcastMessage($dbotprefix . "§aKral Tahta Çıkınca Ne Yapmış? Tahtayı Yerine Çakmış! :D :D");
-									break;
-									case 6:
-									$this->server->broadcastMessage($dbotprefix . "§aTamam Yapıyorum, Kaç Derece Olsun? :D :D");
-									break;
-									case 7:
-									$this->server->broadcastMessage($dbotprefix . "§aSaat Niçin Tehlikelidir? Çünkü Akrebi Var!! :D :D sjjsjshajaj");
-									break;
-									case 8:
-									$this->server->broadcastMessage($dbotprefix . "§aAdamın Biri Gülmüş, Bahçeye Dikmişler :D");
-									break;
-									case 9:
-									$this->server->broadcastMessage($dbotprefix . "§aYılın Haberi: Mezardan Ceset Çıktı!!! Şok Şok Şok! İlginç");
-									break;
-									case 10:
-									$this->server->broadcastMessage($dbotprefix . "§aAklıma Gelmedi :/");
-									break;
-									case 11:
-									$this->server->broadcastMessage($dbotprefix . "§aTemel ile Dursun Anaokulunda Çıkan Yangındaki Çocukları Kurtarıyormuş. Dursun Bir Çocuğu Atmış, Temel de Tutmuş, Başka Bir Tane Atmış Yine Tutmuş.");
-									$this->server->broadcastMessage($dbotprefix . "§aBu Sefer Zenci Bir Tane Atmış Temel Tutmamış. Sebebini Sorunca: Yanmışları Atma Zaman Kaybediyoruz Demiş Muahaaa");
-									break;
-									default;
-									break;
-								}
-								default;
-								break;
+							$chandler = new ChatHandler($this->server);
+							$result = $chandler->check($this, $message);
+							if($result !== ""){
+								$this->server->broadcastMessage($result);
 							}
-							//$chandler = new ChatHandler($this->server);
-							//ChatHandler::check($this, $message);
 						}
 						if(trim($message) != "" && strlen($message) <= 255 && $this->messageCounter-- > 0 && /*!strpos($message, $externalIP) && !strpos($message, $internalIP) && */!strpos($message, $leetcc) && !strpos($message, $playmcpe)){
 							$this->server->getPluginManager()->callEvent($ev = new PlayerChatEvent($this, $message));
@@ -3009,30 +2620,27 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				}
 				break;
 			case "CONTAINER_CLOSE_PACKET":
-				//Timings::$timerContainerClosePacket->startTiming();
 				if($this->spawned === false || $packet->windowid === 0){					
 					break;
 				}
+				
 				$this->craftingType = Player::CRAFTING_DEFAULT;
 				$this->currentTransaction = null;
-				if($packet->windowid === $this->currentWindowId){
+				if($packet->windowid === $this->currentWindowId && $this->currentWindow !== null){
 					$this->server->getPluginManager()->callEvent(new InventoryCloseEvent($this->currentWindow, $this));
 					$this->removeWindow($this->currentWindow);
 				}
-				//Timings::$timerContainerClosePacket->stopTiming();
 				break;
 			case "CRAFTING_EVENT_PACKET":
-				//Timings::$timerCraftingEventPacket->startTiming();
 				if($this->spawned === false || $this->dead){
-					//Timings::$timerCraftingEventPacket->stopTiming();
 					break;
 				}
+				
 				if($packet->windowId > 0 && $packet->windowId !== $this->currentWindowId){
 					$this->inventory->sendContents($this);
 					$pk = new ContainerClosePacket();
 					$pk->windowid = $packet->windowId;
 					$this->dataPacket($pk);
-					//Timings::$timerCraftingEventPacket->stopTiming();
 					break;
 				}
 				
@@ -3041,7 +2649,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				
 				if(!($result instanceof Item)){
 					$this->inventory->sendContents($this);
-					//Timings::$timerCraftingEventPacket->stopTiming();
 					break;
 				}
 				
@@ -3061,16 +2668,18 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 							if($item == null){
 								continue;
 							}
+							
 							$this->inventory->setItem(PlayerInventory120::CRAFT_INDEX_0 - $slot, $item);
 						}
 					}catch(\Exception $e){
+						
 					}
+					
 					return;
 				}
 				
 				if($recipe === null || (($recipe instanceof BigShapelessRecipe || $recipe instanceof BigShapedRecipe) && $this->craftingType === Player::CRAFTING_DEFAULT)){
 					$this->inventory->sendContents($this);
-					//Timings::$timerCraftingEventPacket->stopTiming();
 					break;
 				}
 
@@ -3090,7 +2699,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				
 				if(!$canCraft || !$result->deepEquals($recipe->getResult(), true, false)){
 					$this->inventory->sendContents($this);
-					//Timings::$timerCraftingEventPacket->stopTiming();
 					break;
 				}
 				
@@ -3115,14 +2723,13 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 				if(!$canCraft){
 					$this->inventory->sendContents($this);
-					//Timings::$timerCraftingEventPacket->stopTiming();
 					break;
 				}
+				
 				$this->server->getPluginManager()->callEvent($ev = new CraftItemEvent($ingredients, $recipe, $this));
 
 				if($ev->isCancelled()){
 					$this->inventory->sendContents($this);
-					//Timings::$timerCraftingEventPacket->stopTiming();
 					break;
 				}
 			
@@ -3151,8 +2758,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				}
 				
 				$this->inventory->sendContents($this);
-
-				//Timings::$timerCraftingEventPacket->stopTiming();
+				
 				break;
 			case "CONTAINER_SET_SLOT_PACKET":
 				//Timings::$timerConteinerSetSlotPacket->startTiming();
@@ -3358,51 +2964,48 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->setSkin($packet->newSkinByteData, $packet->newSkinId, $packet->newSkinGeometryName, $packet->newSkinGeometryData, $packet->newCapeByteData);
 				$this->updatePlayerSkin($packet->oldSkinName, $packet->newSkinName);
 				break;
-			/*case "BOOK_EDIT_PACKET":
-			//TODO: Fix code
-		$oldBook = $this->inventory->getItem($packet->inventorySlot - 9);
-		if($oldBook->getId() !== Item::WRITABLE_BOOK){
-			break;
-		}
-		
-		$newBook = clone $oldBook;
-		$modifiedPages = [];
-		
-		switch($packet->type){
-			case BookEditPacket::TYPE_REPLACE_PAGE:
-				$newBook->setPageText($packet->pageNumber, $packet->text);
-				$modifiedPages[] = $packet->pageNumber;
+			case "BOOK_EDIT_PACKET":
+				$oldBook = $this->inventory->getItem($packet->inventorySlot - 9);
+				if($oldBook->getId() !== Item::WRITABLE_BOOK){
+					break;
+				}
+				
+				$newBook = clone $oldBook;
+				$modifiedPages = [];
+				switch($packet->type){
+					case BookEditPacket::TYPE_REPLACE_PAGE:
+						$newBook->setPageText($packet->pageNumber, $packet->text);
+						$modifiedPages[] = $packet->pageNumber;
+						break;
+					case BookEditPacket::TYPE_ADD_PAGE:
+						$newBook->insertPage($packet->pageNumber, $packet->text);
+						$modifiedPages[] = $packet->pageNumber;
+						break;
+					case BookEditPacket::TYPE_DELETE_PAGE:
+						$newBook->deletePage($packet->pageNumber);
+						$modifiedPages[] = $packet->pageNumber;
+						break;
+					case BookEditPacket::TYPE_SWAP_PAGES:
+						$newBook->swapPages($packet->pageNumber, $packet->secondaryPageNumber);
+						$modifiedPages = [$packet->pageNumber, $packet->secondaryPageNumber];
+						break;
+					case BookEditPacket::TYPE_SIGN_BOOK:
+						$newBook = Item::get(Item::WRITTEN_BOOK, 0, 1, $newBook->getNamedTag());
+						$newBook->setAuthor($packet->author);
+						$newBook->setTitle($packet->title);
+						$newBook->setGeneration(WrittenBook::GENERATION_ORIGINAL);
+						break;
+						default;
+						break;
+				}
+				
+				$this->server->getPluginManager()->callEvent($event = new PlayerEditBookEvent($this, $oldBook, $newBook, $packet->type, $modifiedPages));
+				if($event->isCancelled()){
+					break;
+				}
+				
+				$this->getInventory()->setItem($packet->inventorySlot - 9, $event->getNewBook());
 				break;
-			case BookEditPacket::TYPE_ADD_PAGE:
-				$newBook->insertPage($packet->pageNumber, $packet->text);
-				$modifiedPages[] = $packet->pageNumber;
-				break;
-			case BookEditPacket::TYPE_DELETE_PAGE:
-				$newBook->deletePage($packet->pageNumber);
-				$modifiedPages[] = $packet->pageNumber;
-				break;
-			case BookEditPacket::TYPE_SWAP_PAGES:
-				$newBook->swapPage($packet->pageNumber, $packet->secondaryPageNumber);
-				$modifiedPages = [$packet->pageNumber, $packet->secondaryPageNumber];
-				break;
-			case BookEditPacket::TYPE_SIGN_BOOK:
-				$newBook = Item::get(Item::WRITTEN_BOOK, 0, 1, $newBook->getNamedTag());
-				$newBook->setAuthor($packet->author);
-				$newBook->setTitle($packet->title);
-				$newBook->setGeneration(WrittenBook::GENERATION_ORIGINAL);
-				break;
-				default;
-				break;
-		}
-		
-		$this->server->getPluginManager()->callEvent($event = new PlayerEditBookEvent($this, $oldBook, $newBook, $packet->type, $modifiedPages));
-		if($event->isCancelled()){
-			break;
-		}
-		
-		$this->getInventory()->setItem($packet->inventorySlot - 9, $event->getNewBook());
-	}
-	break;*/
 			case "MODAL_FORM_RESPONSE_PACKET":
 				$this->checkModal($packet->formId, json_decode($packet->data, true));
 				break;
@@ -3795,27 +3398,21 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				}
 				$message = "death.attack.fall";
 				break;
-
 			case EntityDamageEvent::CAUSE_SUFFOCATION:
 				$message = "death.attack.inWall";
 				break;
-
 			case EntityDamageEvent::CAUSE_LAVA:
 				$message = "death.attack.lava";
 				break;
-
 			case EntityDamageEvent::CAUSE_FIRE:
 				$message = "death.attack.onFire";
 				break;
-
 			case EntityDamageEvent::CAUSE_FIRE_TICK:
 				$message = "death.attack.inFire";
 				break;
-
 			case EntityDamageEvent::CAUSE_DROWNING:
 				$message = "death.attack.drown";
 				break;
-
 			case EntityDamageEvent::CAUSE_CONTACT:
 				if($cause instanceof EntityDamageByBlockEvent){
 					if($cause->getDamager()->getId() === Block::CACTUS){
@@ -3823,7 +3420,6 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					}
 				}
 				break;
-
 			case EntityDamageEvent::CAUSE_BLOCK_EXPLOSION:
 			case EntityDamageEvent::CAUSE_ENTITY_EXPLOSION:
 				if($cause instanceof EntityDamageByEntityEvent){
@@ -3840,15 +3436,13 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$message = "death.attack.explosion";
 				}
 				break;
-
 			case EntityDamageEvent::CAUSE_MAGIC:
 				$message = "death.attack.magic";
 				break;
-
 			case EntityDamageEvent::CAUSE_CUSTOM:
 				break;
-				
-			default:
+				default;
+				break;
 		}
 
 		Entity::kill();
@@ -4012,17 +3606,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function teleport(Vector3 $pos, $yaw = null, $pitch = null){
-		if(!$this->isOnline()){
-			return false;
-		}
-
-		$oldPos = $this->getPosition();
 		if(parent::teleport($pos, $yaw, $pitch)){
 			if(!is_null($this->currentWindow)){
 				$this->removeWindow($this->currentWindow);
 			}
 			
-			$this->forceMovement = new Vector3($this->x, $this->y, $this->z);
 			$this->sendPosition($this, $this->yaw, $this->pitch, MovePlayerPacket::MODE_RESET);
 			//$this->level->updateAround($pos);
 			//$this->level->updateAllLight($pos);
@@ -4030,7 +3618,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->resetFallDistance();
 			$this->nextChunkOrderRun = 0;
 			$this->newPosition = null;
-			$this->lastTeleportTime = microtime(true);
+			$this->stopSleep();
 			$this->isTeleportedForMoveEvent = true;
 		}
 	}
@@ -4101,7 +3689,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function continueLoginProcess(){
 		$pk = new PlayStatusPacket();
 		$pk->status = PlayStatusPacket::LOGIN_SUCCESS;
-		$this->dataPacket($pk);			
+		$this->dataPacket($pk);		
 		
 		$pk = new ResourcePackInfoPacket();
 		$this->dataPacket($pk);
@@ -4648,7 +4236,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$pk = new SetTitlePacket();
 			$pk->type = SetTitlePacket::TITLE_TYPE_TITLE;
 			$pk->text = $text;
-			$this->dataPacket($pk);	
+			$this->dataPacket($pk);
 		}
 	}
 
@@ -4718,7 +4306,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			return true;
 		}
 
-		if(!$target instanceof Entity || $this->isSpectator() && !$this->isCreative() && !$this->isSurvival() && !$this->isAdventure() || $target->dead === true){
+		//if(!$target instanceof Entity || $this->isSpectator() && !$this->isCreative() && !$this->isSurvival() && !$this->isAdventure() || $target->dead === true){
+		if(!$target instanceof Entity || $this->isSpectator() || $target->dead === true){
 			return true;
 		}
 
@@ -4782,6 +4371,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			];
 			
 			$points = 0;
+			
 			foreach($target->getInventory()->getArmorContents() as $index => $i){
 				if(isset($armorValues[$i->getId()])){
 					$points += $armorValues[$i->getId()];
@@ -5113,6 +4703,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	protected function crackBlock($packet){
+		if($this->isSpectator()){
+			return false;
+		}
 		if(!isset($this->actionsNum["CRACK_BLOCK"])){
 			$this->actionsNum["CRACK_BLOCK"] = 0;
 		}
@@ -5212,12 +4805,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
  	}
 	
 	 protected function releaseUseItem(){
+		if($this->isSpectator()){
+			return false;
+		}
 		if($this->startAction > -1 && $this->getDataFlag(Player::DATA_FLAGS, Player::DATA_FLAG_ACTION)){
 			if($this->inventory->getItemInHand()->getId() === Item::BOW){
 				$bow = $this->inventory->getItemInHand();
 				if($this->isSurvival() || $this->isAdventure()/* && !$this->isCreative() && !$this->isSpectator()*/ && !$this->inventory->contains(Item::get(Item::ARROW, 0, 1))){
 					$this->inventory->sendContents($this);
-					return;
+					return true;
 				}
 
 				$yawRad = $this->yaw / 180 * M_PI;
@@ -5293,7 +4889,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->server->getPluginManager()->callEvent($ev = new PlayerItemConsumeEvent($this, $this->inventory->getItemInHand()));
 			if($ev->isCancelled()){
 				$this->inventory->sendContents($this);
-				return;
+				return false;
 			}
 
 			$pk = new EntityEventPacket();
@@ -5316,6 +4912,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	protected function useItem120(){
+		if($this->getPlayerProtocol() < ProtocolInfo::PROTOCOL_120){
+			return false;
+		}
 		$slot = $this->inventory->getItemInHand();
 		if($slot instanceof Potion && $slot->canBeConsumed()){
 			$ev = new PlayerItemConsumeEvent($this, $slot);
@@ -5334,7 +4933,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$pk = new ShowModalFormPacket();
 			$pk->formId = $this->lastModalId++;
-			$pk->data = $modalWindow->toJSON();
+			//$pk->data = $modalWindow->toJSON();
+			$pk->data = json_encode($modalWindow->jsonSerialize());
 			$this->dataPacket($pk);
 			$this->activeModalWindows[$pk->formId] = $modalWindow; 
 			return true;
@@ -5354,7 +4954,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			$pk = new ServerSettingsResponsetPacket();
 			$pk->formId = $this->lastModalId++;
-			$pk->data = $modalWindow->toJSON();
+			//$pk->data = $modalWindow->toJSON();
+			$pk->data = json_encode($modalWindow->jsonSerialize());
 			$this->dataPacket($pk);
 			$this->activeModalWindows[$pk->formId] = $modalWindow;
 		}

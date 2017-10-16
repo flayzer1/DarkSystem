@@ -105,6 +105,7 @@ class Explosion{
 									}
 								}
 							}
+							
 							$pointerX += $vector->x;
 							$pointerY += $vector->y;
 							$pointerZ += $vector->z;
@@ -188,23 +189,28 @@ class Explosion{
 					]),
 					"Fuse" => new ByteTag("Fuse", mt_rand(10, 30))
 				]));
+				
 				$tnt->spawnToAll();
 			}elseif(mt_rand(0, 100) < $yield){
 				foreach($block->getDrops($air) as $drop){
 					$this->level->dropItem($block->add(0.5, 0.5, 0.5), Item::get(...$drop));
 				}
 			}
+			
 			$this->level->setBlock(new Vector3($block->x, $block->y, $block->z), new Air());
 			$send[] = new Vector3($block->x - $source->x, $block->y - $source->y, $block->z - $source->z);
 		}
+		
 		$pk = new ExplodePacket();
 		$pk->x = $this->source->x;
 		$pk->y = $this->source->y;
 		$pk->z = $this->source->z;
 		$pk->radius = $this->size;
 		$pk->records = $send;
-		Server::broadcastPacket($this->level->getUsingChunk($source->x >> 4, $source->z >> 4), $pk);		
-		$this->level->addParticle(new HugeExplodeParticle(new Vector3($this->source->x,  $this->source->y, $this->source->z)));	
+		Server::broadcastPacket($this->level->getUsingChunk($source->x >> 4, $source->z >> 4), $pk);
+		
+		$this->level->addParticle(new HugeExplodeParticle(new Vector3($this->source->x,  $this->source->y, $this->source->z)));
+	
 		$pk1 = new LevelSoundEventPacket();
 		$pk1->eventId = 45;
 		$pk1->x = $this->source->x;
@@ -216,4 +222,5 @@ class Explosion{
 		
 		return true;
 	}
+	
 }

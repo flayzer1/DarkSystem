@@ -168,13 +168,21 @@ class PlayerInventory extends BaseInventory{
 		}
 	}
 
-	public function onSlotChange($index, $before, $sendPacket = true){
-		$holder = $this->getHolder();
-		if($holder instanceof Player && !$holder->spawned){
-			return;
+	public function onSlotChange($index, $before, $sendPacket){
+		if($sendPacket){
+			$holder = $this->getHolder();
+			if(!$holder instanceof Player or !$holder->spawned){
+				return false;
+			}
+			parent::onSlotChange($index, $before, $sendPacket);
 		}
-		parent::onSlotChange($index, $before, $sendPacket);
-		if($index >= $this->getSize() && $sendPacket === true){
+		if($index === $this->itemInHandIndex){
+			$this->sendHeldItem($this->getHolder()->getViewers());
+			if($sendPacket){
+				$this->sendHeldItem($this->getHolder());
+			}
+		}elseif($index >= $this->getSize()){
+			$this->sendArmorSlot($index, $this->getViewers());
 			$this->sendArmorSlot($index, $this->getHolder()->getViewers());
 		}
 	}
@@ -251,11 +259,11 @@ class PlayerInventory extends BaseInventory{
 		return true;
 	}
 
-	public function clear($index){
+	public function clear($index, $sendPacket = true){
 		if(isset($this->slots[$index])){
 			$item = clone $this->air;
 			$old = $this->slots[$index];
-			if($index >= $this->getSize() && $index < $this->size){ //Armor change
+			if($index >= $this->getSize() && $index < $this->size){
 				Server::getInstance()->getPluginManager()->callEvent($ev = new EntityArmorChangeEvent($this->getHolder(), $old, $item, $index));
 				if($ev->isCancelled()){
 					if($index >= $this->size){
@@ -285,7 +293,7 @@ class PlayerInventory extends BaseInventory{
 			}else{
 				unset($this->slots[$index]);
 			}
-			$this->onSlotChange($index, $old);
+			$this->onSlotChange($index, $old, $sendPacket);
 		}
 		return true;
 	}

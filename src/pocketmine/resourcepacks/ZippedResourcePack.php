@@ -118,4 +118,5 @@ class ZippedResourcePack implements ResourcePack{
 		
 		return fread($this->fileResource, $length);
 	}
+	
 }

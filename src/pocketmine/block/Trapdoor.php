@@ -192,10 +192,11 @@ class Trapdoor extends Transparent{
 	 *
 	 * @return bool
 	 */
-	public function onActivate(Item $item, Player $player = \null){
+	public function onActivate(Item $item, Player $player = null){
 		$this->meta ^= 0b00001000;
 		$this->getLevel()->setBlock($this, $this, true);
 		$this->level->addSound(new DoorSound($this));
+		
 		return true;
 	}
 
@@ -205,4 +206,5 @@ class Trapdoor extends Transparent{
 	public function getToolType(){
 		return Tool::TYPE_AXE;
 	}
+	
 }

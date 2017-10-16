@@ -25,7 +25,6 @@ use pocketmine\math\Vector3;
 
 class BrewingStand extends Transparent
 {
-
     protected $id = self::BREWING_STAND_BLOCK;
 
     public function __construct($meta = 0)
@@ -112,12 +111,13 @@ class BrewingStand extends Transparent
         return true;
     }
 
-    public function getDrops(Item $item): array
+    public function getDrops(Item $item)
     {
         $drops = [];
         if ($item->isPickaxe() >= Tool::TIER_WOODEN) {
             $drops[] = [Item::BREWING_STAND, 0, 1];
         }
+        
         return $drops;
     }
 }

@@ -46,7 +46,6 @@ use pocketmine\utils\Color;
 
 class Cauldron extends Solid
 {
-
     protected $id = self::CAULDRON_BLOCK;
 
     public function __construct($meta = 0)
@@ -59,12 +58,12 @@ class Cauldron extends Solid
         return 2;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Cauldron";
     }
 
-    public function canBeActivated(): bool
+    public function canBeActivated()
     {
         return true;
     }
@@ -94,12 +93,14 @@ class Cauldron extends Solid
 
         $tile = Tile::createTile("Cauldron", $this->getLevel(), $nbt);
         $this->getLevel()->setBlock($block, $this, true, true);
+        
         return true;
     }
 
     public function onBreak(Item $item)
     {
         $this->getLevel()->setBlock($this, new Air(), true);
+        
         return true;
     }
 
@@ -110,11 +111,12 @@ class Cauldron extends Solid
                 [Item::CAULDRON, 0, 1]
             ];
         }
+        
         return [];
     }
 
     public function update()
-    {//umm... right update method...?
+    {
         $this->getLevel()->setBlock($this, Block::get($this->id, $this->meta + 1), true);
         $this->getLevel()->setBlock($this, $this, true);//Undo the damage value
     }
@@ -130,11 +132,12 @@ class Cauldron extends Solid
     }
 
     public function onActivate(Item $item, Player $player = null)
-    {//@author iTX. rewrite @Dog194
+    {
         $tile = $this->getLevel()->getTile($this);
         if (!($tile instanceof TileCauldron)) {
             return false;
         }
+        
         switch ($item->getId()) {
             case Item::BUCKET:
                 if ($item->getDamage() === 0) {//empty bucket
@@ -187,7 +190,7 @@ class Cauldron extends Solid
                 if ($tile->isCustomColor()) {
                     $color = Color::averageColor($color, $tile->getCustomColor());
                 }
-                if ($player->isSurvival()) {
+                if ($player->isLiving()) {
                     $item->setCount($item->getCount() - 1);
                     /*if($item->getCount() <= 0){
                         $player->getInventory()->setItemInHand(Item::get(Item::AIR));

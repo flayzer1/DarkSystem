@@ -22,10 +22,11 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\command\SimpleCommandMap;
-use pocketmine\entity\{Entity, Attribute, Effect, Arrow, Item as DroppedItem, Egg};
+use pocketmine\entity\{Entity, Attribute, Effect, Arrow, Item as DroppedItem};
 use pocketmine\event\HandlerList;
 use pocketmine\event\level\LevelInitEvent;
 use pocketmine\event\level\LevelLoadEvent;
+use pocketmine\event\player\PlayerDataSaveEvent;
 use pocketmine\event\server\QueryRegenerateEvent;
 use pocketmine\event\server\ServerCommandEvent;
 use pocketmine\event\Timings;
@@ -259,6 +260,7 @@ class Server extends DarkSystem{
 	public $checkMovement = true;
 	public $antiFly = true;
 	public $allowInstabreak = false;
+	public $dbotBroadcast = true;
 	public $forceResources = false;
 	public $resourceStack = [];
 	public $forceBehavior = false;
@@ -293,7 +295,32 @@ class Server extends DarkSystem{
 	}
 	
 	public function getName(){
+		$class = $this->get_calling_class();
+		if(strchr($class, "SpoonDetector")){
+			if(Translate::checkTurkish() === "yes"){
+				$this->konsol->debug($class . " İsimli Spoon Detektörü Engellendi!");
+			}else{
+				$this->konsol->debug("Spoon Detector Blocked Called as (!): " . $class);
+			}
+			
+			return "PocketMine-MP";
+		}
+		
 		return "DarkSystem";
+	}
+	
+	private function get_calling_class(){
+		$trace = debug_backtrace();
+		$class = $trace[1]["class"];
+		for($i=1; $i < count($trace); $i++){
+			if(isset($trace[$i])){
+				if($class != $trace[$i]["class"]){
+					return $trace[$i]["class"];
+				}
+			}
+		}
+		
+		return "null";
 	}
 	
 	public function isRunning(){
@@ -687,67 +714,6 @@ class Server extends DarkSystem{
 	public function clearChat(){
 		foreach($this->getOnlinePlayers() as $p){
 			$p->sendMessage(str_repeat(" \n", 60));
-			/*$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");
-			$p->sendMessage(" ");*/
 		}
 	}
 	
@@ -774,6 +740,7 @@ class Server extends DarkSystem{
 			try{
 				$nbt = new NBT(NBT::BIG_ENDIAN);
 				$nbt->readCompressed(file_get_contents($path . "$name.dat"));
+				
 				return $nbt->getData();
 			}catch(\Exception $e){
 				rename($path . "$name.dat", $path . "$name.dat.bak");
@@ -832,7 +799,19 @@ class Server extends DarkSystem{
 	}
 	
 	public function saveOfflinePlayerData($name, Compound $nbtTag, $async = false){
+		$ev = new PlayerDataSaveEvent($nbtTag, $name);
+		$this->getPluginManager()->callEvent($ev);
+		
+		if($ev->isCancelled()){
+			if(Translate::checkTurkish() === "yes"){
+				$this->konsol->emergency("Oyuncu Bilgileri Kaydedilemedi!");
+			}else{
+				$this->konsol->emergency("Player Data Save Error!");
+			}
+		}
+		
 		$nbt = new NBT(NBT::BIG_ENDIAN);
+		
 		try{
 			$nbt->setData($nbtTag);
 			
@@ -1535,20 +1514,25 @@ class Server extends DarkSystem{
 				$this->konsol->directSend("§6》》》");
 			}
 			
+			if($this->getMotd() == "schudoz" || $this->getMotd() == "devlrs"){ //Easter egg
+				$random = substr(base64_encode(random_bytes(20)), 3, 10);
+				$this->konsol->directSend("\n" . "§" . mt_rand(1, 9) . "" . $random);
+			}
+			
 			$this->konsol->directSend("
 			
-    §b______           _    _____           _                  
-    §9|  _  \         | |  /  ___|         | |                  
-    §b| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
-    §9| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
-    §b| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
-    §9|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
-                                 §b__/  |      
-                                 §9|___/            §6MCPE: $mcpe §e($protocol)
-                                                      §6DARKBOT: $dbotcheck (v$dbotver)
+    §6______           _    _____           _                  
+    §c|  _  \         | |  /  ___|         | |                  
+    §6| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+    §c| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+    §6| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+    §c|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+                                 §6__/  |      
+                                 §c|___/            §dMCPE: $mcpe §a($protocol)
+                                                      §dDARKBOT: $dbotcheck (v$dbotver)
       $splash
                                       
-      §3DarkSystem $version ($build)  *$tag*                                                
+      §bDarkSystem $version ($build)  *$tag*                                                
 	
 			");
 			
@@ -2563,7 +2547,7 @@ class Server extends DarkSystem{
 				}
 			}
 		}
-		if(($this->tickCounter % 2975) === 0 && $dbotcheck = "§aAktif"){
+		if(($this->tickCounter % 2975) === 0 && $dbotcheck = "§aAktif" && $this->dbotBroadcast === true){
 			if(Translate::checkTurkish() === "yes"){
 				switch(mt_rand(1, 5)){
 					case 1:

@@ -171,18 +171,12 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 	}
 
 	public function getDrops(){
-		$drops = [];
-		if($this->inventory !== null){
-			foreach($this->inventory->getContents() as $item){
-				$drops[] = $item;
-			}
-		}
-
-		return $drops;
+		return $this->inventory !== null ? array_values($this->inventory->getContents()) : [];
 	}
 
 	public function saveNBT(){
 		parent::saveNBT();
+		
 		$this->namedtag->Inventory = new Enum("Inventory", []);
 		$this->namedtag->Inventory->setTagType(NBT::TAG_Compound);
 		if($this->inventory !== null){
@@ -196,14 +190,17 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 						continue;
 					}
 				}
+				
 				$this->namedtag->Inventory[$slot] = NBT::putItemHelper(ItemItem::get(ItemItem::AIR), $slot);
 				$this->namedtag->Inventory[$slot]->TrueSlot = new ByteTag("TrueSlot", -1);
 			}
+			
 			$slotCount = Player::SURVIVAL_SLOTS + 9;
 			for($slot = 9; $slot < $slotCount; ++$slot){
 				$item = $this->inventory->getItem($slot - 9);
 				$this->namedtag->Inventory[$slot] = NBT::putItemHelper($item, $slot);
 			}
+			
 			for($slot = 100; $slot < 104; ++$slot){
 				$item = $this->inventory->getItem($this->inventory->getSize() + $slot - 100);
 				if($item instanceof ItemItem && $item->getId() !== ItemItem::AIR){

@@ -1,21 +1,18 @@
 <?php
 
-/*
- * RakLib network library
- *
- *
- * This project is not affiliated with Jenkins Software LLC nor RakNet.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace raklib\server;
 
 class RakLibServer extends \Thread{
+	
     protected $port;
     protected $interface;
     protected $logger;
@@ -27,6 +24,7 @@ class RakLibServer extends \Thread{
 
     /** @var \Threaded */
     protected $externalQueue;
+    
     /** @var \Threaded */
     protected $internalQueue;
 
@@ -63,6 +61,7 @@ class RakLibServer extends \Thread{
 	    }else{
 		    $this->mainPath = \getcwd() . DIRECTORY_SEPARATOR;
 	    }
+	
         $this->start();
     }
 
@@ -126,7 +125,6 @@ class RakLibServer extends \Thread{
     }
 
     public function pushThreadToMainPacket($str){
-//		var_dump(debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 20));
         $this->externalQueue[] = $str;
     }
 
@@ -212,24 +210,26 @@ class RakLibServer extends \Thread{
 	}
 
     public function run(){
-        //Load removed dependencies, can't use require_once()
         foreach($this->loadPaths as $name => $path){
             if(!class_exists($name, false) and !interface_exists($name, false)){
                 require($path);
             }
         }
+        
         $this->loader->register(true);
 
 	    gc_enable();
+	
 	    error_reporting(-1);
+	
 	    ini_set("display_errors", 1);
 	    ini_set("display_startup_errors", 1);
 
 	    set_error_handler([$this, "errorHandler"], E_ALL);
 	    register_shutdown_function([$this, "shutdownHandler"]);
-
-
+	
         $socket = new UDPServerSocket($this->getLogger(), $this->port, $this->interface);
+        
         new SessionManager($this, $socket);
     }
 

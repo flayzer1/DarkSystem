@@ -49,13 +49,11 @@ class SnowLayer extends Flowable{
 	public function getToolType(){
 		return Tool::TYPE_SHOVEL;
 	}
-
-
+	
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
 		$down = $this->getSide(0);
 		if($down->isSolid()){
 			$this->getLevel()->setBlock($block, $this, true);
-
 			return true;
 		}
 
@@ -64,7 +62,7 @@ class SnowLayer extends Flowable{
 
 	public function onUpdate($type){
 		if($type === Level::BLOCK_UPDATE_NORMAL){
-			if($this->getSide(0)->getId() === self::AIR){ //Replace with common break method
+			if($this->getSide(0)->getId() === self::AIR){
 				$this->getLevel()->setBlock($this, new Air(), true);
 
 				return Level::BLOCK_UPDATE_NORMAL;
@@ -83,4 +81,5 @@ class SnowLayer extends Flowable{
 
 		return [];
 	}
+	
 }

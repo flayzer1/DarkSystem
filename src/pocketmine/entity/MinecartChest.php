@@ -52,4 +52,5 @@ class MinecartChest extends Minecart{
 
 		Entity::spawnTo($player);
 	}
+	
 }
