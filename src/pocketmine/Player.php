@@ -4784,7 +4784,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			if($this->isMoving() && $this->isJumping()){
 				//$this->speed = new Vector3(0.1, 0.1, 0.1);
-				$this->setMotion(new Vector3(0.2, 0.4, 0));
+				//$this->setMotion(new Vector3(0.2, 0.4, 0));
+				$this->setMotion(new Vector3(0, 0.4, 0));
 			}else{
 				//$this->setMotion(new Vector3(0, 0.1, 0));
 				//$this->setMotion(new Vector3(0, 0.2, 0));

@@ -8,11 +8,11 @@ class StepSlider extends UIElement{
 
 	/** @var string[] */
 	protected $steps = [];
+	
 	/** @var integer Step index */
 	protected $defaultStepIndex = 0;
 
 	/**
-	 *
 	 * @param string $text
 	 * @param string[] $steps
 	 */
@@ -22,7 +22,6 @@ class StepSlider extends UIElement{
 	}
 
 	/**
-	 *
 	 * @param string $stepText
 	 * @param boolean $isDefault
 	 */
@@ -34,7 +33,6 @@ class StepSlider extends UIElement{
 	}
 
 	/**
-	 *
 	 * @param string $stepText
 	 * @return boolean
 	 */
@@ -57,7 +55,6 @@ class StepSlider extends UIElement{
 	}
 
 	/**
-	 *
 	 * @return array
 	 */
 	final public function jsonSerialize(){

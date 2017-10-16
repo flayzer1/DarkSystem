@@ -93,7 +93,7 @@ class DragonEgg extends Fallable{
 		$newpos = clone $pos;
 
 		$ev = new BlockTeleportEvent($this, $oldpos, $newpos);
-		Server::getPluginManager()->callEvent($ev);
+		Server::getInstance()->getPluginManager()->callEvent($ev);
 		if(!$ev->isCancelled()){
 			$level->setBlock($pos, $this, true, true);
 			$posdistance = new Position($newpos->x - $oldpos->x, $newpos->y - $oldpos->y, $newpos->z - $oldpos->z, $this->getLevel());

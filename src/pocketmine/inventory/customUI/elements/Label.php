@@ -14,7 +14,6 @@ class Label extends UIElement{
 	}
 
 	/**
-	 *
 	 * @return array
 	 */
 	final public function jsonSerialize(){

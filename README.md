@@ -17,6 +17,7 @@
 - Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, XBOX offline mode warn. etc.)
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
 - CustomUI (Allows to create fully customizable menus, can be added by /addui) (only +1.2)
+- /addui Command (You can easily test CustomUI's with this) (/addui {player} {type:shop/alert/image/slider/dropdown/input/mix})
 - Fully Turkish Language (DarkSystem Support %79 Turkish Language. How to set language to Turkish? Simple, choose language to **tur** on set-up wizard. After set **language:** to **tur** on **pocketmine.yml**)
 - MultiVersion® support (**What is this?** We support **1.0.x, 1.1.x, 1.2.x** versions of Minecraft (PE) Bedrock Edition)
 - Always up-to-date. We always add new block, items to DarkSystem. You can find new things here when out.

@@ -10,7 +10,6 @@ class Toggle extends UIElement{
 	protected $defaultValue = false;
 
 	/**
-	 *
 	 * @param string $text
 	 * @param bool $value
 	 */

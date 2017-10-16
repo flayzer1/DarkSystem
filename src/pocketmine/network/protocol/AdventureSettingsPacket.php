@@ -40,7 +40,7 @@ class AdventureSettingsPacket extends PEPacket{
 	
 	public function decode($playerProtocol){
 		$this->getHeader($playerProtocol);
-        $this->flags = $this->getVarInt();
+		$this->flags = $this->getVarInt();
 	}
 
 	public function encode($playerProtocol){

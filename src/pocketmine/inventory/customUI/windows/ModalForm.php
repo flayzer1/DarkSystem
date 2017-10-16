@@ -46,6 +46,7 @@ class ModalForm implements CustomUI, \JsonSerializable{
 	 * @param Player $player
 	 */
 	public function close(Player $player){
+		
 	}
 
 	/**

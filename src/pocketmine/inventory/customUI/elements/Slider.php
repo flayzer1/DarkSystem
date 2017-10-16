@@ -9,15 +9,17 @@ class Slider extends UIElement{
 
 	/** @var float */
 	protected $min = 0;
+	
 	/** @var float */
 	protected $max = 0;
-	/** @var float Only positive numbers */
+	
+	/** @var float */
 	protected $step = 0;
+	
 	/** @var float */
 	protected $defaultValue = 0;
 
 	/**
-	 *
 	 * @param string $text
 	 * @param float $min
 	 * @param float $max
@@ -36,7 +38,6 @@ class Slider extends UIElement{
 	}
 
 	/**
-	 *
 	 * @param float $step
 	 * @throws Exception
 	 */
@@ -48,7 +49,6 @@ class Slider extends UIElement{
 	}
 
 	/**
-	 *
 	 * @param float $value
 	 * @throws Exception
 	 */
@@ -60,7 +60,6 @@ class Slider extends UIElement{
 	}
 
 	/**
-	 *
 	 * @return array
 	 */
 	final public function jsonSerialize(){

@@ -61,6 +61,15 @@ class AddUICommand extends VanillaCommand{
        
         if(Translate::checkTurkish() === "yes"){
         	switch($args[1]){
+        	    case "karisik":
+                    $ui = new CustomForm("KarisikTest");
+		            $ui->addElement(new Label("Yazı"));
+		            $ui->addElement(new Dropdown("Liste", ["Icerik1", "Icerik2"]));
+		            $ui->addElement(new Input("Metin", "Metin"));
+		            $ui->addElement(new Slider("Kaydirici", 5, 10, 0.5));
+		            $ui->addElement(new StepSlider("AdimliKaydirici", [5, 7, 9, 11]));
+		            $ui->addElement(new Toggle("Gizle"));
+				    break;
         	    case "market":
             	    $ui = new CustomForm("Market");
 		            $ui->addElement(new Label("Çok Yakında!"));
@@ -75,6 +84,18 @@ class AddUICommand extends VanillaCommand{
 		            $button->setImage(Button::IMAGE_TYPE_URL, "https://server.wolvesfortress.de/MCPEGUIimages/hd/X.png");
 		            $ui->addButton($button);
 				    break;
+				case "kaydirici":
+                    $ui = new CustomForm("TestKaydirici", "");
+		            $ui->addElement(new Slider("Kaydirici", 5, 10, 0.5));
+				    break;
+				case "metinkutusu":
+                    $ui = new CustomForm("TestMetinKutusu", "");
+		            $ui->addElement(new Input("MetinKutusu", "Metin"));
+				    break;
+				case "liste":
+                    $ui = new CustomForm("TestListe", "");
+		            $ui->addElement(new Dropdown("Liste", ["Icerik1", "Icerik2"]));
+				    break;
             	    default;
                     $sender->sendMessage(TextFormat::RED . "Bilinmeyen UI Tipi!");
                     return true;
@@ -82,6 +103,15 @@ class AddUICommand extends VanillaCommand{
             }
         }else{
         	switch($args[1]){
+        	    case "mix":
+            	    $ui = new CustomForm("MixTest");
+		            $ui->addElement(new Label("Label"));
+		            $ui->addElement(new Dropdown("Dropdown", ["Name1", "Name2"]));
+		            $ui->addElement(new Input("Input", "Text"));
+		            $ui->addElement(new Slider("Slider", 5, 10, 0.5));
+		            $ui->addElement(new StepSlider("StepSlider", [5, 7, 9, 11]));
+		            $ui->addElement(new Toggle("Toggle"));
+        	        break;
             	case "shop":
             	    $ui = new CustomForm("Shop");
 		            $ui->addElement(new Label("Coming Soon!"));
@@ -95,6 +125,18 @@ class AddUICommand extends VanillaCommand{
 		            $button = new Button("ImageButton");
 		            $button->setImage(Button::IMAGE_TYPE_URL, "https://server.wolvesfortress.de/MCPEGUIimages/hd/X.png");
 		            $ui->addButton($button);
+				    break;
+				case "slider":
+                    $ui = new CustomForm("TestSlider", "");
+		            $ui->addElement(new Slider("Slider", 5, 10, 0.5));
+				    break;
+				case "input":
+                    $ui = new CustomForm("TestInput", "");
+		            $ui->addElement(new Input("Input", "Text"));
+				    break;
+				case "dropdown":
+                    $ui = new CustomForm("TestDropdown", "");
+		            $ui->addElement(new Dropdown("Dropdown", ["Name1", "Name2"]));
 				    break;
             	    default;
                     $sender->sendMessage(TextFormat::RED . "Unknown UI Type!");
@@ -110,15 +152,20 @@ class AddUICommand extends VanillaCommand{
         $slider = new Slider("TestSlider");
         $form->addSlider($slider);
         
-        $ui = new CustomForm('Testwindow');
-		$ui->addElement(new Label('Label'));
-		$ui->addElement(new Dropdown('Dropdown', ['name1', 'name2']));
-		$ui->addElement(new Input('Input', 'text'));
-		$ui->addElement(new Slider('Slider', 5, 10, 0.5));
-		$ui->addElement(new StepSlider('Stepslider', [5, 7, 9, 11]));
-		$ui->addElement(new Toggle('Toggle'));*/
+        $ui = new CustomForm("TestWindow");
+		$ui->addElement(new Label("Label"));
+		$ui->addElement(new Dropdown("Dropdown", ["Name1", "Name2"]));
+		$ui->addElement(new Input("Input", "Text"));
+		$ui->addElement(new Slider("Slider", 5, 10, 0.5));
+		$ui->addElement(new StepSlider("Stepslider", [5, 7, 9, 11]));
+		$ui->addElement(new Toggle("Toggle"));*/
 		
 		$player->showModal($ui);
+		
+		/*$response = $player->checkModal($ui);
+		if($response == "Button"){
+			//TODO
+		}*/
 		
         return true;
     }

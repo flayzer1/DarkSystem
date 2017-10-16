@@ -17,7 +17,6 @@ class Image extends UIElement{
 	}
 
 	/**
-	 *
 	 * @return array
 	 */
 	final public function jsonSerialize(){
@@ -30,8 +29,6 @@ class Image extends UIElement{
 	}
 
 	/**
-	 * TODO
-	 *
 	 * @param null $value
 	 * @param Player $player
 	 * @return mixed
