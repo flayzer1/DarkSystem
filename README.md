@@ -16,7 +16,7 @@
 - Support **PIZZA!** (/givepizza [player] | If you write only /givepizza, gives pizza everyone. NOTE: Our pizzas does not contain harmful substances lol :D) (Pizza mark can be changed from advanced config.)
 - Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, XBOX offline mode warn. etc.)
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
-- Floating Text as Entity (On DarkSystem, floating text is not a particle it is an entity. So it is blocks floating text hack or others. Also dissappearing of floating text is not possible.)
+- Floating Text as Entity (On DarkSystem, floating text is not a particle, it is an entity. So it blocks floating text hack or others. Also dissappearing of floating text is impossible.)
 - Auto Lag Cleaner (How does it works? It automaticly removes items and arrows from ground without occuping CPU.)
 - CustomUI (Allows to create fully customizable menus, can be added by /addui) (only +1.2)
 - /addui Command (You can easily test CustomUI's with this) (/addui {player} {type:shop/alert/image/slider/dropdown/input/mix})
