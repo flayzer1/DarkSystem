@@ -16,6 +16,7 @@
 - Support **PIZZA!** (/givepizza [player] | If you write only /givepizza, gives pizza everyone. NOTE: Our pizzas does not contain harmful substances lol :D) (Pizza mark can be changed from advanced config.)
 - Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, XBOX offline mode warn. etc.)
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
+- Auto Lag Cleaner (How does it works? It automaticly removes items and arrows from ground without occuping CPU.)
 - CustomUI (Allows to create fully customizable menus, can be added by /addui) (only +1.2)
 - /addui Command (You can easily test CustomUI's with this) (/addui {player} {type:shop/alert/image/slider/dropdown/input/mix})
 - Fully Turkish Language (DarkSystem Support %79 Turkish Language. How to set language to Turkish? Simple, choose language to **tur** on set-up wizard. After set **language:** to **tur** on **pocketmine.yml**)
@@ -23,10 +24,11 @@
 - Always up-to-date. We always add new block, items to DarkSystem. You can find new things here when out.
 - No junk tasks/threads on background. Anything cannot occupy the CPU resources and performance.
 - Zoom Support (indev) (Maybe useful for PvP servers. Simply write /zoom.)
+- World Teleporting (/world) (You can teleport to another world without a plugin, only with a simple command!)
 - TextUtils (Idea from MiNET, Code taken from Turanic. Allows to create more beautiful texts. Example, **TextUtils::center($message)** makes message in center.)
 - BlockLauncher join Blocking (indev) (If you hate hackers, this is for you. How to use? It is fully automatic. But not implemented yet. Does not work.)
 - Code is clean, fast and safe, coded as DarkSystem PHP code method.
-- More & Advanced Commands (/clear, /tpall, /clearchat /addui /zoom etc.)
+- More & Advanced Commands (/clear, /tpall, /clearchat /addui /zoom /world etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
 - DarkBot (Virtual Intelligent Bot; Can talk, help players, move etc.) (say "hi darkbot" in-game to test :))
 
@@ -49,11 +51,11 @@
 - [ ] **Map**
 - [x] **Horse**
 - [ ] **Fireworks**
-- [x] **Armor Stand**
+- [x] **Armor Stand (half)**
 - [ ] **Throwing Potions**
 - [x] **Writable & Written Books**
-- [ ] **Fully Working CustomUI**
-- [ ] **Riding Mincart and Boat**
+- [x] **Fully Working CustomUI**
+- [ ] **Riding Minecart and Boat**
 - [ ] **Fully Redstone System**
 - [ ] **Multi-core (indev, will finish)**
 - [x] **Jukebox**
@@ -65,7 +67,7 @@
 
 # Known Bugs:
 - When DarkSystem crash, server does not stop. (Solved %90)
-- DarkSystem's experience system does not work correctly.
+- DarkSystem's experience system does not work correctly. (Not so problem :D)
 
 # Known Bugs in 1.2:
 - Moving is glitchy.
@@ -78,9 +80,12 @@
 - Some strings, messages and lines are maybe Turkish, we are adding translation to them on every update.
 - DarkSystem is %68 stable now. Will be %90+ in future
 - /op command renamed to /operator and you can enable/disable this command from **pocketmine_advanced.yml**.
+- Splash potions and mob spawners are not supported yet. Sorry for this, them will be added soon...
 
 # Test Server
-**COMING SOON**
+**__**
+- **COMING SOON**
+**__**
 
 # Get DarkSystem:
 - Download the latest build from [Travis CI](https://travis-ci.org/DarkYusuf13/DarkSystem).
