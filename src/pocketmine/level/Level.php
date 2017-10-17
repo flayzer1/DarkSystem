@@ -244,8 +244,8 @@ class Level implements ChunkManager, Metadatable{
 	private $closed = false;
 	
 	/** @var Weather */
-    private $weather;
-    
+	private $weather;
+	
 	protected $yMask;
 	protected $maxY;
 	

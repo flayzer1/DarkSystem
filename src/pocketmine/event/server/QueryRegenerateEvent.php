@@ -19,7 +19,7 @@ class QueryRegenerateEvent extends ServerEvent{
 	
 	public static $handlerList = null;
 
-	const GAME_ID = "MINECRAFTPE"; //OMG I WAS KNOW IT AS LOL
+	const GAME_ID = "MINECRAFTPE"; //OMG I WAS KNOW IT AS MARIO
 
 	private $timeout;
 	private $serverName;
