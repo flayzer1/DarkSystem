@@ -19,7 +19,7 @@ class MonsterEggBlock extends Solid{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
         return "Monster Egg Block";
 	}
 

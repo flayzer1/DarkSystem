@@ -103,11 +103,11 @@ class MobSpawner extends Spawnable{
 		$this->namedtag->Delay->setValue($value);
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Monster Spawner";
 	}
 
-	public function canUpdate() : bool{
+	public function canUpdate(){
 		if($this->getEntityId() === 0) return false;
 		$hasPlayer = false;
 		$count = 0;
@@ -132,7 +132,7 @@ class MobSpawner extends Spawnable{
 
 		$this->timings->startTiming();
 
-		if(!($this->chunk instanceof FullChunk)){
+		if(!$this->chunk instanceof FullChunk){
 			return false;
 		}
 		if($this->canUpdate()){

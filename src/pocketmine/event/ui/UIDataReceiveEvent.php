@@ -30,4 +30,5 @@ class UIDataReceiveEvent extends UIEvent{
 	public function getDataEncoded(){
 		return $this->packet->formData;
 	}
+	
 }

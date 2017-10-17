@@ -115,6 +115,7 @@ class Piston extends Solid{
 		}
 		
 		$this->getLevel()->setBlock($block, $this, true, true);
+		
 		return true;
 	}
 	

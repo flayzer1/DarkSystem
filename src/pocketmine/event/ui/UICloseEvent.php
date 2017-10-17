@@ -22,4 +22,5 @@ class UICloseEvent extends UIEvent{
 	public function __construct(Plugin $plugin, DataPacket $packet, Player $player){
 		parent::__construct($plugin, $packet, $player);
 	}
+	
 }

@@ -15,8 +15,7 @@ use pocketmine\level\generator\biome\Biome;
 
 class EnderBiome extends Biome
 {
-
-    public function getName(): string
+    public function getName()
     {
         return "Ender";
     }

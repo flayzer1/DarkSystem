@@ -24,7 +24,6 @@ use pocketmine\utils\Random;
 
 class Ender extends Generator
 {
-
     /** @var Populator[] */
     private $populators = [];
     /** @var ChunkManager */
@@ -73,12 +72,12 @@ class Ender extends Generator
         }
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Ender";
     }
 
-    public function getWaterHeight(): int
+    public function getWaterHeight()
     {
         return $this->waterHeight;
     }

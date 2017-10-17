@@ -47,4 +47,5 @@ class MonsterSpawner extends Solid{
 	public function getDrops(Item $item){
 		return [];
 	}
+	
 }

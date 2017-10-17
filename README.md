@@ -7,17 +7,25 @@
 | :---: | :---: |
 [![Build Status](https://travis-ci.org/DarkYusuf13/DarkSystem.svg?branch=master)](https://travis-ci.org/DarkYusuf13/DarkSystem) | [![Discord](https://camo.githubusercontent.com/455152269a0ed38255ed15e375084d4dd08e0c98/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636861742d6f6e253230646973636f72642d3732383944412e737667)](https://discord.gg/4TewN6v) |
 
+<?php $DarkSystem return "best server engine";
+
 # Features:
 - DarkSystem is **# 1** about speed & no-lag. (We think so)
 - Loads chunks region-to-region. It uses less CPU resources & loads chunks fast.
 - MobAI Support (So much animals and mobs can move & attack) (Support Attacking Movement)
 - Smooth Movement (Players does not glitch or go down (if not 1.2 :D) while moving and does not throw back.)
 - MCPE 1.2 Support (DarkSystem is compatible with MC: Bedrock Edition/Better together update)
+- Auto Updater (This is automatically updates DarkSystem from GitHub.) (!!!Not implemented yet!!!)
+- More Biomes & Advanced Generator (Support more biomes than others, loads level fast)
+- Ender Biome Support (No description :D)
+- Based on **old** PocketMine-MP for better performance and stability.
+- Extended Plugin API (It is an api called as DarkAPI :D lol) (Support Compound & CompoundTag etc.)
+- If you want to a cool and safe (dont forget 'fast' :)) server use DarkSystem! (Slogan by null) (lol)
 - Support **PIZZA!** (/givepizza [player] | If you write only /givepizza, gives pizza everyone. NOTE: Our pizzas does not contain harmful substances lol :D) (Pizza mark can be changed from advanced config.)
 - Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, XBOX offline mode warn. etc.)
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
 - Floating Text as Entity (On DarkSystem, floating text is not a particle, it is an entity. So it blocks floating text hack or others. Also dissappearing of floating text is impossible.)
-- Auto Lag Cleaner (How does it works? It automaticly removes items and arrows from ground without occuping CPU.)
+- Auto Lag Cleaner (How does it works? It automatically removes items and arrows from ground without occuping CPU.)
 - CustomUI (Allows to create fully customizable menus, can be added by /addui) (only +1.2)
 - /addui Command (You can easily test CustomUI's with this) (/addui {player} {type:shop/alert/image/slider/dropdown/input/mix})
 - Fully Turkish Language (DarkSystem Support %79 Turkish Language. How to set language to Turkish? Simple, choose language to **tur** on set-up wizard. After set **language:** to **tur** on **pocketmine.yml**)
@@ -32,8 +40,7 @@
 - More & Advanced Commands (/clear, /tpall, /clearchat /addui /zoom /world etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
 - DarkBot (Virtual Intelligent Bot; Can talk, help players, move etc.) (say "hi darkbot" in-game to test :))
-
-# Added Best Things:
+- Others:
 - Piston (indev)
 - Banner (1.2 only)
 - Parrots (1.2 only)
@@ -106,7 +113,7 @@ It can be downloaded [here](https://www.microsoft.com/en-us/download/details.asp
 - Start your server 
 - Run '_makeserver_' command in console.
 
-It will drop DarkSystem.phar into DevTools folder.
+It will drop a .phar file into DevTools data folder.
 
 # License:
 ```

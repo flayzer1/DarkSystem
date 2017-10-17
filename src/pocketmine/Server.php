@@ -16,6 +16,7 @@ use darksystem\DarkSystem;
 use pocketmine\block\Block;
 use pocketmine\ui\CustomUI;
 use pocketmine\darkbot\DarkBot;
+use pocketmine\multicore\MultiCore;
 use pocketmine\darkbot\command\SpawnDarkBotCommand;
 use pocketmine\command\CommandReader;
 use pocketmine\command\CommandSender;
@@ -101,11 +102,7 @@ use pocketmine\entity\monster\flying\{Blaze, Ghast};
 use pocketmine\entity\monster\walking\{CaveSpider, Creeper, Enderman, IronGolem, PigZombie, Silverfish, Skeleton, SnowGolem, Spider, Wolf, Zombie, ZombieVillager};
 use pocketmine\entity\projectile\FireBall;
 
-//class Server{
 class Server extends DarkSystem{
-	
-	const BROADCAST_CHANNEL_ADMINISTRATIVE = "pocketmine.broadcast.admin";
-	const BROADCAST_CHANNEL_USERS = "pocketmine.broadcast.user";
 	
 	/** @var Server */
 	private static $instance = null;
@@ -250,6 +247,7 @@ class Server extends DarkSystem{
 	public $keepInventory = false;
 	public $netherEnabled = false;
 	public $netherName = "nether";
+	public $weatherEnabled = false;
 	public $weatherRandomDurationMin = 6000;
 	public $weatherRandomDurationMax = 12000;
 	public $lightningTime = 200;
@@ -295,12 +293,12 @@ class Server extends DarkSystem{
 	}
 	
 	public function getName(){
-		$class = $this->get_calling_class();
+		$class = $this->getCallingClass();
 		if(strchr($class, "SpoonDetector")){
 			if(Translate::checkTurkish() === "yes"){
 				$this->konsol->debug($class . " İsimli Spoon Detektörü Engellendi!");
 			}else{
-				$this->konsol->debug("Spoon Detector Blocked Called as (!): " . $class);
+				$this->konsol->debug("A Spoon Detector Blocked Called as (!): " . $class);
 			}
 			
 			return "PocketMine-MP";
@@ -309,7 +307,7 @@ class Server extends DarkSystem{
 		return "DarkSystem";
 	}
 	
-	private function get_calling_class(){
+	private function getCallingClass(){
 		$trace = debug_backtrace();
 		$class = $trace[1]["class"];
 		for($i=1; $i < count($trace); $i++){
@@ -1331,6 +1329,7 @@ class Server extends DarkSystem{
 		$this->filePath = $filePath;
 		//$this->translate = new Translate($this);
 		$this->dbot = new DarkBot($this);
+		//$this->core = new MultiCore($this);
 		try{
 			if(Translate::checkTurkish() === "yes"){
 			if(!file_exists($dataPath . "dunyalar/")){
@@ -1418,12 +1417,17 @@ class Server extends DarkSystem{
 			
 		    $this->softConfig = new Config($this->getDataPath() . "pocketmine-advanced.yml", Config::YAML, []);
 		
-			if(!is_dir($this->pluginPath . "DarkSystem")){
-				mkdir($this->pluginPath . "DarkSystem");
+			if(!is_dir($this->pluginPath . $this->getName())){
+				mkdir($this->pluginPath . $this->getName());
 			}
 			
 			$this->config = new Config($configPath = $this->getDataPath() . "pocketmine.yml", Config::YAML, []);
 			$this->cmdReader = new CommandReader($knsol);
+			
+			//$this->loadAdvancedConfig();
+			
+			$this->weatherEnabled = false; //A quickfix for a crash
+			
 			if(Translate::checkTurkish() === "yes"){
 			$this->properties = new Config($this->getDataPath() . "sunucu.properties", Config::PROPERTIES, [
 				"motd" => "DarkSystem Sunucusu",

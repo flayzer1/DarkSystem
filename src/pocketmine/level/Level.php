@@ -57,6 +57,7 @@ use pocketmine\level\format\generic\EmptyChunkSection;
 use pocketmine\level\format\LevelProvider;
 use pocketmine\level\particle\Particle;
 use pocketmine\level\sound\Sound;
+use pocketmine\level\weather\Weather;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
@@ -138,6 +139,7 @@ class Level implements ChunkManager, Metadatable{
 
 	/** @var Entity[] */
 	public $updateEntities = [];
+	
 	/** @var Tile[] */
 	public $updateTiles = [];
 
@@ -241,6 +243,9 @@ class Level implements ChunkManager, Metadatable{
 	
 	private $closed = false;
 	
+	/** @var Weather */
+    private $weather;
+    
 	protected $yMask;
 	protected $maxY;
 	
@@ -327,8 +332,23 @@ class Level implements ChunkManager, Metadatable{
 		$this->temporalVector = new Vector3(0, 0, 0);
 		$this->chunkGenerator = new ChunkGenerator($this->server->getLoader());
 		$this->generator = Generator::getGenerator($this->provider->getGenerator());
+		$this->weather = new Weather($this, 0);
+		
+		$this->initWeather();
 	}
-
+	
+	public function getWeather(){
+		return $this->weather;
+	}
+	
+	public function initWeather(){
+		if($this->server->weatherEnabled){
+			$this->weather->setCanCalculate(true);
+		}else{
+			$this->weather->setCanCalculate(false);
+		}
+	}
+	
 	public function initLevel(){
 		$generator = $this->generator;
 		$this->generatorInstance = new $generator($this->provider->getGeneratorOptions());
@@ -356,7 +376,7 @@ class Level implements ChunkManager, Metadatable{
 	final public function getProvider(){
 		return $this->provider;
 	}
-
+	
 	/**
 	 * @return int
 	 */
@@ -455,11 +475,11 @@ class Level implements ChunkManager, Metadatable{
 
 		//$this->server->getLogger()->info($this->server->getLanguage()->translateString("pocketmine.level.unloading", [$this->getName()]));
 		$defaultLevel = $this->server->getDefaultLevel();
-		foreach($this->getPlayers() as $player){
+		foreach($this->getPlayers() as $p){
 			if($this === $defaultLevel || $defaultLevel === null){
-				$player->close(TextFormat::YELLOW . $player->getName() . " has left the game", "Forced default level unload");
+				$p->close(TextFormat::YELLOW . $p->getName() . " has left the game", "Forced default level unload");
 			}elseif($defaultLevel instanceof Level){
-				$player->teleport($this->server->getDefaultLevel()->getSafeSpawn());
+				$p->teleport($this->server->getDefaultLevel()->getSafeSpawn());
 			}
 		}
 
@@ -468,6 +488,7 @@ class Level implements ChunkManager, Metadatable{
 		}
 
 		$this->close();
+		
 		return true;
 	}
 	
@@ -535,6 +556,9 @@ class Level implements ChunkManager, Metadatable{
 		$this->checkTime();
 		if(($currentTick % 200) === 0 && $this->server->getConfigBoolean("time-update", true)){
 			$this->sendTime();
+		}
+		if($this->server->weatherEnabled){
+			$this->weather->calcWeather($currentTick);
 		}
 		$this->unloadChunks();
 		$X = null;
@@ -2365,7 +2389,7 @@ class Level implements ChunkManager, Metadatable{
 	}
 	
 	public function updateChunk($x, $z){
-		$index = self::chunkHash($x, $z);
+		$index = Level::chunkHash($x, $z);
 		$this->chunkSendTasks[$index] = true;		
 		$this->chunkSendQueue[$index] = [];
 		$protocols = [];

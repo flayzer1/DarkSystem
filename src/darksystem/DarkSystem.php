@@ -15,5 +15,8 @@ use pocketmine\Server;
 
 class DarkSystem{
 //class DarkSystem extends Server{
-
+	
+	const BROADCAST_CHANNEL_ADMINISTRATIVE = "pocketmine.broadcast.admin";
+	const BROADCAST_CHANNEL_USERS = "pocketmine.broadcast.user";
+	
 }

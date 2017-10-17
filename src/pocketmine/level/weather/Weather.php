@@ -11,21 +11,14 @@
 
 namespace pocketmine\level\weather;
 
-use pocketmine\event\level\WeatherChangeEvent;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
+use pocketmine\event\level\WeatherChangeEvent;
 use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\Player;
 
-class Weather{
+class Weather extends WeatherLevels{
 	
-	const CLEAR = 0;
-	const SUNNY = 0;
-	const RAIN = 1;
-	const RAINY = 1;
-	const RAINY_THUNDER = 2;
-	const THUNDER = 3;
-
 	private $level;
 	private $weatherNow = 0;
 	private $strength1;
@@ -62,9 +55,9 @@ class Weather{
 			
 			if($this->duration <= 0){
 				$duration = mt_rand(
-						min($this->level->getServer()->weatherRandomDurationMin, $this->level->getServer()->weatherRandomDurationMax), 
-						max($this->level->getServer()->weatherRandomDurationMin, $this->level->getServer()->weatherRandomDurationMax));
-
+					min($this->level->getServer()->weatherRandomDurationMin, $this->level->getServer()->weatherRandomDurationMax), 
+					max($this->level->getServer()->weatherRandomDurationMin, $this->level->getServer()->weatherRandomDurationMax)
+				);
 				if($this->weatherNow === self::SUNNY){ 
 					$weather = $this->randomWeatherData[array_rand($this->randomWeatherData)];
 					$this->setWeather($weather, $duration);
@@ -135,7 +128,7 @@ class Weather{
 			case "rainy_thunder":
 			case "storm":
 				return self::RAINY_THUNDER;
-			default:
+				default;
 				return self::SUNNY;
 		}
 	}
@@ -213,5 +206,4 @@ class Weather{
 			$this->sendWeather($player);
 		}
 	}
-
 }

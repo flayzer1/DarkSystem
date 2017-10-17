@@ -60,7 +60,7 @@ namespace pocketmine{
 	use pocketmine\utils\Utils;
 	use pocketmine\setup\Setup;
 
-	const VERSION = "2.2.0";
+	const VERSION = "2.2.1";
 	const DARKBOT_VERSION = "1.0.0";
 	const API_VERSION = "3.0.1";
 	const TAG = "GlowingObsidian";
