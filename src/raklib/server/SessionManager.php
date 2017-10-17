@@ -77,6 +77,8 @@ class SessionManager{
         $this->socket = $socket;
         $this->registerPackets();
         
+        $this->serverId = mt_rand(0, PHP_INT_MAX);
+        
         $this->spamPacket = hex2bin("210400");
         
         $this->run();
