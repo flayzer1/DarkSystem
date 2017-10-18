@@ -109,7 +109,7 @@ It can be downloaded [here](https://www.microsoft.com/en-us/download/details.asp
 # Converting to .phar
 - Download DevTools plugin.
 - Start your server 
-- Run '_makeserver_' command in the console.
+- Run `makeserver` command in the console.
 
 It will drop a .phar file into DevTools data folder.
 
