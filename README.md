@@ -8,8 +8,8 @@
 [![Build Status](https://travis-ci.org/DarkYusuf13/DarkSystem.svg?branch=master)](https://travis-ci.org/DarkYusuf13/DarkSystem) | [![Discord](https://camo.githubusercontent.com/455152269a0ed38255ed15e375084d4dd08e0c98/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636861742d6f6e253230646973636f72642d3732383944412e737667)](https://discord.gg/4TewN6v) |
 
 ### DarkSystem Special Android APP is Out!
-You can download it [here](http://bit.do/darksystem_apk).
-NOTE: Language of app is Turkish, does not support English. Will be added soon.
+You can download it [here](http://bit.do/darksystem_apk).<br>
+**NOTE:** Language of app is Turkish, does not support English. Will be added soon.<br>
 
 # Features:
 - DarkSystem is **# 1** about speed & no-lag. (We think so)
@@ -22,6 +22,7 @@ NOTE: Language of app is Turkish, does not support English. Will be added soon.
 - More Biomes & Advanced Generator (Support more biomes than others, loads level fast)
 - AntiBOT (Bot Protection) (Blocks join of MCPE Bots from same ip. Ex. MineBot)
 - Ender Biome Support (No description :D)
+- /xyz Command (Allows to get players position)
 - Morph/Disguise Support (You can transform to any mob with /morph command. Usage: /morph <mob>)
 - Extended Plugin API (It is an api called as DarkAPI :D lol) (Support Compound & CompoundTag etc.)
 - If you want to a cool and safe (Don't forget 'fast' :)) server, use DarkSystem! (Slogan by null) (lol)
@@ -41,7 +42,7 @@ NOTE: Language of app is Turkish, does not support English. Will be added soon.
 - TextUtils (Idea from MiNET, Code taken from Turanic. Allows to create more beautiful texts. Example, **TextUtils::center($message)** makes message in center.)
 - BlockLauncher join Blocking (indev) (If you hate hackers, this is for you. How to use? It is fully automatic. But not implemented yet. Does not work.)
 - Code is clean, fast and safe, coded as DarkSystem PHP code method.
-- More & Advanced Commands (/clear, /tpall, /clearchat /addui /zoom /world /morph etc.)
+- More & Advanced Commands (/clear, /tpall, /clearchat /addui /zoom /world /morph /xyz /cave /summon etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
 - DarkBot (Virtual Intelligent Bot; Can talk, help players, move etc.) (say "hi darkbot" in-game to test :))
 - Others:
@@ -107,6 +108,7 @@ _All other branches are in testing and may be unstable. Do not use builds from o
 # Tools:
 - [DevTools](https://github.com/pmmp/PocketMine-DevTools) - Plugin and server development tools plugin
 - [Pocket Server](https://github.com/fengberd/MinecraftPEServer) - Run DarkSystem on Android devices
+- [DarkSystem Android APP](http://bit.do/darksystem_apk) - DarkSystem Special Android APP for Android
 
 # Resources
 Your DarkSystem Server needs Visual Studio C++ Redistributable 2015 (For Windows).<br>
