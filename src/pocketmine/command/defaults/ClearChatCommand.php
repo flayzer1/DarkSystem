@@ -14,9 +14,10 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
+use pocketmine\utils\TextFormat;
+use pocketmine\Translate;
 use pocketmine\Server;
 use pocketmine\Player;
-use pocketmine\utils\TextFormat;
 
 class ClearChatCommand extends VanillaCommand{
 
@@ -35,7 +36,13 @@ class ClearChatCommand extends VanillaCommand{
         }
         
         $sender->getServer()->clearChat();
-        $sender->sendMessage(TextFormat::GREEN . "Sohbet Temizlendi!");
+        
+        if(Translate::checkTurkish() === "yes"){
+        	$sender->sendMessage(TextFormat::GREEN . "Sohbet Temizlendi!");
+        }else{
+        	$sender->sendMessage(TextFormat::GREEN . "Chat Cleared!");
+        }
+        
         return true;
     }
 }

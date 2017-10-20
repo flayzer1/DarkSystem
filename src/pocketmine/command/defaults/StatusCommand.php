@@ -22,9 +22,9 @@
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\CommandSender;
-use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\Utils;
+use pocketmine\Player;
 
 class StatusCommand extends VanillaCommand{
 
@@ -47,11 +47,12 @@ class StatusCommand extends VanillaCommand{
 
 		$server = $sender->getServer();
 		$onlineCount = 0;
-		foreach($sender->getServer()->getOnlinePlayers() as $player){
-			if($player->isOnline() and (!($sender instanceof Player) or $sender->canSee($player))){
+		foreach($sender->getServer()->getOnlinePlayers() as $p){
+			if($p->isOnline() and (!($sender instanceof Player) or $sender->canSee($p))){
 				++$onlineCount;
 			}
 		}
+		
 		$sender->sendMessage(TextFormat::GREEN . "---- " . TextFormat::WHITE . "%pocketmine.command.status.title" . TextFormat::GREEN . " ----");
 		$sender->sendMessage(TextFormat::GOLD . "%pocketmine.command.status.player" . TextFormat::GREEN ." ". $onlineCount . "/" . $sender->getServer()->getMaxPlayers());
 
@@ -88,12 +89,13 @@ class StatusCommand extends VanillaCommand{
 		if($server->getProperty("memory.global-limit") > 0){
 			$sender->sendMessage(TextFormat::GOLD . "%pocketmine.command.status.Maxmemorymanager " . TextFormat::RED . number_format(round($server->getProperty("memory.global-limit"), 2)) . " MB.");
 		}
-		foreach($server->getLevels() as $level){
-			$sender->sendMessage(TextFormat::GOLD . "%pocketmine.command.status.World \"" . $level->getFolderName() . "\"" . ($level->getFolderName() !== $level->getName() ? " (" . $level->getName() . ")" : "") . ": " .
-				TextFormat::RED . number_format(count($level->getChunks())) . TextFormat::GREEN . " %pocketmine.command.status.chunks " .
-				TextFormat::RED . number_format(count($level->getEntities())) . TextFormat::GREEN . " %pocketmine.command.status.entities " .
-				TextFormat::RED . number_format(count($level->getTiles())) . TextFormat::GREEN . " %pocketmine.command.status.tiles " .
-				"%pocketmine.command.status.Time " . (($level->getTickRate() > 1 or $level->getTickRateTime() > 40) ? TextFormat::RED : TextFormat::YELLOW) . round($level->getTickRateTime(), 2) . "%pocketmine.command.status.ms" . ($level->getTickRate() > 1 ? " (tick rate " . $level->getTickRate() . ")" : "")
+		
+		foreach($server->getLevels() as $l){
+			$sender->sendMessage(TextFormat::GOLD . "%pocketmine.command.status.World \"" . $l->getFolderName() . "\"" . ($l->getFolderName() !== $l->getName() ? " (" . $l->getName() . ")" : "") . ": " .
+				TextFormat::RED . number_format(count($l->getChunks())) . TextFormat::GREEN . " %pocketmine.command.status.chunks " .
+				TextFormat::RED . number_format(count($l->getEntities())) . TextFormat::GREEN . " %pocketmine.command.status.entities " .
+				TextFormat::RED . number_format(count($l->getTiles())) . TextFormat::GREEN . " %pocketmine.command.status.tiles " .
+				"%pocketmine.command.status.Time " . (($l->getTickRate() > 1 or $l->getTickRateTime() > 40) ? TextFormat::RED : TextFormat::YELLOW) . round($l->getTickRateTime(), 2) . "%pocketmine.command.status.ms" . ($l->getTickRate() > 1 ? " (tick rate " . $l->getTickRate() . ")" : "")
 			);
 		}
 

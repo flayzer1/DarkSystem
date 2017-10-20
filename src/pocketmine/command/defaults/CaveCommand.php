@@ -22,6 +22,7 @@ use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use pocketmine\Translate;
 use pocketmine\utils\TextFormat;
 
 class CaveCommand extends VanillaCommand{
@@ -40,22 +41,22 @@ class CaveCommand extends VanillaCommand{
 			return true;
 		}
 		
-		//TODO: Get rid of this and add support for relative coordinaties
 		if($sender instanceof Player and $args[0] == "getmypos"){
-			$sender->sendMessage("Your position: ({$sender->getX()}, {$sender->getY()}, {$sender->getZ()}, {$sender->getLevel()->getFolderName()})");
+			$sender->sendMessage("Your Position: ({$sender->getX()}, {$sender->getY()}, {$sender->getZ()}, {$sender->getLevel()->getFolderName()})");
 			return true;
 		}
-
-		//0:旋转角度 1:洞穴长度 2:分叉数 3:洞穴强度
+		
 		if(count($args) != 8){
 			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
 			return false;
 		}
+		
 		$level = $sender->getServer()->getLevelByName($args[7]);
 		if(!$level instanceof Level){
 			$sender->sendMessage(TextFormat::RED ."Wrong LevelName");
 			return false;
 		}
+		
 		$pos = new Position($args[4], $args[5], $args[6], $level);
 		$caves[0] = isset($args[0]) ? $args[0] : mt_rand(1, 360);
 		$caves[1] = isset($args[1]) ? $args[1] : mt_rand(10, 300);

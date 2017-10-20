@@ -29,10 +29,10 @@ use pocketmine\inventory\customUI\windows\SimpleForm;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
+use pocketmine\utils\TextFormat;
 use pocketmine\Translate;
 use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\utils\TextFormat;
 
 class AddUICommand extends VanillaCommand{
 

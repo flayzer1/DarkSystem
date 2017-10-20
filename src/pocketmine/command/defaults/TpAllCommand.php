@@ -15,6 +15,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\TranslationContainer;
 use pocketmine\Server;
 use pocketmine\Player;
+use pocketmine\Translate;
 use pocketmine\math\Vector3;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -37,26 +38,42 @@ class TpAllCommand extends VanillaCommand{
 		}
 		
 		if(!$sender instanceof Player){
-			$sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
-			return true;
+			if(Translate::checkTurkish() === "yes"){
+        	    $sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
+        	}else{
+        	    $sender->sendMessage(TextFormat::RED . "Only Players Can Use This Command!");
+        	}
+        
+			return false;
 		}
 		
 		if(count($args) >= 1){
-			$sender->sendMessage(TextFormat::RED . "Yanlış Kullanış!");
-			return true;
+			if(Translate::checkTurkish() === "yes"){
+        	    $sender->sendMessage(TextFormat::RED . "Yanlış Kullanış!");
+        	}else{
+        	    $sender->sendMessage(TextFormat::RED . "Wrong Usage!");
+        	}
+        
+			return false;
 		}
 		
 		$players = count($sender->getServer()->getOnlinePlayers());
+		
         if($players <= 1){
         	$sender->sendMessage(TextFormat::RED . "Hiçbir Oyuncu Aktif Değil!");
-        	return true;
+        	return false;
         }else{
         	foreach($sender->getServer()->getOnlinePlayers() as $p){
         	    $p->teleport($sender);
 			}
 		}
 		
-		$sender->sendMessage(TextFormat::GREEN . "Başarılı!");
+		if(Translate::checkTurkish() === "yes"){
+        	$sender->sendMessage(TextFormat::GREEN . "Başarılı!");
+        }else{
+        	$sender->sendMessage(TextFormat::GREEN . "Success!");
+        }
+		
 		return true;
 	}
 }

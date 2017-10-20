@@ -1,23 +1,13 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
- *
-*/
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\command\defaults;
 
@@ -76,7 +66,6 @@ class ParticleCommand extends VanillaCommand{
 
 		if(count($args) < 7){
 			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
-
 			return true;
 		}
 
@@ -104,8 +93,7 @@ class ParticleCommand extends VanillaCommand{
 			$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.particle.notFound", [$name]));
 			return true;
 		}
-
-
+		
 		$sender->sendMessage(new TranslationContainer("commands.particle.success", [$name, $count]));
 
 		$random = new Random((int) (microtime(true) * 1000) + mt_rand());
@@ -116,13 +104,13 @@ class ParticleCommand extends VanillaCommand{
 				$pos->y + $random->nextSignedFloat() * $yd,
 				$pos->z + $random->nextSignedFloat() * $zd
 			);
+			
 			$level->addParticle($particle);
 		}
 
 		return true;
 	}
-
-
+	
 	/**
 	 * @param         $name
 	 * @param Vector3 $pos

@@ -29,6 +29,7 @@ use pocketmine\entity\Item as DroppedItem;
 use pocketmine\entity\Living;
 use pocketmine\entity\Projectile;
 use pocketmine\entity\OnlinePlayer;
+use pocketmine\entity\morph\MorphManager;
 use pocketmine\event\block\SignChangeEvent;
 use pocketmine\event\entity\EntityDamageByBlockEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -359,6 +360,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	private $mayMove = false;
 	
+	private $count;
+	
 	protected $serverAddress = "";
 	
 	protected $clientVersion = "";
@@ -375,7 +378,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	protected $parent = null;
 	
-	//protected $lineHeight = null;
+	protected $lineHeight = null;
 	
 	protected $foodTick = 0;
 
@@ -455,15 +458,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function getFirstPlayed(){
-		return $this->namedtag instanceof Compound ? $this->namedtag["firstPlayed"] : null;
+		return $this->namedTag instanceof Compound ? $this->namedTag["firstPlayed"] : null;
 	}
 
 	public function getLastPlayed(){
-		return $this->namedtag instanceof Compound ? $this->namedtag["lastPlayed"] : null;
+		return $this->namedTag instanceof Compound ? $this->namedTag["lastPlayed"] : null;
 	}
 
 	public function hasPlayedBefore(){
-		return $this->namedtag instanceof Compound;
+		return $this->namedTag instanceof Compound;
 	}
 	
 	public function setMetadata($metadataKey, MetadataValue $metadataValue){
@@ -699,7 +702,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function __construct(SourceInterface $interface, $clientID, $ip, $port){
 		$this->interface = $interface;
 		$this->perm = new PermissibleBase($this);
-		$this->namedtag = new Compound();
+		$this->namedTag = new Compound();
 		$this->server = Server::getInstance();
 		$this->lastBreak = 0;
 		$this->ip = $ip;
@@ -712,7 +715,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		//$this->newPosition = new Vector3(0, 0, 0);
 		//$this->checkMovement = (bool) $this->server->getAdvancedProperty("main.check-movement", true);
 		$this->boundingBox = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
-
+		
+		$this->morphManager = new MorphManager($this->server);
+		
 		$this->uuid = null;
 		$this->rawUUID = null;
 
@@ -1164,7 +1169,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			}
 			$this->spawnToAll();
 		}
-		$this->namedtag->playerGameType = new IntTag("playerGameType", $this->gamemode);
+		$this->namedTag->playerGameType = new IntTag("playerGameType", $this->gamemode);
 		$pk = new SetPlayerGameTypePacket();
 		$pk->gamemode = $this->gamemode & 0x01;
 		$this->dataPacket($pk);
@@ -1539,6 +1544,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				if($to->distanceSquared($ev->getTo()) > 0.01){
 					//$this->teleport($ev->getTo());
 					//return false;
+				}
+				if(isset($this->morphManager->eid[$this->getName()])){
+					$this->morphManager->moveEntity($this, $this->morphManager->eid[$this->getName()]);
 				}
 			}
 			$dx = $to->x - $from->x;
@@ -2115,6 +2123,22 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->loginData = ["clientId" => $packet->clientId, "loginData" => null];
 				$this->uuid = $packet->clientUUID;
 				$this->subClientId = $packet->targetSubClientID;
+				if(!isset($this->count[$ip])){
+					$this->count[$this->ip] = 1;
+				}else{
+					$this->count[$this->ip]++;
+				}
+				if($this->count[$this->ip] >= 3){
+					foreach($this->server->getOnlinePlayers() as $p){
+						if($p->isOnline()){
+							if($p->getAddress() == $this->ip){
+								$p->close();
+							}
+						}
+					}
+					$this->server->getNetwork()->blockAddress($this->ip, PHP_INT_MAX);
+					//$this->server->getIPBans()->addBan($this->ip);
+				}
 				if(is_null($this->uuid)){
 					$this->close("", "Oyununuz Hatalı, Lütfen Tekrar Yüklemeyi Deneyin.");
 					break;
@@ -3214,6 +3238,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function close($message = "", $reason = "Generik Neden"){
 		$this->server->saveEverything();
+		
+		if(isset($this->morphManager->eid[$this->getName()])){
+			$this->morphManager->removeMob($this);
+		}
+		
+		if(isset($this->count[$ip])){
+			$this->count[$ip]--;
+		}
+		
 		if($this->parent !== null){
 			$this->parent->removeSubClient($this->subClientId);
 		}else{
@@ -3221,6 +3254,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$subClient->close($message, $reason);
 			}
 		}
+		
         Win10InvLogic::removeData($this);
         foreach($this->tasks as $t){
 			$t->cancel();
@@ -3237,6 +3271,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				if($this->server->getSavePlayerData() && $this->loggedIn === true){
 					$this->save();
 				}
+				
 				//if(!$ev->isCancelled()){
 					foreach($this->server->getOnlinePlayers() as $p){
 						$p->sendMessage(TF::RED . $this->username . " Oyundan Ayrıldı!");
@@ -3302,19 +3337,19 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		parent::saveNBT();
 		
 		if($this->level instanceof Level){
-			$this->namedtag->Level = new StringTag("Level", $this->level->getName());
+			$this->namedTag->Level = new StringTag("Level", $this->level->getName());
 			if($this->spawnPosition instanceof Position && $this->spawnPosition->getLevel() instanceof Level){
-				$this->namedtag["SpawnLevel"] = $this->spawnPosition->getLevel()->getName();
-				$this->namedtag["SpawnX"] = (int) $this->spawnPosition->x;
-				$this->namedtag["SpawnY"] = (int) $this->spawnPosition->y + 0.1;
-				$this->namedtag["SpawnZ"] = (int) $this->spawnPosition->z;
+				$this->namedTag["SpawnLevel"] = $this->spawnPosition->getLevel()->getName();
+				$this->namedTag["SpawnX"] = (int) $this->spawnPosition->x;
+				$this->namedTag["SpawnY"] = (int) $this->spawnPosition->y + 0.1;
+				$this->namedTag["SpawnZ"] = (int) $this->spawnPosition->z;
 			}
 
-			$this->namedtag["playerGameType"] = $this->gamemode;
-			$this->namedtag["lastPlayed"] = floor(microtime(true) * 1000);
+			$this->namedTag["playerGameType"] = $this->gamemode;
+			$this->namedTag["lastPlayed"] = floor(microtime(true) * 1000);
 
-			if($this->username != "" && $this->namedtag instanceof Compound){
-				$this->server->saveOfflinePlayerData($this->username, $this->namedtag, true);
+			if($this->username != "" && $this->namedTag instanceof Compound){
+				$this->server->saveOfflinePlayerData($this->username, $this->namedTag, true);
 			}
 		}
 	}
@@ -3446,7 +3481,11 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 
 		Entity::kill();
-
+		
+		if(isset($this->morphManager->eid[$this->getName()])){
+			$this->morphManager->removeMob($this);
+		}
+		
 		$this->server->getPluginManager()->callEvent($ev = new PlayerDeathEvent($this, $this->getDrops(), $message));
 		
 		$this->freeChunks();
@@ -3801,12 +3840,12 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}else{
 			$this->inventory->setHeldItemSlot($this->inventory->getHotbarSlotIndex(0));
 		}
-		if($this->spawnPosition === null && isset($this->namedtag->SpawnLevel) && ($level = $this->server->getLevelByName($this->namedtag["SpawnLevel"])) instanceof Level){
-			$this->spawnPosition = new Position($this->namedtag["SpawnX"], $this->namedtag["SpawnY"], $this->namedtag["SpawnZ"], $level);
+		if($this->spawnPosition === null && isset($this->namedTag->SpawnLevel) && ($level = $this->server->getLevelByName($this->namedTag["SpawnLevel"])) instanceof Level){
+			$this->spawnPosition = new Position($this->namedTag["SpawnX"], $this->namedTag["SpawnY"], $this->namedTag["SpawnZ"], $level);
 		}
 		$spawnPosition = $this->getSpawn();
 		$hub = $this->server->getDefaultLevel()->getSafeSpawn();
-		//$lobby = $this->level->getSafeSpawn();
+		$lobby = $this->level->getSafeSpawn();
 		//$this->level->updateAround($lobby);
 		//$this->level->updateAllLight($lobby);
 		//$this->level->sendBlocks([$this], [$lobby], UpdateBlockPacket::FLAG_ALL_PRIORITY);
@@ -3819,6 +3858,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$pk->spawnX = $hub->x;
 		$pk->spawnY = $hub->y + 0.1;
 		$pk->spawnZ = $hub->z;
+		//$pk->spawnX = $lobby->x;
+		//$pk->spawnY = $lobby->y + 0.1;
+		//$pk->spawnZ = $lobby->z;
 		$pk->generator = 1;
 		$pk->gamemode = $this->gamemode & 0x01;
 		$pk->eid = $this->id;
@@ -3861,7 +3903,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->port,
 			TF::GREEN . $this->randomClientId . TF::WHITE,
 			$this->id,
-			$this->level->getName(),
+			$this->level->getName() . $this->level->getFolderName(),
 			round($this->x, 4),
 			round($this->y, 4),
 			round($this->z, 4)
@@ -3978,7 +4020,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	protected function enchantTransaction(BaseTransaction $transaction){
 		if($this->craftingType !== Player::CRAFTING_ENCHANT){
 			$this->inventory->sendContents($this);
-			return;
+			return false;
 		}
 		
 		$oldItem = $transaction->getSourceItem();
@@ -4016,7 +4058,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			
 			$enchantInv->sendContents($this);
 			$this->inventory->sendContents($this);
-			return;
+			return true;
 		}
 		
 		if(($oldItem instanceof Armor || $oldItem instanceof Tool) && $transaction->getInventory() === $this->inventory){
@@ -4205,11 +4247,23 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function sendPing(){
 		if($this->getPing() <= 150){
-			$this->sendMessage(TF::GREEN . "Bağlantı: İyi ({$this->ping}ms)");
+			if(Translate::checkTurkish() === "yes"){
+				$this->sendMessage(TF::GREEN . "Bağlantı: İyi ({$this->ping}ms)");
+			}else{
+				$this->sendMessage(TF::GREEN . "Connection: Good ({$this->ping}ms)");
+			}
 		}elseif($this->getPing() <= 250){
-			$this->sendMessage(TF::YELLOW . "Bağlantı: Orta ({$this->ping}ms)");
+			if(Translate::checkTurkish() === "yes"){
+				$this->sendMessage(TF::YELLOW . "Bağlantı: Orta ({$this->ping}ms)");
+			}else{
+				$this->sendMessage(TF::YELLOW . "Connection: Normal ({$this->ping}ms)");
+			}
 		}else{
-			$this->sendMessage(TF::RED . "Bağlantı: Kötü ({$this->ping}ms)");
+			if(Translate::checkTurkish() === "yes"){
+				$this->sendMessage(TF::RED . "Bağlantı: Kötü ({$this->ping}ms)");
+			}else{
+				$this->sendMessage(TF::RED . "Connection: Bad ({$this->ping}ms)");
+			}
 		}
 	}
     

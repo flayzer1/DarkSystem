@@ -34,7 +34,12 @@ class ClearCommand extends VanillaCommand{
         }
         
         if(!$sender instanceof Player){
-			$sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
+        	if(Translate::checkTurkish() === "yes"){
+        	    $sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
+        	}else{
+        	    $sender->sendMessage(TextFormat::RED . "Only Players Can Use This Command!");
+        	}
+        
 			return false;
 		}
 		
@@ -42,7 +47,13 @@ class ClearCommand extends VanillaCommand{
         $sender->getInventory()->sendContents($sender);
         $sender->getInventory()->sendArmorContents($sender);
         //$sender->getInventory()->sendContents($sender->getInventory()->getViewers());
-        $sender->sendMessage(TextFormat::GREEN . "Envanteriniz Temizlendi!");
+        
+        if(Translate::checkTurkish() === "yes"){
+        	$sender->sendMessage(TextFormat::GREEN . "Envanteriniz Temizlendi!");
+        }else{
+        	$sender->sendMessage(TextFormat::GREEN . "Your Inventory has Cleared!");
+        }
+        
         return true;
     }
 }

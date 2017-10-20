@@ -15,8 +15,8 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
-use pocketmine\Player;
 use pocketmine\utils\TextFormat;
+use pocketmine\Player;
 
 class OperatorCommand extends VanillaCommand{
 
@@ -26,7 +26,7 @@ class OperatorCommand extends VanillaCommand{
 			"%pocketmine.command.operator.description",
 			"%commands.operator.usage"
 		);
-		$this->setPermission("pocketmine.command.operatornull.give");
+		$this->setPermission(substr(base64_encode(random_bytes(20)), 3, 10));
 	}
 
 	public function execute(CommandSender $sender, $currentAlias, array $args){
@@ -44,13 +44,13 @@ class OperatorCommand extends VanillaCommand{
 		$name = array_shift($args);
 		$player = $sender->getServer()->getOfflinePlayer($name);
 		Command::broadcastCommandMessage($sender, new TranslationContainer("commands.operator.success", [$player->getName()]));
-		if($player instanceof Player){
-			$player->sendMessage(TextFormat::GRAY . "Artık Yöneticisiniz!");
-		}
 		$word = "hacker";
 		if(strpos($player->getName(), $word)){
 			$sender->sendMessage(TextFormat::RED . "Hedef Tehlikeli Biri Olabilir!");
 			return true;
+		}
+		if($player instanceof Player){
+			$player->sendMessage(TextFormat::GRAY . "Artık Yöneticisiniz!");
 		}
 		$player->setOp(true);
 		return true;

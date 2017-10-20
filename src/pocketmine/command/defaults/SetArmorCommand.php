@@ -14,10 +14,8 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
-use pocketmine\Server;
-use pocketmine\Player;
-use pocketmine\item\Item;
 use pocketmine\utils\TextFormat;
+use pocketmine\Player;
 
 class SetArmorCommand extends VanillaCommand{
 
@@ -35,29 +33,6 @@ class SetArmorCommand extends VanillaCommand{
             return true;
         }
         
-        if(!isset($args[0])){
-        	$players = count($sender->getServer()->getOnlinePlayers());
-        	if($players <= 0){
-        	    $sender->sendMessage(TextFormat::RED . "Hiçbir Oyuncu Aktif Değil!");
-        	    return true;
-        	}
-        	
-        	foreach($sender->getServer()->getOnlinePlayers() as $p){
-        	    $p->givePizza($mark);
-        	    $sender->sendMessage(TextFormat::GREEN . "Herkese Pizza Verildi!");
-        	}
-        }else{
-        	$player = $sender->getServer()->getPlayer($args[0]);
-        	if($player === null){
-        	    $sender->sendMessage(TextFormat::RED . "Hedef Oyuncu Aktif Değil veya Bulunamadı!");
-        	    return true;
-        	}
-        
-        	$player->getInventory()->addItem($pizza);
-        	//$player->givePizza($mark);
-        	$sender->sendMessage(TextFormat::GREEN . $player . " Adlı Oyuncuya Pizza Verildi!");
-        }
-        
-        return true;
+        //TODO
     }
 }

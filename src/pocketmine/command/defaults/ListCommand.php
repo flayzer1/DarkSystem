@@ -44,8 +44,8 @@ class ListCommand extends VanillaCommand{
 		$online = "";
 		$onlineCount = 0;
 
-		foreach($sender->getServer()->getOnlinePlayers() as $player){
-			if($player->isOnline() and (!($sender instanceof Player) or $sender->canSee($player))){
+		foreach($sender->getServer()->getOnlinePlayers() as $p){
+			if($p->isOnline() and (!($sender instanceof Player) or $sender->canSee($p))){
 				$online .= $player->getDisplayName() . ", ";
 				++$onlineCount;
 			}
@@ -53,6 +53,7 @@ class ListCommand extends VanillaCommand{
 
 		$sender->sendMessage(new TranslationContainer("commands.players.list", [$onlineCount, $sender->getServer()->getMaxPlayers()]));
 		$sender->sendMessage(substr($online, 0, -2));
+		
 		return true;
 	}
 }

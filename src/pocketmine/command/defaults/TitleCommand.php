@@ -80,7 +80,7 @@ class TitleCommand extends VanillaCommand{
 
 				$player->setTitleDuration($this->getInteger($sender, $args[2]), $this->getInteger($sender, $args[3]), $this->getInteger($sender, $args[4]));
 				break;
-			default:
+				default;
 				$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
 				return false;
 		}

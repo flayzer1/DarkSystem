@@ -12,10 +12,11 @@
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\CommandSender;
-use pocketmine\Player;
 use pocketmine\utils\TextFormat;
+use pocketmine\Translate;
+use pocketmine\Player;
 
-class WorldCommand extends VanillaCommand {
+class WorldCommand extends VanillaCommand{
 
 	public function __construct($name){
 		parent::__construct(
@@ -58,7 +59,11 @@ class WorldCommand extends VanillaCommand {
 				return false;
 			}
 		}else{
-			$sender->sendMessage(TextFormat::RED . "This command must be executed as a player");
+			if(Translate::checkTurkish() === "yes"){
+        	    $sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
+        	}else{
+        	    $sender->sendMessage(TextFormat::RED . "Only Players Can Use This Command!");
+        	}
 			return false;
 		}
 	}

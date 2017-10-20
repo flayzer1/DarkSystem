@@ -1,12 +1,21 @@
 <?php
 
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
+
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\FolderPluginLoader;
 use pocketmine\plugin\Plugin;
-use pocketmine\Server;
 use pocketmine\utils\TextFormat;
+use pocketmine\Server;
 
 class MakePluginCommand extends VanillaCommand{
 
@@ -34,6 +43,7 @@ class MakePluginCommand extends VanillaCommand{
 			$sender->sendMessage(TextFormat::RED . "Invalid plugin name, check the name case.");
 			return true;
 		}
+		
 		$description = $plugin->getDescription();
 
 		if(!($plugin->getPluginLoader() instanceof FolderPluginLoader)){
@@ -42,10 +52,12 @@ class MakePluginCommand extends VanillaCommand{
 		}
 
 		$pharPath = Server::getInstance()->getPluginPath() . DIRECTORY_SEPARATOR . "DarkSystem" . DIRECTORY_SEPARATOR . $description->getName() . "_v" . $description->getVersion() . ".phar";
+		
 		if(file_exists($pharPath)){
 			$sender->sendMessage("Phar plugin already exists, overwriting...");
 			@unlink($pharPath);
 		}
+		
 		$phar = new \Phar($pharPath);
 		$phar->setMetadata([
 			"name" => $description->getName(),
@@ -58,11 +70,13 @@ class MakePluginCommand extends VanillaCommand{
 			"website" => $description->getWebsite(),
 			"creationDate" => time()
 		]);
+		
 		if($description->getName() === "DevTools"){
 			$phar->setStub('<?php require("phar://". __FILE__ ."/src/DevTools/ConsoleScript.php"); __HALT_COMPILER();');
 		}else{
 			$phar->setStub('<?php echo "PocketMine-MP/DarkSystem plugin ' . $description->getName() . ' v' . $description->getVersion() . '\nThis file has been generated using DarkSystem by DarkSystemTeam at ' . date("r") . '\n----------------\n";if(extension_loaded("phar")){$phar = new \Phar(__FILE__);foreach($phar->getMetadata() as $key => $value){echo ucfirst($key).": ".(is_array($value) ? implode(", ", $value):$value)."\n";}} __HALT_COMPILER();');
 		}
+		
 		$phar->setSignatureAlgorithm(\Phar::SHA1);
 		$reflection = new \ReflectionClass("pocketmine\\plugin\\PluginBase");
 		$file = $reflection->getProperty("file");
@@ -74,6 +88,7 @@ class MakePluginCommand extends VanillaCommand{
 			if($path{0} === "." or strpos($path, "/.") !== false){
 				continue;
 			}
+			
 			$phar->addFile($file, $path);
 			$sender->sendMessage("[DarkSystem] Adding $path");
 		}
@@ -84,9 +99,11 @@ class MakePluginCommand extends VanillaCommand{
 				$finfo->compress(\Phar::GZ);
 			}
 		}
+		
 		if(!isset($args[1]) or (isset($args[1]) and $args[1] != "nogz")){
 			$phar->compressFiles(\Phar::GZ);
 		}
+		
 		$phar->stopBuffering();
 		$sender->sendMessage("Phar plugin " . $description->getName() . " v" . $description->getVersion() . " has been created on " . $pharPath);
 		return true;

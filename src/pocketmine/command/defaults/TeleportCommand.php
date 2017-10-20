@@ -14,9 +14,9 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
+use pocketmine\utils\TextFormat;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
-use pocketmine\utils\TextFormat;
 
 class TeleportCommand extends VanillaCommand{
 
@@ -102,6 +102,7 @@ class TeleportCommand extends VanillaCommand{
 		}
 
 		$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
+		
 		return true;
 	}
 }

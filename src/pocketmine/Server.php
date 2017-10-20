@@ -1327,7 +1327,8 @@ class Server extends DarkSystem{
 		$this->autoloader = $autoloader;
 		$this->konsol = $knsol;
 		$this->filePath = $filePath;
-		//$this->translate = new Translate($this);
+		$this->translate = new Translate($this);
+		$this->translate->prepareLang();
 		$this->dbot = new DarkBot($this);
 		//$this->core = new MultiCore($this);
 		try{
@@ -1426,7 +1427,7 @@ class Server extends DarkSystem{
 			
 			//$this->loadAdvancedConfig();
 			
-			$this->weatherEnabled = false; //A quickfix for a crash
+			$this->weatherEnabled = false; //A quick fix for a crash
 			
 			if(Translate::checkTurkish() === "yes"){
 			$this->properties = new Config($this->getDataPath() . "sunucu.properties", Config::PROPERTIES, [

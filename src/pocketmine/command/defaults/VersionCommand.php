@@ -38,11 +38,13 @@ class VersionCommand extends VanillaCommand{
 		if(count($args) === 0){
 			$ver = \pocketmine\VERSION;
 			$tag = \pocketmine\TAG;
+			$creator = \pocketmine\CREATOR;
+			$codename = \pocketmine\CODENAME;
 			$build = ProtocolInfo::DARKSYSTEM_VERSION;
 			if(Translate::checkTurkish() === "yes"){
-				$sender->sendMessage("§eBu Sunucu §aDarkSystem $tag $ver ($build) §eVersiyonunda Çalışıyor\n§eAPI: §a3.0.1\n§eDarkSystem'i İndirmek İçin:\n§ahttps://github.com/DarkYusuf13/DarkSystem§r");
+				$sender->sendMessage("§eBu Sunucu §a$codename $tag $ver ($build) §eVersiyonunda Çalışıyor\n§eAPI: §a3.0.1\n§e$codename'i İndirmek İçin:\n§ahttps://github.com/$creator/$codename§r");
 			}else{
-				$sender->sendMessage("§eThis Server is Running on §aDarkSystem $tag $ver ($build)\n§eAPI: §a3.0.1\n§eTo Download DarkSystem:\n§ahttps://github.com/DarkYusuf13/DarkSystem§r");
+				$sender->sendMessage("§eThis Server is Running on §a$codename $tag $ver ($build)\n§eAPI: §a3.0.1\n§eTo Download $codename:\n§ahttps://github.com/$creator/$codename§r");
 			}
 		}else{
 			$pluginName = implode(" ", $args);
@@ -79,14 +81,26 @@ class VersionCommand extends VanillaCommand{
 		}
 
 		if($desc->getWebsite() != null){
-			$sender->sendMessage("Site: " . $desc->getWebsite());
+			if(Translate::checkTurkish() === "yes"){
+				$sender->sendMessage("Site: " . $desc->getWebsite());
+			}else{
+				$sender->sendMessage("Website: " . $desc->getWebsite());
+			}
 		}
 
 		if(count($authors = $desc->getAuthors()) > 0){
 			if(count($authors) === 1){
-				$sender->sendMessage("Geliştirici: " . implode(", ", $authors));
+				if(Translate::checkTurkish() === "yes"){
+					$sender->sendMessage("Geliştirici: " . implode(", ", $authors));
+				}else{
+					$sender->sendMessage("Author: " . implode(", ", $authors));
+				}
 			}else{
-				$sender->sendMessage("Geliştiriciler: " . implode(", ", $authors));
+				if(Translate::checkTurkish() === "yes"){
+					$sender->sendMessage("Geliştiriciler: " . implode(", ", $authors));
+				}else{
+					$sender->sendMessage("Authors: " . implode(", ", $authors));
+				}
 			}
 		}
 	}

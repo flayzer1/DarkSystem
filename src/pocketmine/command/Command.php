@@ -356,4 +356,5 @@ abstract class Command{
 	public function __toString(){
 		return $this->name;
 	}
+	
 }

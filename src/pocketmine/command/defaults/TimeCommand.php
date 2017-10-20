@@ -14,9 +14,9 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
+use pocketmine\utils\TextFormat;
 use pocketmine\level\Level;
 use pocketmine\Player;
-use pocketmine\utils\TextFormat;
 
 class TimeCommand extends VanillaCommand{
 

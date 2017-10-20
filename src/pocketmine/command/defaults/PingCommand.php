@@ -12,8 +12,9 @@
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\CommandSender;
-use pocketmine\Player;
 use pocketmine\utils\TextFormat;
+use pocketmine\Translate;
+use pocketmine\Player;
 
 class PingCommand extends VanillaCommand{
 
@@ -32,11 +33,17 @@ class PingCommand extends VanillaCommand{
 		}
 		
 		if(!$sender instanceof Player){
-			$sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
+			if(Translate::checkTurkish() === "yes"){
+        	    $sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
+        	}else{
+        	    $sender->sendMessage(TextFormat::RED . "Only Players Can Use This Command!");
+        	}
+        
 			return true;
 		}
 		
 		$sender->sendPing();
+		
 		return true;
 	}
 }

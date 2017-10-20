@@ -14,8 +14,9 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
-use pocketmine\Player;
 use pocketmine\utils\TextFormat;
+use pocketmine\Translate;
+use pocketmine\Player;
 
 class ZoomCommand extends VanillaCommand{
 
@@ -34,12 +35,23 @@ class ZoomCommand extends VanillaCommand{
         }
         
         if(!$sender instanceof Player){
-			$sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
+			if(Translate::checkTurkish() === "yes"){
+        	    $sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
+        	}else{
+        	    $sender->sendMessage(TextFormat::RED . "Only Players Can Use This Command!");
+        	}
+        
 			return false;
 		}
 		
         $sender->updateSpeed(0.1);
-        $sender->sendMessage(TextFormat::GREEN . "Başarılı!");
+        
+        if(Translate::checkTurkish() === "yes"){
+        	$sender->sendMessage(TextFormat::GREEN . "Başarılı!");
+        }else{
+        	$sender->sendMessage(TextFormat::GREEN . "Success!");
+        }
+        
         return true;
     }
 }

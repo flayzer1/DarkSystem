@@ -1,23 +1,13 @@
 <?php
 
-/*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\command\defaults;
 
@@ -50,7 +40,6 @@ class SummonCommand extends VanillaCommand{
 
 		if(count($args) != 1 and count($args) != 4 and count($args) != 5){
 			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
-
 			return true;
 		}
 
@@ -66,16 +55,13 @@ class SummonCommand extends VanillaCommand{
 					$x = is_numeric($offset_x) ? ($sender->x + $offset_x) : $sender->x;
 				}else{                                                            //using in console
 					$sender->sendMessage(TextFormat::RED . "You must specify a position where the entity is spawned to when using in console");
-
 					return false;
 				}
 			}else{                                                                //other circumstances
 				$sender->sendMessage(TextFormat::RED . "Argument error");
-
 				return false;
 			}
-
-			//Code for setting $y
+			
 			if(is_numeric($args[2])){                            //y is given directly
 				$y = $args[2];
 			}elseif(strcmp($args[2], "~") >= 0){    //y is given with a "~"
@@ -85,16 +71,13 @@ class SummonCommand extends VanillaCommand{
 					$y = min(128, max(0, $y));
 				}else{                                                            //using in console
 					$sender->sendMessage(TextFormat::RED . "You must specify a position where the entity is spawned to when using in console");
-
 					return false;
 				}
 			}else{                                                                //other circumstances
 				$sender->sendMessage(TextFormat::RED . "Argument error");
-
 				return false;
 			}
-
-			//Code for setting $z
+			
 			if(is_numeric($args[3])){                            //z is given directly
 				$z = $args[3];
 			}elseif(strcmp($args[3], "~") >= 0){    //z is given with a "~"
@@ -103,15 +86,13 @@ class SummonCommand extends VanillaCommand{
 					$z = is_numeric($offset_z) ? ($sender->z + $offset_z) : $sender->z;
 				}else{                                                            //using in console
 					$sender->sendMessage(TextFormat::RED . "You must specify a position where the entity is spawned to when using in console");
-
 					return false;
 				}
 			}else{                                                                //other circumstances
 				$sender->sendMessage(TextFormat::RED . "Argument error");
-
 				return false;
 			}
-		}    //finish setting the location
+		}
 
 		if(count($args) == 1){
 			if($sender instanceof Player){
@@ -120,10 +101,9 @@ class SummonCommand extends VanillaCommand{
 				$z = $sender->z;
 			}else{
 				$sender->sendMessage(TextFormat::RED . "You must specify a position where the entity is spawned to when using in console");
-
 				return false;
 			}
-		} //finish setting the location
+		}
 
 		$entity = null;
 		$type = $args[0];
@@ -144,6 +124,7 @@ class SummonCommand extends VanillaCommand{
 				new FloatTag("", 0)
 			]),
 		]);
+		
 		if(count($args) == 5 and $args[4]{0} == "{"){
 			$nbtExtra = NBT::parseJSON($args[4]);
 			$nbt = NBT::combineCompounds($nbt, $nbtExtra, true);
@@ -153,11 +134,9 @@ class SummonCommand extends VanillaCommand{
 		if($entity instanceof Entity){
 			$entity->spawnToAll();
 			$sender->sendMessage("Successfully spawned entity $type at ($x, $y, $z)");
-
 			return true;
 		}else{
 			$sender->sendMessage(TextFormat::RED . "An error occurred when spawning the entity $type");
-
 			return false;
 		}
 	}
