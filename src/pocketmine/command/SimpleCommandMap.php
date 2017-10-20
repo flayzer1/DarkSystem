@@ -72,6 +72,7 @@ use pocketmine\command\defaults\WeatherCommand;
 use pocketmine\command\defaults\WhitelistCommand;
 use pocketmine\command\defaults\WorldCommand;
 use pocketmine\command\defaults\XpCommand;
+use pocketmine\command\defaults\XYZCommand;
 use pocketmine\command\defaults\ZoomCommand;
 use pocketmine\darkbot\command\ChatDarkBotCommand;
 use pocketmine\darkbot\command\SpawnDarkBotCommand;
@@ -133,6 +134,7 @@ class SimpleCommandMap implements CommandMap{
 		SimpleCommandMap::register("pocketmine", new WorldCommand("world"));
 		SimpleCommandMap::register("pocketmine", new MorphCommand("morph"));
 		SimpleCommandMap::register("pocketmine", new ZoomCommand("zoom"));
+		SimpleCommandMap::register("pocketmine", new XYZCommand("xyz"));
 		SimpleCommandMap::register("pocketmine", new EffectCommand("effect"));
 		SimpleCommandMap::register("pocketmine", new ClearCommand("clear"));
 		SimpleCommandMap::register("pocketmine", new ClearChatCommand("clearchat"));

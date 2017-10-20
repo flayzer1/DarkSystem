@@ -7,8 +7,9 @@
 | :---: | :---: |
 [![Build Status](https://travis-ci.org/DarkYusuf13/DarkSystem.svg?branch=master)](https://travis-ci.org/DarkYusuf13/DarkSystem) | [![Discord](https://camo.githubusercontent.com/455152269a0ed38255ed15e375084d4dd08e0c98/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636861742d6f6e253230646973636f72642d3732383944412e737667)](https://discord.gg/4TewN6v) |
 
-## DarkSystem Special Android APP is Out!
-http://bit.do/darksystem_apk
+### DarkSystem Special Android APP is Out!
+You can download it [here](http://bit.do/darksystem_apk).
+NOTE: Language of app is Turkish, does not support English. Will be added soon.
 
 # Features:
 - DarkSystem is **# 1** about speed & no-lag. (We think so)
