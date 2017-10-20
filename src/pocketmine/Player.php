@@ -458,15 +458,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function getFirstPlayed(){
-		return $this->namedTag instanceof Compound ? $this->namedTag["firstPlayed"] : null;
+		return $this->namedtag instanceof Compound ? $this->namedtag["firstPlayed"] : null;
 	}
 
 	public function getLastPlayed(){
-		return $this->namedTag instanceof Compound ? $this->namedTag["lastPlayed"] : null;
+		return $this->namedtag instanceof Compound ? $this->namedtag["lastPlayed"] : null;
 	}
 
 	public function hasPlayedBefore(){
-		return $this->namedTag instanceof Compound;
+		return $this->namedtag instanceof Compound;
 	}
 	
 	public function setMetadata($metadataKey, MetadataValue $metadataValue){
@@ -702,7 +702,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function __construct(SourceInterface $interface, $clientID, $ip, $port){
 		$this->interface = $interface;
 		$this->perm = new PermissibleBase($this);
-		$this->namedTag = new Compound();
+		$this->namedtag = new Compound();
 		$this->server = Server::getInstance();
 		$this->lastBreak = 0;
 		$this->ip = $ip;
@@ -1169,7 +1169,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			}
 			$this->spawnToAll();
 		}
-		$this->namedTag->playerGameType = new IntTag("playerGameType", $this->gamemode);
+		$this->namedtag->playerGameType = new IntTag("playerGameType", $this->gamemode);
 		$pk = new SetPlayerGameTypePacket();
 		$pk->gamemode = $this->gamemode & 0x01;
 		$this->dataPacket($pk);
@@ -1554,6 +1554,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$dz = $to->z - $from->z;
 			$this->fastMove($dx, $dy, $dz);
 			if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120 && $this->isLiving() && $advancedMove === true){
+				$downBlock = $this->level->getBlock(new Vector3($this->x, $this->y - 1, $this->z));
 				$this->setMayMove(true);
 				//$this->speed = new Vector3(0.1, 0.1, 0.1);
 				if(!$downBlock->isTransparent() && $this->isNotLiving()){
@@ -2123,7 +2124,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$this->loginData = ["clientId" => $packet->clientId, "loginData" => null];
 				$this->uuid = $packet->clientUUID;
 				$this->subClientId = $packet->targetSubClientID;
-				if(!isset($this->count[$ip])){
+				if(!isset($this->count[$this->ip])){
 					$this->count[$this->ip] = 1;
 				}else{
 					$this->count[$this->ip]++;
@@ -3014,7 +3015,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 						$modifiedPages = [$packet->pageNumber, $packet->secondaryPageNumber];
 						break;
 					case BookEditPacket::TYPE_SIGN_BOOK:
-						$newBook = Item::get(Item::WRITTEN_BOOK, 0, 1, $newBook->getNamedTag());
+						$newBook = Item::get(Item::WRITTEN_BOOK, 0, 1, $newBook->getnamedtag());
 						$newBook->setAuthor($packet->author);
 						$newBook->setTitle($packet->title);
 						$newBook->setGeneration(WrittenBook::GENERATION_ORIGINAL);
@@ -3243,8 +3244,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->morphManager->removeMob($this);
 		}
 		
-		if(isset($this->count[$ip])){
-			$this->count[$ip]--;
+		if(isset($this->count[$this->ip])){
+			$this->count[$this->ip]--;
 		}
 		
 		if($this->parent !== null){
@@ -3337,19 +3338,19 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		parent::saveNBT();
 		
 		if($this->level instanceof Level){
-			$this->namedTag->Level = new StringTag("Level", $this->level->getName());
+			$this->namedtag->Level = new StringTag("Level", $this->level->getName());
 			if($this->spawnPosition instanceof Position && $this->spawnPosition->getLevel() instanceof Level){
-				$this->namedTag["SpawnLevel"] = $this->spawnPosition->getLevel()->getName();
-				$this->namedTag["SpawnX"] = (int) $this->spawnPosition->x;
-				$this->namedTag["SpawnY"] = (int) $this->spawnPosition->y + 0.1;
-				$this->namedTag["SpawnZ"] = (int) $this->spawnPosition->z;
+				$this->namedtag["SpawnLevel"] = $this->spawnPosition->getLevel()->getName();
+				$this->namedtag["SpawnX"] = (int) $this->spawnPosition->x;
+				$this->namedtag["SpawnY"] = (int) $this->spawnPosition->y + 0.1;
+				$this->namedtag["SpawnZ"] = (int) $this->spawnPosition->z;
 			}
 
-			$this->namedTag["playerGameType"] = $this->gamemode;
-			$this->namedTag["lastPlayed"] = floor(microtime(true) * 1000);
+			$this->namedtag["playerGameType"] = $this->gamemode;
+			$this->namedtag["lastPlayed"] = floor(microtime(true) * 1000);
 
-			if($this->username != "" && $this->namedTag instanceof Compound){
-				$this->server->saveOfflinePlayerData($this->username, $this->namedTag, true);
+			if($this->username != "" && $this->namedtag instanceof Compound){
+				$this->server->saveOfflinePlayerData($this->username, $this->namedtag, true);
 			}
 		}
 	}
@@ -3840,8 +3841,8 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}else{
 			$this->inventory->setHeldItemSlot($this->inventory->getHotbarSlotIndex(0));
 		}
-		if($this->spawnPosition === null && isset($this->namedTag->SpawnLevel) && ($level = $this->server->getLevelByName($this->namedTag["SpawnLevel"])) instanceof Level){
-			$this->spawnPosition = new Position($this->namedTag["SpawnX"], $this->namedTag["SpawnY"], $this->namedTag["SpawnZ"], $level);
+		if($this->spawnPosition === null && isset($this->namedtag->SpawnLevel) && ($level = $this->server->getLevelByName($this->namedtag["SpawnLevel"])) instanceof Level){
+			$this->spawnPosition = new Position($this->namedtag["SpawnX"], $this->namedtag["SpawnY"], $this->namedtag["SpawnZ"], $level);
 		}
 		$spawnPosition = $this->getSpawn();
 		$hub = $this->server->getDefaultLevel()->getSafeSpawn();

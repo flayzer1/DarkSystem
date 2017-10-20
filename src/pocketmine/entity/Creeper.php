@@ -35,7 +35,7 @@ class Creeper extends Monster
     {
         parent::initEntity();
 
-        if (!isset($this->namedTag->powered)) {
+        if (!isset($this->namedtag->powered)) {
             $this->setPowered(false);
         }
         $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_POWERED, $this->isPowered());
@@ -51,14 +51,14 @@ class Creeper extends Monster
         $this->getLevel()->getServer()->getPluginManager()->callEvent($ev = new CreeperPowerEvent($this, $lightning, $cause));
 
         if (!$ev->isCancelled()) {
-            $this->namedTag->powered = new ByteTag("powered", $powered ? 1 : 0);
+            $this->namedtag->powered = new ByteTag("powered", $powered ? 1 : 0);
             $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_POWERED, $powered);
         }
     }
 
     public function isPowered()
     {
-        return (bool)$this->namedTag["powered"];
+        return (bool)$this->namedtag["powered"];
     }
 
     public function spawnTo(Player $player)
