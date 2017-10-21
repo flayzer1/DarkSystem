@@ -33,7 +33,7 @@ class DumpMemoryCommand extends VanillaCommand{
 		Command::broadcastCommandMessage($sender, "Sunucu Hafızası Kaydediliyor");
 		
 		$sender->getServer()->getMemoryManager()->dumpServerMemory(isset($args[0]) ? $args[0] : $sender->getServer()->getDataPath() . "/memory_dumps/memoryDump_".date("D_M_j-H.i.s-T_Y", time()), 48, 80);
+		
 		return true;
 	}
-	
 }

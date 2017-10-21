@@ -16,6 +16,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
 use pocketmine\utils\TextFormat;
+use pocketmine\Translate;
 use pocketmine\Player;
 
 class OperatorCommand extends VanillaCommand{
@@ -46,11 +47,19 @@ class OperatorCommand extends VanillaCommand{
 		Command::broadcastCommandMessage($sender, new TranslationContainer("commands.operator.success", [$player->getName()]));
 		$word = "hacker";
 		if(strpos($player->getName(), $word)){
-			$sender->sendMessage(TextFormat::RED . "Hedef Tehlikeli Biri Olabilir!");
-			return true;
+			if(Translate::checkTurkish() === "yes"){
+				$sender->sendMessage(TextFormat::RED . "Hedef Tehlikeli Biri Olabilir!");
+			}else{
+				$sender->sendMessage(TextFormat::RED . "Target Maybe Dangerous!");
+			}
+			return false;
 		}
 		if($player instanceof Player){
-			$player->sendMessage(TextFormat::GRAY . "Artık Yöneticisiniz!");
+			if(Translate::checkTurkish() === "yes"){
+				$sender->sendMessage(TextFormat::GRAY . "Artık Yöneticisiniz!");
+			}else{
+				$sender->sendMessage(TextFormat::GRAY . "You are now op!");
+			}
 		}
 		$player->setOp(true);
 		return true;

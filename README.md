@@ -31,6 +31,7 @@ You can download it [here](http://bit.do/darksystem_apk).<br>
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
 - Floating Text as Entity (On DarkSystem, floating text is not a particle, it is an entity. So it blocks floating text hack or others. Also dissappearing of floating text is impossible.)
 - Auto Lag Cleaner (How does it works? It automatically removes items and arrows from ground without occuping CPU.)
+- Weather (Supports snow/rain/thunder)
 - CustomUI (Allows to create fully customizable menus, can be added by /addui) (only +1.2)
 - /addui Command (You can easily test CustomUI's with this) (/addui {player} {type:shop/alert/image/slider/dropdown/input/mix})
 - Fully Turkish Language (DarkSystem Support %79 Turkish Language. How to set language to Turkish? Simple, choose language to **tur** on set-up wizard. After set **language:** to **tur** on **pocketmine.yml**)
@@ -42,7 +43,7 @@ You can download it [here](http://bit.do/darksystem_apk).<br>
 - TextUtils (Idea from MiNET, Code taken from Turanic. Allows to create more beautiful texts. Example, **TextUtils::center($message)** makes message in center.)
 - BlockLauncher join Blocking (indev) (If you hate hackers, this is for you. How to use? It is fully automatic. But not implemented yet. Does not work.)
 - Code is clean, fast and safe, coded as DarkSystem PHP code method.
-- More & Advanced Commands (/clear, /tpall, /clearchat /addui /zoom /world /morph /xyz /cave /summon etc.)
+- More & Advanced Commands (/clear, /tpall, /clearchat /addui /zoom /world /morph /xyz /cave /summon /chunkinfo etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
 - DarkBot (Virtual Intelligent Bot; Can talk, help players, move etc.) (say "hi darkbot" in-game to test :))
 - Others:

@@ -2341,11 +2341,11 @@ class Level implements ChunkManager, Metadatable{
 		if(!isset($this->playerHandItemQueue[$sender->getId()])){
 			$this->playerHandItemQueue[$sender->getId()] = [];
 		}
-		$this->playerHandItemQueue[$sender->getId()][$recipient->getId()] = array(
+		$this->playerHandItemQueue[$sender->getId()][$recipient->getId()] = [
 			'sender' => $sender,
 			'recipient' => $recipient,
 			'time' => microtime(true)
-		);
+		];
 	}
 	
 	public function mayAddPlayerHandItem($sender, $recipient){
@@ -2389,18 +2389,22 @@ class Level implements ChunkManager, Metadatable{
 	}
 	
 	public function updateChunk($x, $z){
+		$players = $this->getUsingChunk($x, $z);
+		if(empty($players)){
+			return false;
+		}
 		$index = Level::chunkHash($x, $z);
 		$this->chunkSendTasks[$index] = true;		
 		$this->chunkSendQueue[$index] = [];
 		$protocols = [];
 		$subClientsId = [];
-		foreach($this->getUsingChunk($x, $z) as $player){
-			$this->chunkSendQueue[$index][spl_object_hash($player)] = $player;
-			$protocol = $player->getPlayerProtocol();
+		foreach($players as $p){
+			$this->chunkSendQueue[$index][spl_object_hash($p)] = $p;
+			$protocol = $p->getPlayerProtocol();
 			if(!isset($protocols[$protocol])){
 				$protocols[$protocol] = $protocol;
 			}
-			$subClientId = $player->getSubClientId();
+			$subClientId = $p->getSubClientId();
 			if(!isset($subClientsId[$subClientId])){
 				$subClientsId[$subClientId] = $subClientId;
 			}

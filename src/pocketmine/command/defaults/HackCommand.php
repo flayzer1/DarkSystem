@@ -14,8 +14,9 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
-use pocketmine\Player;
 use pocketmine\utils\TextFormat;
+use pocketmine\Translate;
+use pocketmine\Player;
 
 class HackCommand extends VanillaCommand{
 
@@ -34,12 +35,21 @@ class HackCommand extends VanillaCommand{
         }
         
         if(!$sender instanceof Player){
-			$sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
-			return true;
+			if(Translate::checkTurkish() === "yes"){
+        	    $sender->sendMessage(TextFormat::RED . "Bu Komutu Sadece Oyuncular Kullanabilir!");
+        	}else{
+        	    $sender->sendMessage(TextFormat::RED . "Only Players Can Use This Command!");
+        	}
+        
+			return false;
 		}
 		
-		//$sender->sendMessage(TextFormat::GRAY . "Artık Yöneticisiniz!");
-        $sender->sendMessage(TextFormat::GRAY . "You are now op!");
+		if(Translate::checkTurkish() === "yes"){
+			$sender->sendMessage(TextFormat::GRAY . "Artık Yöneticisiniz!");
+		}else{
+			$sender->sendMessage(TextFormat::GRAY . "You are now op!");
+		}
+    
         return true;
     }
 }

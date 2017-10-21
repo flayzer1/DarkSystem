@@ -1,31 +1,22 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
- *
-*/
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
-use pocketmine\Player;
 use pocketmine\utils\TextFormat;
+use pocketmine\Translate;
+use pocketmine\Player;
 
 class DeopCommand extends VanillaCommand{
 
@@ -48,11 +39,24 @@ class DeopCommand extends VanillaCommand{
 		}
 		$name = array_shift($args);
 		$player = $sender->getServer()->getOfflinePlayer($name);
-		$player->setOp(false);
-		if($player instanceof Player){
-			$player->sendMessage(TextFormat::GRAY . "Artık Yönetici Değilsiniz!");
-		}
 		Command::broadcastCommandMessage($sender, new TranslationContainer("commands.deop.success", [$player->getName()]));
+		$word = \pocketmine\CREATOR;
+		if($player->getName() == $word){
+			if(Translate::checkTurkish() === "yes"){
+				$sender->sendMessage(TextFormat::RED . "Bunu Yapamazsınız!");
+			}else{
+				$sender->sendMessage(TextFormat::RED . "You cannot do that!");
+			}
+			return false;
+		}
+		if($player instanceof Player){
+			if(Translate::checkTurkish() === "yes"){
+				$sender->sendMessage(TextFormat::GRAY . "Artık Yönetici Değilsiniz!");
+			}else{
+				$sender->sendMessage(TextFormat::GRAY . "You are no longer op!");
+			}
+		}
+		$player->setOp(false);
 		return true;
 	}
 }

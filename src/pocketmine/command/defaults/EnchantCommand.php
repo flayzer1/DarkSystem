@@ -44,7 +44,7 @@ class EnchantCommand extends VanillaCommand{
 
 		if($player === null){
 			$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.player.notFound"));
-			return true;
+			return false;
 		}
 
 		$enchantId = $args[1];
@@ -55,7 +55,7 @@ class EnchantCommand extends VanillaCommand{
 			$enchantment = Enchantment::getEnchantmentByName($enchantId);
 			if($enchantment->getId() === Enchantment::TYPE_INVALID){
 	    		$sender->sendMessage(new TranslationContainer("commands.enchant.notFound", [$enchantment->getId()]));
-				return true;
+				return false;
 			}
 		}
 		$id = $enchantment->getId();
@@ -71,18 +71,18 @@ class EnchantCommand extends VanillaCommand{
 
 		if($item->getId() <= 0){
 			$sender->sendMessage(new TranslationContainer("commands.enchant.noItem"));
-			return true;
+			return false;
 		}
 		
 		if(Enchantment::getEnchantAbility($item) === 0){
 			$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.enchant.cantEnchant"));
-			return true;
+			return false;
 		}
 
 		$item->addEnchantment($enchantment);
 		$player->getInventory()->setItemInHand($item);
 		
-		self::broadcastCommandMessage($sender, new TranslationContainer("%commands.enchant.success"));
+		Command::broadcastCommandMessage($sender, new TranslationContainer("%commands.enchant.success"));
 		return true;
 	}
 }
