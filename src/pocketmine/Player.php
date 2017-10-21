@@ -1571,6 +1571,9 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				if($distanceSquared >= 0.5 && $this->isLiving()){
 					$this->setJumping(true);
 				}
+				$toX = floor($to->x);
+				$toY = ceil($to->y);
+				$toZ = floor($to->z);
 				$playerPosition = new Vector3($this->x, $this->y - 1, $this->z);
 				$blockLow = $from->level->getBlock(new Vector3($toX, $toY - 1, $toZ));
 				$blockX = $from->level->getBlock(new Vector3($toX + 1, $toY, $toZ));
