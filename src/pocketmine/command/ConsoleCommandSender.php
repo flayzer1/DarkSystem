@@ -14,9 +14,10 @@ namespace pocketmine\command;
 use pocketmine\event\TextContainer;
 use pocketmine\permission\PermissibleBase;
 use pocketmine\permission\PermissionAttachment;
-use pocketmine\plugin\Plugin;
-use pocketmine\Server;
 use pocketmine\utils\MainLogger;
+use pocketmine\plugin\Plugin;
+use pocketmine\Translate;
+use pocketmine\Server;
 
 class ConsoleCommandSender implements CommandSender{
 
@@ -108,7 +109,11 @@ class ConsoleCommandSender implements CommandSender{
 	 * @return string
 	 */
 	public function getName(){
-		return "SUNUCU";
+		if(Translate::checkTurkish() === "yes"){
+			return "SUNUCU";
+		}else{
+			return "CONSOLE";
+		}
 	}
 
 	/**

@@ -4347,12 +4347,16 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function setOnFire($seconds, $damage = 1){
- 		if($this->isSpectator()){
- 			return false;
- 		}
- 
- 		parent::setOnFire($seconds, $damage);
- 	}
+		if($this->isSpectator()){
+			return false;
+		}
+		
+		parent::setOnFire($seconds, $damage);
+	}
+	
+	public function attackInCreative($player){
+	
+	}
 	
 	public function attackByTargetId($targetId){
 		if($this->spawned === false || $this->dead === true || $this->blocked === true){
@@ -4361,6 +4365,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 		$target = $this->level->getEntity($targetId);
 		if($target instanceof Player && ($this->server->getConfigBoolean("pvp", true) === false || ($target->getGamemode() & 0x01) > 0)){
+			$this->attackInCreative($this);
 			return true;
 		}
 

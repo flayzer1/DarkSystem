@@ -39,7 +39,11 @@ class ThemeManager{
 		    return $this->availableThemes[array_rand($this->availableThemes)];
 		}
 		
-		return $this->server->getConfigString("theme", ThemeManager::DEFAULT_THEME);
+		if(!is_null($this->server->getConfigString("theme", ThemeManager::DEFAULT_THEME))){
+			return $this->server->getConfigString("theme", ThemeManager::DEFAULT_THEME);
+		}
+		
+		return ThemeManager::DEFAULT_THEME;
     }
     
     public function setTheme($value){
