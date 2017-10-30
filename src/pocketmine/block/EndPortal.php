@@ -4,7 +4,7 @@ namespace pocketmine\block;
 
 use pocketmine\item\Item;
 
-class EndPortal extends Solid {
+class EndPortal extends Solid{
     
     protected $id = self::END_PORTAL;
     

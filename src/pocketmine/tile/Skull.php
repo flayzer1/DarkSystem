@@ -13,13 +13,13 @@ namespace pocketmine\tile;
 
 use pocketmine\level\Level;
 use pocketmine\level\format\FullChunk;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 
 class Skull extends Spawnable{
 	
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		if(!isset($nbt->SkullType)){
 			$nbt->SkullType = new StringTag("SkullType", 0);
 		}
@@ -34,7 +34,7 @@ class Skull extends Spawnable{
 	}
 	
 	public function getSpawnCompound(){
-		return new Compound("", [
+		return new CompoundTag("", [
 			new StringTag("id", Tile::SKULL),
 			$this->namedtag->SkullType,
 			new IntTag("x", (int)$this->x),

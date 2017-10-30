@@ -25,8 +25,8 @@ use pocketmine\item\Item;
 use pocketmine\item\Tool;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\Compound;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
@@ -85,6 +85,7 @@ class Chest extends Transparent{
 			}elseif(($this->meta === 3 or $this->meta === 2) and ($side === 2 or $side === 3)){
 				continue;
 			}
+			
 			$c = $this->getSide($side);
 			if($c instanceof Chest and $c->getDamage() === $this->meta){
 				$tile = $this->getLevel()->getTile($c);
@@ -96,8 +97,8 @@ class Chest extends Transparent{
 		}
 
 		$this->getLevel()->setBlock($block, $this, true, true);
-		$nbt = new Compound("", [
-			new Enum("Items", []),
+		$nbt = new CompoundTag("", [
+			new ListTag("Items", []),
 			new StringTag("id", Tile::CHEST),
 			new IntTag("x", $this->x),
 			new IntTag("y", $this->y),
@@ -130,6 +131,7 @@ class Chest extends Transparent{
 		if($t instanceof TileChest){
 			$t->unpair();
 		}
+		
 		$this->getLevel()->setBlock($this, new Air(), true, true);
 
 		return true;
@@ -147,13 +149,14 @@ class Chest extends Transparent{
 			if($t instanceof TileChest){
 				$chest = $t;
 			}else{
-				$nbt = new Compound("", [
-					new Enum("Items", []),
+				$nbt = new CompoundTag("", [
+					new ListTag("Items", []),
 					new StringTag("id", Tile::CHEST),
 					new IntTag("x", $this->x),
 					new IntTag("y", $this->y),
 					new IntTag("z", $this->z)
 				]);
+				
 				$nbt->Items->setTagType(NBT::TAG_Compound);
 				$chest = Tile::createTile("Chest", $this->getLevel(), $nbt);
 			}
@@ -164,10 +167,7 @@ class Chest extends Transparent{
 					return true;
 				}
 			}
-
-//			if($player->isCreative()){
-//				return true;
-//			}
+			
 			$player->addWindow($chest->getInventory());
 		}
 

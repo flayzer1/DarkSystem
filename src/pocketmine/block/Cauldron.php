@@ -1,23 +1,13 @@
 <?php
 
-/*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\block;
 
@@ -34,9 +24,9 @@ use pocketmine\level\sound\SpellSound;
 use pocketmine\level\sound\SplashSound;
 use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\IntTag;
@@ -75,14 +65,14 @@ class Cauldron extends Solid
 
     public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null)
     {
-        $nbt = new Compound("", [
+        $nbt = new CompoundTag("", [
             new StringTag("id", Tile::CAULDRON),
             new IntTag("x", $block->x),
             new IntTag("y", $block->y),
             new IntTag("z", $block->z),
             new ShortTag("PotionId", 0xffff),
             new ByteTag("SplashPotion", 0),
-            new Enum("Items", [])
+            new ListTag("Items", [])
         ]);
 
         if ($item->hasCustomBlockData()) {

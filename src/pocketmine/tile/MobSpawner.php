@@ -17,9 +17,9 @@ use pocketmine\level\Level;
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
@@ -28,7 +28,7 @@ use pocketmine\Player;
 
 class MobSpawner extends Spawnable{
 
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		if(!isset($nbt->EntityId) or !($nbt->EntityId instanceof IntTag)){
 			$nbt->EntityId = new IntTag("EntityId", 0);
 		}
@@ -146,18 +146,18 @@ class MobSpawner extends Spawnable{
 						//$success++;
 						//$this->getLevel()->getServer()->getPluginManager()->callEvent($ev = new EntityGenerateEvent($pos, $this->getEntityId(), EntityGenerateEvent::CAUSE_MOB_SPAWNER));
 						//if(!$ev->isCancelled()){
-						$nbt = new Compound("", [
-							"Pos" => new Enum("Pos", [
+						$nbt = new CompoundTag("", [
+							"Pos" => new ListTag("Pos", [
 								new DoubleTag("", $pos->x),
 								new DoubleTag("", $pos->y),
 								new DoubleTag("", $pos->z)
 							]),
-							"Motion" => new Enum("Motion", [
+							"Motion" => new ListTag("Motion", [
 								new DoubleTag("", 0),
 								new DoubleTag("", 0),
 								new DoubleTag("", 0)
 							]),
-							"Rotation" => new Enum("Rotation", [
+							"Rotation" => new ListTag("Rotation", [
 								new FloatTag("", mt_rand() / mt_getrandmax() * 360),
 								new FloatTag("", 0)
 							]),
@@ -179,7 +179,7 @@ class MobSpawner extends Spawnable{
 	}
 
 	public function getSpawnCompound(){
-		$c = new Compound("", [
+		$c = new CompoundTag("", [
 			new StringTag("id", Tile::MOB_SPAWNER),
 			new IntTag("x", (int) $this->x),
 			new IntTag("y", (int) $this->y),

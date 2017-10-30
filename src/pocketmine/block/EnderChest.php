@@ -15,11 +15,11 @@ use pocketmine\item\Item;
 use pocketmine\item\Tool;
 use pocketmine\Player;
 use pocketmine\tile\Tile;
-use pocketmine\nbt\tag\Compound;
-use pocketmine\nbt\tag\Enum;
-use pocketmine\nbt\NBT;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\NBT;
 
 class EnderChest extends Transparent{
     
@@ -55,8 +55,8 @@ class EnderChest extends Transparent{
 		$faces = [ 0 => 4, 1 => 2, 2 => 5, 3 => 3 ];
 		$this->meta = $faces[$player instanceof Player ? $player->getDirection() : 0];
         
-        $nbt = new Compound("", [
-			new Enum("Items", []),
+        $nbt = new CompoundTag("", [
+			new ListTag("Items", []),
 			new StringTag("id", Tile::ENDER_CHEST),
 			new IntTag("x", $this->x),
 			new IntTag("y", $this->y),

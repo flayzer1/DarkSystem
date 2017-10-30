@@ -8,6 +8,7 @@
 #|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
 #                             __/ |                       
 #                            |___/   Unleash Your Power Turkey!
+#;	
 
 namespace{
 	
@@ -60,10 +61,10 @@ namespace pocketmine{
 	use pocketmine\utils\Utils;
 	use pocketmine\setup\Setup;
 
-	const VERSION = "2.2.1";
+	const VERSION = "3.0.0";
 	const DARKBOT_VERSION = "1.0.0";
 	const API_VERSION = "3.0.1";
-	const TAG = "GlowingObsidian";
+	const TAG = "Orichalcum";
 	const CURRENT_STATUS = "passing";
 	const CODENAME = "DarkSystem";
 	const CREATOR = "DarkYusuf13";
@@ -221,7 +222,7 @@ namespace pocketmine{
 				break;
 			case "mac":
 			case "linux":
-			default:
+				default;
 				if(function_exists("posix_kill")){
 					posix_kill($pid, SIGKILL);
 				}else{

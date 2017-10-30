@@ -100,4 +100,5 @@ class EmptySubChunk extends SubChunk{
 	public function fastSerialize(){
 		throw new \BadMethodCallException("Should not try to serialize empty subchunks");
 	}
+	
 }

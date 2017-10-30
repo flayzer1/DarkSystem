@@ -22,8 +22,8 @@ use pocketmine\entity\Husk;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\Compound;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\StringTag;
@@ -81,22 +81,22 @@ class SpawnDarkBotCommand extends VanillaCommand{
 	public function spaw($name, $level){
      $motion = new Vector3(0, 0, 0);
      $data = $this->dbotconfig->get($name);
-     $nbt = new Compound("", [
-        "Pos" => new Enum("Pos", [
+     $nbt = new CompoundTag("", [
+        "Pos" => new ListTag("Pos", [
             new DoubleTag("", $data["x"]),
             new DoubleTag("", $data["y"]),
             new DoubleTag("", $data["z"])
         ]),
-        "Motion" => new Enum("Motion", [
+        "Motion" => new ListTag("Motion", [
             new DoubleTag("", 0),
             new DoubleTag("", 0),
             new DoubleTag("", 0)
         ]),
-        "Rotation" => new Enum("Rotation", [
+        "Rotation" => new ListTag("Rotation", [
             new FloatTag("", 0),
             new FloatTag("", 0)
         ]),
-		"spawnPos" => new Enum("spawnPos", [
+		"spawnPos" => new ListTag("spawnPos", [
             new DoubleTag("", $data["x"]),
             new DoubleTag("", $data["y"]),
             new DoubleTag("", $data["z"])
@@ -162,7 +162,7 @@ class SpawnDarkBotCommand extends VanillaCommand{
 		/*$player = $event->getPlayer();
          
            $npc = new Human($player->chunk,
-new CompoundTag("", [
+new CompoundTagTag("", [
   "Pos" => new ListTag("Pos", [
        new DoubleTag("", $player->getX()),
        new DoubleTag("", $player->getY()),
@@ -177,7 +177,7 @@ new CompoundTag("", [
          new FloatTag("", $player->getYaw()),
          new FloatTag("", $player->getPitch())
      ]),
-     "Skin" => new CompoundTag("Skin", [
+     "Skin" => new CompoundTagTag("Skin", [
             "Data" => new StringTag("Data", $player->getSkinData())
      ])
 ]
@@ -191,22 +191,22 @@ $npc->getInventory()->setLeggings(Item::get(300));
 $npc->getInventory()->setBoots(Item::get(301));
 $npc->getInventory()->setItemInHand(Item::get(276));*/
 
-		/*$nbt = new Compound("", [ 
-			"Pos" => new Enum( "Pos", [ 
+		/*$nbt = new CompoundTag("", [ 
+			"Pos" => new ListTag( "Pos", [ 
 				new DoubleTag("", $sender->getServer()->getDefaultLevel()->getSafeSpawn()->x),
 				new DoubleTag("", $sender->getServer()->getDefaultLevel()->getSafeSpawn()->y),
 				new DoubleTag("", $sender->getServer()->getDefaultLevel()->getSafeSpawn()->z)
 			]),
-			"Motion" => new Enum( "Motion", [ 
+			"Motion" => new ListTag( "Motion", [ 
 				new DoubleTag("", 0),
 				new DoubleTag("", 0),
 				new DoubleTag("", 0) 
 			]),
-			"Rotation" => new Enum("Rotation", [ 
+			"Rotation" => new ListTag("Rotation", [ 
 				new FloatTag("", -180),
 				new FloatTag("", 0) 
 			]),
-			"Skin" => new Compound("Skin", [
+			"Skin" => new CompoundTag("Skin", [
                 "Data" => new StringTag("Data", $sender->getSkinData())
             ])
 		]);

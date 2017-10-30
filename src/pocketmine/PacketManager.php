@@ -27,7 +27,7 @@ class PacketManager extends Worker{
 	protected $shutdown;
 	
 	protected $externalQueue;
-	protected $internalQueue;	
+	protected $internalQueue;
 
 	public function __construct(\ClassLoader $loader = null){
 		$this->externalQueue = new \Threaded;
@@ -93,10 +93,10 @@ class PacketManager extends Worker{
 	}
 	
 	protected function checkPacket($data){
-		if(isset($data['moveData'])){
-			foreach($data['moveData'] as $identifier => $moveData){
+		if(isset($data["moveData"])){
+			foreach($data["moveData"] as $identifier => $moveData){
 				$moveStr = "";
-				foreach($moveData['data'] as $singleMoveData){
+				foreach($moveData["data"] as $singleMoveData){
 					if($singleMoveData[7]){
 						$pk = new MovePlayerPacket();
 						$pk->eid = $singleMoveData[0];
@@ -111,35 +111,35 @@ class PacketManager extends Worker{
 						$pk->entities = [$singleMoveData];
 					}
 					$pk->senderSubClientID = $singleMoveData[8];
-					$pk->encode($moveData['playerProtocol']);
-					$moveStr .= Binary::writeVarInt(strlen($pk->buffer)) . $pk->buffer;					
+					$pk->encode($moveData["playerProtocol"]);
+					$moveStr .= Binary::writeVarInt(strlen($pk->buffer)) . $pk->buffer;
 				}
 				$buffer = zlib_encode($moveStr, ZLIB_ENCODING_DEFLATE, 7);
 				$pkBatch = new BatchPacket();
 				$pkBatch->payload = $buffer;
-				$pkBatch->encode($moveData['playerProtocol']);
+				$pkBatch->encode($moveData["playerProtocol"]);
 				$pkBatch->isEncoded = true;
 				$this->externalQueue[] = $this->makeBuffer($identifier, $pkBatch, false, false);
 			}	
-			foreach($data['motionData'] as $identifier => $motionData){
+			foreach($data["motionData"] as $identifier => $motionData){
 				$motionStr = "";
-				foreach($motionData['data'] as $singleMotionData){
+				foreach($motionData["data"] as $singleMotionData){
 					$pk = new SetEntityMotionPacket();
 					$pk->entities = [$singleMotionData];
 					$pk->senderSubClientID = $singleMotionData[4];
-					$pk->encode($motionData['playerProtocol']);
-					$motionStr .= Binary::writeVarInt(strlen($pk->buffer)) . $pk->buffer;		
+					$pk->encode($motionData["playerProtocol"]);
+					$motionStr .= Binary::writeVarInt(strlen($pk->buffer)) . $pk->buffer;
 				}
 				$buffer = zlib_encode($motionStr, ZLIB_ENCODING_DEFLATE, 7);
 				$pkBatch = new BatchPacket();
 				$pkBatch->payload = $buffer;
-				$pkBatch->encode($motionData['playerProtocol']);
+				$pkBatch->encode($motionData["playerProtocol"]);
 				$pkBatch->isEncoded = true;
 				$this->externalQueue[] = $this->makeBuffer($identifier, $pkBatch, false, false);
 			}
-		} elseif($data['isBatch']){
+		} elseif($data["isBatch"]){
 			$packetsStr = [];
-			foreach($data['packets'] as $protocol => $packetData){		
+			foreach($data["packets"] as $protocol => $packetData){		
 				foreach($packetData as $p){
 					if(!isset($packetsStr[$protocol])){
 						$packetsStr[$protocol] = "";
@@ -150,7 +150,7 @@ class PacketManager extends Worker{
 			
 			$packs = [];
 			foreach($packetsStr as $protocol => $str){
-				$buffer = zlib_encode($str, ZLIB_ENCODING_DEFLATE, $data['networkCompressionLevel']);
+				$buffer = zlib_encode($str, ZLIB_ENCODING_DEFLATE, $data["networkCompressionLevel"]);
 				$pk = new BatchPacket();
 				$pk->payload = $buffer;
 				$pk->encode($protocol);
@@ -158,7 +158,7 @@ class PacketManager extends Worker{
 				$packs[$protocol] = $pk;
 			}
 			
-			foreach($data['targets'] as $target){
+			foreach($data["targets"] as $target){
 				if(isset($packs[$target[1]])){
 					$this->externalQueue[] = $this->makeBuffer($target[0], $packs[$target[1]], false, false);
 				}

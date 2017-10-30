@@ -6,7 +6,7 @@ use pocketmine\Player;
 use pocketmine\utils\UUID;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Human;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\StringTag;
@@ -131,7 +131,7 @@ class NPC extends Human{
 	public function saveNBT(){
         parent::saveNBT();
 		$this->namedtag->maxHealth = new IntTag("maxHealth",$this->getMaxHealth());
-		$this->namedtag->spawnPos = new Enum("spawnPos", [
+		$this->namedtag->spawnPos = new ListTag("spawnPos", [
             new DoubleTag("", $this->spawnPos->x),
             new DoubleTag("", $this->spawnPos->y),
             new DoubleTag("", $this->spawnPos->z)

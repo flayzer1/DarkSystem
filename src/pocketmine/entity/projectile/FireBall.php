@@ -14,7 +14,7 @@ namespace pocketmine\entity\projectile;
 use pocketmine\level\Level;
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\particle\CriticalParticle;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\entity\Projectile;
@@ -37,7 +37,7 @@ class FireBall extends Projectile{
 	protected $isCritical;
 	protected $canExplode = false;
 
-	public function __construct(Level $level, Compound $nbt, Entity $shootingEntity = null, bool $critical = false){
+	public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
 		parent::__construct($level, $nbt, $shootingEntity);
 
 		$this->isCritical = $critical;

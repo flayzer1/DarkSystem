@@ -22,8 +22,7 @@
 namespace pocketmine\nbt\tag;
 
 use pocketmine\nbt\NBT;
-
-#include <rules/NBT.h>
+use pocketmine\utils\Binary;
 
 class ByteArrayTag extends NamedTag{
 
@@ -31,12 +30,12 @@ class ByteArrayTag extends NamedTag{
 		return NBT::TAG_ByteArray;
 	}
 
-	public function read(NBT $nbt, bool $network = false){
-		$this->value = $nbt->get($nbt->getInt($network));
+	public function read(NBT $nbt){
+		$this->value = $nbt->get($nbt->endianness === 1 ? Binary::readInt($nbt->get(4)) : Binary::readLInt($nbt->get(4)));
 	}
 
-	public function write(NBT $nbt, bool $network = false){
-		$nbt->putInt(strlen($this->value), $network);
-		$nbt->put($this->value);
+	public function write(NBT $nbt){
+		$nbt->buffer .= $nbt->endianness === 1 ? pack("N", strlen($this->value)) : pack("V", strlen($this->value));
+		$nbt->buffer .= $this->value;
 	}
 }

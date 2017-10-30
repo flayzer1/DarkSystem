@@ -107,9 +107,9 @@ use pocketmine\math\Vector3;
 use pocketmine\metadata\MetadataValue;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\LongTag;
@@ -183,7 +183,7 @@ use pocketmine\network\protocol\v120\SubClientLoginPacket;
 use pocketmine\network\protocol\v120\InventoryTransactionPacket;
 use pocketmine\network\protocol\v120\Protocol120;
 use pocketmine\network\multiversion\Multiversion;
-use pocketmine\network\multiversion\MultiversionEnums;
+use pocketmine\network\multiversion\MultiversionTags;
 
 //class Player /*extends OnlinePlayer*/ extends Human implements CommandSender, InventoryHolder, IPlayer{
 class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface, CommandSender, InventoryHolder, IPlayer{
@@ -291,7 +291,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	protected $hiddenPlayers = [];
 	protected $hiddenEntity = [];
 	
-	public $newPosition;
+	public $newPosition = null;
 
 	protected $chunksPerTick = 4;
 	protected $spawnThreshold = 16 * M_PI;
@@ -458,15 +458,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function getFirstPlayed(){
-		return $this->namedtag instanceof Compound ? $this->namedtag["firstPlayed"] : null;
+		return $this->namedtag instanceof CompoundTag ? $this->namedtag["firstPlayed"] : null;
 	}
 
 	public function getLastPlayed(){
-		return $this->namedtag instanceof Compound ? $this->namedtag["lastPlayed"] : null;
+		return $this->namedtag instanceof CompoundTag ? $this->namedtag["lastPlayed"] : null;
 	}
 
 	public function hasPlayedBefore(){
-		return $this->namedtag instanceof Compound;
+		return $this->namedtag instanceof CompoundTag;
 	}
 	
 	public function setMetadata($metadataKey, MetadataValue $metadataValue){
@@ -702,7 +702,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function __construct(SourceInterface $interface, $clientID, $ip, $port){
 		$this->interface = $interface;
 		$this->perm = new PermissibleBase($this);
-		$this->namedtag = new Compound();
+		$this->namedtag = new CompoundTag();
 		$this->server = Server::getInstance();
 		$this->lastBreak = 0;
 		$this->ip = $ip;
@@ -1181,7 +1181,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		return true;
 	}
 	
-	public function sendSettings(){
+	public function sndSettings(){
 		$flags = 0;
 		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
 			if($this->isAdventure()){
@@ -1220,15 +1220,15 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$this->dataPacket($pk);
 	}
 	
-	public function sndSettings(){
+	public function sendSettings(){
 		$pk = new AdventureSettingsPacket();
 
-		$pk->setFlag(AdventureSettingsPacket::WORLD_IMMUTABLE, $this->isSpectator());
-		$pk->setFlag(AdventureSettingsPacket::NO_PVP, $this->isSpectator());
-		$pk->setFlag(AdventureSettingsPacket::AUTO_JUMP, $this->autoJump);
-		$pk->setFlag(AdventureSettingsPacket::ALLOW_FLIGHT, $this->allowFlight);
-		$pk->setFlag(AdventureSettingsPacket::NO_CLIP, $this->isSpectator());
-		$pk->setFlag(AdventureSettingsPacket::FLYING, $this->flying);
+		$pk->setPlayerFlag(AdventureSettingsPacket::WORLD_IMMUTABLE, $this->isSpectator());
+		$pk->setPlayerFlag(AdventureSettingsPacket::NO_PVP, $this->isSpectator());
+		$pk->setPlayerFlag(AdventureSettingsPacket::AUTO_JUMP, $this->autoJump);
+		$pk->setPlayerFlag(AdventureSettingsPacket::ALLOW_FLIGHT, $this->allowFlight);
+		$pk->setPlayerFlag(AdventureSettingsPacket::NO_CLIP, $this->isSpectator());
+		$pk->setPlayerFlag(AdventureSettingsPacket::FLYING, $this->flying);
 
 		$pk->commandPermission = ($this->isOp() ? AdventureSettingsPacket::PERMISSION_OPERATOR : AdventureSettingsPacket::PERMISSION_NORMAL);
 		$pk->playerPermission = ($this->isOp() ? PlayerPermissions::OPERATOR : PlayerPermissions::MEMBER);
@@ -1938,7 +1938,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$this->foodUsageTime += 250;
 				}
 			}
-			if($this->foodUsageTime >= 100000 && $this->hungerDepletion){
+			if($this->foodUsageTime >= 100000 && $this->hungerDepletion && !$this->server->getDifficulty() == 3){
 				$this->foodUsageTime -= 100000;
 				$this->subtractFood(1);
 			}
@@ -1947,7 +1947,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					$ev = new EntityRegainHealthEvent($this, 1, EntityRegainHealthEvent::CAUSE_EATING);
 					$this->heal(1, $ev);
 					if(!$ev->isCancelled()){
-						if($this->hungerDepletion >=2){
+						if($this->hungerDepletion >= 2 && !$this->server->getDifficulty() == 3){
 							$this->subtractFood(1);
 							$this->foodDepletion = 0;
 						}else{
@@ -2315,7 +2315,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				if($this->spawned === false || $this->blocked === true){
 					break;
 				}
-				$action = MultiversionEnums::getPlayerAction($this->protocol, $packet->action);
+				$action = MultiversionTags::getPlayerAction($this->protocol, $packet->action);
 				switch($action){
 					case "START_JUMP":
 						$this->advancedJump();
@@ -2390,7 +2390,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 						$this->extinguish();
 						$this->dataProperties[Player::DATA_AIR] = [Player::DATA_TYPE_SHORT, 300];
-						$this->setDataFlag(Player::DATA_FLAGS, Player::DATA_FLAG_NOT_IN_WATER, true, Player::DATA_TYPE_LONG, false);
+						$this->setDataFlag(Player::DATA_FLAGS, Player::DATA_FLAG_NOT_IN_WATER, true);
 						$this->deadTicks = 0;
 						$this->despawnFromAll();
 						$this->dead = false;
@@ -3002,20 +3002,20 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$modifiedPages = [];
 				switch($packet->type){
 					case BookEditPacket::TYPE_REPLACE_PAGE:
-						$newBook->setPageText($packet->pageNumber, $packet->text);
-						$modifiedPages[] = $packet->pageNumber;
+						$newBook->setPageText($packet->pagListTagber, $packet->text);
+						$modifiedPages[] = $packet->pagListTagber;
 						break;
 					case BookEditPacket::TYPE_ADD_PAGE:
-						$newBook->insertPage($packet->pageNumber, $packet->text);
-						$modifiedPages[] = $packet->pageNumber;
+						$newBook->insertPage($packet->pagListTagber, $packet->text);
+						$modifiedPages[] = $packet->pagListTagber;
 						break;
 					case BookEditPacket::TYPE_DELETE_PAGE:
-						$newBook->deletePage($packet->pageNumber);
-						$modifiedPages[] = $packet->pageNumber;
+						$newBook->deletePage($packet->pagListTagber);
+						$modifiedPages[] = $packet->pagListTagber;
 						break;
 					case BookEditPacket::TYPE_SWAP_PAGES:
-						$newBook->swapPages($packet->pageNumber, $packet->secondaryPageNumber);
-						$modifiedPages = [$packet->pageNumber, $packet->secondaryPageNumber];
+						$newBook->swapPages($packet->pagListTagber, $packet->secondaryPagListTagber);
+						$modifiedPages = [$packet->pagListTagber, $packet->secondaryPagListTagber];
 						break;
 					case BookEditPacket::TYPE_SIGN_BOOK:
 						$newBook = Item::get(Item::WRITTEN_BOOK, 0, 1, $newBook->getnamedtag());
@@ -3352,7 +3352,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 			$this->namedtag["playerGameType"] = $this->gamemode;
 			$this->namedtag["lastPlayed"] = floor(microtime(true) * 1000);
 
-			if($this->username != "" && $this->namedtag instanceof Compound){
+			if($this->username != "" && $this->namedtag instanceof CompoundTag){
 				$this->server->saveOfflinePlayerData($this->username, $this->namedtag, true);
 			}
 		}
@@ -3562,7 +3562,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	public function subtractFood($amount){
-		if(!$this->getFoodEnabled()){
+		if(!$this->getFoodEnabled()/* || $this->server->getDifficulty() == 3*/){
 			return false;
 		}
 		
@@ -3732,7 +3732,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	public function continueLoginProcess(){
 		$pk = new PlayStatusPacket();
 		$pk->status = PlayStatusPacket::LOGIN_SUCCESS;
-		$this->dataPacket($pk);		
+		$this->dataPacket($pk);
 		
 		$pk = new ResourcePackInfoPacket();
 		$this->dataPacket($pk);
@@ -3825,10 +3825,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}else{
 			$this->setLevel($level, true);
 		}
-		if(Utils::checkMod() === true){ //BlockLauncher Checking
+		if(Utils::checkMod($this) === true){ //BlockLauncher Checking
 			$this->close(TF::YELLOW . $this->username . " has left the game", "Please do not join with BlockLauncher.");
 		}
-		if(!$nbt instanceof Compound){
+		if(!$nbt instanceof CompoundTag){
 			$this->close(TF::YELLOW . $this->username . " has left the game", "Corrupt joining data, check your connection.");
 			return false;
 		}
@@ -4556,18 +4556,18 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				if($itemInHand->getId() === Item::SNOWBALL || $itemInHand->getId() === Item::EGG/* || $itemInHand->getId() === Item::BOAT*/){
 					$yawRad = $this->yaw / 180 * M_PI;
 					$pitchRad = $this->pitch / 180 * M_PI;
-					$nbt = new Compound("", [
-						"Pos" => new Enum("Pos", [
+					$nbt = new CompoundTag("", [
+						"Pos" => new ListTag("Pos", [
 							new DoubleTag("", $this->x),
 							new DoubleTag("", $this->y + $this->getEyeHeight()),
 							new DoubleTag("", $this->z)
 						]),
-						"Motion" => new Enum("Motion", [
+						"Motion" => new ListTag("Motion", [
 							new DoubleTag("", -sin($yawRad) * cos($pitchRad)),
 							new DoubleTag("", -sin($pitchRad)),
 							new DoubleTag("", cos($yawRad) * cos($pitchRad))
 						]),
-						"Rotation" => new Enum("Rotation", [
+						"Rotation" => new ListTag("Rotation", [
 							new FloatTag("", $this->yaw),
 							new FloatTag("", $this->pitch)
 						]),
@@ -4877,18 +4877,18 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 				$yawRad = $this->yaw / 180 * M_PI;
 				$pitchRad = $this->pitch / 180 * M_PI;
-				$nbt = new Compound("", [
-					"Pos" => new Enum("Pos", [
+				$nbt = new CompoundTag("", [
+					"Pos" => new ListTag("Pos", [
 						new DoubleTag("", $this->x),
 						new DoubleTag("", $this->y + $this->getEyeHeight()),
 						new DoubleTag("", $this->z)
 					]),
-					"Motion" => new Enum("Motion", [
+					"Motion" => new ListTag("Motion", [
 						new DoubleTag("", -sin($yawRad) * cos($pitchRad)),
 						new DoubleTag("", -sin($pitchRad)),
 						new DoubleTag("", cos($yawRad) * cos($pitchRad))
 					]),
-					"Rotation" => new Enum("Rotation", [
+					"Rotation" => new ListTag("Rotation", [
 						new FloatTag("", $this->yaw),
 						new FloatTag("", $this->pitch)
 					]),

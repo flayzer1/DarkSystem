@@ -59,8 +59,6 @@ class Setup{
 		if(!$this->showLicense()){
 			@\pocketmine\kill(getmypid());
 			exit(-1);
-			exit(-1);
-			exit(-1);
 		}
 
 		echo "[?] " . $this->lang->skip_installer . " (y/N): ";

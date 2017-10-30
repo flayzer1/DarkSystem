@@ -38,12 +38,11 @@ class QueryRegenerateEvent extends ServerEvent{
 	private $ip;
 
 	private $extraData = [];
-
-
+	
 	public function __construct(Server $server, $timeout = 7){
 		$this->timeout = $timeout;
 		$this->serverName = $server->getServerName();
-		$this->listPlugins = $server->getProperty("settings.query-plugins", false);
+		$this->listPlugins = false;
 		$this->plugins = $server->getPluginManager()->getPlugins();
 		$this->players = [];
 		foreach($server->getOnlinePlayers() as $player){
@@ -54,7 +53,7 @@ class QueryRegenerateEvent extends ServerEvent{
 
 		$this->gametype = ($server->getGamemode() & 0x01) === 0 ? "SMP" : "CMP";
 		$this->version = $server->getVersion();
-		$this->server_engine = $server->getName() . " " . $server->getPocketMineVersion();
+		$this->server_engine = $server->getName() . " " . $server->getDarkSystemVersion();
 		$this->map = $server->getDefaultLevel() === null ? "unknown" : $server->getDefaultLevel()->getName();
 		$this->numPlayers = count($this->players);
 		$this->maxPlayers = $server->getMaxPlayers();

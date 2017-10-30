@@ -1,31 +1,21 @@
 <?php
 
-/*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\Compound;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
@@ -34,7 +24,6 @@ use pocketmine\tile\Tile;
 
 class Dropper extends Solid
 {
-
     protected $id = self::DROPPER;
 
     public function __construct($meta = 0)
@@ -42,7 +31,7 @@ class Dropper extends Solid
         $this->meta = $meta;
     }
 
-    public function canBeActivated(): bool
+    public function canBeActivated()
     {
         return true;
     }
@@ -52,7 +41,7 @@ class Dropper extends Solid
         return 3.5;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Dropper";
     }
@@ -83,8 +72,8 @@ class Dropper extends Solid
         $this->meta = $faces[$f];
 
         $this->getLevel()->setBlock($block, $this, true, true);
-        $nbt = new Compound("", [
-            new Enum("Items", []),
+        $nbt = new CompoundTag("", [
+            new ListTag("Items", []),
             new StringTag("id", Tile::DROPPER),
             new IntTag("x", $this->x),
             new IntTag("y", $this->y),
@@ -123,8 +112,8 @@ class Dropper extends Solid
             if ($t instanceof TileDropper) {
                 $dropper = $t;
             } else {
-                $nbt = new Compound("", [
-                    new Enum("Items", []),
+                $nbt = new CompoundTag("", [
+                    new ListTag("Items", []),
                     new StringTag("id", Tile::DROPPER),
                     new IntTag("x", $this->x),
                     new IntTag("y", $this->y),
@@ -133,10 +122,7 @@ class Dropper extends Solid
                 $nbt->Items->setTagType(NBT::TAG_Compound);
                 $dropper = Tile::createTile(Tile::DROPPER, $this->getLevel(), $nbt);
             }
-
-            if ($player->isCreative() and $player->getServer()->limitedCreative) {
-                return true;
-            }
+            
             $player->addWindow($dropper->getInventory());
         }
 

@@ -12,6 +12,7 @@
 namespace pocketmine\utils;
 
 use LogLevel;
+use pocketmine\Server;
 use pocketmine\Thread;
 use pocketmine\Worker;
 use pocketmine\Translate;
@@ -240,7 +241,33 @@ class MainLogger extends \AttachableThreadedLogger{
 				$this->shouldSendMsg .= $color . "|" . $prefix . "|" . trim($message, "\r\n") . "\n";
 			}
 		}
-		$message = TextFormat::toANSI(TextFormat::AQUA . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§6》§r§9 " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+		switch(Server::getInstance()->getTheme()){
+			/*case "darkness":
+			Server::getInstance()->getThemeManager()->setTheme(Server::getInstance()->getThemeManager::DEFAULT_THEME);
+			$message = TextFormat::toANSI(TextFormat::GREEN . "<" . date("H:i:s", $now) . "> " . TextFormat::AQUA . "LOL §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			break;*/
+			case "classic":
+			$message = TextFormat::toANSI(TextFormat::AQUA . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			break;
+			case "dark":
+			$message = TextFormat::toANSI(TextFormat::GRAY . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§3》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			break;
+			case "light":
+			$message = TextFormat::toANSI(TextFormat::WHITE . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§f》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			break;
+			case "metal":
+			$message = TextFormat::toANSI(TextFormat::GRAY . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§f》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			break;
+			case "energy":
+			$message = TextFormat::toANSI(TextFormat::YELLOW . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			break;
+			case "uranium":
+			$message = TextFormat::toANSI(TextFormat::GREEN . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§e》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			break;
+			default;
+			$message = TextFormat::toANSI(TextFormat::AQUA . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			break;
+		}
 		$cleanMessage = TextFormat::clean($message);
 		if(!Terminal::hasFormattingCodes()){
 			echo $cleanMessage . PHP_EOL;
@@ -271,7 +298,8 @@ class MainLogger extends \AttachableThreadedLogger{
 	}
 	
 	public static function clear(){
-		echo chr(27) . chr(91) . 'H' . chr(27) . chr(91) . 'J';
+		//echo chr(27) . chr(91) . "H" . chr(27) . chr(91) . "J";
+		//echo str_repeat(" \n", 40);
 	}
 	
 	public function run(){

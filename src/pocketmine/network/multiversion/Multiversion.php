@@ -11,9 +11,9 @@
 
 namespace pocketmine\network\multiversion;
 
+use pocketmine\Player;
 use pocketmine\inventory\PlayerInventory;
 use pocketmine\inventory\PlayerInventory120;
-use pocketmine\Player;
 use pocketmine\network\protocol\ContainerSetContentPacket;
 use pocketmine\network\protocol\ContainerSetSlotPacket;
 use pocketmine\network\protocol\Info as ProtocolInfo;
@@ -23,11 +23,10 @@ use pocketmine\network\protocol\v120\InventorySlotPacket;
 abstract class Multiversion{
 	
 	public static function getPlayerInventory($player){
-		switch($player->getPlayerProtocol()){
-			case ProtocolInfo::PROTOCOL_120:
-				return new PlayerInventory120($player);
-			default;
-				return new PlayerInventory($player);
+		if($player->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
+			return new PlayerInventory120($player);
+		}else{
+			return new PlayerInventory($player);
 		}
 	}
 	
@@ -37,7 +36,7 @@ abstract class Multiversion{
 			$pk->inventoryID = $windowId;
 			$pk->items = $items;
 		}else{
-			$pk = new ContainerSetContentPacket();			
+			$pk = new ContainerSetContentPacket();
 			$pk->windowid = $windowId;
 			$pk->slots = $items;
 			$pk->eid = $player->getId();
@@ -53,7 +52,7 @@ abstract class Multiversion{
 			$pk->item = $item;
 			$pk->slot = $slot;
 		}else{
-			$pk = new ContainerSetSlotPacket();			
+			$pk = new ContainerSetSlotPacket();
 			$pk->windowid = $windowId;
 			$pk->item = $item;
 			$pk->slot = $slot;

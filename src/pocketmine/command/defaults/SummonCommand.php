@@ -17,9 +17,9 @@ use pocketmine\nbt\NBT;
 use pocketmine\Player;
 use pocketmine\entity\Entity;
 use pocketmine\utils\TextFormat;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 
 class SummonCommand extends VanillaCommand{
@@ -108,18 +108,18 @@ class SummonCommand extends VanillaCommand{
 		$entity = null;
 		$type = $args[0];
 		$level = ($sender instanceof Player) ? $sender->getLevel() : $sender->getServer()->getDefaultLevel();
-		$nbt = new Compound("", [
-			"Pos" => new Enum("Pos", [
+		$nbt = new CompoundTag("", [
+			"Pos" => new ListTag("Pos", [
 				new DoubleTag("", $x),
 				new DoubleTag("", $y),
 				new DoubleTag("", $z)
 			]),
-			"Motion" => new Enum("Motion", [
+			"Motion" => new ListTag("Motion", [
 				new DoubleTag("", 0),
 				new DoubleTag("", 0),
 				new DoubleTag("", 0)
 			]),
-			"Rotation" => new Enum("Rotation", [
+			"Rotation" => new ListTag("Rotation", [
 				new FloatTag("", lcg_value() * 360),
 				new FloatTag("", 0)
 			]),
@@ -127,7 +127,7 @@ class SummonCommand extends VanillaCommand{
 		
 		if(count($args) == 5 and $args[4]{0} == "{"){
 			$nbtExtra = NBT::parseJSON($args[4]);
-			$nbt = NBT::combineCompounds($nbt, $nbtExtra, true);
+			$nbt = NBT::combineCompoundTags($nbt, $nbtExtra, true);
 		}
 
 		$entity = Entity::createEntity($type, $level, $nbt);

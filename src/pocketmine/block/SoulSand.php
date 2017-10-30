@@ -21,7 +21,6 @@
 
 namespace pocketmine\block;
 
-
 use pocketmine\item\Tool;
 use pocketmine\math\AxisAlignedBB;
 
@@ -56,5 +55,4 @@ class SoulSand extends Solid{
 			$this->z + 1
 		);
 	}
-
 }

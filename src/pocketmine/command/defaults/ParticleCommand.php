@@ -11,10 +11,10 @@
 
 namespace pocketmine\command\defaults;
 
+use pocketmine\item\Item;
 use pocketmine\block\Block;
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
-use pocketmine\item\Item;
 use pocketmine\level\particle\AngryVillagerParticle;
 use pocketmine\level\particle\BubbleParticle;
 use pocketmine\level\particle\BlockForceFieldParticle;
@@ -44,9 +44,9 @@ use pocketmine\level\particle\TerrainParticle;
 use pocketmine\level\particle\WaterDripParticle;
 use pocketmine\level\particle\WaterParticle;
 use pocketmine\math\Vector3;
-use pocketmine\Player;
 use pocketmine\utils\Random;
 use pocketmine\utils\TextFormat;
+use pocketmine\Player;
 
 class ParticleCommand extends VanillaCommand{
 

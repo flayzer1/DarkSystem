@@ -12,13 +12,13 @@
 namespace pocketmine\tile;
 
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 
 class CommandBlock extends Spawnable{
 	
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		if(!isset($nbt->command) or !($nbt->command instanceof IntTag)){
 			$nbt->command = new IntTag("command", null);
 		}
@@ -36,7 +36,7 @@ class CommandBlock extends Spawnable{
 	}
 	
 	public function getSpawnCompound(){
-		return new Compound("", [
+		return new CompoundTag("", [
 			new StringTag("id", Tile::COMMAND_BLOCK),
 			new IntTag("x", (int) $this->x),
 			new IntTag("y", (int) $this->y),

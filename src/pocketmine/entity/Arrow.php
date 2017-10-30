@@ -14,7 +14,7 @@ namespace pocketmine\entity;
 use pocketmine\level\Level;
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\particle\CriticalParticle;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\Network;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
@@ -32,7 +32,7 @@ class Arrow extends Projectile{
 	protected $damage = 2;
 	protected $isCritical;
 	
-	public function __construct(Level $level, Compound $nbt, Entity $shootingEntity = null, $critical = false){
+	public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, $critical = false){
 		$this->isCritical = (bool) $critical;
 		
 		parent::__construct($level, $nbt, $shootingEntity);
@@ -81,6 +81,7 @@ class Arrow extends Projectile{
 	
 	public function getBoundingBox(){
 		$bb = clone parent::getBoundingBox();
+		
 		return $bb->expand(1, 1, 1);
 	}
 	

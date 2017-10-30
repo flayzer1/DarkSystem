@@ -14,14 +14,14 @@ namespace pocketmine\tile;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\level\format\FullChunk;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 
 class FlowerPot extends Spawnable{
 	
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		if(!isset($nbt->Item)){
 			$nbt->item = new ShortTag("item", 0);
 		}
@@ -48,7 +48,7 @@ class FlowerPot extends Spawnable{
 			case Item::RED_MUSHROOM:
 			case Item::CACTUS:
 				return true;
-			default:
+				default;
 				return false;
 		}
 	}
@@ -75,7 +75,7 @@ class FlowerPot extends Spawnable{
 	}
 	
 	public function getSpawnCompound(){
-		return new Compound("", [
+		return new CompoundTag("", [
 			new StringTag("id", Tile::FLOWER_POT),
 			new IntTag("x", (int) $this->x),
 			new IntTag("y", (int) $this->y),

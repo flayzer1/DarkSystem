@@ -23,7 +23,7 @@ namespace pocketmine\event\player;
 
 use pocketmine\event\Cancellable;
 use pocketmine\event\Event;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Server;
 
 class PlayerDataSaveEvent extends Event implements Cancellable{
@@ -35,23 +35,23 @@ class PlayerDataSaveEvent extends Event implements Cancellable{
 	/** @var string */
 	protected $playerName;
 
-	public function __construct(Compound $nbt, $playerName){
+	public function __construct(CompoundTag $nbt, $playerName){
 		$this->data = $nbt;
 		$this->playerName = $playerName;
 	}
 
 	/**
-	 * Returns the data to be written to disk as a Compound
-	 * @return Compound
+	 * Returns the data to be written to disk as a CompoundTag
+	 * @return CompoundTag
 	 */
 	public function getSaveData(){
 		return $this->data;
 	}
 
 	/**
-	 * @param Compound $data
+	 * @param CompoundTag $data
 	 */
-	public function setSaveData(Compound $data){
+	public function setSaveData(CompoundTag $data){
 		$this->data = $data;
 	}
 

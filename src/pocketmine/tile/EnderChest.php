@@ -11,14 +11,14 @@
 
 namespace pocketmine\tile;
 
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 
 class EnderChest extends Spawnable{
     
     public function getSpawnCompound(){
-        $compound = new Compound("", [
+        $c = new CompoundTag("", [
             new StringTag("id", Tile::ENDER_CHEST),
             new IntTag("x", (int) $this->x),
             new IntTag("y", (int) $this->y),
@@ -26,10 +26,10 @@ class EnderChest extends Spawnable{
         ]);
 
 		if($this->hasName()){
-			$compound->CustomName = $this->namedtag->CustomName;
+			$c->CustomName = $this->namedtag->CustomName;
 		}
 
-		return $compound;
+		return $c;
 	}
     
     public function hasName(){

@@ -16,7 +16,7 @@ use pocketmine\level\format\Chunk;
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\utils\ChunkException;
@@ -67,32 +67,8 @@ abstract class Tile extends Position{
 	
 	public $tickTimer;
 	
-	public static function init(){
-		Tile::registerTile(ArmorStand::class);
-		Tile::registerTile(Banner::class);
-		Tile::registerTile(Beacon::class);
-		Tile::registerTile(Bed::class);
-		Tile::registerTile(BrewingStand::class);
-		Tile::registerTile(Cauldron::class);
-		Tile::registerTile(Chest::class);
-		Tile::registerTile(CommandBlock::class);
-		Tile::registerTile(Dispenser::class);
-		Tile::registerTile(DLDetector::class);
-		Tile::registerTile(Dropper::class);
-		Tile::registerTile(EnchantTable::class);
-		Tile::registerTile(EnderChest::class);
-		Tile::registerTile(FlowerPot::class);
-		Tile::registerTile(Furnace::class);
-		Tile::registerTile(Hopper::class);
-		Tile::registerTile(ItemFrame::class);
-		Tile::registerTile(Jukebox::class);
-		Tile::registerTile(MobSpawner::class);
-		Tile::registerTile(Sign::class);
-		Tile::registerTile(Skull::class);
-	}
-	
 	public static function createTileFromPosition($type, Position $pos, ...$args){
-		$nbt = new Compound("", [
+		$nbt = new CompoundTag("", [
 			new StringTag("id", $type),
 			new IntTag("x", (int) $pos->x),
 			new IntTag("y", (int) $pos->y),
@@ -102,7 +78,7 @@ abstract class Tile extends Position{
 		return Tile::createTile($type, $pos->level, $nbt, ...$args);
 	}
 	
-	public static function createTile($type, Level $level, Compound $nbt, ...$args){
+	public static function createTile($type, Level $level, CompoundTag $nbt, ...$args){
 		if(isset(Tile::$knownTiles[$type])){
 			$class = Tile::$knownTiles[$type];
 			return new $class($level, $nbt, ...$args);
@@ -126,7 +102,7 @@ abstract class Tile extends Position{
 		return Tile::$shortNames[static::class];
 	}
 
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		if($level === null || $level->getProvider() === null){
 			throw new ChunkException("Invalid garbage Chunk/Level given to Tile");
 		}

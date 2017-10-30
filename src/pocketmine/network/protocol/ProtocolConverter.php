@@ -31,5 +31,7 @@ interface ProtocolConverter{
 	const PROTOCOL_136 = 136;
 	const PROTOCOL_137 = 137;
 	const PROTOCOL_138 = 138;
+	const PROTOCOL_139 = 139;
+	const PROTOCOL_140 = 140;
 	
 }

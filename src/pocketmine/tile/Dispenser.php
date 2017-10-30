@@ -24,8 +24,8 @@ use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\entity\Item as ItemEntity;
-use pocketmine\nbt\tag\Compound;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 
@@ -33,11 +33,11 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 	
 	protected $inventory;
 
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		parent::__construct($level, $nbt);
 		$this->inventory = new DispenserInventory($this);
-		if(!isset($this->namedtag->Items) or !($this->namedtag->Items instanceof Enum)){
-			$this->namedtag->Items = new Enum("Items", []);
+		if(!isset($this->namedtag->Items) or !($this->namedtag->Items instanceof ListTag)){
+			$this->namedtag->Items = new ListTag("Items", []);
 			$this->namedtag->Items->setTagType(NBT::TAG_Compound);
 		}
 		for($i = 0; $i < $this->getSize(); ++$i){
@@ -56,7 +56,7 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 	}
 
 	public function saveNBT(){
-		$this->namedtag->Items = new Enum("Items", []);
+		$this->namedtag->Items = new ListTag("Items", []);
 		$this->namedtag->Items->setTagType(NBT::TAG_Compound);
 		for($index = 0; $index < $this->getSize(); ++$index){
 			$this->setItem($index, $this->inventory->getItem($index));
@@ -195,21 +195,21 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 			$motion = $this->getMotion();
 			$needItem = Item::get($item->getId(), $item->getDamage());
 			$f = 1.5;
-			$nbt = new Compound("", [
-				"Pos" => new Enum("Pos", [
-							new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
-							new DoubleTag("", $this->y + ($motion[1] > 0 ? $motion[1] : 0.5)),
-							new DoubleTag("", $this->z + $motion[2] * 2 + 0.5)
-						]),
-						"Motion" => new Enum("Motion", [
-							new DoubleTag("", $motion[0]),
-							new DoubleTag("", $motion[1]),
-							new DoubleTag("", $motion[2])
-						]),
-						"Rotation" => new Enum("Rotation", [
-							new FloatTag("", lcg_value() * 360),
-							new FloatTag("", 0)
-						]),
+			$nbt = new CompoundTag("", [
+				"Pos" => new ListTag("Pos", [
+					new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
+					new DoubleTag("", $this->y + ($motion[1] > 0 ? $motion[1] : 0.5)),
+					new DoubleTag("", $this->z + $motion[2] * 2 + 0.5)
+				]),
+				"Motion" => new ListTag("Motion", [
+					new DoubleTag("", $motion[0]),
+					new DoubleTag("", $motion[1]),
+					new DoubleTag("", $motion[2])
+				]),
+				"Rotation" => new ListTag("Rotation", [
+					new FloatTag("", lcg_value() * 360),
+					new FloatTag("", 0)
+				]),
 			]);
 			switch($needItem->getId()){
 				case Item::ARROW:
@@ -248,7 +248,7 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 	}
 
 	public function getSpawnCompound(){
-		$c = new Compound("", [
+		$c = new CompoundTag("", [
 			new StringTag("id", Tile::DISPENSER),
 			new IntTag("x", (int) $this->x),
 			new IntTag("y", (int) $this->y),

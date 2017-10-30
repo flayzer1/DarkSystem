@@ -90,54 +90,54 @@ class ChunkGenerator extends Worker{
 	}
 
 	protected function doChunk($data){
-		$chunkData120 = '';
-		if(isset($data['isAnvil']) && $data['isAnvil'] == true){
-			$chunkData = chr(count($data['chunk']['sections']));
-			$chunkData120 = chr(count($data['chunk']['sections']));
-			foreach($data['chunk']['sections'] as $y => $sections){
+		$chunkData120 = "";
+		if(isset($data["isAnvil"]) && $data["isAnvil"] == true){
+			$chunkData = chr(count($data["chunk"]["sections"]));
+			$chunkData120 = chr(count($data["chunk"]["sections"]));
+			foreach($data["chunk"]["sections"] as $y => $sections){
 				$chunkData .= chr(0);
 				$chunkData120 .= chr(0);
-				if($sections['empty'] == true){
+				if($sections["empty"] == true){
 					$chunkData .= str_repeat("\x00", 10240);
 					$chunkData120 .= str_repeat("\x00", 6144);
 				}else{
-					if(isset($data['isSorted']) && $data['isSorted'] == true){
-						$blockData = $sections['blocks'] . $sections['data'];
-						$lightData = $sections['skyLight'] . $sections['blockLight'];
+					if(isset($data["isSorted"]) && $data["isSorted"] == true){
+						$blockData = $sections["blocks"] . $sections["data"];
+						$lightData = $sections["skyLight"] . $sections["blockLight"];
 					}else{
-						$blockData = $this->sortData($sections['blocks']) . $this->sortHalfData($sections['data']);
-						$lightData = $this->sortHalfData($sections['skyLight']) . $this->sortHalfData($sections['blockLight']);
+						$blockData = $this->sortData($sections["blocks"]) . $this->sortHalfData($sections["data"]);
+						$lightData = $this->sortHalfData($sections["skyLight"]) . $this->sortHalfData($sections["blockLight"]);
 					}
-					//$blockData = $this->sortData($sections['blocks']) . $this->sortHalfData($sections['data']);
-					//$lightData = $this->sortHalfData($sections['skyLight']) . $this->sortHalfData($sections['blockLight']);
+					//$blockData = $this->sortData($sections["blocks"]) . $this->sortHalfData($sections["data"]);
+					//$lightData = $this->sortHalfData($sections["skyLight"]) . $this->sortHalfData($sections["blockLight"]);
 					$chunkData .= $blockData . $lightData;
 					$chunkData120 .= $blockData;
 				}
 			}
 			
-			$chunkData .= $data['chunk']['heightMap'] .
-				$data['chunk']['biomeColor'] .
+			$chunkData .= $data["chunk"]["heightMap"] .
+				$data["chunk"]["biomeColor"] .
 				Binary::writeLInt(0) .
-				$data['tiles'];		
-			$chunkData120 .= $data['chunk']['heightMap'] .
-				$data['chunk']['biomeColor'] .
+				$data["tiles"];
+			$chunkData120 .= $data["chunk"]["heightMap"] .
+				$data["chunk"]["biomeColor"] .
 				Binary::writeLInt(0) .
-				$data['tiles'];
+				$data["tiles"];
 		}else{
-			$blockIdArray = $data['blocks'];	
-			$blockDataArray = $data['data'];
-			$skyLightArray = $data['skyLight'];	
-			$blockLightArray = $data['blockLight'];
+			$blockIdArray = $data["blocks"];
+			$blockDataArray = $data["data"];
+			$skyLightArray = $data["skyLight"];
+			$blockLightArray = $data["blockLight"];
 
 			$countBlocksInChunk = 8;
-			$chunkData = chr($countBlocksInChunk);		
-			$chunkData120 = chr($countBlocksInChunk);		
+			$chunkData = chr($countBlocksInChunk);
+			$chunkData120 = chr($countBlocksInChunk);
 			
 			for($blockIndex = 0; $blockIndex < $countBlocksInChunk; $blockIndex++){
-				$blockIdData = '';
-				$blockDataData = '';
-				$skyLightData = '';
-				$blockLightData = '';
+				$blockIdData = "";
+				$blockDataData = "";
+				$skyLightData = "";
+				$blockLightData = "";
 				for($i = 0; $i < 256; $i++){
 					$startIndex = ($blockIndex + ($i << 3)) << 3;
 					$blockIdData .= substr($blockIdArray, $startIndex << 1, 16);
@@ -150,25 +150,25 @@ class ChunkGenerator extends Worker{
 				$chunkData120 .= chr(0) . $blockIdData . $blockDataData;
 			}
 			
-			$chunkData .= $data['heightMap'] .
-				$data['biomeColor'] .
+			$chunkData .= $data["heightMap"] .
+				$data["biomeColor"] .
 				Binary::writeLInt(0) .
-				$data['tiles'];		
-			$chunkData120 .= $data['heightMap'] .
-				$data['biomeColor'] .
+				$data["tiles"];
+			$chunkData120 .= $data["heightMap"] .
+				$data["biomeColor"] .
 				Binary::writeLInt(0) .
-				$data['tiles'];
+				$data["tiles"];
 		}
 		
 		$result = [];
-		$result['chunkX'] = $data['chunkX'];
-		$result['chunkZ'] = $data['chunkZ'];
-		$protocols = isset($data['protocols']) ? $data['protocols'] : ChunkGenerator::SUPPORTED_PROTOCOLS;
-		$subClientsId = isset($data['subClientsId']) ? $data['subClientsId'] : [0];
+		$result["chunkX"] = $data["chunkX"];
+		$result["chunkZ"] = $data["chunkZ"];
+		$protocols = isset($data["protocols"]) ? $data["protocols"] : ChunkGenerator::SUPPORTED_PROTOCOLS;
+		$subClientsId = isset($data["subClientsId"]) ? $data["subClientsId"] : [0];
 		foreach($protocols as $protocol){
 			$pk = new FullChunkDataPacket();
-			$pk->chunkX = $data['chunkX'];
-			$pk->chunkZ = $data['chunkZ'];
+			$pk->chunkX = $data["chunkX"];
+			$pk->chunkZ = $data["chunkZ"];
 			$pk->order = FullChunkDataPacket::ORDER_COLUMNS;
 			if($protocol >= ProtocolInfo::PROTOCOL_120){
 				$pk->data = $chunkData120;

@@ -11,41 +11,72 @@
 
 namespace pocketmine\network\protocol;
 
+use pocketmine\network\protocol\types\PlayerPermissions;
+
 class AdventureSettingsPacket extends PEPacket{
 	
 	const NETWORK_ID = Info::ADVENTURE_SETTINGS_PACKET;
 	const PACKET_NAME = "ADVENTURE_SETTINGS_PACKET";
 
-	const ACTION_FLAG_PROHIBIT_ALL = 0;
-	const ACTION_FLAG_BUILD_AND_MINE = 1;
-	const ACTION_FLAG_DOORS_AND_SWITCHES = 2;
-	const ACTION_FLAG_OPEN_CONTAINERS = 4;
-	const ACTION_FLAG_ATTACK_PLAYERS = 8;
-	const ACTION_FLAG_ATTACK_MOBS = 16;
-	const ACTION_FLAG_OP = 32;
-	const ACTION_FLAG_TELEPORT = 64;
-	const ACTION_FLAG_DEFAULT_LEVEL_PERMISSIONS = 128;
-	const ACTION_FLAG_ALLOW_ALL = 511;
+	const PERMISSION_NORMAL = 0;
+	const PERMISSION_OPERATOR = 1;
+	const PERMISSION_HOST = 2;
+	const PERMISSION_AUTOMATION = 3;
+	const PERMISSION_ADMIN = 4;
+
+	const WORLD_IMMUTABLE = 1;
+	const NO_PVP = 2;
+	const NO_PVM = 4;
+	const NO_MVP = 8;
+	const NO_EVP = 16;
+	const AUTO_JUMP = 32;
+	const ALLOW_FLIGHT = 64;
+	const NO_CLIP = 128;
+	const FLYING = 512;
+	const MUTED = 1024;
 	
-	const PERMISSION_LEVEL_VISITOR = 0;
-	const PERMISSION_LEVEL_MEMBER = 1;
-	const PERMISSION_LEVEL_OPERATOR = 2;
-	const PERMISSION_LEVEL_CUSTOM = 3;
+	const WORLD_BUILDER = 0x100;
+
+	const BUILD_AND_MINE = 1;
+	const DOORS_AND_SWITCHES = 2;
+	const OPEN_CONTAINERS = 4;
+	const ATTACK_PLAYERS = 8;
+	const ATTACK_MOBS = 16;
+	const OPERATOR = 32;
+	const TELEPORT = 64;
 	
-	public $flags = 0;
+	/*public $flags = 0;
 	public $actionPermissions = self::ACTION_FLAG_DEFAULT_LEVEL_PERMISSIONS;
 	public $permissionLevel = self::PERMISSION_LEVEL_MEMBER;
 	public $customStoredPermissions = 0;
-	public $userId = 0;
+	public $userId = 0;*/
+	
+	public $flags = 0;
+	public $commandPermission = self::PERMISSION_NORMAL;
+	public $abilities = -1;
+	public $playerPermission = PlayerPermissions::MEMBER;
+	public $customPermissions = 0;
+	public $eid;
 	
 	public function decode($playerProtocol){
 		$this->getHeader($playerProtocol);
 		$this->flags = $this->getVarInt();
+		$this->commandPermission = $this->getVarInt();
+		$this->abilities = $this->getVarInt();
+		$this->playerPermission = $this->getVarInt();
+		$this->customPermissions = $this->getVarInt();
+		$this->eid = $this->getLLong();
 	}
 
 	public function encode($playerProtocol){
 		$this->reset($playerProtocol);
 		$this->putVarInt($this->flags);
+		$this->putVarInt($this->commandPermission);
+		$this->putVarInt($this->abilities);
+		$this->putVarInt($this->playerPermission);
+		$this->putVarInt($this->customPermissions);
+		$this->putLLong($this->eid);
+		/*$this->putVarInt($this->flags);
 		$this->putVarInt(0);
 		switch($playerProtocol){
 			case Info::PROTOCOL_120:
@@ -59,6 +90,36 @@ class AdventureSettingsPacket extends PEPacket{
 				}
 				
 				break;
+		}*/
+	}
+	
+	public function setPlayerFlag($flag, $value = true){
+		if($value){
+			$this->flags |= $flag;
 		}
+	}
+	
+	public function getPlayerFlag($flag){
+		return ($this->flags & $flag) !== 0;
+	}
+	
+	public function setAbility($flag, $value = true){
+		if($value){
+			$this->abilities |= $flag;
+		}
+	}
+	
+	public function getAbility($flag){
+		return ($this->abilities & $flag) !== 0;
+	}
+	
+	public function setCustomPermission($flag, $value = true){
+		if($value){
+			$this->customPermissions |= $flag;
+		}
+	}
+	
+	public function getCustomPermission($flag){
+		return ($this->customPermissions & $flag) !== 0;
 	}
 }

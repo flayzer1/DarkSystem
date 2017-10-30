@@ -1,4 +1,5 @@
 <?php
+
 /*
  *
  *  ____            _        _   __  __ _                  __  __ ____  
@@ -24,7 +25,7 @@ use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
@@ -67,7 +68,7 @@ class FlowerPot extends Flowable{
 			return false;
 		}
 		$this->getLevel()->setBlock($block, $this, true, true);
-		$nbt = new Compound("", [
+		$nbt = new CompoundTag("", [
 			new StringTag("id", Tile::FLOWER_POT),
 			new IntTag("x", $block->x),
 			new IntTag("y", $block->y),

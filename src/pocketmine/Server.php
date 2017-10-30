@@ -12,9 +12,11 @@
 namespace pocketmine;
 
 use darksystem\DSPlayer;
+use darksystem\Registerer;
 use darksystem\DarkSystem;
 use pocketmine\block\Block;
 use pocketmine\ui\CustomUI;
+use darksystem\ThemeManager;
 use pocketmine\darkbot\DarkBot;
 use pocketmine\multicore\MultiCore;
 use pocketmine\darkbot\command\SpawnDarkBotCommand;
@@ -49,9 +51,9 @@ use pocketmine\metadata\LevelMetadataStore;
 use pocketmine\metadata\PlayerMetadataStore;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\LongTag;
@@ -674,7 +676,15 @@ class Server extends DarkSystem{
 	public function isUseEncrypt(){
 		return $this->isUseEncrypt;
 	}
-		
+	
+	public function getTheme(){
+		return $this->getThemeManager()->getTheme();
+	}
+	
+	public function getThemeManager(){
+		return $this->themeManager;
+	}
+	
 	public function getServerPublicKey(){
 		return $this->serverPublicKey;
 	}
@@ -749,20 +759,20 @@ class Server extends DarkSystem{
 		}
 		
 		$spawn = $this->getDefaultLevel()->getSafeSpawn();
-		$nbt = new Compound("", [
+		$nbt = new CompoundTag("", [
 			new LongTag("firstPlayed", floor(microtime(true) * 1000)),
 			new LongTag("lastPlayed", floor(microtime(true) * 1000)),
-			new Enum("Pos", [
+			new ListTag("Pos", [
 				new DoubleTag(0, $spawn->x),
 				new DoubleTag(1, $spawn->y),
 				new DoubleTag(2, $spawn->z)
 			]),
 			new StringTag("Level", $this->getDefaultLevel()->getName()),
-			new Enum("Inventory", []),
-			new Enum("EnderChestInventory", []),
-			new Enum("recipeBook", []),
-			new Compound("Achievements", []),
-			new Compound("EnderItems", []),
+			new ListTag("Inventory", []),
+			new ListTag("EnderChestInventory", []),
+			new ListTag("recipeBook", []),
+			new CompoundTag("Achievements", []),
+			new CompoundTag("EnderItems", []),
 			new IntTag("Score", 0),
 			//new IntTag("ShoulderEntityLeft", $player->getLeftShoulderEntity()),
 			//new IntTag("ShoulderEntityRight", $player->getRightShoulderEntity()),
@@ -770,12 +780,12 @@ class Server extends DarkSystem{
 			//new IntTag("ShoulderEntityRight", 0),
 			new IntTag("seenCredits", $this->isCreditsEnable()),
 			new IntTag("playerGameType", $this->getGamemode()),
-			new Enum("Motion", [
+			new ListTag("Motion", [
 				new DoubleTag(0, 0.0),
 				new DoubleTag(1, 0.0),
 				new DoubleTag(2, 0.0)
 			]),
-			new Enum("Rotation", [
+			new ListTag("Rotation", [
 				new FloatTag(0, 0.0),
 				new FloatTag(1, 0.0)
 			]),
@@ -796,7 +806,7 @@ class Server extends DarkSystem{
 		return $nbt;
 	}
 	
-	public function saveOfflinePlayerData($name, Compound $nbtTag, $async = false){
+	public function saveOfflinePlayerData($name, CompoundTag $nbtTag, $async = false){
 		$ev = new PlayerDataSaveEvent($nbtTag, $name);
 		$this->getPluginManager()->callEvent($ev);
 		
@@ -1258,16 +1268,6 @@ class Server extends DarkSystem{
 		return Server::$serverId;
 	}
 	
-	function curl($url){
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        return $response;
-    }
-
 	public static function microSleep($microseconds){
 		Server::$sleeper->synchronized(function($ms){
 			Server::$sleeper->wait($ms);
@@ -1328,8 +1328,9 @@ class Server extends DarkSystem{
 		$this->konsol = $knsol;
 		$this->filePath = $filePath;
 		$this->translate = new Translate($this);
-		$this->translate->prepareLang();
+		//$this->translate->prepareLang();
 		$this->dbot = new DarkBot($this);
+		$this->themeManager = new ThemeManager($this);
 		//$this->core = new MultiCore($this);
 		try{
 			if(Translate::checkTurkish() === "yes"){
@@ -1396,6 +1397,7 @@ class Server extends DarkSystem{
 						$setupLang = $langName;
 						break;
 					}
+					
 					if(file_exists($this->filePath . "src/pocketmine/resources/pocketmine_$setupLang.yml")){
 						$content1 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/pocketmine_$setupLang.yml");
 					}else{
@@ -1404,6 +1406,7 @@ class Server extends DarkSystem{
 				}else{
 					$content1 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/pocketmine_eng.yml");
 				}
+				
 				@file_put_contents($this->getDataPath() . "pocketmine.yml", $content1);
 			}
 			
@@ -1462,7 +1465,10 @@ class Server extends DarkSystem{
 				"save-player-data" => true,
 				"time-update" => true,
 				"online-mode" => false,
-				"use-encrypt" => false
+				"use-encrypt" => false,
+				"theme" => "classic",
+				"random-theme" => false,
+				"colorful-theme" => false
 			]);
 			}else{
 			$this->properties = new Config($this->getDataPath() . "server.properties", Config::PROPERTIES, [
@@ -1497,21 +1503,12 @@ class Server extends DarkSystem{
 				"save-player-data" => true,
 				"time-update" => true,
 				"online-mode" => false,
-				"use-encrypt" => false
+				"use-encrypt" => false,
+				"theme" => "classic",
+				"random-theme" => false,
+				"colorful-theme" => false
 			]);
 			}
-			
-			$dbotcheck = $this->dbot->check();
-			$dbotver = $this->getDarkBotVersion();
-			
-			$version = $this->getFormattedVersion();
-			$this->version = $version;
-			$mcpe = $this->getVersion();
-			$protocol = ProtocolInfo::CURRENT_PROTOCOL;
-			$build = ProtocolInfo::DARKSYSTEM_VERSION;
-			$tag = $this->getTag();
-			
-			$splash = $this->getSplash();
 			
 			if($this->getCurrentStatus() == "alpha" || $this->getCurrentStatus() == "beta"){
 				$this->konsol->directSend("§e<?php>");
@@ -1524,24 +1521,9 @@ class Server extends DarkSystem{
 				$this->konsol->directSend("\n" . "§" . mt_rand(1, 9) . "" . $random);
 			}
 			
-			$this->konsol->directSend("
+			$this->konsol->directSend($this->getLogo());
 			
-    §6______           _    _____           _                  
-    §c|  _  \         | |  /  ___|         | |                  
-    §6| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
-    §c| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
-    §6| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
-    §c|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
-                                 §6__/  |      
-                                 §c|___/            §dMCPE: $mcpe §a($protocol)
-                                                      §dDARKBOT: $dbotcheck (v$dbotver)
-      $splash
-                                      
-      §bDarkSystem $version ($build)  *$tag*                                                
-	
-			");
-			
-			if($dbotcheck = "✔"){
+			if($this->dbot->check() == "✔"){
 				$this->konsol->info($this->dbot->getStartupMessage());
 			}
 			
@@ -1670,6 +1652,7 @@ class Server extends DarkSystem{
 			}
 			
 			define("advanced_cache", $this->getProperty("settings.advanced-cache", true));
+			
 			if(\pocketmine\DEBUG >= 0){
 				@cli_set_process_title($this->getName() . " " . $this->getDarkSystemVersion());
 			}
@@ -1689,8 +1672,8 @@ class Server extends DarkSystem{
 			$this->consoleSender = new ConsoleCommandSender();
 			$this->cmdMap = new SimpleCommandMap($this);
 			
-			Entity::init();
-			Tile::init();
+			Registerer::registerAll();
+			
 			InventoryType::init();
 			Block::init();
 			Enchantment::init();
@@ -1771,7 +1754,7 @@ class Server extends DarkSystem{
 			if(!($this->getDefaultLevel() instanceof Level)){
 				$this->konsol->emergency($this->getLanguage()->translateString("pocketmine.level.defaultError"));
 				$this->forceShutdown();
-				return;
+				return false;
 			}
 		
 			/*if($this->netherEnabled){
@@ -1888,33 +1871,50 @@ class Server extends DarkSystem{
 		\gc_collect_cycles();
 	}
 	
-	protected function getSplash(){
-		$messages = [
-			"Fast!",
-			"Made by Code Editor",
-			"For MCPE!",
-			"Sponsored by DarkBot!",
-			"Clean!"
-		];
+	protected function getLogo(){
+		$dbotcheck = $this->dbot->check();
+		$dbotver = $this->getDarkBotVersion();
 		
-		$rand = array_rand($messages, 5);
-		switch(mt_rand(1, 3)){
-			case 1;
-			$result = "Test1";
-			break;
-			case 2;
-			$result = "Test2";
-			break;
-			case 3;
-			$result = "Test3";
-			break;
-			default;
-			$result = "DarkSystem";
-			break;
+		$version = $this->getFormattedVersion();
+		$this->version = $version;
+		$mcpe = $this->getVersion();
+		$protocol = ProtocolInfo::CURRENT_PROTOCOL;
+		$build = ProtocolInfo::DARKSYSTEM_VERSION;
+		$tag = $this->getTag();
+		
+		$splash = $this->getSplash();
+		
+		return $this->getThemeManager()->getLogoTheme($dbotcheck, $dbotver, $version, $mcpe, $protocol, $build, $tag, $splash);
+	}
+	
+	protected function getSplash(){
+		if(Translate::checkTurkish() === "yes"){
+			$messages = [
+				"Hızlı!",
+				"Kod Düzenleyicisi Tarafından Yapıldı!",
+				"MCPE İçin!",
+				"DarkBot Tarafından Destekleniyor!",
+				"Temiz!",
+				"Güvenli!"
+			];
+		}else{
+			$messages = [
+				"Fast!",
+				"Made by Code Editor!",
+				"For MCPE!",
+				"Sponsored by DarkBot!",
+				"Clean!",
+				"Safe!"
+			];
 		}
 		
-		//return $result;
-		return "";
+		$result = "§" . mt_rand(1, 9) . $messages[array_rand($messages)];
+		
+		if(strlen($result) > 15){
+			return str_repeat(" ", 4) . "\n" . $result;
+		}
+		
+		return $result;
 	}
 	
 	public function broadcastMessage($message, $recipients = null){

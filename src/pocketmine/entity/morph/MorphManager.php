@@ -16,10 +16,10 @@ use pocketmine\entity\morph\entities\MorphCreeper;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\Server;
 use pocketmine\Player;
@@ -38,14 +38,14 @@ class MorphManager{
     }
 
     public function createNBT($x, $y, $z, $yaw, $pitch){
-        $nbt = new Compound;
-        $nbt->Pos = new Enum("Pos", [
+        $nbt = new CompoundTag;
+        $nbt->Pos = new ListTag("Pos", [
             new DoubleTag("", $x),
             new DoubleTag("", $y),
             new DoubleTag("", $z)
         ]);
         
-        $nbt->Rotation = new Enum("Rotation", [
+        $nbt->Rotation = new ListTag("Rotation", [
             new FloatTag("", $yaw),
             new FloatTag("", $pitch)
         ]);

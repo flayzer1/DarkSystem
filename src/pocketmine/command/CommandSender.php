@@ -29,4 +29,5 @@ interface CommandSender extends Permissible{
 	 * @return string
 	 */
 	public function getName();
+	
 }

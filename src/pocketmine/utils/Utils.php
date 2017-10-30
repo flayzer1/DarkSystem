@@ -194,10 +194,11 @@ class Utils{
 		return Utils::$os;
 	}
 	
-	public static function checkMod(){
-		if(@file_exists("/sdcard/Android/data/net.zhuoweizhang.mcpelauncher/cache/http/journal")){
-			return true;
-		}
+	public static function checkMod($player){
+		//if(@file_exists("/sdcard/Android/data/net.zhuoweizhang.mcpelauncher/cache/http/journal")){
+		//if($player->gameId !== "MINECRAFTPE"){
+			//return true;
+		//}
 		
 		return false;
 	}

@@ -32,11 +32,12 @@ class AddPlayerPacket extends PEPacket{
 	public $item;
 	public $metadata;
 	public $links = [];
-	public $flags = 0;
+	
+	/*public $flags = 0;
 	public $commandPermission = 0;
 	public $actionPermissions = AdventureSettingsPacket::ACTION_FLAG_DEFAULT_LEVEL_PERMISSIONS;
 	public $permissionLevel = AdventureSettingsPacket::PERMISSION_LEVEL_MEMBER;
-	public $storedCustomPermissions = 0;
+	public $storedCustomPermissions = 0;*/
 	
 	public function decode($playerProtocol){
 		$this->getHeader($playerProtocol);
@@ -62,7 +63,7 @@ class AddPlayerPacket extends PEPacket{
 		$meta = Binary::writeMetadata($this->metadata, $playerProtocol);
 		$this->put($meta);
 		if($playerProtocol >= Info::PROTOCOL_120){
-			$this->putVarInt($this->flags);
+			/*$this->putVarInt($this->flags);
 			$this->putVarInt($this->commandPermission);
 			$this->putVarInt($this->actionPermissions);
 			$this->putVarInt($this->permissionLevel);
@@ -71,12 +72,12 @@ class AddPlayerPacket extends PEPacket{
 				$this->putLLong(-1 * (($this->eid + 1) >> 1));
 			}else{
 				$this->putLLong($this->eid >> 1);
-			}
+			}*/
 			$this->putVarInt(count($this->links));
 			foreach($this->links as $link){
-				$this->putVarInt($link['from']);
-				$this->putVarInt($link['to']);
-				$this->putByte($link['type']);
+				$this->putVarInt($link["from"]);
+				$this->putVarInt($link["to"]);
+				$this->putByte($link["type"]);
 				$this->putByte(0);
 			}
 		}

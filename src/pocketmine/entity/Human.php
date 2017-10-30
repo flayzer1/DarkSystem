@@ -18,22 +18,22 @@ use pocketmine\event\player\PlayerExperienceChangeEvent;
 use pocketmine\inventory\InventoryHolder;
 use pocketmine\inventory\PlayerInventory;
 use pocketmine\item\Item as ItemItem;
-use pocketmine\network\protocol\PlayerListPacket;
 use pocketmine\utils\UUID;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\Network;
 use pocketmine\network\protocol\AddPlayerPacket;
+use pocketmine\network\protocol\PlayerListPacket;
 use pocketmine\network\protocol\RemoveEntityPacket;
 use pocketmine\network\multiversion\Multiversion;
-use pocketmine\Player;
 use pocketmine\level\Level;
+use pocketmine\Player;
 
 class Human extends Creature implements ProjectileSource, InventoryHolder{
 	
@@ -147,12 +147,12 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 			if(isset($this->namedtag->NameTag)){
 				$this->setNameTag($this->namedtag["NameTag"]);
 			}
-			if(isset($this->namedtag->Skin) && $this->namedtag->Skin instanceof Compound){
+			if(isset($this->namedtag->Skin) && $this->namedtag->Skin instanceof CompoundTag){
 				$this->setSkin($this->namedtag->Skin["Data"], /*$this->namedtag->Skin["Name"], */$this->namedtag->Skin["Slim"] > 0);
 			}
 			$this->uuid = UUID::fromData($this->getId(), $this->getSkinData(), $this->getNameTag());
 		}
-		if(isset($this->namedtag->Inventory) && $this->namedtag->Inventory instanceof Enum){
+		if(isset($this->namedtag->Inventory) && $this->namedtag->Inventory instanceof ListTag){
 			foreach($this->namedtag->Inventory as $item){
 				if($item["Slot"] >= 0 && $item["Slot"] < 9){
 					$this->inventory->setHotbarSlotIndex($item["Slot"], isset($item["TrueSlot"]) ? $item["TrueSlot"] : -1);
@@ -177,7 +177,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 	public function saveNBT(){
 		parent::saveNBT();
 		
-		$this->namedtag->Inventory = new Enum("Inventory", []);
+		$this->namedtag->Inventory = new ListTag("Inventory", []);
 		$this->namedtag->Inventory->setTagType(NBT::TAG_Compound);
 		if($this->inventory !== null){
 			for($slot = 0; $slot < 9; ++$slot){

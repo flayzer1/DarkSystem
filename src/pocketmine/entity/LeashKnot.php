@@ -12,7 +12,7 @@
 namespace pocketmine\entity;
 
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
@@ -31,9 +31,10 @@ class LeashKnot extends Entity
 
     private $dropItem = true;
 
-    public function __construct(Level $level, Compound $nbt, bool $dropItem = true)
+    public function __construct(Level $level, CompoundTag $nbt, $dropItem = true)
     {
         parent::__construct($level, $nbt);
+        
         $this->dropItem = $dropItem;
     }
 

@@ -32,5 +32,5 @@ class ItemBlock extends Item{
 	public function getBlock(){
 		return $this->block;
 	}
-
+	
 }

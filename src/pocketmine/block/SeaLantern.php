@@ -53,5 +53,4 @@ class SeaLantern extends Transparent
             [Item::PRISMARINE_CRYSTALS, 0, 3],
         ];
     }
-
 }

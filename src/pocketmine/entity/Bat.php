@@ -14,7 +14,7 @@ namespace pocketmine\entity;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\network\protocol\AddEntityPacket;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 
 class Bat extends FlyingAnimal
@@ -41,7 +41,7 @@ class Bat extends FlyingAnimal
         parent::initEntity();
     }
 
-    public function __construct(Level $level, Compound $nbt)
+    public function __construct(Level $level, CompoundTag $nbt)
     {
         if(!isset($nbt->isResting)){
             $nbt->isResting = new ByteTag("isResting", 0);

@@ -15,10 +15,10 @@ use pocketmine\item\Item;
 use pocketmine\item\Tool;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
 use pocketmine\tile\Tile;
 
@@ -50,7 +50,7 @@ class StandingBanner extends Transparent{
 
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
 		if($face !== Vector3::SIDE_DOWN){
-			$nbt = new Compound("", [
+			$nbt = new CompoundTag("", [
 				new StringTag("id", Tile::BANNER),
 				new IntTag("x", $blockReplace->x),
 				new IntTag("y", $blockReplace->y),
@@ -66,7 +66,7 @@ class StandingBanner extends Transparent{
 				$this->getLevel()->setBlock($blockReplace, new WallBanner($this->meta), true);
 			}
 			
-			if(isset($item->getNamedTag()->Patterns) and ($item->getNamedTag()->Patterns instanceof Enum)){
+			if(isset($item->getNamedTag()->Patterns) and ($item->getNamedTag()->Patterns instanceof ListTag)){
 				$nbt->Patterns = $item->getNamedTag()->Patterns;
 			}
 			
@@ -101,9 +101,9 @@ class StandingBanner extends Transparent{
 		return [];
 	}
 
-	public function onBreak(Item $item, Player $player = null) : bool{
+	public function onBreak(Item $item, Player $player = null){
 		if(($tile = $this->level->getTile($this)) !== null) {
-			$this->level->dropItem($this, ItemFactory::get(Item::BANNER)->setNamedTag($tile->getCleanedNBT()));
+			$this->level->dropItem($this, Item::get(Item::BANNER)->setNamedTag($tile->getCleanedNBT()));
 		}
 		
 		return parent::onBreak($item, $player);

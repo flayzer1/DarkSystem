@@ -12,7 +12,7 @@
 namespace pocketmine\tile;
 
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
@@ -24,7 +24,7 @@ class Jukebox extends Spawnable{
     protected $record = MusicDisc::NO_RECORD;
     protected $recordItem;
 
-    public function __construct(Level $level, Compound $nbt){
+    public function __construct(Level $level, CompoundTag $nbt){
         if(isset($nbt->record)){
             $this->record = $nbt->record->getValue();
         }
@@ -63,7 +63,7 @@ class Jukebox extends Spawnable{
         $this->namedtag->recordItem = ($this->recordItem instanceof MusicDisc ? $this->recordItem->nbtSerialize() : (Item::get(0))->nbtSerialize());
     }
     
-    public function updateCompound(Compound $nbt, Player $player){
+    public function updateCompound(CompoundTag $nbt, Player $player){
         if($nbt["id"] !== Tile::JUKEBOX){
             return false;
         }
@@ -72,7 +72,7 @@ class Jukebox extends Spawnable{
     }
     
 	public function getSpawnCompound(){
-		return new Compound("", [
+		return new CompoundTag("", [
 			new StringTag("id", Tile::JUKEBOX),
 			new IntTag("x", (int) $this->x),
 			new IntTag("y", (int) $this->y),

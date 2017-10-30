@@ -14,7 +14,7 @@ namespace pocketmine\entity;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\level\Level;
 use pocketmine\level\sound\EndermanTeleportSound;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
@@ -32,7 +32,7 @@ class EnderPearl extends Projectile
 
     private $hasTeleportedShooter = false;
 
-    public function __construct(Level $level, Compound $nbt, Entity $shootingEntity = null)
+    public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null)
     {
         parent::__construct($level, $nbt, $shootingEntity);
     }

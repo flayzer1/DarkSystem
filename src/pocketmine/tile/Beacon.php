@@ -16,15 +16,19 @@ use pocketmine\inventory\InventoryHolder;
 use pocketmine\level\Level;
 use pocketmine\level\format\FullChunk;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 
 class Beacon extends Spawnable implements Nameable, InventoryHolder{
 	
+	const POWER_LEVEL_MAX = 4;
+	
 	private $inventory;
 	
-	public function __construct(Level $level, Compound $nbt){
+	protected $currentTick = 0;
+	
+	public function __construct(Level $level, CompoundTag $nbt){
 		if(!isset($nbt->primary)){
 			$nbt->primary = new IntTag("primary", 0);
 		}
@@ -36,6 +40,8 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder{
 		$this->inventory = new BeaconInventory($this);
 		
 		parent::__construct($level, $nbt);
+		
+		$this->scheduleUpdate();
 	}
 	
 	public function saveNBT(){
@@ -43,7 +49,7 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder{
 	}
 	
 	public function getSpawnCompound(){
-		$c = new Compound("", [
+		$c = new CompoundTag("", [
 			new StringTag("id", Tile::BEACON),
 			new ByteTag("isMovable", true),
 			new IntTag("x", (int)$this->x),
@@ -79,4 +85,79 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder{
 		return $this->inventory;
 	}
 	
+	public function updateCompoundTag(CompoundTag $nbt, Player $player){
+		if($nbt["id"] !== Tile::BEACON){
+			return false;
+		}
+		
+		$this->namedtag->primary = new IntTag("primary", $nbt["primary"]);
+		$this->namedtag->secondary = new IntTag("secondary", $nbt["secondary"]);
+		
+		return true;
+	}
+	
+	public function onUpdate(){
+		if($this->closed === true){
+			return false;
+		}
+		
+		if($this->currentTick++ % 100 != 0){
+			return true;
+		}
+
+		$level = $this->calculatePowerLevel();
+
+		$this->timings->startTiming();
+
+		$id = 0;
+
+		if($level > 0){
+			if(isset($this->namedtag->secondary) && $this->namedtag["primary"] != 0){
+				$id = $this->namedtag["primary"];
+			}else if(isset($this->namedtag->secondary) && $this->namedtag["secondary"] != 0){
+				$id = $this->namedtag["secondary"];
+			}
+			
+			if($id != 0){
+				$range = ($level + 1) * 10;
+				$effect = Effect::getEffect($id);
+				$effect->setDuration(10 * 30);
+				$effect->setAmplifier(0);
+				foreach($this->level->getPlayers() as $player){
+					if($this->distance($player) <= $range){
+						$player->addEffect($effect);
+					}
+				}
+			}
+		}
+
+		$this->lastUpdate = microtime(true);
+
+		$this->timings->stopTiming();
+
+		return true;
+	}
+	
+	protected function calculatePowerLevel(){
+		$tileX = $this->getFloorX();
+		$tileY = $this->getFloorY();
+		$tileZ = $this->getFloorZ();
+		for($powerLevel = 1; $powerLevel <= self::POWER_LEVEL_MAX; $powerLevel++){
+			$queryY = $tileY - $powerLevel;
+			for($queryX = $tileX - $powerLevel; $queryX <= $tileX + $powerLevel; $queryX++){
+				for($queryZ = $tileZ - $powerLevel; $queryZ <= $tileZ + $powerLevel; $queryZ++){
+					$testBlockId = $this->level->getBlockIdAt($queryX, $queryY, $queryZ);
+					if(
+						$testBlockId != Block::IRON_BLOCK &&
+						$testBlockId != Block::GOLD_BLOCK &&
+						$testBlockId != Block::EMERALD_BLOCK &&
+						$testBlockId != Block::DIAMOND_BLOCK
+					){
+						return $powerLevel - 1;
+					}
+				}
+			}
+		}
+		return self::POWER_LEVEL_MAX;
+	}
 }

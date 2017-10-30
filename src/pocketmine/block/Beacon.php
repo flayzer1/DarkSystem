@@ -1,10 +1,19 @@
 <?php
 
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
+
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\Player;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
@@ -13,7 +22,6 @@ use pocketmine\tile\Beacon as TileBeacon;
 
 class Beacon extends Transparent
 {
-
     protected $id = self::BEACON;
 
     public function __construct($meta = 0)
@@ -33,7 +41,7 @@ class Beacon extends Transparent
 
     public function getLightLevel()
     {
-        return 15;
+        return 10;
     }
 
     public function getResistance()
@@ -49,7 +57,7 @@ class Beacon extends Transparent
     public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null)
     {
         $this->getLevel()->setBlock($this, $this, true, true);
-        $nbt = new Compound("", [
+        $nbt = new CompoundTag("", [
             new StringTag("id", Tile::BEACON),
             new ByteTag("isMovable", (bool)false),
             new IntTag("primary", 0),
@@ -60,6 +68,7 @@ class Beacon extends Transparent
         ]);
         
         $pot = Tile::createTile(Tile::BEACON, $this->getLevel(), $nbt);
+        
         return true;
     }
 
@@ -76,7 +85,7 @@ class Beacon extends Transparent
             if ($t instanceof TileBeacon) {
                 $beacon = $t;
             } else {
-                $nbt = new Compound("", [
+                $nbt = new CompoundTag("", [
                     new StringTag("id", Tile::BEACON),
                     new ByteTag("isMovable", (bool)false),
                     new IntTag("primary", 0),

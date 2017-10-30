@@ -23,8 +23,6 @@ namespace pocketmine\nbt\tag;
 
 use pocketmine\nbt\NBT;
 
-#include <rules/NBT.h>
-
 class ByteTag extends NamedTag{
 
 	public function getType(){

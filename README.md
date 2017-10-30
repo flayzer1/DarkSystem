@@ -11,25 +11,34 @@
 You can download it [here](http://bit.do/darksystem_apk).<br>
 **NOTE:** Language of app is Turkish, does not support English. Will be added soon.<br>
 
+**If "onCommand" does not work, use "onCommand2" method on newer plugins.**
+
 # Features:
 - DarkSystem is **# 1** about speed & no-lag. (We think so)
 - Based on **old** PocketMine-MP for better performance and stability.
 - Loads chunks region-to-region. It uses less CPU resources & loads chunks fast.
+- Cached chunk loading (Loads chunks and levels with cache for speed.)
 - MobAI Support (So much animals and mobs can move & attack) (Support Attacking Movement)
 - Smooth Movement (Players does not glitch or go down (if not 1.2 :D) while moving and does not throw back.)
 - MCPE 1.2 Support (DarkSystem is compatible with MC: Bedrock Edition/Better together update)
 - Auto Updater (This is automatically updates DarkSystem from GitHub.) (!!!Not implemented yet!!!)
 - More Biomes & Advanced Generator (Support more biomes than others, loads level fast)
-- AntiBOT (Bot Protection) (Blocks join of MCPE Bots from same ip. Ex. MineBot)
+- Anti-BOT (Bot Protection) (Blocks joining of MCPE Bots from same ip. Ex. MineBot)
+- Anti-COOP Play (Like bot protection)
+- Themes! (You can change theme from **server.properties**. Available themes: classic, dark, light, metal, energy, uranium)
 - Ender Biome Support (No description :D)
+- **InventoryAPI!** (You can create customizable virtual inventories!) (**InventoryAPI::createInventory(...)**)
+- /ping Command (Allows to get quality of player's connection)
 - /xyz Command (Allows to get players position)
+- /createinv Command (Allows to open virtual inventories)
 - Morph/Disguise Support (You can transform to any mob with /morph command. Usage: /morph <mob>)
 - Extended Plugin API (It is an api called as DarkAPI :D lol) (Support Compound & CompoundTag etc.)
+- Compatible with newer plugins (API 3.x.x)
 - If you want to a cool and safe (Don't forget 'fast' :)) server, use DarkSystem! (Slogan by null) (lol)
 - Support **PIZZA!** (/givepizza [player] | If you write only /givepizza, gives pizza everyone. NOTE: Our pizzas does not contain harmful substances lol :D) (Pizza mark can be changed from advanced config.)
 - Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, XBOX offline mode warn. etc.)
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
-- Floating Text as Entity (On DarkSystem, floating text is not a particle, it is an entity. So it blocks floating text hack or others. Also dissappearing of floating text is impossible.)
+- Floating Text as Entity (On DarkSystem, floating text is not a particle, it is an entity. So it blocks floating text hack or others. Also dissappearing of floating texts is not possible.)
 - Auto Lag Cleaner (How does it works? It automatically removes items and arrows from ground without occuping CPU.)
 - Weather (Supports snow/rain/thunder)
 - CustomUI (Allows to create fully customizable menus, can be added by /addui) (only +1.2)
@@ -40,10 +49,10 @@ You can download it [here](http://bit.do/darksystem_apk).<br>
 - No junk tasks/threads on background. Anything cannot occupy the CPU resources and performance.
 - Zoom Support (indev) (Maybe useful for PvP servers. Simply write /zoom.)
 - World Teleporting (/world) (You can teleport to another world without a plugin, only with a simple command!)
-- TextUtils (Idea from MiNET, Code taken from Turanic. Allows to create more beautiful texts. Example, **TextUtils::center($message)** makes message in center.)
+- TextUtils (Idea from MiNET, code taken from Turanic. Allows to create more beautiful texts. Example, **TextUtils::center($message)** makes message in center.)
 - BlockLauncher join Blocking (indev) (If you hate hackers, this is for you. How to use? It is fully automatic. But not implemented yet. Does not work.)
 - Code is clean, fast and safe, coded as DarkSystem PHP code method.
-- More & Advanced Commands (/clear, /tpall, /clearchat /addui /zoom /world /morph /xyz /cave /summon /chunkinfo etc.)
+- More & Advanced Commands (/clear, /tpall, /clearchat /addui /zoom /world /morph /xyz /cave /summon /chunkinfo /ping /createinv etc.)
 - Advanced Config **(pocketmine_advanced.yml)**
 - DarkBot (Virtual Intelligent Bot; Can talk, help players, move etc.) (say "hi darkbot" in-game to test :))
 - Others:
@@ -84,9 +93,9 @@ You can download it [here](http://bit.do/darksystem_apk).<br>
 - DarkSystem's experience system does not work correctly. (Not so problem :D)
 
 # Known Bugs in 1.2:
-- Moving is glitchy. (Seen on Android OS)
+- Moving is glitchy. (Seen on Android OS & 32-bit machines)
 - Breaking block does not work.
-- AvailableCommandPackets is die on 1.2. (On 1.1 works perfect)
+- AvailableCommandPackets is die on 1.2. (On 1.1, works perfect)
 
 # Notes:
 - DarkSystem does not support PMAnvil map format, only support Anvil and McRegion.

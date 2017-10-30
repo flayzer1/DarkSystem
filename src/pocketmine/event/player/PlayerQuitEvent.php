@@ -23,10 +23,8 @@ namespace pocketmine\event\player;
 
 use pocketmine\Player;
 
-/**
- * Called when a player leaves the server
- */
 class PlayerQuitEvent extends PlayerEvent{
+	
 	public static $handlerList = null;
 
 	/** @var string */

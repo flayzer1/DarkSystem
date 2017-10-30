@@ -225,4 +225,5 @@ abstract class Generator{
 	public abstract function getName();
 
 	public abstract function getSpawn();
+	
 }

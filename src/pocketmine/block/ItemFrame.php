@@ -15,9 +15,7 @@ use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\level\sound\ItemFrameAddItemSound;
 use pocketmine\level\sound\ItemFrameRotateItemSound;
-use pocketmine\nbt\tag\{
-	ByteTag, Compound, FloatTag, IntTag, StringTag
-};
+use pocketmine\nbt\tag\{ByteTag, CompoundTag, FloatTag, IntTag, StringTag};
 use pocketmine\Player;
 use pocketmine\tile\ItemFrame as TileItemFrame;
 use pocketmine\tile\Tile;
@@ -40,7 +38,7 @@ class ItemFrame extends Flowable{
 	
 	public function onActivate(Item $item, Player $player = null){
 		if(!(($tile = $this->level->getTile($this)) instanceof TileItemFrame)){
-			$nbt = new Compound("", [
+			$nbt = new CompoundTag("", [
 				new StringTag("id", Tile::ITEM_FRAME),
 				new IntTag("x", $this->x),
 				new IntTag("y", $this->y),
@@ -114,7 +112,7 @@ class ItemFrame extends Flowable{
 		$this->meta = $faces[$face];
 		$this->level->setBlock($block, $this, true, true);
 
-		$nbt = new Compound("", [
+		$nbt = new CompoundTag("", [
 			new StringTag("id", Tile::ITEM_FRAME),
 			new IntTag("x", $block->x),
 			new IntTag("y", $block->y),

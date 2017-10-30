@@ -33,6 +33,8 @@ use pocketmine\block\Sugarcane;
 use pocketmine\block\Wheat;
 use pocketmine\entity\Arrow;
 use pocketmine\entity\Entity;
+use pocketmine\entity\XPOrb;
+use pocketmine\entity\Lightning;
 use pocketmine\entity\FloatingText;
 use pocketmine\entity\Item as DroppedItem;
 use pocketmine\event\block\BlockBreakEvent;
@@ -66,11 +68,12 @@ use pocketmine\metadata\BlockMetadataStore;
 use pocketmine\metadata\Metadatable;
 use pocketmine\metadata\MetadataValue;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\Network;
@@ -1055,14 +1058,17 @@ class Level implements ChunkManager, Metadatable{
 		if($pos->y < 0 || $pos->y >= $this->getMaxY()){
 			return false;
 		}
+		
 		unset($this->blockCache[$index = Level::blockHash($pos->x, $pos->y, $pos->z)]);
 
 		if($this->getChunk($pos->x >> 4, $pos->z >> 4, true)->setBlock($pos->x & 0x0f, $pos->y & $this->getYMask(), $pos->z & 0x0f, $block->getId(), $block->getDamage())){
 			if(!($pos instanceof Position)){
 				$pos = $this->temporalPosition->setComponents($pos->x, $pos->y, $pos->z);
 			}
+			
 			$block->position($pos);
 			$index = Level::chunkHash($pos->x >> 4, $pos->z >> 4);
+			
 			if(advanced_cache == true){
 				Cache::remove("world:" . $this->getId() . ":" . $index);
 			}
@@ -1073,16 +1079,20 @@ class Level implements ChunkManager, Metadatable{
 				if(!($pos instanceof Position)){
 					$pos = $this->temporalPosition->setComponents($pos->x, $pos->y, $pos->z);
 				}
+				
 				$block->position($pos);
+				
 				if(!isset($this->changedBlocks[$index])){
 					$this->changedBlocks[$index] = [];
 					$this->changedCount[$index] = 0;
 				}
+				
 				$Y = $pos->y >> 4;
 				if(!isset($this->changedBlocks[$index][$Y])){
 					$this->changedBlocks[$index][$Y] = [];
 					$this->changedCount[$index] |= 1 << $Y;
 				}
+				
 				$this->changedBlocks[$index][$Y][] = clone $block;
 			}
 
@@ -1119,19 +1129,19 @@ class Level implements ChunkManager, Metadatable{
 				return;
 			}
 			
-			$itemEntity = Entity::createEntity("Item", $this, new Compound("", [
-				"Pos" => new Enum("Pos", [
+			$itemEntity = Entity::createEntity("Item", $this, new CompoundTag("", [
+				"Pos" => new ListTag("Pos", [
 					new DoubleTag("", $source->getX()),
 					new DoubleTag("", $source->getY()),
 					new DoubleTag("", $source->getZ())
 				]),
 
-				"Motion" => new Enum("Motion", [
+				"Motion" => new ListTag("Motion", [
 					new DoubleTag("", $motion->x),
 					new DoubleTag("", $motion->y),
 					new DoubleTag("", $motion->z)
 				]),
-				"Rotation" => new Enum("Rotation", [
+				"Rotation" => new ListTag("Rotation", [
 					new FloatTag("", lcg_value() * 360),
 					new FloatTag("", 0)
 				]),
@@ -1153,30 +1163,32 @@ class Level implements ChunkManager, Metadatable{
 	 * @return null|Entity
 	 */
 	public function addFloatingText(Vector3 $pos, $text, $title = ""){
-		$entity = Entity::createEntity("FloatingText", $this, new Compound("", [
-			new Enum("Pos", [
+		$entity = Entity::createEntity("FloatingText", $this, new CompoundTag("", [
+			new ListTag("Pos", [
 				new DoubleTag("", $pos->x),
 				new DoubleTag("", $pos->y),
 				new DoubleTag("", $pos->z)
 			]),
-			new Enum("Motion", [
+			new ListTag("Motion", [
 				new DoubleTag("", 0),
 				new DoubleTag("", 0),
 				new DoubleTag("", 0)
 			]),
-			new Enum("Rotation", [
+			new ListTag("Rotation", [
 				new FloatTag("", 0),
 				new FloatTag("", 0)
 			])
 		]));
 		
 		assert($entity !== null);
+		
 		if($entity instanceof FloatingText){
 			$entity->setTitle($title);
 			$entity->setText($text);
 		}
 		
 		$entity->spawnToAll();
+		
 		return $entity;
 	}
 	
@@ -1384,7 +1396,7 @@ class Level implements ChunkManager, Metadatable{
 			return false;
 		}
 		if($hand->getId() === Item::SIGN_POST || $hand->getId() === Item::WALL_SIGN){
-			$tile = Tile::createTile("Sign", $this, new Compound(false, [
+			$tile = Tile::createTile("Sign", $this, new CompoundTag(false, [
 				"id" => new StringTag("id", Tile::SIGN),
 				"x" => new IntTag("x", $block->x),
 				"y" => new IntTag("y", $block->y),
@@ -1730,7 +1742,7 @@ class Level implements ChunkManager, Metadatable{
 				unset($this->chunkPopulationLock[Level::chunkHash($x + $xx, $z + $zz)]);
 			}
 		}
-		unset($this->chunkPopulationQueue[$index]);	
+		unset($this->chunkPopulationQueue[$index]);
 		unset($this->chunkGenerationQueue[$index]);
 		
 		$chunk->setProvider($this->provider);
@@ -1761,7 +1773,86 @@ class Level implements ChunkManager, Metadatable{
 		
 		$chunk->setChanged();
 	}
+	
+	/**
+	 * @param int $x
+	 * @param int $y
+	 * @param int $z
+	 * @param Player $p
+	 */
+	public function sendLighting($x, $y, $z, Player $player){
+		$pk = new AddEntityPacket();
+		$pk->type = Lightning::NETWORK_ID;
+		$pk->eid = mt_rand(10000000, 100000000);
+		$pk->x = $x;
+		$pk->y = $y;
+		$pk->z = $z;
+		$pk->metadata = array(3, 3, 3, 3);
+		$player->dataPacket($pk);
+	}
 
+	/**
+	 * @param Vector3 $pos
+	 * @return Lightning
+	 */
+	public function spawnLightning(Vector3 $pos){
+		$nbt = new CompoundTag("", [
+			"Pos" => new ListTag("Pos", [
+				new DoubleTag("", $pos->getX()),
+				new DoubleTag("", $pos->getY()),
+				new DoubleTag("", $pos->getZ())
+			]),
+			"Motion" => new ListTag("Motion", [
+				new DoubleTag("", 0),
+				new DoubleTag("", 0),
+				new DoubleTag("", 0)
+			]),
+			"Rotation" => new ListTag("Rotation", [
+				new FloatTag("", 0),
+				new FloatTag("", 0)
+			]),
+		]);
+
+		$lightning = new Lightning($this, $nbt);
+		$lightning->spawnToAll();
+
+		return $lightning;
+	}
+	
+	/**
+	 * @param Vector3 $pos
+	 * @param int $exp
+	 * @return bool|XPOrb
+	 */
+	public function spawnXPOrb(Vector3 $pos, $exp = 1){
+		if($exp > 0){
+			$nbt = new CompoundTag("", [
+				"Pos" => new ListTag("Pos", [
+					new DoubleTag("", $pos->getX()),
+					new DoubleTag("", $pos->getY() + 0.5),
+					new DoubleTag("", $pos->getZ())
+				]),
+				"Motion" => new ListTag("Motion", [
+					new DoubleTag("", 0),
+					new DoubleTag("", 0),
+					new DoubleTag("", 0)
+				]),
+				"Rotation" => new ListTag("Rotation", [
+					new FloatTag("", 0),
+					new FloatTag("", 0)
+				]),
+				"Experience" => new LongTag("Experience", $exp),
+			]);
+
+			$expOrb = new XPOrb($this, $nbt);
+			$expOrb->spawnToAll();
+
+			return $expOrb;
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * @param int $x
 	 * @param int $z
@@ -2394,7 +2485,7 @@ class Level implements ChunkManager, Metadatable{
 			return false;
 		}
 		$index = Level::chunkHash($x, $z);
-		$this->chunkSendTasks[$index] = true;		
+		$this->chunkSendTasks[$index] = true;
 		$this->chunkSendQueue[$index] = [];
 		$protocols = [];
 		$subClientsId = [];

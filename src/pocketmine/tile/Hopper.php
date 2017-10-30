@@ -20,9 +20,9 @@ use pocketmine\level\Level;
 use pocketmine\level\format\FullChunk;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
 
 class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
@@ -35,7 +35,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 	/** @var bool */
 	protected $isPowered = false;
 
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		if(!isset($nbt->TransferCooldown) or !($nbt->TransferCooldown instanceof IntTag)){
 			$nbt->TransferCooldown = new IntTag("TransferCooldown", 0);
 		}
@@ -44,8 +44,8 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 		
 		$this->inventory = new HopperInventory($this);
 		
-		if(!isset($this->namedtag->Items) or !($this->namedtag->Items instanceof Enum)){
-			$this->namedtag->Items = new Enum("Items", []);
+		if(!isset($this->namedtag->Items) or !($this->namedtag->Items instanceof ListTag)){
+			$this->namedtag->Items = new ListTag("Items", []);
 			$this->namedtag->Items->setTagType(NBT::TAG_Compound);
 		}
 		
@@ -239,7 +239,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 	}
 
 	public function saveNBT(){
-		$this->namedtag->Items = new Enum("Items", []);
+		$this->namedtag->Items = new ListTag("Items", []);
 		$this->namedtag->Items->setTagType(NBT::TAG_Compound);
 		for($index = 0; $index < $this->getSize(); ++$index){
 			$this->setItem($index, $this->inventory->getItem($index));
@@ -267,7 +267,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 		return isset($this->namedtag->Lock);
 	}
 
-	public function setLock(string $itemName = ""){
+	public function setLock($itemName = ""){
 		if($itemName === ""){
 			unset($this->namedtag->Lock);
 			return;
@@ -276,12 +276,12 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 		$this->namedtag->Lock = new StringTag("Lock", $itemName);
 	}
 	
-	public function checkLock(string $key){
+	public function checkLock($key){
 		return $this->namedtag->Lock->getValue() === $key;
 	}
 
 	public function getSpawnCompound(){
-		$c = new Compound("", [
+		$c = new CompoundTag("", [
 			new StringTag("id", Tile::HOPPER),
 			new IntTag("x", (int) $this->x),
 			new IntTag("y", (int) $this->y),

@@ -1,9 +1,18 @@
 <?php
 
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
+
 namespace pocketmine\tile;
 
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
@@ -12,7 +21,7 @@ use pocketmine\tile\Spawnable;
 class Cauldron extends Spawnable{
 	
 	public function getSpawnCompound(){
-		$compound = new Compound("", [
+		$c = new CompoundTag("", [
             new StringTag("id", Tile::CAULDRON),
             new IntTag("x", (int) $this->x),
             new IntTag("y", (int) $this->y),
@@ -22,7 +31,7 @@ class Cauldron extends Spawnable{
             new ByteTag("isMovable", 1),
         ]);
 
-		return $compound;
+		return $c;
 	}
 	
 }

@@ -15,6 +15,7 @@ use pocketmine\Server;
 
 class Attribute
 {
+	
     const ABSORPTION = 0;
     const SATURATION = 1;
     const EXHAUSTION = 2;

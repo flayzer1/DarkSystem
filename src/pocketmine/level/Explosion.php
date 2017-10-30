@@ -22,9 +22,9 @@ use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\network\Network;
 use pocketmine\network\protocol\ExplodePacket;
@@ -37,11 +37,13 @@ use pocketmine\network\protocol\LevelSoundEventPacket;
 class Explosion{
 
 	private $rays = 16;
+	
 	public $level;
 	public $source;
 	public $size;
 	public $affectedBlocks = [];
 	public $stepLen = 0.3;
+	
 	private $what;
 
 	public function __construct(Position $center, $size, $what = null){
@@ -172,18 +174,18 @@ class Explosion{
 		foreach($this->affectedBlocks as $block){
 			if($block->getId() === Block::TNT){
 				$mot = (new Random())->nextSignedFloat() * M_PI * 2;
-				$tnt = Entity::createEntity("Boat", $this->level, new Compound("", [
-					"Pos" => new Enum("Pos", [
+				$tnt = Entity::createEntity("Boat", $this->level, new CompoundTag("", [
+					"Pos" => new ListTag("Pos", [
 						new DoubleTag("", $block->x + 0.5),
 						new DoubleTag("", $block->y),
 						new DoubleTag("", $block->z + 0.5)
 					]),
-					"Motion" => new Enum("Motion", [
+					"Motion" => new ListTag("Motion", [
 						new DoubleTag("", -sin($mot) * 0.02),
 						new DoubleTag("", 0.2),
 						new DoubleTag("", -cos($mot) * 0.02)
 					]),
-					"Rotation" => new Enum("Rotation", [
+					"Rotation" => new ListTag("Rotation", [
 						new FloatTag("", 0),
 						new FloatTag("", 0)
 					]),

@@ -13,14 +13,6 @@ namespace pocketmine\entity;
 
 use pocketmine\block\Block;
 use pocketmine\block\Water;
-use pocketmine\darkbot\entity\NPC;
-use pocketmine\entity\{Arrow, BlazeFireball, Camera, Car, Item as DroppedItem, Egg, EnderCrystal, EnderPearl, FallingSand, FishingHook, FloatingText, GhastFireball, LeashKnot, Lightning, Minecart, MinecartChest, MinecartHopper, MinecartTNT, Painting, PrimedTNT, Snowball, ThrownExpBottle, ThrownPotion, XPOrb, Herobrine, Human, BlueWitherSkull, Boat, Dragon, ElderGuardian, EnderDragon, Endermite, EvocationFangs, Giant, Guardian, Illusioner, Llama, PolarBear, Shulker, ShulkerBullet, SkeletonHorse, Squid, Vindicator, Witch, Wither, WitherSkeleton, ZombieHorse};
-use pocketmine\entity\animal\walking\{Chicken, Cow, Donkey, Horse, Mooshroom, Mule, Ocelot, Pig, Rabbit, Sheep, Villager};
-use pocketmine\entity\animal\flying\{Bat, Parrot};
-use pocketmine\entity\monster\flying\{Blaze, Ghast, Vex};
-use pocketmine\entity\monster\jumping\{MagmaCube/*, Slime*/};
-use pocketmine\entity\monster\walking\{CaveSpider, Creeper, Enderman, Husk, IronGolem, PigZombie, Silverfish, Skeleton, SnowGolem, Spider, Stray, Wolf, Zombie, ZombieVillager};
-use pocketmine\entity\projectile\FireBall;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDespawnEvent;
@@ -43,9 +35,9 @@ use pocketmine\math\Vector3;
 use pocketmine\metadata\Metadatable;
 use pocketmine\metadata\MetadataValue;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
@@ -212,92 +204,6 @@ abstract class Entity extends Location implements Metadatable{
 	private static $knownEntities = [];
 	private static $shortNames = [];
 	
-	public static function init(){
-		Entity::registerEntity(Arrow::class);
-		Entity::registerEntity(BlazeFireball::class);
-		Entity::registerEntity(Camera::class);
-		Entity::registerEntity(Car::class);
-		Entity::registerEntity(DroppedItem::class);
-		Entity::registerEntity(Egg::class);
-		Entity::registerEntity(EnderCrystal::class);
-		Entity::registerEntity(EnderPearl::class);
-		Entity::registerEntity(FallingSand::class);
-		Entity::registerEntity(FireBall::class);
-		Entity::registerEntity(FishingHook::class);
-		Entity::registerEntity(FloatingText::class);
-		Entity::registerEntity(GhastFireball::class);
-		Entity::registerEntity(Item::class);
-		Entity::registerEntity(LeashKnot::class);
-		Entity::registerEntity(Lightning::class);
-		Entity::registerEntity(Minecart::class);
-		Entity::registerEntity(MinecartChest::class);
-		Entity::registerEntity(MinecartHopper::class);
-		Entity::registerEntity(MinecartTNT::class);
-		Entity::registerEntity(Painting::class);
-		Entity::registerEntity(PrimedTNT::class);
-		Entity::registerEntity(Snowball::class);
-		Entity::registerEntity(ThrownExpBottle::class);
-		Entity::registerEntity(ThrownPotion::class);
-		Entity::registerEntity(XPOrb::class);
-		Entity::registerEntity(Human::class, true);
-		Entity::registerEntity(Bat::class);
-		Entity::registerEntity(Blaze::class);
-		Entity::registerEntity(BlueWitherSkull::class);
-		Entity::registerEntity(Boat::class);
-		Entity::registerEntity(CaveSpider::class);
-		Entity::registerEntity(Chicken::class);
-		Entity::registerEntity(Cow::class);
-		Entity::registerEntity(Creeper::class);
-		Entity::registerEntity(Dragon::class);
-		Entity::registerEntity(Donkey::class);
-		Entity::registerEntity(ElderGuardian::class);
-		Entity::registerEntity(EnderDragon::class);
-		Entity::registerEntity(Enderman::class);
-		Entity::registerEntity(Endermite::class);
-		Entity::registerEntity(EvocationFangs::class);
-		Entity::registerEntity(Giant::class);
-		Entity::registerEntity(Ghast::class);
-		Entity::registerEntity(Guardian::class);
-		//Entity::registerEntity(Herobrine::class);
-		//Entity::registerEntity(Horse::class);
-		Entity::registerEntity(Husk::class);
-		Entity::registerEntity(Illusioner::class);
-		Entity::registerEntity(IronGolem::class);
-		Entity::registerEntity(LavaSlime::class);
-		Entity::registerEntity(Llama::class);
-		Entity::registerEntity(MagmaCube::class);
-		Entity::registerEntity(Mooshroom::class);
-		Entity::registerEntity(Mule::class);
-		Entity::registerEntity(NPC::class);
-		Entity::registerEntity(Ocelot::class);
-		Entity::registerEntity(Parrot::class);
-		Entity::registerEntity(Pig::class);
-		Entity::registerEntity(PigZombie::class);
-		Entity::registerEntity(PolarBear::class);
-		Entity::registerEntity(Rabbit::class);
-		Entity::registerEntity(Sheep::class);
-		Entity::registerEntity(Shulker::class);
-		Entity::registerEntity(ShulkerBullet::class);
-		Entity::registerEntity(Silverfish::class);
-		Entity::registerEntity(Slime::class);
-		Entity::registerEntity(Skeleton::class);
-		Entity::registerEntity(SkeletonHorse::class);
-		Entity::registerEntity(SnowGolem::class);
-		Entity::registerEntity(Spider::class);
-		Entity::registerEntity(Stray::class);
-		Entity::registerEntity(Squid::class);
-		Entity::registerEntity(Vex::class);
-		Entity::registerEntity(Villager::class);
-		Entity::registerEntity(Vindicator::class);
-		Entity::registerEntity(Witch::class);
-		Entity::registerEntity(Wither::class);
-		Entity::registerEntity(WitherSkeleton::class);
-		Entity::registerEntity(Wolf::class);
-		Entity::registerEntity(Zombie::class);
-		Entity::registerEntity(ZombieHorse::class);
-		Entity::registerEntity(ZombieVillager::class);
-	}
-	
 	protected $hasSpawned = [];
 	
 	protected $effects = [];
@@ -402,7 +308,7 @@ abstract class Entity extends Location implements Metadatable{
 	
 	protected $fireDamage = 1;
 	
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		if($level === null || $level->getProvider() === null){
 			throw new ChunkException("Invalid garbage Chunk/Level given to Entity");
 		}
@@ -695,12 +601,12 @@ abstract class Entity extends Location implements Metadatable{
 	/**
 	 * @param int|string $type
 	 * @param FullChunk  $chunk
-	 * @param Compound   $nbt
+	 * @param CompoundTag   $nbt
 	 * @param            $args
 	 *
 	 * @return Entity
 	 */
-	public static function createEntity($type, Level $level, Compound $nbt, ...$args){
+	public static function createEntity($type, Level $level, CompoundTag $nbt, ...$args){
 		if(isset(Entity::$knownEntities[$type])){
 			$class = Entity::$knownEntities[$type];
 			return new $class($level, $nbt, ...$args);
@@ -745,19 +651,19 @@ abstract class Entity extends Location implements Metadatable{
 			}
 		}
 
-		$this->namedtag->Pos = new Enum("Pos", [
+		$this->namedtag->Pos = new ListTag("Pos", [
 			new DoubleTag(0, $this->x),
 			new DoubleTag(1, $this->y),
 			new DoubleTag(2, $this->z)
 		]);
 
-		$this->namedtag->Motion = new Enum("Motion", [
+		$this->namedtag->Motion = new ListTag("Motion", [
 			new DoubleTag(0, $this->motionX),
 			new DoubleTag(1, $this->motionY),
 			new DoubleTag(2, $this->motionZ)
 		]);
 
-		$this->namedtag->Rotation = new Enum("Rotation", [
+		$this->namedtag->Rotation = new ListTag("Rotation", [
 			new FloatTag(0, $this->yaw),
 			new FloatTag(1, $this->pitch)
 		]);
@@ -771,7 +677,7 @@ abstract class Entity extends Location implements Metadatable{
 		if(count($this->effects) > 0){
 			$effects = [];
 			foreach ($this->effects as $effectId => $effect){
-				$effects[$effectId] = new Compound($effectId, [
+				$effects[$effectId] = new CompoundTag($effectId, [
 					"Id" => new ByteTag("Id", $effectId),
 					"Amplifier" => new ByteTag("Amplifier", $effect->getAmplifier()),
 					"Duration" => new IntTag("Duration", $effect->getDuration()),
@@ -781,7 +687,7 @@ abstract class Entity extends Location implements Metadatable{
 				]);
 			}
 
-			$this->namedtag->ActiveEffects = new Enum("ActiveEffects", $effects);
+			$this->namedtag->ActiveEffects = new ListTag("ActiveEffects", $effects);
 		} else {
 			unset($this->namedtag->ActiveEffects);
 		}
@@ -789,13 +695,14 @@ abstract class Entity extends Location implements Metadatable{
 
 	protected function initEntity(){
 		if(isset($this->namedtag->ActiveEffects)){
-			foreach ($this->namedtag->ActiveEffects->getValue() as $e){
+			foreach($this->namedtag->ActiveEffects->getValue() as $e){
 				$effect = Effect::getEffect($e["Id"]);
 				if($effect === null){
 					continue;
 				}
 				
-				$effect->setAmplifier($e["Amplifier"])->setDuration($e["Duration"])->setVisible($e["ShowParticles"] > 0);
+				//$effect->setAmplifier($e["Amplifier"])->setDuration($e["Duration"])->setVisible($e["ShowParticles"] > 0);
+				$effect->setAmplifier($e["Amplifier"])->setDuration($e["Duration"])->setVisible(0);
 				$this->addEffect($effect);
 			}
 		}
@@ -1444,7 +1351,7 @@ abstract class Entity extends Location implements Metadatable{
 	
 	protected function getBlocksAround(){
 		$x = floor($this->x);
-		$z = floor($this->z);	
+		$z = floor($this->z);
 		$blocksAround = [];
 		$blocksAround[] = $this->level->getBlock(new Vector3($x, floor($this->y), $z));
 		$blocksAround[] = $this->level->getBlock(new Vector3($x, floor($this->y + $this->eyeHeight), $z));
@@ -1545,7 +1452,7 @@ abstract class Entity extends Location implements Metadatable{
 			$this->setPosition(new Vector3(($this->boundingBox->minX + $this->boundingBox->maxX) / 2, $this->boundingBox->minY, ($this->boundingBox->minZ + $this->boundingBox->maxZ) / 2));
 			return true;
 		}else{
-			$pos = new Vector3($this->x + $dx, $this->y + $dy, $this->z + $dz);			
+			$pos = new Vector3($this->x + $dx, $this->y + $dy, $this->z + $dz);
 			if(!$this->setPosition($pos)){
 				return false;
 			}else{

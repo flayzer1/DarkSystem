@@ -21,12 +21,6 @@
 
 namespace pocketmine\inventory;
 
-/**
- * Manages crafting operations
- * This class includes future methods for shaped crafting
- *
- * TODO: add small matrix inventory
- */
 class CraftingInventory extends BaseInventory{
 
 	/** @var Inventory */
@@ -57,4 +51,5 @@ class CraftingInventory extends BaseInventory{
 	public function getSize(){
 		return $this->getResultInventory()->getSize() + parent::getSize();
 	}
+	
 }

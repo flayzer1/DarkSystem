@@ -13,7 +13,7 @@ namespace pocketmine\entity;
 
 use pocketmine\level\Level;
 use pocketmine\level\particle\SpellParticle;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
@@ -34,7 +34,7 @@ class ThrownPotion extends Projectile
 
     private $hasSplashed = false;
 
-    public function __construct(Level $level, Compound $nbt, Entity $shootingEntity = null)
+    public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null)
     {
         if (!isset($nbt->PotionId)) {
             $nbt->PotionId = new ShortTag("PotionId", Potion::AWKWARD);

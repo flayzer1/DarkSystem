@@ -14,7 +14,7 @@ namespace pocketmine\tile;
 use pocketmine\level\Level;
 use pocketmine\level\format\FullChunk;
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\Network;
 use pocketmine\network\protocol\TileEntityDataPacket;
 use pocketmine\Player;
@@ -40,7 +40,7 @@ abstract class Spawnable extends Tile{
 	
 	public abstract function getSpawnCompound();
 
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		parent::__construct($level, $nbt);
 		
 		$this->spawnToAll();

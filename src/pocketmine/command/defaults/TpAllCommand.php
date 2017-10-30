@@ -60,7 +60,12 @@ class TpAllCommand extends VanillaCommand{
 		$players = count($sender->getServer()->getOnlinePlayers());
 		
         if($players <= 1){
-        	$sender->sendMessage(TextFormat::RED . "Hiçbir Oyuncu Aktif Değil!");
+        	if(Translate::checkTurkish() === "yes"){
+        	    $sender->sendMessage(TextFormat::RED . "Hiçbir Oyuncu Aktif Değil!");
+        	}else{
+        	    $sender->sendMessage(TextFormat::RED . "No Players is Online!");
+        	}
+        
         	return false;
         }else{
         	foreach($sender->getServer()->getOnlinePlayers() as $p){

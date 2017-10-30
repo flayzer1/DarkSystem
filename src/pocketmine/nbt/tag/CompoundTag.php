@@ -23,8 +23,6 @@ namespace pocketmine\nbt\tag;
 
 use pocketmine\nbt\NBT;
 
-#include <rules/NBT.h>
-
 class CompoundTag extends NamedTag implements \ArrayAccess{
 
 	/**
@@ -88,7 +86,7 @@ class CompoundTag extends NamedTag implements \ArrayAccess{
 			if($tag instanceof NamedTag and $tag->getName() !== ""){
 				$this->{$tag->getName()} = $tag;
 			}
-		}while(!($tag instanceof End) and !$nbt->feof());
+		}while(!($tag instanceof EndTag) and !$nbt->feof());
 	}
 
 	public function write(NBT $nbt, $old = false){
@@ -97,7 +95,7 @@ class CompoundTag extends NamedTag implements \ArrayAccess{
 				$nbt->writeTag($tag, $old);
 			}
 		}
-		$nbt->writeTag(new End, $old);
+		$nbt->writeTag(new EndTag, $old);
 	}
 
 	public function __toString(){

@@ -12,14 +12,14 @@
 namespace pocketmine\tile;
 
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\ByteTag;
 
 class Bed extends Spawnable{
 	
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		if(!isset($nbt->color) or !($nbt->color instanceof ByteTag)){
 			$nbt->color = new ByteTag("color", 14);
 		}
@@ -37,7 +37,7 @@ class Bed extends Spawnable{
 	}
 	
 	public function getSpawnCompound(){
-		return new Compound("", [
+		return new CompoundTag("", [
 			new StringTag("id", Tile::BED),
 			new IntTag("x", (int) $this->x),
 			new IntTag("y", (int) $this->y),

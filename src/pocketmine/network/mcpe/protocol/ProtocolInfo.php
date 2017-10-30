@@ -19,10 +19,10 @@ interface ProtocolInfo extends ProtocolConverter{
 	const DARKSYSTEM_CODENAME = "DarkSystem"; //WARNING: Do not change!
 	const MINECRAFT_VERSION = "v1.x";
 	const MINECRAFT_VERSION_NETWORK = "1.2";
-	const CURRENT_PROTOCOL = 138;
-	const ACCEPTED_PROTOCOLS = [101, 102, 105, 106, 107, 110, 111, 112, 113, 120, 121, 130, 131, 132, 133, 134, 135, 136, 137, 138];
+	const CURRENT_PROTOCOL = 140;
+	const ACCEPTED_PROTOCOLS = [101, 102, 105, 106, 107, 110, 111, 112, 113, 120, 121, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140];
 	
-	const BASE_PROTOCOL = 138;
+	const BASE_PROTOCOL = 140;
 	
 	const LOGIN_PACKET = 0x01;
 	const PLAY_STATUS_PACKET = 0x02;

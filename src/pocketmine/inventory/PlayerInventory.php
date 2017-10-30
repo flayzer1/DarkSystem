@@ -338,7 +338,7 @@ class PlayerInventory extends BaseInventory{
 				$pk2->eid = $this->getHolder()->getId();
 				$pk2->windowid = ContainerSetContentPacket::SPECIAL_ARMOR;
 				$pk2->slots = $armor;
-				$player->dataPacket($pk2);				
+				$player->dataPacket($pk2);
 			}else{
 				$player->dataPacket($pk);
 			}

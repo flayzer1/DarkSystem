@@ -12,7 +12,7 @@
 namespace pocketmine\tile;
 
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 
@@ -20,14 +20,14 @@ use pocketmine\nbt\tag\StringTag;
 
 class ArmorStand extends Spawnable{
 	
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		parent::__construct($level, $nbt);
 	}
 	
 	//TODO
 	
 	public function getSpawnCompound(){
-		return new Compound("", [
+		return new CompoundTag("", [
 			new StringTag("id", Tile::ARMOR_STAND),
 			new IntTag("x", (int) $this->x),
 			new IntTag("y", (int) $this->y),

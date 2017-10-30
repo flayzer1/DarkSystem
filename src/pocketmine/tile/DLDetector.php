@@ -15,7 +15,7 @@ use pocketmine\block\Block;
 use pocketmine\block\DaylightDetector;
 use pocketmine\level\Level;
 use pocketmine\level\format\FullChunk;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\IntTag;
 
@@ -23,12 +23,12 @@ class DLDetector extends Spawnable{
 	
 	private $lastType = 0;
 
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		parent::__construct($level, $nbt);
 	}
 	
 	public function getSpawnCompound(){
-		return new Compound("", [
+		return new CompoundTag("", [
 			new StringTag("id", Tile::DL_DETECTOR),
 			new IntTag("x", (int) $this->x),
 			new IntTag("y", (int) $this->y),

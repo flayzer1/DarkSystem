@@ -226,7 +226,7 @@ class BinaryStream extends \stdClass{
 		
 		$this->putSignedVarInt($item->getId());
 		$this->putSignedVarInt(($item->getDamage() === null ? 0 : ($item->getDamage() << 8)) + $item->getCount());	
-		$nbt = $item->getCompound();	
+		$nbt = $item->getCompoundTag();	
 		$this->putLShort(strlen($nbt));
 		$this->put($nbt);
 		

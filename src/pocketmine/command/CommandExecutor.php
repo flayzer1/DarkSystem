@@ -15,4 +15,6 @@ interface CommandExecutor{
 	
 	public function onCommand(CommandSender $sender, Command $command, $label, array $args);
 	
+	//public function onCommand2(CommandSender $sender, Command $command, string $label, array $args);
+	
 }

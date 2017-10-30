@@ -13,7 +13,6 @@ namespace pocketmine\command\defaults;
 
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
-use pocketmine\level\format\io\BaseLevelProvider; //Invalid
 use pocketmine\nbt\tag\StringTag;
 
 class LvdatCommand extends VanillaCommand{
@@ -45,7 +44,6 @@ class LvdatCommand extends VanillaCommand{
 			$sender->sendMessage(new TranslationContainer("pocketmine.command.lvdat.nofound", [$levname]));
 			return false;
 		}
-		/** @var BaseLevelProvider $provider */
 		$provider = $level->getProvider();
 		$o = array_shift($args);
 		$p = array_shift($args);

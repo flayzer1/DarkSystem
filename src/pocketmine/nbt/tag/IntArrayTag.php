@@ -22,8 +22,7 @@
 namespace pocketmine\nbt\tag;
 
 use pocketmine\nbt\NBT;
-
-#include <rules/NBT.h>
+use pocketmine\utils\Binary;
 
 class IntArrayTag extends NamedTag{
 
@@ -31,19 +30,14 @@ class IntArrayTag extends NamedTag{
 		return NBT::TAG_IntArray;
 	}
 
-	public function read(NBT $nbt, bool $network = false){
-		$size = $nbt->getInt($network);
+	public function read(NBT $nbt){
+		$this->value = [];
+		$size = $nbt->endianness === 1 ? Binary::readInt($nbt->get(4)) : Binary::readLInt($nbt->get(4));
 		$this->value = array_values(unpack($nbt->endianness === NBT::LITTLE_ENDIAN ? "V*" : "N*", $nbt->get($size * 4)));
 	}
 
-	public function write(NBT $nbt, bool $network = false){
-		$nbt->putInt(count($this->value), $network);
-		$nbt->put(pack($nbt->endianness === NBT::LITTLE_ENDIAN ? "V*" : "N*", ...$this->value));
-	}
-
-	public function __toString(){
-		$str = get_class($this) . "{\n";
-		$str .= implode(", ", $this->value);
-		return $str . "}";
+	public function write(NBT $nbt){
+		$nbt->buffer .= $nbt->endianness === 1 ? pack("N", \count($this->value)) : pack("V", \count($this->value));
+		$nbt->buffer .= pack($nbt->endianness === NBT::LITTLE_ENDIAN ? "V*" : "N*", ...$this->value);
 	}
 }

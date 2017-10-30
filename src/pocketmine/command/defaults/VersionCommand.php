@@ -42,9 +42,9 @@ class VersionCommand extends VanillaCommand{
 			$codename = \pocketmine\CODENAME;
 			$build = ProtocolInfo::DARKSYSTEM_VERSION;
 			if(Translate::checkTurkish() === "yes"){
-				$sender->sendMessage("§eBu Sunucu §a$codename $tag $ver ($build) §eVersiyonunda Çalışıyor\n§eAPI: §a3.0.1\n§e$codename'i İndirmek İçin:\n§ahttps://github.com/$creator/$codename§r");
+				$sender->sendMessage("§eBu Sunucu §a$codename $tag $ver ($build) §eVersiyonunda Çalışıyor\n§eAPI: §a3.0.1\n§e$codename'i İndirmek İçin:\n§ahttps://github.com/$creator/$codename §r");
 			}else{
-				$sender->sendMessage("§eThis Server is Running on §a$codename $tag $ver ($build)\n§eAPI: §a3.0.1\n§eTo Download $codename:\n§ahttps://github.com/$creator/$codename§r");
+				$sender->sendMessage("§eThis Server is Running on §a$codename $tag $ver ($build)\n§eAPI: §a3.0.1\n§eTo Download $codename:\n§ahttps://github.com/$creator/$codename §r");
 			}
 		}else{
 			$pluginName = implode(" ", $args);

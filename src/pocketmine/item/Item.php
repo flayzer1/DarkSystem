@@ -21,12 +21,12 @@ use pocketmine\entity\Villager;
 use pocketmine\inventory\Fuel;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\NBT;
 use pocketmine\utils\Config;
 
@@ -36,9 +36,9 @@ class Item{
 
 	/**
 	 * @param $tag
-	 * @return Compound
+	 * @return CompoundTag
 	 */
-	private static function parseCompound($tag){
+	private static function parseCompoundTag($tag){
 		if(Item::$cachedParser === null){
 			Item::$cachedParser = new NBT(NBT::LITTLE_ENDIAN);
 		}
@@ -48,10 +48,10 @@ class Item{
 	}
 
 	/**
-	 * @param Compound $tag
+	 * @param CompoundTag $tag
 	 * @return string
 	 */
-	private static function writeCompound(Compound $tag){
+	private static function writeCompoundTag(CompoundTag $tag){
 		if(Item::$cachedParser === null){
 			Item::$cachedParser = new NBT(NBT::LITTLE_ENDIAN);
 		}
@@ -1127,14 +1127,14 @@ class Item{
 		try{
 			$class = Item::$list[$id];
 			if($class === null){
-				return (new Item($id, $meta, $count))->setCompound($tags);
+				return (new Item($id, $meta, $count))->setCompoundTag($tags);
 			}elseif($id < 256){
-				return (new ItemBlock(new $class($meta), $meta, $count))->setCompound($tags);
+				return (new ItemBlock(new $class($meta), $meta, $count))->setCompoundTag($tags);
 			}else{
-				return (new $class($meta, $count))->setCompound($tags);
+				return (new $class($meta, $count))->setCompoundTag($tags);
 			}
 		}catch(\RuntimeException $e){
-			return (new Item($id, $meta, $count))->setCompound($tags);
+			return (new Item($id, $meta, $count))->setCompoundTag($tags);
 		}
 	}
 
@@ -1184,8 +1184,8 @@ class Item{
 		}
 	}
 
-	public function setCompound($tags){
-		if($tags instanceof Compound){
+	public function setCompoundTag($tags){
+		if($tags instanceof CompoundTag){
 			$this->setNamedTag($tags);
 		}else{
 			$this->tags = $tags;
@@ -1198,21 +1198,21 @@ class Item{
 	/**
 	 * @return string
 	 */
-	public function getCompound(){
+	public function getCompoundTag(){
 		return $this->tags;
 	}
 	
-	public function hasCompound(){
+	public function hasCompoundTag(){
 		return $this->tags !== "" && $this->tags !== null;
 	}
 
 	public function hasCustomBlockData(){
-		if(!$this->hasCompound()){
+		if(!$this->hasCompoundTag()){
 			return false;
 		}
 
 		$tag = $this->getNamedTag();
-		if(isset($tag->BlockEntityTag) && $tag->BlockEntityTag instanceof Compound){
+		if(isset($tag->BlockEntityTag) && $tag->BlockEntityTag instanceof CompoundTag){
 			return true;
 		}
 
@@ -1220,13 +1220,13 @@ class Item{
 	}
 
 	public function clearCustomBlockData(){
-		if(!$this->hasCompound()){
+		if(!$this->hasCompoundTag()){
 			return $this;
 		}
 		
 		$tag = $this->getNamedTag();
 
-		if(isset($tag->BlockEntityTag) && $tag->BlockEntityTag instanceof Compound){
+		if(isset($tag->BlockEntityTag) && $tag->BlockEntityTag instanceof CompoundTag){
 			unset($tag->display->BlockEntityTag);
 			$this->setNamedTag($tag);
 		}
@@ -1234,12 +1234,12 @@ class Item{
 		return $this;
 	}
 
-	public function setCustomBlockData(Compound $compound){
-		$tags = clone $compound;
+	public function setCustomBlockData(CompoundTag $CompoundTag){
+		$tags = clone $CompoundTag;
 		$tags->setName("BlockEntityTag");
 
-		if(!$this->hasCompound()){
-			$tag = new Compound("", []);
+		if(!$this->hasCompoundTag()){
+			$tag = new CompoundTag("", []);
 		}else{
 			$tag = $this->getNamedTag();
 		}
@@ -1251,12 +1251,12 @@ class Item{
 	}
 
 	public function getCustomBlockData(){
-		if(!$this->hasCompound()){
+		if(!$this->hasCompoundTag()){
 			return null;
 		}
 
 		$tag = $this->getNamedTag();
-		if(isset($tag->BlockEntityTag) && $tag->BlockEntityTag instanceof Compound){
+		if(isset($tag->BlockEntityTag) && $tag->BlockEntityTag instanceof CompoundTag){
 			return $tag->BlockEntityTag;
 		}
 
@@ -1264,14 +1264,14 @@ class Item{
 	}
 
 	public function hasEnchantments(){
-		if(!$this->hasCompound()){
+		if(!$this->hasCompoundTag()){
 			return false;
 		}
 
 		$tag = $this->getNamedTag();
 		if(isset($tag->ench)){
 			$tag = $tag->ench;
-			if($tag instanceof Enum){
+			if($tag instanceof ListTag){
 				return true;
 			}
 		}
@@ -1303,14 +1303,14 @@ class Item{
 	 * @param Enchantment $ench
 	 */
 	public function addEnchantment(Enchantment $ench){
-		if(!$this->hasCompound()){
-			$tag = new Compound("", []);
+		if(!$this->hasCompoundTag()){
+			$tag = new CompoundTag("", []);
 		}else{
 			$tag = $this->getNamedTag();
 		}
 
 		if(!isset($tag->ench)){
-			$tag->ench = new Enum("ench", []);
+			$tag->ench = new ListTag("ench", []);
 			$tag->ench->setTagType(NBT::TAG_Compound);
 		}
 
@@ -1322,7 +1322,7 @@ class Item{
 			}
 			
 			if($entry["id"] === $ench->getId()){
-				$tag->ench->{$k} = new Compound("", [
+				$tag->ench->{$k} = new CompoundTag("", [
 					"id" => new ShortTag("id", $ench->getId()),
 					"lvl" => new ShortTag("lvl", $ench->getLevel())
 				]);
@@ -1332,7 +1332,7 @@ class Item{
 		}
 
 		if(!$found){
-			$tag->ench->{$maxIntIndex + 1} = new Compound("", [
+			$tag->ench->{$maxIntIndex + 1} = new CompoundTag("", [
 				"id" => new ShortTag("id", $ench->getId()),
 				"lvl" => new ShortTag("lvl", $ench->getLevel())
 			]);
@@ -1361,14 +1361,14 @@ class Item{
 	}
 
 	public function hasCustomName(){
-		if(!$this->hasCompound()){
+		if(!$this->hasCompoundTag()){
 			return false;
 		}
 
 		$tag = $this->getNamedTag();
 		if(isset($tag->display)){
 			$tag = $tag->display;
-			if($tag instanceof Compound && isset($tag->Name) && $tag->Name instanceof StringTag){
+			if($tag instanceof CompoundTag && isset($tag->Name) && $tag->Name instanceof StringTag){
 				return true;
 			}
 		}
@@ -1377,14 +1377,14 @@ class Item{
 	}
 
 	public function getCustomName(){
-		if(!$this->hasCompound()){
+		if(!$this->hasCompoundTag()){
 			return "";
 		}
 
 		$tag = $this->getNamedTag();
 		if(isset($tag->display)){
 			$tag = $tag->display;
-			if($tag instanceof Compound && isset($tag->Name) && $tag->Name instanceof StringTag){
+			if($tag instanceof CompoundTag && isset($tag->Name) && $tag->Name instanceof StringTag){
 				return $tag->Name->getValue();
 			}
 		}
@@ -1397,32 +1397,32 @@ class Item{
 			$this->clearCustomName();
 		}
 
-		if(!$this->hasCompound()){
-			$tag = new Compound("", []);
+		if(!$this->hasCompoundTag()){
+			$tag = new CompoundTag("", []);
 		}else{
 			$tag = $this->getNamedTag();
 		}
 
-		if(isset($tag->display) && $tag->display instanceof Compound){
+		if(isset($tag->display) && $tag->display instanceof CompoundTag){
 			$tag->display->Name = new StringTag("Name", $name);
 		}else{
-			$tag->display = new Compound("display", [
+			$tag->display = new CompoundTag("display", [
 				"Name" => new StringTag("Name", $name)
 			]);
 		}
 		
-		$this->setCompound($tag);
+		$this->setCompoundTag($tag);
 
 		return $this;
 	}
 	
 	public function setCustomColor($colorCode){	
-		if(!$this->hasCompound()){
+		if(!$this->hasCompoundTag()){
 			if(!is_int($colorCode)){
 				return $this;
 			}
 			
-			$tag = new Compound("", []);
+			$tag = new CompoundTag("", []);
 		}else{
 			$tag = $this->getNamedTag();
 		}
@@ -1433,19 +1433,19 @@ class Item{
 			$tag->customColor = new IntTag("customColor", $colorCode);
 		}
 		
-		$this->setCompound($tag);
+		$this->setCompoundTag($tag);
 
 		return $this;
 	}
 
 	public function clearCustomName(){
-		if(!$this->hasCompound()){
+		if(!$this->hasCompoundTag()){
 			return $this;
 		}
 		
 		$tag = $this->getNamedTag();
 
-		if(isset($tag->display) && $tag->display instanceof Compound){
+		if(isset($tag->display) && $tag->display instanceof CompoundTag){
 			unset($tag->display->Name);
 			if($tag->display->getCount() === 0){
 				unset($tag->display);
@@ -1467,28 +1467,28 @@ class Item{
 	}
 
 	public function getNamedTag(){
-		if(!$this->hasCompound()){
+		if(!$this->hasCompoundTag()){
 			return null;
 		}elseif($this->cachedNBT !== null){
 			return $this->cachedNBT;
 		}
 		
-		return $this->cachedNBT = Item::parseCompound($this->tags);
+		return $this->cachedNBT = Item::parseCompoundTag($this->tags);
 	}
 
-	public function setNamedTag(Compound $tag){
+	public function setNamedTag(CompoundTag $tag){
 		if($tag->getCount() === 0){
 			return $this->clearNamedTag();
 		}
 
 		$this->cachedNBT = $tag;
-		$this->tags = Item::writeCompound($tag);
+		$this->tags = Item::writeCompoundTag($tag);
 
 		return $this;
 	}
 
 	public function clearNamedTag(){
-		return $this->setCompound("");
+		return $this->setCompoundTag("");
 	}
 
 	public function getCount(){
@@ -1595,7 +1595,7 @@ class Item{
 	}
 
 	final public function __toString(){
-		return "Item " . $this->name . " (" . $this->id . ":" . ($this->meta === null ? "?" : $this->meta) . ")x" . $this->count . ($this->hasCompound() ? " tags:0x".bin2hex($this->getCompound()) : "");
+		return "Item " . $this->name . " (" . $this->id . ":" . ($this->meta === null ? "?" : $this->meta) . ")x" . $this->count . ($this->hasCompoundTag() ? " tags:0x".bin2hex($this->getCompoundTag()) : "");
 	}
 
 	public function getDestroySpeed(Block $block, Player $player){
@@ -1606,14 +1606,14 @@ class Item{
 		return false;
 	}
 
-	public final function equals(Item $item, $checkDamage = true, $checkCompound = true){
-		return $this->id === $item->getId() && ($checkDamage === false || $this->getDamage() === $item->getDamage()) && ($checkCompound === false || $this->getCompound() === $item->getCompound());
+	public final function equals(Item $item, $checkDamage = true, $checkCompoundTag = true){
+		return $this->id === $item->getId() && ($checkDamage === false || $this->getDamage() === $item->getDamage()) && ($checkCompoundTag === false || $this->getCompoundTag() === $item->getCompoundTag());
 	}
 
-	public final function deepEquals(Item $item, $checkDamage = true, $checkCompound = true){
-		if($this->equals($item, $checkDamage, $checkCompound)){
+	public final function deepEquals(Item $item, $checkDamage = true, $checkCompoundTag = true){
+		if($this->equals($item, $checkDamage, $checkCompoundTag)){
 			return true;
-		}elseif($item->hasCompound() && $this->hasCompound()){
+		}elseif($item->hasCompoundTag() && $this->hasCompoundTag()){
 			return NBT::matchTree($this->getNamedTag(), $item->getNamedTag());
 		}
 
@@ -1634,20 +1634,20 @@ class Item{
 	
 	/**
 	 * @param int    $slot optional, the inventory slot of the item
-	 * @param string $tagName the name to assign to the Compound object
+	 * @param string $tagName the name to assign to the CompoundTag object
 	 *
-	 * @return Compound
+	 * @return CompoundTag
 	 */
 	public function nbtSerialize($slot = -1, $tagName = ""){
-		$tag = new Compound($tagName, [
+		$tag = new CompoundTag($tagName, [
 			"id" => new ShortTag("id", $this->id),
 			"Count" => new ByteTag("Count", $this->count ?? -1),
 			"Damage" => new ShortTag("Damage", $this->meta),
 		]);
 
-		if($this->hasCompound()){
+		if($this->hasCompoundTag()){
 			$tag->tag = clone $this->getNamedTag();
-			$tag->tag->setName("tag");
+			//$tag->tag->setName("tag");
 		}
 		
 		if($slot !== -1){
@@ -1658,11 +1658,11 @@ class Item{
 	}
 
 	/**
-	 * @param Compound $tag
+	 * @param CompoundTag $tag
 	 *
 	 * @return Item
 	 */
-	public static function nbtDeserialize(Compound $tag){
+	public static function nbtDeserialize(CompoundTag $tag){
 		if(!isset($tag->id) || !isset($tag->Count)){
 			return Item::get(0);
 		}
@@ -1674,10 +1674,10 @@ class Item{
 			$item->setDamage(!isset($tag->Damage) ? 0 : $tag->Damage->getValue());
 			$item->setCount($tag->Count->getValue());
 		}else{
-			throw new \InvalidArgumentException("Item Compound ID must be an instance of StringTag or ShortTag, " . get_class($tag->id) . " given");
+			throw new \InvalidArgumentException("Item CompoundTag ID must be an instance of StringTag or ShortTag, " . get_class($tag->id) . " given");
 		}
 
-		if(isset($tag->tag) && $tag->tag instanceof Compound){
+		if(isset($tag->tag) && $tag->tag instanceof CompoundTag){
 			$item->setNamedTag($tag->tag);
 		}
 

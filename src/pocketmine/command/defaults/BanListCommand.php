@@ -47,7 +47,7 @@ class BanListCommand extends VanillaCommand{
 				$list = $sender->getServer()->getNameBans();
 				$title = "commands.banlist.players";
 				break;
-			default:
+				default;
 				$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
 				return false;			
 		}

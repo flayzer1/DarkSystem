@@ -12,9 +12,9 @@
 namespace pocketmine\tile;
 
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
 
 class Banner extends Spawnable{
@@ -75,20 +75,20 @@ class Banner extends Spawnable{
 	const COLOR_ORANGE = 14;
 	const COLOR_WHITE = 15;
 
-	public function __construct(Level $level, Compound $nbt){
+	public function __construct(Level $level, CompoundTag $nbt){
 		if(!isset($nbt->Base) or !($nbt->Base instanceof IntTag)){
 			$nbt->Base = new IntTag("Base", 15);
 		}
 		
-		if(!isset($nbt->Patterns) or !($nbt->Patterns instanceof Enum)){
-			$nbt->Patterns = new Enum("Patterns");
+		if(!isset($nbt->Patterns) or !($nbt->Patterns instanceof ListTag)){
+			$nbt->Patterns = new ListTag("Patterns");
 		}
 		
 		parent::__construct($level, $nbt);
 	}
 	
 	public function getSpawnCompound(){
-		$c = new Compound("", [
+		$c = new CompoundTag("", [
 			new StringTag("id", Tile::BANNER),
 			new IntTag("x", (int)$this->x),
 			new IntTag("y", (int)$this->y),
@@ -102,7 +102,7 @@ class Banner extends Spawnable{
 		return $c;
 	}
 	
-	public function addAdditionalSpawnData(Compound $nbt){
+	public function addAdditionalSpawnData(CompoundTag $nbt){
 		$nbt->Patterns = $this->namedtag->Patterns;
 		$nbt->Base = $this->namedtag->Base;
 	}
@@ -134,7 +134,7 @@ class Banner extends Spawnable{
 			$patternId = max($this->getPatternIds()) + 1;
 		}
 
-		$this->namedtag->Patterns->{$patternId} = new Compound("", [
+		$this->namedtag->Patterns->{$patternId} = new CompoundTag("", [
 			new IntTag("Color", $color & 0x0f),
 			new StringTag("Pattern", $pattern)
 		]);

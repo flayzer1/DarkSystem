@@ -28,14 +28,13 @@ class Cookie extends Food
         parent::__construct(self::COOKIE, $meta, $count, "Cookie");
     }
 
-    public function getFoodRestore(): int
+    public function getFoodRestore()
     {
         return 2;
     }
 
-    public function getSaturationRestore(): float
+    public function getSaturationRestore()
     {
         return 0.4;
     }
 }
-

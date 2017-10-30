@@ -136,6 +136,12 @@ abstract class DefaultPermissions{
 		DefaultPermissions::registerPermission(new Permission(DefaultPermissions::ROOT . ".command.givepizza", "Allows chat DarkBot", Permission::DEFAULT_OP), $commands);
 		DefaultPermissions::registerPermission(new Permission(DefaultPermissions::ROOT . ".command.hack", "Allows hack server", Permission::DEFAULT_TRUE), $commands);
 		DefaultPermissions::registerPermission(new Permission(DefaultPermissions::ROOT . ".command.zoom", "Allows zoom", Permission::DEFAULT_OP), $commands);
+		DefaultPermissions::registerPermission(new Permission(DefaultPermissions::ROOT . ".command.addui", "Allows showing customUI to player", Permission::DEFAULT_OP), $commands);
+		DefaultPermissions::registerPermission(new Permission(DefaultPermissions::ROOT . ".command.createinv", "Allows open virtual inventory", Permission::DEFAULT_OP), $commands);
+		DefaultPermissions::registerPermission(new Permission(DefaultPermissions::ROOT . ".command.xyz", "Allows get coordinates", Permission::DEFAULT_OP), $commands);
+		DefaultPermissions::registerPermission(new Permission(DefaultPermissions::ROOT . ".command.morph", "Allows transform into a mob", Permission::DEFAULT_OP), $commands);
+		DefaultPermissions::registerPermission(new Permission(DefaultPermissions::ROOT . ".command.world", "Allows teleport to another world", Permission::DEFAULT_OP), $commands);
+		DefaultPermissions::registerPermission(new Permission(DefaultPermissions::ROOT . ".command.serverinfo", "Allows see server information", Permission::DEFAULT_TRUE), $commands);
 		
 		$commands->recalculatePermissibles();
 

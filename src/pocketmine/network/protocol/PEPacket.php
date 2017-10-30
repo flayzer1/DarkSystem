@@ -1,5 +1,14 @@
 <?php
 
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
+
 namespace pocketmine\network\protocol;
 
 abstract class PEPacket extends DataPacket{
@@ -53,6 +62,9 @@ abstract class PEPacket extends DataPacket{
 			case Info::PROTOCOL_135;
 			case Info::PROTOCOL_136;
 			case Info::PROTOCOL_137;
+			case Info::PROTOCOL_138;
+			case Info::PROTOCOL_139;
+			case Info::PROTOCOL_140;
 				return Info::PROTOCOL_120;
 			case Info::PROTOCOL_110:
 			case Info::PROTOCOL_111:
