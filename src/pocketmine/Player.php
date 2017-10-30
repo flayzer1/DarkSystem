@@ -3002,20 +3002,20 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				$modifiedPages = [];
 				switch($packet->type){
 					case BookEditPacket::TYPE_REPLACE_PAGE:
-						$newBook->setPageText($packet->pagListTagber, $packet->text);
-						$modifiedPages[] = $packet->pagListTagber;
+						$newBook->setPageText($packet->pageNumber, $packet->text);
+						$modifiedPages[] = $packet->pageNumber;
 						break;
 					case BookEditPacket::TYPE_ADD_PAGE:
-						$newBook->insertPage($packet->pagListTagber, $packet->text);
-						$modifiedPages[] = $packet->pagListTagber;
+						$newBook->insertPage($packet->pageNumber, $packet->text);
+						$modifiedPages[] = $packet->pageNumber;
 						break;
 					case BookEditPacket::TYPE_DELETE_PAGE:
-						$newBook->deletePage($packet->pagListTagber);
-						$modifiedPages[] = $packet->pagListTagber;
+						$newBook->deletePage($packet->pageNumber);
+						$modifiedPages[] = $packet->pageNumber;
 						break;
 					case BookEditPacket::TYPE_SWAP_PAGES:
-						$newBook->swapPages($packet->pagListTagber, $packet->secondaryPagListTagber);
-						$modifiedPages = [$packet->pagListTagber, $packet->secondaryPagListTagber];
+						$newBook->swapPages($packet->pageNumber, $packet->secondaryPageNumber);
+						$modifiedPages = [$packet->pageNumber, $packet->secondaryPageNumber];
 						break;
 					case BookEditPacket::TYPE_SIGN_BOOK:
 						$newBook = Item::get(Item::WRITTEN_BOOK, 0, 1, $newBook->getnamedtag());
@@ -3056,7 +3056,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 				break;
 			case "DISCONNECT_PACKET":
 				if($this->subClientId > 0){
-					$this->close('', "client disconnect");
+					$this->close("", "client disconnect");
 				}
 				break;
 			default:
