@@ -3,8 +3,8 @@
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\CommandSender;
-use pocketmine\Server;
 use pocketmine\network\protocol\Info;
+use pocketmine\Server;
 
 class MakeServerCommand extends VanillaCommand{
 
@@ -38,6 +38,7 @@ class MakeServerCommand extends VanillaCommand{
 			"protocol" => Info::CURRENT_PROTOCOL,
 			"creationDate" => time()
 		]);
+		
 		$phar->setStub('<?php define("pocketmine\\\\PATH", "phar://". __FILE__ ."/"); require_once("phar://". __FILE__ ."/src/pocketmine/PocketMine.php");  __HALT_COMPILER();');
 		$phar->setSignatureAlgorithm(\Phar::SHA1);
 		$phar->startBuffering();

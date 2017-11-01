@@ -15,6 +15,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
 use pocketmine\utils\TextFormat;
+use pocketmine\Translate;
 use pocketmine\Player;
 
 class SayCommand extends VanillaCommand{
@@ -37,8 +38,13 @@ class SayCommand extends VanillaCommand{
 			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
 			return false;
 		}
-
-		$sender->getServer()->broadcastMessage(new TranslationContainer(TextFormat::YELLOW . "%chat.type.announcement", [$sender instanceof Player ? $sender->getDisplayName() : ($sender instanceof ConsoleCommandSender ? "Sunucu" : $sender->getName()), TextFormat::YELLOW . implode(" ", $args)]));
+		
+		if(Translate::checkTurkish() === "yes"){
+			$sender->getServer()->broadcastMessage(new TranslationContainer(TextFormat::YELLOW . "%chat.type.announcement", [$sender instanceof Player ? $sender->getDisplayName() : ($sender instanceof ConsoleCommandSender ? "Sunucu" : $sender->getName()), TextFormat::YELLOW . implode(" ", $args)]));
+		}else{
+			$sender->getServer()->broadcastMessage(new TranslationContainer(TextFormat::YELLOW . "%chat.type.announcement", [$sender instanceof Player ? $sender->getDisplayName() : ($sender instanceof ConsoleCommandSender ? "Server" : $sender->getName()), TextFormat::YELLOW . implode(" ", $args)]));
+		}
+		
 		return true;
 	}
 }

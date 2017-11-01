@@ -1464,7 +1464,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			return false;
 		}
 		$advancedMove = true;
-		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120 && $advancedMove === true){
+		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120 && $advancedMove === true && Utils::getOS() == "android"){
 			if(Translate::checkTurkish() === "yes"){
 				$this->sendTip(TF::GOLD . "Yürüme 1.2 Sürümünde Hatalı Olabilir");
 			}else{
