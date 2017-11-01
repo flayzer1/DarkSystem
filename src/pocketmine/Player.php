@@ -12,10 +12,8 @@
 namespace pocketmine;
 
 use raklib\Binary;
-use darksystem\DSPlayer;
-use darksystem\DSPlayerInterface;
-use pocketmine\darkbot\DarkBot;
-use pocketmine\darkbot\ChatHandler;
+use darksystem\darkbot\DarkBot;
+use darksystem\darkbot\ChatHandler;
 use pocketmine\block\Block;
 use pocketmine\block\Liquid;
 use pocketmine\command\CommandSender;
@@ -69,6 +67,8 @@ use pocketmine\event\player\PlayerTalkEvent;
 use pocketmine\event\player\PlayerToggleFlightEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\player\PlayerToggleSprintEvent;
+use pocketmine\event\ui\UICloseEvent;
+use pocketmine\event\ui\UIDataReceiveEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\server\DataPacketSendEvent;
 use pocketmine\event\TextContainer;
@@ -185,8 +185,7 @@ use pocketmine\network\protocol\v120\Protocol120;
 use pocketmine\network\multiversion\Multiversion;
 use pocketmine\network\multiversion\MultiversionTags;
 
-//class Player /*extends OnlinePlayer*/ extends Human implements CommandSender, InventoryHolder, IPlayer{
-class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface, CommandSender, InventoryHolder, IPlayer{
+class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 
     const OS_ANDROID = 1;
     const OS_IOS = 2;
@@ -3090,6 +3089,10 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		$pk->type = TextPacket::TYPE_CHAT;
 		$pk->message = $message;
 		$pk->source = $senderName;
+		$sender = $this->server->getPlayer($senderName);
+		if($sender !== null && $sender->getOriginalProtocol() >= ProtocolInfo::PROTOCOL_140){
+			$pk->xuid = $sender->getXUID();
+		}
 		$this->dataPacket($pk);
 	}
 	
@@ -4341,6 +4344,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 		}
 		
 		unset($this->hiddenEntity[$entity->getId()]);
+		
 		if($entity !== $this && !$entity->closed && !$entity->dead){
 			$entity->spawnTo($this);
 		}
@@ -4558,7 +4562,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 					break;
 				}
 				
-				if($itemInHand->getId() === Item::SNOWBALL || $itemInHand->getId() === Item::EGG/* || $itemInHand->getId() === Item::BOAT*/){
+				if($itemInHand->getId() === Item::SNOWBALL || $itemInHand->getId() === Item::EGG || $itemInHand->getId() === Item::ENCHANTING_BOTTLE || $itemInHand->getId() === Item::SPLASH_POTION || $itemInHand->getId() === Item::ENDER_PEARL/* || $itemInHand->getId() === Item::BOAT*/){
 					$yawRad = $this->yaw / 180 * M_PI;
 					$pitchRad = $this->pitch / 180 * M_PI;
 					$nbt = new CompoundTag("", [
@@ -4585,6 +4589,21 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 							break;
 						case Item::EGG:
 							$projectile = Entity::createEntity("Egg", $this->level, $nbt, $this);
+							break;
+						case Item::ENCHANTING_BOTTLE:
+							$f = 1.1;
+							$projectile = Entity::createEntity("ThrownExpBottle", $this->level, $nbt, $this);
+							break;
+						case Item::SPLASH_POTION:
+							$f = 1.1;
+							$nbt["PotionId"] = new ShortTag("PotionId", $item->getDamage());
+							$projectile = Entity::createEntity("ThrownPotion", $this->level, $nbt, $this);
+							break;
+						case Item::ENDER_PEARL:
+							$f = 1.1;
+							//if(floor(($time = microtime(true)) - $this->lastEnderPearlUse) >= 1){
+								$projectile = Entity::createEntity("EnderPearl", $this->level, $nbt, $this);
+							//}
 							break;
 						/*case Item::BOAT:
 							$projectile = Entity::createEntity("Boat", $this->level, $nbt, $this);
@@ -5008,9 +5027,17 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 
 	public function checkModal($formId, $data){
+		if($data === null){
+			$this->server->getPluginManager()->callEvent($ev = new UICloseEvent($this, $packet));
+			$this->activeModalWindows[$formId]->close($this);
+			return true;
+		}
 		if(isset($this->activeModalWindows[$formId])){
 			$this->activeModalWindows[$formId]->handle($data, $this);
-			unset($this->activeModalWindows[$formId]);
+			$this->server->getPluginManager()->callEvent($ev = new UIDataReceiveEvent($this, $packet, $handleData));
+			if(!$ev->isCancelled()){
+				unset($this->activeModalWindows[$formId]);
+			}
 		}
 	}
 	
@@ -5047,7 +5074,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 
 		$pk3 = new PlayerListPacket();
 		$pk3->type = PlayerListPacket::TYPE_ADD;
-		$pk3->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->skinName, /*$this->skinId, */$this->skin, $this->skinGeometryName, /*$this->skinGeometryId, */$this->skinGeometryData, $this->capeData, $this->getXUID()];
+		$pk3->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->skinName, /*$this->skinId, */$this->skin, $this->skinGeometryName, /*$this->skinGeometryId, */$this->skinGeometryData, $this->capeData];
 
 		$pk4 = new AddPlayerPacket();
 		$pk4->uuid = $this->getUniqueId();
@@ -5148,7 +5175,7 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	}
 	
 	private function getNonValidProtocolMessage($protocol){
-		if($protocol > ProtocolInfo::PROTOCOL_137 || ($protocol > ProtocolInfo::PROTOCOL_113 && $protocol < ProtocolInfo::PROTOCOL_120)){
+		if($protocol > ProtocolInfo::CURRENT_PROTOCOL || ($protocol > ProtocolInfo::PROTOCOL_113 && $protocol < ProtocolInfo::PROTOCOL_120)){
 			return TF::WHITE . "We do not support this client version yet.\n" . TF::WHITE ."        The update is coming soon.";
 		}else{
 			return TF::WHITE . "Please update your client version to join";
@@ -5157,21 +5184,40 @@ class Player /*extends OnlinePlayer*/ extends Human implements DSPlayerInterface
 	
 	public function sendFullPlayerList(){
 		$players = $this->server->getOnlinePlayers();
-		if(count($players) > 0){
-			$pk = new PlayerListPacket();
-			$pk->type = PlayerListPacket::TYPE_ADD;
-			$pk->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->getSkinName(), $this->getSkinData(), $this->getCapeData(), $this->getSkinGeometryName(), $this->getSkinGeometryData(), $this->getXUID()];
-			$this->server->batchPackets($players, [$pk]);
-		}
-		
+		$isNeedSendXUID = $this->getOriginalProtocol() >= ProtocolInfo::PROTOCOL_140;
+		$playersWithProtocol140 = [];
+		$otherPlayers = [];
 		$players[] = $this;
 		$pk = new PlayerListPacket();
 		$pk->type = PlayerListPacket::TYPE_ADD;
 		foreach($players as $p){
-			$pk->entries[] = [$p->getUniqueId(), $p->getId(), $p->getName(), $p->getSkinName(), $p->getSkinData(), $p->getCapeData(), $p->getSkinGeometryName(), $p->getSkinGeometryData(), $p->getXUID()];
+			$entry = [$p->getUniqueId(), $p->getId(), $p->getName(), $p->getSkinName(), $p->getSkinData(), $p->getCapeData(), $p->getSkinGeometryName(), $p->getSkinGeometryData()];
+			if($isNeedSendXUID){
+				$entry[] = $p->getXUID();
+			}
+			
+			$pk->entries[] = $entry;
+			if($p->getOriginalProtocol() >= ProtocolInfo::PROTOCOL_140){
+				$playersWithProtocol140[] = $p;
+			}else{
+				$otherPlayers[] = $p;
+			}
 		}
 		
 		$this->server->batchPackets([$this], [$pk]);
+		
+		if(count($playersWithProtocol140) > 0){
+			$pk = new PlayerListPacket();
+			$pk->type = PlayerListPacket::TYPE_ADD;
+			$pk->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->getSkinName(), $this->getSkinData(), $this->getCapeData(), $this->getSkinGeometryName(), $this->getSkinGeometryData(), $this->getXUID()];
+			$this->server->batchPackets($playersWithProtocol140, [$pk]);
+		}
+		
+		if(count($otherPlayers) > 0){
+			$pk = new PlayerListPacket();
+			$pk->type = PlayerListPacket::TYPE_ADD;
+			$pk->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->getSkinName(), $this->getSkinData(), $this->getCapeData(), $this->getSkinGeometryName(), $this->getSkinGeometryData()];
+			$this->server->batchPackets($otherPlayers, [$pk]);
+		}
 	}
-	
 }

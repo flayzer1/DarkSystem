@@ -30,7 +30,6 @@ abstract class DataPacket extends Packet{
         foreach($this->packets as $packet){
             $length += $packet instanceof EncapsulatedPacket ? $packet->getTotalLength() : strlen($packet);
         }
-
         return $length;
     }
 

@@ -11,15 +11,14 @@
 
 namespace pocketmine;
 
-use darksystem\DSPlayer;
 use darksystem\Registerer;
 use darksystem\DarkSystem;
 use pocketmine\block\Block;
-use pocketmine\ui\CustomUI;
+use pocketmine\inventory\customUI\CustomUI;
 use darksystem\ThemeManager;
-use pocketmine\darkbot\DarkBot;
-use pocketmine\multicore\MultiCore;
-use pocketmine\darkbot\command\SpawnDarkBotCommand;
+use darksystem\darkbot\DarkBot;
+use darksystem\multicore\MultiCore;
+use darksystem\darkbot\command\SpawnDarkBotCommand;
 use pocketmine\command\CommandReader;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
@@ -41,7 +40,7 @@ use pocketmine\inventory\ShapedRecipe;
 use pocketmine\inventory\ShapelessRecipe;
 use pocketmine\item\enchantment\{Enchantment, EnchantmentLevelTable};
 use pocketmine\item\Item;
-use pocketmine\language\Language;
+use darksystem\language\Language;
 use pocketmine\level\format\anvil\Anvil;
 use pocketmine\level\format\mcregion\McRegion;
 use pocketmine\level\format\LevelProviderManager;
@@ -77,8 +76,8 @@ use pocketmine\plugin\ScriptPluginLoader;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginLoadOrder;
 use pocketmine\plugin\PluginManager;
-use pocketmine\resourcepacks\ResourcePackManager;
-use pocketmine\behaviorpacks\BehaviorPackManager;
+use darksystem\resourcepacks\ResourcePackManager;
+use darksystem\behaviorpacks\BehaviorPackManager;
 use pocketmine\scheduler\ServerScheduler;
 use pocketmine\scheduler\FileWriteTask;
 use pocketmine\tile\Tile;
@@ -1385,7 +1384,7 @@ class Server extends DarkSystem{
 			$this->pluginPath = realpath($pluginPath) . DIRECTORY_SEPARATOR;
 
 			/*if(!file_exists($this->getDataPath() . "pocketmine.yml")){
-				$content1 = file_get_contents($this->filePath . "src/pocketmine/resources/pocketmine.yml");
+				$content1 = file_get_contents($this->filePath . "src/darksystem/resources/pocketmine.yml");
 				@file_put_contents($this->getDataPath() . "pocketmine.yml", $content1);
 			}*/
 			
@@ -1398,13 +1397,13 @@ class Server extends DarkSystem{
 						break;
 					}
 					
-					if(file_exists($this->filePath . "src/pocketmine/resources/pocketmine_$setupLang.yml")){
-						$content1 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/pocketmine_$setupLang.yml");
+					if(file_exists($this->filePath . "src/darksystem/resources/pocketmine_$setupLang.yml")){
+						$content1 = file_get_contents($file = $this->filePath . "src/darksystem/resources/pocketmine_$setupLang.yml");
 					}else{
-						$content1 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/pocketmine_eng.yml");
+						$content1 = file_get_contents($file = $this->filePath . "src/darksystem/resources/pocketmine_eng.yml");
 					}
 				}else{
-					$content1 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/pocketmine_eng.yml");
+					$content1 = file_get_contents($file = $this->filePath . "src/darksystem/resources/pocketmine_eng.yml");
 				}
 				
 				@file_put_contents($this->getDataPath() . "pocketmine.yml", $content1);
@@ -1415,7 +1414,7 @@ class Server extends DarkSystem{
 			}
 			
 			if(!file_exists($this->getDataPath() . "pocketmine-advanced.yml")){
-				$content2 = file_get_contents($this->filePath . "src/pocketmine/resources/pocketmine-advanced.yml");
+				$content2 = file_get_contents($this->filePath . "src/darksystem/resources/pocketmine-advanced.yml");
 				@file_put_contents($this->getDataPath() . "pocketmine-advanced.yml", $content2);
 			}
 			
@@ -1542,10 +1541,10 @@ class Server extends DarkSystem{
 				unset($this->propertyCache["settings.language"]);
 			}
 			
-			if(file_exists($this->filePath . "src/pocketmine/resources/darksystem_$lang.yml")){
-				$content3 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/darksystem_$lang.yml");
+			if(file_exists($this->filePath . "src/darksystem/resources/darksystem_$lang.yml")){
+				$content3 = file_get_contents($file = $this->filePath . "src/darksystem/resources/darksystem_$lang.yml");
 			}else{
-				$content3 = file_get_contents($file = $this->filePath . "src/pocketmine/resources/darksystem_eng.yml");
+				$content3 = file_get_contents($file = $this->filePath . "src/darksystem/resources/darksystem_eng.yml");
 			}
 			
 			if(!file_exists($this->getDataPath() . "darksystem.yml")){
@@ -1661,8 +1660,13 @@ class Server extends DarkSystem{
 			
 			$this->serverID = Utils::getMachineUniqueId($this->getIp() . $this->getPort());
 			
-			$this->konsol->debug("Sunucu ID: " . $this->getServerUniqueId());
-			$this->konsol->debug("Makine ID: " . Utils::getMachineUniqueId());
+			if(Translate::checkTurkish() === "yes"){
+				$this->konsol->debug("Sunucu ID: " . $this->getServerUniqueId());
+				$this->konsol->debug("Makine ID: " . Utils::getMachineUniqueId());
+			}else{
+				$this->konsol->debug("Server ID: " . $this->getServerUniqueId());
+				$this->konsol->debug("Machine ID: " . Utils::getMachineUniqueId());
+			}
 			
 			$this->network = new Network($this);
 			$this->network->setName($this->getMotd());

@@ -305,9 +305,9 @@ abstract class Command{
 		$this->usageMessage = $usage;
 	}
 
-	public static final function generateDefaultData() : \stdClass{
+	public static final function generateDefaultData(){
 		if(Command::$defaultDataTemplate === null){
-			Command::$defaultDataTemplate = json_decode(file_get_contents(Server::getInstance()->getFilePath() . "src/pocketmine/resources/command_default.json"));
+			Command::$defaultDataTemplate = json_decode(file_get_contents(Server::getInstance()->getFilePath() . "src/darksystem/resources/command_default.json"));
 		}
 		return clone Command::$defaultDataTemplate;
 	}

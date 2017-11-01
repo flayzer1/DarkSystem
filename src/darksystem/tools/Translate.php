@@ -9,8 +9,9 @@
 #                             __/ |                       
 #                            |___/
 
-namespace pocketmine;
+namespace darksystem\tools;
 
+use darksystem\Server;
 use darksystem\language\Language;
 
 class Translate{

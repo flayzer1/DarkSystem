@@ -21,6 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
+use pocketmine\network\multiversion\MultiversionTags;
+
 class TextPacket extends PEPacket{
 	
 	const NETWORK_ID = Info::TEXT_PACKET;
@@ -35,19 +37,31 @@ class TextPacket extends PEPacket{
 	const TYPE_SYSTEM = 6;
 	const TYPE_WHISPER = 7;
 	const TYPE_ANNOUNCEMENT = 8;
-
+	
+	/*const TYPE_RAW = "TYPE_RAW";
+	const TYPE_CHAT = "TYPE_CHAT";
+	const TYPE_TRANSLATION = "TYPE_TRANSLATION";
+	const TYPE_POPUP = "TYPE_POPUP";
+	const TYPE_JUKEBOX_POPUP = "TYPE_JUKEBOX_POPUP";
+	const TYPE_TIP = "TYPE_TIP";
+	const TYPE_SYSTEM = "TYPE_SYSTEM";
+	const TYPE_WHISPER = "TYPE_WHISPER";
+	const TYPE_ANNOUNCEMENT = "TYPE_ANNOUNCEMENT";*/
+	
 	public $type;
 	public $source;
 	public $message;
 	public $parameters = [];
-	public $isLocalize = true;
-
+	public $isLocalize = false;
+	public $xuid = "";
+	
 	public function decode($playerProtocol){
 		$this->getHeader($playerProtocol);
 		$this->type = $this->getByte();
 		if($playerProtocol >= Info::PROTOCOL_120){
 			$this->isLocalize = $this->getByte();
 		}
+		//$this->type = MultiversionEnums::getMessageType($playerProtocol, $this->type);
 		switch($this->type){
 			case TextPacket::TYPE_POPUP:
 			case TextPacket::TYPE_CHAT:
@@ -57,7 +71,6 @@ class TextPacket extends PEPacket{
 			case TextPacket::TYPE_SYSTEM:
 				$this->message = $this->getString();
 				break;
-
 			case TextPacket::TYPE_TRANSLATION:
 				$this->message = $this->getString();
 				$count = $this->getByte();
@@ -65,10 +78,15 @@ class TextPacket extends PEPacket{
 					$this->parameters[] = $this->getString();
 				}
 		}
+		if($playerProtocol >= Info::PROTOCOL_120){
+			$this->xuid = $this->getString();
+		}
 	}
 
 	public function encode($playerProtocol){
 		$this->reset($playerProtocol);
+		//$typeId = MultiversionTags::getMessageTypeId($playerProtocol, $this->type);
+		//$this->putByte($typeId);
 		$this->putByte($this->type);
 		if($playerProtocol >= Info::PROTOCOL_120){
 			$this->putByte($this->isLocalize);
@@ -84,13 +102,21 @@ class TextPacket extends PEPacket{
             case TextPacket::TYPE_WHISPER:
 				$this->putString($this->message);
 				break;
-
 			case TextPacket::TYPE_TRANSLATION:
 				$this->putString($this->message);
 				$this->putByte(count($this->parameters));
 				foreach($this->parameters as $p){
 					$this->putString($p);
 				}
+			case TextPacket::TYPE_JUKEBOX_POPUP:
+				$this->putString($this->message);
+				$this->putVarInt(count($this->parameters));
+				foreach($this->parameters as $p){
+					$this->putString($p);
+				}
+		}
+		if($playerProtocol >= Info::PROTOCOL_120){
+			$this->putString($this->xuid);
 		}
 	}
 }

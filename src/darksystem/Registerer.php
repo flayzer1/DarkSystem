@@ -12,7 +12,7 @@
 namespace darksystem;
 
 use pocketmine\Server;
-use pocketmine\darkbot\entity\NPC;
+use darksystem\darkbot\entity\NPC;
 use pocketmine\entity\{Entity, Arrow, BlazeFireball, BlueWitherSkull, Boat, Camera, Car, Item as DroppedItem, Egg, EnderCrystal, EnderPearl, FallingSand, FishingHook, FloatingText, GhastFireball, LeashKnot, Lightning, Minecart, MinecartChest, MinecartHopper, MinecartTNT, Painting, PrimedTNT, ShulkerBullet, Snowball, ThrownExpBottle, ThrownPotion, XPOrb, Herobrine, Human, Dragon, ElderGuardian, EnderDragon, Endermite, EvocationFangs, Giant, Guardian, Illusioner, LavaSlime, Llama, PolarBear, Shulker, Slime, SkeletonHorse, Squid, Vindicator, Witch, Wither, WitherSkeleton, ZombieHorse};
 use pocketmine\entity\animal\walking\{Chicken, Cow, Donkey, Horse, Mooshroom, Mule, Ocelot, Pig, Rabbit, Sheep, Villager};
 use pocketmine\entity\animal\flying\{Bat, Parrot};

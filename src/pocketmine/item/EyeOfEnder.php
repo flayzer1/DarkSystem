@@ -15,7 +15,7 @@ class EyeOfEnder extends Item
         parent::__construct(self::EYE_OF_ENDER, 0, $count, "Eye Of Ender");
     }
 
-    public function canBeActivated(): bool
+    public function canBeActivated()
     {
         return true;
     }
@@ -125,5 +125,4 @@ class EyeOfEnder extends Item
         }
         return parent::onActivate($level, $player, $block, $target, $face, $fx, $fy, $fz);
     }
-
 }

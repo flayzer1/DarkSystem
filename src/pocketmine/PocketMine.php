@@ -54,12 +54,12 @@ namespace{
 
 namespace pocketmine{
 	
-	use darksystem\DarkSystem;
-	use pocketmine\darkbot\DarkBot;
+	//use darksystem\Server;
+	use darksystem\darkbot\DarkBot;
 	use pocketmine\utils\MainLogger;
 	use pocketmine\utils\Terminal;
 	use pocketmine\utils\Utils;
-	use pocketmine\setup\Setup;
+	use darksystem\setup\Setup;
 
 	const VERSION = "3.0.0";
 	const DARKBOT_VERSION = "1.0.0";
@@ -109,7 +109,7 @@ namespace pocketmine{
 		}
 		
 		if(count($issues) >= 1){
-			if(strpos($result, "in" || strpos($result, "un"))){
+			if(strpos($result, "in") || strpos($result, "un")){
 				switch($result){
 					case "invalid_ds_ver":
 					if(Translate::checkTurkish() === "yes"){
@@ -153,14 +153,26 @@ namespace pocketmine{
 	}
 	
 	if(version_compare("7.0", PHP_VERSION) > 0){
-		echo "[HATA] PHP 7.0 Kullanmalısınız!" . PHP_EOL;
-		echo "[HATA] Yükleyici Kullanarak İndiriniz!" . PHP_EOL;
+		if(Translate::checkTurkish() === "yes"){
+			echo "[HATA] PHP 7.0 Kullanmalısınız!" . PHP_EOL;
+			echo "[HATA] Yükleyici Kullanarak İndiriniz!" . PHP_EOL;
+		}else{
+			echo "[ERROR] You have to use PHP 7.0!" . PHP_EOL;
+			echo "[ERROR] Please Install!" . PHP_EOL;
+		}
+		
 		exit(1);
 	}
 
 	if(!extension_loaded("pthreads")){
-		echo "[HATA] pthreads Bulunamadı!" . PHP_EOL;
-		echo "[HATA] Yükleyici Kullanarak İndiriniz!" . PHP_EOL;
+		if(Translate::checkTurkish() === "yes"){
+			echo "[HATA] pthreads Bulunamadı!" . PHP_EOL;
+			echo "[HATA] Yükleyici Kullanarak İndiriniz!" . PHP_EOL;
+		}else{
+			echo "[ERROR] pthreads Not Found!" . PHP_EOL;
+			echo "[ERROR] Please Install!" . PHP_EOL;
+		}
+		
 		exit(1);
 	}
 	
@@ -272,12 +284,22 @@ namespace pocketmine{
 	$errors = 0;
 
 	if(php_sapi_name() !== "cli"){
-		$konsol->critical("You must run DarkSystem using the CLI.");
+		if(Translate::checkTurkish() === "yes"){
+			$konsol->critical("DarkSystem'i CLI Kullanarak Çalıştırmalısınız.");
+		}else{
+			$konsol->critical("You must run DarkSystem using the CLI.");
+		}
+		
 		++$errors;
 	}
 
 	if(!extension_loaded("sockets")){
-		$konsol->critical("Unable to find the Socket extension.");
+		if(Translate::checkTurkish() === "yes"){
+			$konsol->critical("Soket Uzantısı Bulunamadı.");
+		}else{
+			$konsol->critical("Unable to find the Socket extension.");
+		}
+		
 		++$errors;
 	}
 
@@ -310,12 +332,7 @@ namespace pocketmine{
 		$konsol->critical("Unable to find the YAML extension.");
 		++$errors;
 	}
-
-	if(!extension_loaded("sqlite3")){
-		$konsol->critical("Unable to find the SQLite3 extension.");
-		++$errors;
-	}
-
+	
 	if(!extension_loaded("zlib")){
 		$konsol->critical("Unable to find the Zlib extension.");
 		++$errors;
@@ -333,7 +350,6 @@ namespace pocketmine{
 	
 	ThreadManager::init();
 	
-	//new DarkSystem($autoloader, $konsol, \pocketmine\PATH, \pocketmine\DATA, \pocketmine\PLUGIN_PATH, $lang);
 	new Server($autoloader, $konsol, \pocketmine\PATH, \pocketmine\DATA, \pocketmine\PLUGIN_PATH, $lang);
 	
 	foreach(ThreadManager::getInstance()->getAll() as $id => $thread){

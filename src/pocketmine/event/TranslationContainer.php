@@ -21,6 +21,7 @@ class TranslationContainer extends TextContainer{
 	 */
 	public function __construct($text, array $params = []){
 		parent::__construct($text);
+		
 		$this->setParameters($params);
 	}
 

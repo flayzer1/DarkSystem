@@ -1303,7 +1303,6 @@ class Level implements ChunkManager, Metadatable{
 	public function useItemOn(Vector3 $vector, Item &$item, $face, $fx = 0.0, $fy = 0.0, $fz = 0.0, Player $player = null){
 		$target = $this->getBlock($vector);
 		$block = $target->getSide($face);
-
 		if($block->y >= $this->getMaxY() || $block->y < 0){
 			return false;
 		}
@@ -1367,10 +1366,8 @@ class Level implements ChunkManager, Metadatable{
 						continue;
 					}
 				}
-
 				++$realCount;
 			}
-
 			if($realCount > 0){
 				return false;
 			}
@@ -1410,12 +1407,10 @@ class Level implements ChunkManager, Metadatable{
 				$tile->namedtag->Creator = new StringTag("Creator", $player->getName());
 			}
 		}
-		
 		$item->setCount($item->getCount() - 1);
 		if($item->getCount() <= 0){
 			$item = Item::get(Item::AIR, 0, 0);
 		}
-
 		return true;
 	}
 

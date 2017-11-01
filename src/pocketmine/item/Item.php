@@ -14,10 +14,6 @@ namespace pocketmine\item;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\block\Block;
-use pocketmine\block\Flower;
-use pocketmine\entity\Entity;
-use pocketmine\entity\Squid;
-use pocketmine\entity\Villager;
 use pocketmine\inventory\Fuel;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\level\Level;
@@ -433,6 +429,7 @@ class Item{
 	const RAW_CHICKEN = 365;
 	const COOKED_CHICKEN = 366;
 	const ROTTEN_FLESH = 367;
+	const ENDER_PEARL = 368;
 	const BLAZE_ROD = 369;
 	const GHAST_TEAR = 370;
 	const GOLD_NUGGET = 371;
@@ -450,6 +447,8 @@ class Item{
 	const GLISTERING_MELON = 382;
 	const SPAWN_EGG = 383;
 	const BOTTLE_ENCHANTING = 384;
+	const BOTTLE_O_ENCHANTING = 384;
+	const ENCHANTING_BOTTLE = 384;
 	const FIRE_CHARGE = 385;
 	const WRITABLE_BOOK = 386;
 	const WRITTEN_BOOK = 387;
@@ -463,6 +462,7 @@ class Item{
 	const BAKED_POTATO = 393;
 	const BAKED_POTATOES = 393;
 	const POISONOUS_POTATO = 394;
+	const MAP = 395;
 	const EMPTY_MAP = 395;
 	const GOLDEN_CARROT = 396;
 	const MOB_HEAD = 397;
@@ -506,6 +506,7 @@ class Item{
 	const LINGERING_POTION = 441;
 	const ELYTRA = 444;
 	const SHULKER_SHELL = 445;
+	const TOTEM = 450;
 	const BEETROOT = 457;
 	const BEETROOT_SEEDS = 458;
 	const BEETROOT_SEED = 458;
@@ -913,6 +914,11 @@ class Item{
 		if(Item::$list === null){
 			Item::$list = new \SplFixedArray(65536);
 			Item::$list[Item::SUGARCANE] = Sugarcane::class;
+			Item::$list[Item::ENDER_PEARL] = EnderPearl::class;
+			Item::$list[Item::EYE_OF_ENDER] = EyeOfEnder::class;
+			Item::$list[Item::DRAGONS_BREATH] = DragonsBreath::class;
+			Item::$list[Item::SHULKER_SHELL] = ShulkerShell::class;
+			Item::$list[Item::POPPED_CHORUS_FRUIT] = PoppedChorusFruit::class;
 			Item::$list[Item::WHEAT_SEEDS] = WheatSeeds::class;
 			Item::$list[Item::PUMPKIN_SEEDS] = PumpkinSeeds::class;
 			Item::$list[Item::MELON_SEEDS] = MelonSeeds::class;
@@ -1006,7 +1012,13 @@ class Item{
 			Item::$list[Item::ELYTRA] = Elytra::class;
 			Item::$list[Item::PRISMARINE_CRYSTAL] = PrismarineCrystal::class;
 			Item::$list[Item::CHORUS_FRUIT] = ChorusFruit::class;
+			Item::$list[Item::NETHER_QUARTZ] = NetherQuartz::class;
 			Item::$list[Item::POTION] = Potion::class;
+			Item::$list[Item::GLASS_BOTTLE] = GlassBottle::class;
+			Item::$list[Item::SPLASH_POTION] = SplashPotion::class;
+			Item::$list[Item::ENCHANTING_BOTTLE] = EnchantingBottle::class;
+			Item::$list[Item::BOAT] = Boat::class;
+			Item::$list[Item::MINECART] = Minecart::class;
 			Item::$list[Item::MUSIC_DISC_13] = MusicDisc13::class;
 			Item::$list[Item::MUSIC_DISC_CAT] = MusicDiscCat::class;
 			Item::$list[Item::MUSIC_DISC_BLOCKS] = MusicDiscBlocks::class;
@@ -1034,7 +1046,7 @@ class Item{
 	
 	private static function initCreativeItems(){
 		Item::clearCreativeItems();
-		$creativeItems = new Config(Server::getInstance()->getFilePath() . "src/pocketmine/resources/creativeitems.json", Config::JSON, []);
+		$creativeItems = new Config(Server::getInstance()->getFilePath() . "src/darksystem/resources/creativeitems.json", Config::JSON, []);
 		foreach($creativeItems->getAll() as $data){
 			$item = Item::get($data["id"], $data["damage"], $data["count"], $data["nbt"]);
 			/*if($item->getName() === "Bilinmeyen"){

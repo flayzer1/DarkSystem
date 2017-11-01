@@ -30,7 +30,7 @@ class ThrownExpBottle extends Projectile
 
     private $hasSplashed = false;
 
-    public function __construct(Level $level, Compound $nbt, Entity $shootingEntity = null)
+    public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null)
     {
         parent::__construct($level, $nbt, $shootingEntity);
     }

@@ -304,7 +304,7 @@ class Utils{
 	 *
 	 * @return string
 	 */
-	public static function hexdump($bin){
+	public static function hexDump($bin){
 		$output = "";
 		$bin = str_split($bin, 16);
 		foreach($bin as $counter => $line){
@@ -387,6 +387,7 @@ class Utils{
 				$value ^= hash("sha256", $c . microtime() . $k, true) . hash("sha256", mt_rand() . microtime() . $k . $c, true);
 				$value ^= hash("sha512", ((string) lcg_value()) . $c . microtime() . $k, true);
 			}
+			
 			unset($weakEntropy);
 
 			if($secure === true){

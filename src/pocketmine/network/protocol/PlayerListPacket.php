@@ -57,8 +57,7 @@ class PlayerListPacket extends PEPacket{
 						$this->putString(isset($d[5]) ? $d[5] : "");
 						$this->putString(isset($d[6]) ? $d[6] : "");
 						$this->putString(isset($d[7]) ? $d[7] : "");
-						$this->putString("");
-						//$this->putString(isset($d[8]) ? $d[8] : "");
+						$this->putString(isset($d[8]) ? $d[8] : "");
 					}else{
 						$this->putString("Standard_Custom");
 						$this->putString($d[4]);
