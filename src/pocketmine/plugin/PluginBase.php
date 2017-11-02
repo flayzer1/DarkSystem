@@ -99,21 +99,22 @@ abstract class PluginBase implements Plugin{
 		}
 	}
 	
-	protected final function initCommands() {
-		$jsonFilePath = 'commands.json';
-		if (substr($this->file, 0, 4) === 'phar') {
+	protected final function initCommands(){
+		$jsonFilePath = "commands.json";
+		if(substr($this->file, 0, 4) === "phar"){
 			$phar = new \Phar($this->file);
-			if (!isset($phar[$jsonFilePath]) || !($phar[$jsonFilePath] instanceof \PharFileInfo)) {
+			if(!isset($phar[$jsonFilePath]) || !($phar[$jsonFilePath] instanceof \PharFileInfo)){
 				return;
 			}
+			
 			$json = $phar[$jsonFilePath]->getContent();
-		} else {
-			if (!file_exists($this->file . $jsonFilePath) || ($json = file_get_contents($this->file . $jsonFilePath)) === false) {
+		}else{
+			if(!file_exists($this->file . $jsonFilePath) || ($json = file_get_contents($this->file . $jsonFilePath)) === false){
 				return;
 			}
 		}
 
-		if (is_null($commands = json_decode($json, true))) {
+		if(is_null($commands = json_decode($json, true))){
 			return;
 		}
 		
@@ -123,11 +124,11 @@ abstract class PluginBase implements Plugin{
 	/**
 	 * @return array
 	 */
-	public function getJsonCommands() {
+	public function getJsonCommands(){
 		return $this->jsonCommands;
 	}
 
-	public function setJsonCommands($commands) {
+	public function setJsonCommands($commands){
         $this->jsonCommands = $commands;
     }
 

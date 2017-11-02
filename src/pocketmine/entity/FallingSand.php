@@ -81,7 +81,7 @@ class FallingSand extends Entity{
 		$this->lastUpdate = $currentTick;
 
 		$hasUpdate = $this->entityBaseTick($tickDiff);
-		if(!$this->dead){
+		if($this->isAlive()){
 			if($this->ticksLived === 1){
 				$block = $this->level->getBlock($pos = (new Vector3($this->x, $this->y, $this->z))->floor());
 				if($block->getId() != $this->blockId){
