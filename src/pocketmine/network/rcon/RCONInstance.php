@@ -11,7 +11,7 @@
 
 namespace pocketmine\network\rcon;
 
-use pocketmine\Thread;
+use darksystem\Thread;
 use pocketmine\utils\Binary;
 use pocketmine\utils\MainLogger;
 

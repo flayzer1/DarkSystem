@@ -22,7 +22,7 @@ class FunctionManager{
 				break;
 			case "mac":
 			case "linux":
-			default:
+				default;
 				if(function_exists("posix_kill")){
 					posix_kill($pid, SIGKILL);
 				}else{

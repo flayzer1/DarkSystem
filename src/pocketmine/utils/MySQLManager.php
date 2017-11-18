@@ -17,10 +17,10 @@ class MySQLManager extends DataBase{
 	private $dbname;
 	private $database;
 
-	public function __construct($server,$host,$user,$pass,$dbname,$port = 19132){
+	public function __construct($server, $host, $user, $pass, $dbname, $port = 19132){
 		$this->server = $server;
 		$this->dbname = $dbname;
-		$this->database = new \mysqli($host,$user,$pass,$dbname,$port);
+		$this->database = new \mysqli($host, $user, $pass, $dbname, $port);
 	}
 
 	public function Connect(){
@@ -44,7 +44,7 @@ class MySQLManager extends DataBase{
 		$sql = "SELECT `name`,`slot`,`id`,`meta`,`count` FROM InventoryData WHERE name='".strtolower($player->getName())."'";
 		$res = $this->db->query($sql);
 		if(!$res === false){
-			while(($row = $res->fetch_assoc()) != null){
+			while(($row = $res->fetch_assoc()) !== null){
 				$player->getInventory()->setItem($row["slot"],Item::get($row["id"],$row["meta"],$row["count"]));
 			}
 		}
@@ -58,7 +58,7 @@ class MySQLManager extends DataBase{
 
 		$inventory = $player->getInventory();
 
-		foreach ($inventory->getContents() as $slot=>&$item){
+		foreach($inventory->getContents() as $slot=>&$item){
 			$id = $item->getId();
 			$meta = $item->getDamage();
 			$count = $item->getCount();

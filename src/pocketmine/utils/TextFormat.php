@@ -29,6 +29,7 @@ abstract class TextFormat{
 	const AQUA = "§b";
 	const RED = "§c";
 	const LIGHT_PURPLE = "§d";
+	const PINK = "§d";
 	const YELLOW = "§e";
 	const WHITE = "§f";
 
@@ -38,7 +39,14 @@ abstract class TextFormat{
 	const UNDERLINE = "§n";
 	const ITALIC = "§o";
 	const RESET = "§r";
-
+	const CLEAN = "§r";
+	
+	const SPACE = " ";
+	const DOUBLE_SPACE = "  ";
+	const NEW_LINE = "\n";
+	const SPACE_NEW_LINE = " \n";
+	const DOUBLE_SPACE_NEW_LINE = "  \n";
+	
 	/**
 	 * @param string $string
 	 *

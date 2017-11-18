@@ -22,5 +22,4 @@ class ItemFrameBlock extends Solid{
 	public function getName(){
         return "Item Frame Block";
 	}
-
 }

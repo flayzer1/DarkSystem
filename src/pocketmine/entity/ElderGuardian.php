@@ -21,7 +21,7 @@ use pocketmine\Player;
 
 class ElderGuardian extends WaterAnimal implements Ageable
 {
-    const NETWORK_ID = 50;
+    const NETWORK_ID = self::ELDER_GUARDIAN;
 
     public $width = 1.45;
     public $length = 1.45;
@@ -90,7 +90,6 @@ class ElderGuardian extends WaterAnimal implements Ageable
         $hasUpdate = parent::onUpdate($currentTick);
 
         if ($this->isAlive()) {
-
             if ($this->y > 62 and $this->swimDirection !== null) {
                 $this->swimDirection->y = -0.5;
             }
@@ -132,15 +131,13 @@ class ElderGuardian extends WaterAnimal implements Ageable
             if ($this->onGround) {
                 $this->motionY *= -0.5;
             }
-
         }
 
         $this->timings->stopTiming();
 
         return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
     }
-
-
+    
     public function spawnTo(Player $player)
     {
         $pk = new AddEntityPacket();

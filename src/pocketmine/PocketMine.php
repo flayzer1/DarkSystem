@@ -9,6 +9,8 @@
 #                             __/ |                       
 #                            |___/   Unleash Your Power Turkey!
 #;	
+#}	
+#}				
 
 namespace{
 	
@@ -55,19 +57,26 @@ namespace{
 namespace pocketmine{
 	
 	//use darksystem\Server;
+	use darksystem\ThreadManager;
+	use darksystem\multicore\CoreWorker;
+	use darksystem\multicore\MultiCore;
 	use darksystem\darkbot\DarkBot;
 	use pocketmine\utils\MainLogger;
 	use pocketmine\utils\Terminal;
 	use pocketmine\utils\Utils;
 	use darksystem\setup\Setup;
 
-	const VERSION = "3.0.0";
+	const VERSION = "4.0.0";
 	const DARKBOT_VERSION = "1.0.0";
 	const API_VERSION = "3.0.1";
-	const TAG = "Orichalcum";
-	const CURRENT_STATUS = "passing";
+	const TAG = "Chloropyte";
+	const CURRENT_STATUS = "alpha";
 	const CODENAME = "DarkSystem";
 	const CREATOR = "DarkYusuf13";
+	
+	function unlink(){
+		return true;
+	}
 	
 	if(\Phar::running(true) !== ""){
 		@define("pocketmine\\PATH", \Phar::running(true) . "/");

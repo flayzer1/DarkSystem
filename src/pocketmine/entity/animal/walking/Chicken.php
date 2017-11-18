@@ -24,7 +24,11 @@ class Chicken extends WalkingAnimal{
 
 		$this->setMaxHealth(4);
 	}
-
+	
+	public function isBaby(){
+		return $this->getDataFlag(self::DATA_AGEABLE_FLAGS, self::DATA_FLAG_BABY);
+	}
+	
 	public function targetOption(Creature $creature, $distance){
 		if($creature instanceof Player){
 			return $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::SEEDS && $distance <= 39;

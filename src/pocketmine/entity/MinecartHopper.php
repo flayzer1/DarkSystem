@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class MinecartHopper extends Minecart{
 	
-	const NETWORK_ID = 96;
+	const NETWORK_ID = self::HOPPER_MINECART;
 
 	/**
 	 * @return string

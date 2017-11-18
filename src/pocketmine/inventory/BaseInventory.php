@@ -109,7 +109,7 @@ abstract class BaseInventory implements Inventory{
 					$this->clear($i);
 				}
 			}else{
-				if (!$this->setItem($i, $items[$i])){
+				if(!$this->setItem($i, $items[$i])){
 					$this->clear($i);
 				}
 			}
@@ -228,7 +228,7 @@ abstract class BaseInventory implements Inventory{
 		}
 		$emptySlots = [];
 		$invSize = $this->getSize();
-		for ($i = 0; $i < $invSize; ++$i) {
+		for($i = 0; $i < $invSize; ++$i){
 			$item = $this->getItem($i);
 			if($item->getId() === Item::AIR || $item->getCount() <= 0){
 				$emptySlots[] = $i;

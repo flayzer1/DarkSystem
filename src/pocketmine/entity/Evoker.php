@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class Evoker extends Illager
 {
-	const NETWORK_ID = 104;
+	const NETWORK_ID = self::EVOKER;
 
 	public function getName()
 	{

@@ -14,9 +14,9 @@ namespace pocketmine\entity;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
-class Camera extends Living
+class Camera extends Creature
 {
-    const NETWORK_ID = 62;
+    const NETWORK_ID = self::CAMERA;
 
     public $width = 1;
     public $length = 2;

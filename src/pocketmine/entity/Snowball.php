@@ -20,7 +20,7 @@ use pocketmine\Player;
 
 class Snowball extends Projectile{
 	
-	const NETWORK_ID = 81;
+	const NETWORK_ID = self::SNOWBALL;
 
 	public $width = 0.23; //Default: 0.25
 	public $length = 0.23; //This

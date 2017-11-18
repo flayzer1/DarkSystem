@@ -23,7 +23,7 @@ use pocketmine\nbt\tag\CompoundTag;
 
 class Boat extends Vehicle
 {
-    const NETWORK_ID = 90;
+    const NETWORK_ID = self::BOAT;
 
     public $height = 0.7;
     public $width = 1.6;

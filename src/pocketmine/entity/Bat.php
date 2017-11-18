@@ -19,7 +19,7 @@ use pocketmine\Player;
 
 class Bat extends FlyingAnimal
 {
-    const NETWORK_ID = 19;
+    const NETWORK_ID = self::BAT;
 
     const DATA_IS_RESTING = 16;
 

@@ -18,9 +18,9 @@ use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\item\Item as ItemItem;
 use pocketmine\Player;
 
-class Lightning extends Animal
+class Lightning extends Creature
 {
-    const NETWORK_ID = 93;
+    const NETWORK_ID = self::LIGHTNING;
 
     public $width = 0.3;
     public $length = 0.9;
@@ -34,14 +34,15 @@ class Lightning extends Animal
     public function initEntity()
     {
         parent::initEntity();
+        
         $this->setMaxHealth(2);
-        $this->setHealth(2);
+        $this->setHealth($this->getMaxHealth());
     }
 
     public function onUpdate($tick)
     {
         parent::onUpdate($tick);
-        if ($this->age > 20) {
+        if($this->age > 20){
             $this->kill();
             $this->close();
         }

@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class ZombieHorse extends Monster
 {
-	const NETWORK_ID = 27;
+	const NETWORK_ID = self::ZOMBIE_HORSE;
 
 	public function getName()
 	{

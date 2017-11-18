@@ -27,8 +27,8 @@ class AddPlayerPacket extends PEPacket{
 	public $speedX;
 	public $speedY;
 	public $speedZ;
-	public $pitch;
-	public $yaw;
+	public $pitch = 0.0;
+	public $yaw = 0.0;
 	public $item;
 	public $metadata;
 	public $links = [];

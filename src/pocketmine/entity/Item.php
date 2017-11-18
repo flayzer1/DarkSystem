@@ -29,7 +29,7 @@ use pocketmine\level\Level;
 
 class Item extends Entity{
 	
-	const NETWORK_ID = 64;
+	const NETWORK_ID = self::ITEM;
 
 	protected $owner = null;
 	protected $thrower = null;
@@ -43,7 +43,7 @@ class Item extends Entity{
 	public $height = 0.25;
 	
 	protected $gravity = 0.04;
-//	protected $drag = 0.02;
+	//protected $drag = 0.02;
 	protected $drag = 0.15;
 
 	public $canCollide = false;
@@ -234,7 +234,6 @@ class Item extends Entity{
 			$this->hasSpawned[$player->getId()] = $player;
 		}
 	}
-
 	
 	protected function updateMovement(){	
 		$diffPositionX =  abs($this->x - $this->lastX);

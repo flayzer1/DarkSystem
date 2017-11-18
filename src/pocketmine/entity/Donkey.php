@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class Donkey extends Animal
 {
-	const NETWORK_ID = 24;
+	const NETWORK_ID = self::DONKEY;
 
 	public function getName()
 	{

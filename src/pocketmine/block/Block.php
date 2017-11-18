@@ -20,8 +20,8 @@ use pocketmine\level\MovingObjectPosition;
 use pocketmine\level\Position;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
-use pocketmine\metadata\Metadatable;
-use pocketmine\metadata\MetadataValue;
+use darksystem\metadata\Metadatable;
+use darksystem\metadata\MetadataValue;
 use pocketmine\plugin\Plugin;
 
 class Block extends Position implements Metadatable{

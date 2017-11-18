@@ -17,6 +17,7 @@ use pocketmine\level\generator\normal\Normal;
 use pocketmine\utils\Random;
 
 abstract class Generator{
+	
 	private static $list = [];
 
 	public static function addGenerator($object, $name){

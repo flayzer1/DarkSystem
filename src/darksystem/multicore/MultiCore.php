@@ -11,10 +11,9 @@
 
 namespace darksystem\multicore;
 
-use pocketmine\event\Timings;
 use pocketmine\Server;
 use pocketmine\scheduler\AsyncTask;
-use pocketmine\multicore\task\InitialTask;
+use darksystem\multicore\task\InitialTask;
 
 class MultiCore{
 	
@@ -25,70 +24,79 @@ class MultiCore{
 	private $pool;
 	
 	/** @var AsyncTask[] */
-	private $tasks = [ ];
+	private $tasks = [];
 	
 	protected $size;
 	
-	public function __construct(Server $server, $size) {
+	public function __construct(Server $server, $size){
 		$this->server = $server;
-		$this->size = ( int ) $size;
-		$this->pool = new \Pool ( $size, CoreWorker::class, [ 
-			$this->server->getLogger () 
-		] );
-		/*for($i = 0; $i < $size; $i ++)
-			$this->pool->submit ( new InitialTask () );
-		}*/
+		$this->size = (int) $size;
+		$this->pool = new \Pool($size, CoreWorker::class, [
+			$this->server->getLogger()
+		]);
+		
+		for($i = 0; $i < $size; $i ++){
+			$this->pool->submit(new InitialTask());
+		}
 	}
-	public function getSize() {
+	
+	public function getSize(){
 		return $this->size;
 	}
-	public function increaseSize($newSize) {
+	
+	public function increaseSize($newSize){
 		$this->size = $newSize;
-		$this->pool->resize ( $newSize );
+		$this->pool->resize($newSize);
 	}
-	public function submitTaskToWorker(AsyncTask $task, $worker) {
-		if ($task->isGarbage ())
+	
+	public function submitTaskToWorker(AsyncTask $task, $worker){
+		if($task->isGarbage()){
 			return;
+		}
 		
-		$worker = ( int ) $worker;
-		if ($worker < 0 or $worker >= $this->size)
-			throw new \InvalidArgumentException ( "Invalid worker $worker" );
+		$worker = (int) $worker;
+		if($worker < 0 || $worker >= $this->size){
+			throw new \InvalidArgumentException("Invalid worker $worker");
+		}
 		
-		$this->tasks [$task->getTaskId ()] = $task;
-		$this->pool->submitTo ( ( int ) $worker, $task );
+		$this->tasks[$task->getTaskId()] = $task;
+		$this->pool->submitTo((int) $worker, $task);
 	}
-	public function submitTask(AsyncTask $task) {
-		if ($task->isGarbage ())
+	
+	public function submitTask(AsyncTask $task){
+		if($task->isGarbage()){
 			return;
+		}
 		
-		$this->tasks [$task->getTaskId ()] = $task;
-		$this->pool->submit ( $task );
+		$this->tasks[$task->getTaskId()] = $task;
+		$this->pool->submit($task);
 	}
-	private function removeTask(AsyncTask $task, $force = false) {
-		unset ( $this->tasks [$task->getTaskId ()] );
+	
+	private function removeTask(AsyncTask $task, $force = false){
+		unset($this->tasks[$task->getTaskId()]);
 	}
-	public function removeTasks() {
-		$this->pool->shutdown ();
+	
+	public function removeTasks(){
+		$this->pool->shutdown();
 	}
-	public function collectTasks() {
-		Timings::$schedulerAsyncTimer->startTiming ();
-		
-		for($i = 0; $i < 2; $i ++) {
-			if (! $this->pool->collect ( function (AsyncTask $task) {
-				if ($task->isGarbage () and ! $task->isRunning () and ! $task->isCrashed ()) {
-					if (! $task->hasCancelledRun ()) {
-						$task->onCompletion ( $this->server );
+	
+	public function collectTasks(){
+		for($i = 0; $i < 2; $i ++){
+			if(!$this->pool->collect(function (AsyncTask $task){
+				if($task->isGarbage() && !$task->isRunning() && !$task->isCrashed()){
+					if(!$task->hasCancelledRun()){
+						$task->onCompletion($this->server);
 					}
-					$this->removeTask ( $task );
-				} elseif ($task->isTerminated () or $task->isCrashed ()) {
-					$this->server->getLogger ()->critical ( "Could not execute asynchronous task " . (new \ReflectionClass ( $task ))->getShortName () . ": Task crashed" );
-					$this->removeTask ( $task );
+					
+					$this->removeTask($task);
+				}elseif($task->isTerminated() || $task->isCrashed()){
+					$this->server->getLogger()->critical("Could not execute asynchronous task " . (new \ReflectionClass($task))->getShortName() . ": Task crashed");
+					$this->removeTask($task);
 				}
 				
-				return $task->isGarbage ();
+				return $task->isGarbage();
 			} ))
 				break;
 		}
-		Timings::$schedulerAsyncTimer->stopTiming ();
 	}
 }

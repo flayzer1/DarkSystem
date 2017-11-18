@@ -11,9 +11,11 @@
 
 namespace pocketmine;
 
-use pocketmine\metadata\MetadataValue;
+use darksystem\metadata\MetadataValue;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\Plugin;
+use pocketmine\IPlayer;
+//use darksystem\IPlayer;
 
 class OfflinePlayer implements IPlayer{
 

@@ -1,23 +1,13 @@
 <?php
 
-/*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\block;
 
@@ -29,7 +19,6 @@ use pocketmine\Server;
 
 class CocoaBlock extends Solid
 {
-
     protected $id = self::COCOA_BLOCK;
 
     public function __construct($meta = 0)
@@ -37,7 +26,7 @@ class CocoaBlock extends Solid
         $this->meta = $meta;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Cocoa Block";
     }
@@ -52,7 +41,7 @@ class CocoaBlock extends Solid
         return 15;
     }
 
-    public function canBeActivated(): bool
+    public function canBeActivated()
     {
         return true;
     }
@@ -120,7 +109,7 @@ class CocoaBlock extends Solid
         return false;
     }
 
-    public function getDrops(Item $item): array
+    public function getDrops(Item $item)
     {
         $drops = [];
         if ($this->meta >= 8) {

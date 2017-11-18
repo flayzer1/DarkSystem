@@ -16,13 +16,14 @@ use pocketmine\Player;
 
 class EnderDragon extends Monster
 {
-	const NETWORK_ID = 53;
+	const NETWORK_ID = self::ENDER_DRAGON;
 	
 	public $dropExp = [500, 12,000];
 
 	public function initEntity()
 	{
 		$this->setMaxHealth(200);
+		
 		parent::initEntity();
 	}
 	

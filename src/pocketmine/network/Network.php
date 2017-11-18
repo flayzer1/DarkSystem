@@ -37,6 +37,7 @@ use pocketmine\network\protocol\Info as ProtocolInfo;
 use pocketmine\network\protocol\Info105 as ProtocolInfo105;
 use pocketmine\network\protocol\Info110 as ProtocolInfo110;
 use pocketmine\network\protocol\Info120 as ProtocolInfo120;
+use pocketmine\network\protocol\Info150 as ProtocolInfo150;
 use pocketmine\network\protocol\InteractPacket;
 use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\network\protocol\DisconnectPacket;
@@ -66,9 +67,9 @@ use pocketmine\network\protocol\PlayerListPacket;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\MainLogger;
+use pocketmine\utils\BinaryStream;
 use pocketmine\network\protocol\ChunkRadiusUpdatePacket;
 use pocketmine\network\protocol\RequestChunkRadiusPacket;
-use pocketmine\utils\BinaryStream;
 use pocketmine\network\protocol\SetCommandsEnabledPacket;
 use pocketmine\network\protocol\AvailableCommandsPacket;
 use pocketmine\network\protocol\CommandStepPacket;
@@ -107,6 +108,9 @@ class Network{
 	/** @var \SplFixedArray */
 	private $packetPool120;
 	
+	/** @var \SplFixedArray */
+	private $packetPool150;
+	
 	/** @var Server */
 	private $server;
 
@@ -126,6 +130,7 @@ class Network{
 		$this->registerPackets105();
 		$this->registerPackets110();
 		$this->registerPackets120();
+		$this->registerPackets150();
 		
 		$this->server = $server;
 	}
@@ -247,6 +252,14 @@ class Network{
 		$this->packetPool120[$id] = new $class;
 	}
 	
+	/**
+	 * @param int        $id 0-255
+	 * @param DataPacket $class
+	 */
+	public function registerPacket150($id, $class){
+		$this->packetPool150[$id] = new $class;
+	}
+	
 	public function getServer(){
 		return $this->server;
 	}
@@ -300,16 +313,19 @@ class Network{
 	 */
 	public function getPacket($id, $playerProtocol){
 		switch($playerProtocol){
-			case ProtocolInfo::PROTOCOL_120:
-				$class = $this->packetPool120[$id];
+			case ProtocolInfo::PROTOCOL_105:
+				$class = $this->packetPool105[$id];
 				break;
 			case ProtocolInfo::PROTOCOL_110:
 				$class = $this->packetPool110[$id];
 				break;
-			case ProtocolInfo::PROTOCOL_105:
-				$class = $this->packetPool105[$id];
+			case ProtocolInfo::PROTOCOL_120:
+				$class = $this->packetPool120[$id];
 				break;
-			default:
+			case ProtocolInfo::PROTOCOL_150:
+				$class = $this->packetPool150[$id];
+				break;
+				default;
 				$class = $this->packetPool[$id];
 				break;
 		}
@@ -588,6 +604,71 @@ class Network{
 		//$this->registerPacket120(ProtocolInfo120::BEHAVIOR_PACK_DATA_INFO_PACKET, BehaviorPackDataInfoPacket::class);
 		//$this->registerPacket120(ProtocolInfo120::BEHAVIOR_PACK_INFO_PACKET, BehaviorPackInfoPacket::class);
 		//$this->registerPacket120(ProtocolInfo120::BEHAVIOR_PACK_CLIENT_RESPONSE_PACKET, BehaviorPackClientResponsePacket::class);
+	}
+	
+	private function registerPackets150(){
+		$this->packetPool150 = new \SplFixedArray(256);
+		$this->registerPacket150(ProtocolInfo150::LOGIN_PACKET, LoginPacket::class);
+		$this->registerPacket150(ProtocolInfo150::PLAY_STATUS_PACKET, PlayStatusPacket::class);
+		$this->registerPacket150(ProtocolInfo150::DISCONNECT_PACKET, DisconnectPacket::class);
+		$this->registerPacket150(ProtocolInfo150::TEXT_PACKET, TextPacket::class);
+		$this->registerPacket150(ProtocolInfo150::SET_TIME_PACKET, SetTimePacket::class);
+		$this->registerPacket150(ProtocolInfo150::START_GAME_PACKET, StartGamePacket::class);
+		$this->registerPacket150(ProtocolInfo150::ADD_PLAYER_PACKET, AddPlayerPacket::class);
+		$this->registerPacket150(ProtocolInfo150::ADD_ENTITY_PACKET, AddEntityPacket::class);
+		$this->registerPacket150(ProtocolInfo150::REMOVE_ENTITY_PACKET, RemoveEntityPacket::class);
+		$this->registerPacket150(ProtocolInfo150::ADD_ITEM_ENTITY_PACKET, AddItemEntityPacket::class);
+		$this->registerPacket150(ProtocolInfo150::TAKE_ITEM_ENTITY_PACKET, TakeItemEntityPacket::class);
+		$this->registerPacket150(ProtocolInfo150::MOVE_ENTITY_PACKET, MoveEntityPacket::class);
+		$this->registerPacket150(ProtocolInfo150::MOVE_PLAYER_PACKET, MovePlayerPacket::class);
+		$this->registerPacket150(ProtocolInfo150::UPDATE_BLOCK_PACKET, UpdateBlockPacket::class);
+		$this->registerPacket150(ProtocolInfo150::ADD_PAINTING_PACKET, AddPaintingPacket::class);
+		$this->registerPacket150(ProtocolInfo150::EXPLODE_PACKET, ExplodePacket::class);
+		$this->registerPacket150(ProtocolInfo150::LEVEL_EVENT_PACKET, LevelEventPacket::class);
+		$this->registerPacket150(ProtocolInfo150::TILE_EVENT_PACKET, TileEventPacket::class);
+		$this->registerPacket150(ProtocolInfo150::ENTITY_EVENT_PACKET, EntityEventPacket::class);
+		$this->registerPacket150(ProtocolInfo150::MOB_EQUIPMENT_PACKET, MobEquipmentPacket::class);
+		$this->registerPacket150(ProtocolInfo150::MOB_ARMOR_EQUIPMENT_PACKET, MobArmorEquipmentPacket::class);
+		$this->registerPacket150(ProtocolInfo150::INTERACT_PACKET, InteractPacket::class);
+		$this->registerPacket150(ProtocolInfo150::PLAYER_ACTION_PACKET, PlayerActionPacket::class);
+		$this->registerPacket150(ProtocolInfo150::HURT_ARMOR_PACKET, HurtArmorPacket::class);
+		$this->registerPacket150(ProtocolInfo150::SET_ENTITY_DATA_PACKET, SetEntityDataPacket::class);
+		$this->registerPacket150(ProtocolInfo150::SET_ENTITY_MOTION_PACKET, SetEntityMotionPacket::class);
+		$this->registerPacket150(ProtocolInfo150::SET_ENTITY_LINK_PACKET, SetEntityLinkPacket::class);
+		$this->registerPacket150(ProtocolInfo150::SET_SPAWN_POSITION_PACKET, SetSpawnPositionPacket::class);
+		$this->registerPacket150(ProtocolInfo150::ANIMATE_PACKET, AnimatePacket::class);
+		$this->registerPacket150(ProtocolInfo150::RESPAWN_PACKET, RespawnPacket::class);
+		$this->registerPacket150(ProtocolInfo150::CONTAINER_OPEN_PACKET, ContainerOpenPacket::class);
+		$this->registerPacket150(ProtocolInfo150::CONTAINER_CLOSE_PACKET, ContainerClosePacket::class);
+		$this->registerPacket150(ProtocolInfo150::CONTAINER_SET_DATA_PACKET, ContainerSetDataPacket::class);
+		$this->registerPacket150(ProtocolInfo150::CRAFTING_DATA_PACKET, CraftingDataPacket::class);
+		$this->registerPacket150(ProtocolInfo150::CRAFTING_EVENT_PACKET, CraftingEventPacket::class);
+		$this->registerPacket150(ProtocolInfo150::ADVENTURE_SETTINGS_PACKET, AdventureSettingsPacket::class);
+		$this->registerPacket150(ProtocolInfo150::TILE_ENTITY_DATA_PACKET, TileEntityDataPacket::class);
+		$this->registerPacket150(ProtocolInfo150::FULL_CHUNK_DATA_PACKET, FullChunkDataPacket::class);
+		$this->registerPacket150(ProtocolInfo150::SET_COMMANDS_ENABLED_PACKET, SetCommandsEnabledPacket::class);
+		$this->registerPacket150(ProtocolInfo150::SET_DIFFICULTY_PACKET, SetDifficultyPacket::class);
+		$this->registerPacket150(ProtocolInfo150::PLAYER_LIST_PACKET, PlayerListPacket::class);
+		$this->registerPacket150(ProtocolInfo150::REQUEST_CHUNK_RADIUS_PACKET, RequestChunkRadiusPacket::class);
+		$this->registerPacket150(ProtocolInfo150::CHUNK_RADIUS_UPDATE_PACKET, ChunkRadiusUpdatePacket::class);
+		$this->registerPacket150(ProtocolInfo150::AVAILABLE_COMMANDS_PACKET, AvailableCommandsPacket::class);
+		$this->registerPacket150(ProtocolInfo150::TRANSFER_PACKET, TransferPacket::class);
+		$this->registerPacket150(ProtocolInfo150::LOGIN_PACKET, NewLoginPacket::class);
+		$this->registerPacket150(ProtocolInfo150::INVENTORY_TRANSACTION_PACKET, InventoryTransactionPacket::class);
+		$this->registerPacket150(ProtocolInfo150::INVENTORY_CONTENT_PACKET, InventoryContentPacket::class);
+		$this->registerPacket150(ProtocolInfo150::PLAYER_HOTBAR_PACKET, PlayerHotbarPacket::class);
+		$this->registerPacket150(ProtocolInfo150::BOOK_EDIT_PACKET, BookEditPacket::class);
+		$this->registerPacket150(ProtocolInfo150::COMMAND_REQUEST_PACKET, CommandRequestPacket::class);
+		$this->registerPacket150(ProtocolInfo150::MODAL_FORM_RESPONSE_PACKET, ModalFormResponsePacket::class);
+		$this->registerPacket150(ProtocolInfo150::SERVER_SETTINGS_REQUEST_PACKET, ServerSettingsRequestPacket::class);
+		$this->registerPacket150(ProtocolInfo150::PURCHASE_RECEIPT_PACKET, PurchaseReceiptPacket::class);
+		$this->registerPacket150(ProtocolInfo150::SUB_CLIENT_LOGIN_PACKET, SubClientLoginPacket::class);
+		$this->registerPacket150(ProtocolInfo150::RESOURCE_PACK_DATA_INFO_PACKET, ResourcePackDataInfoPacket::class);
+		$this->registerPacket150(ProtocolInfo150::RESOURCE_PACK_INFO_PACKET, ResourcePackInfoPacket::class);
+		$this->registerPacket150(ProtocolInfo150::RESOURCE_PACK_CLIENT_RESPONSE_PACKET, ResourcePackClientResponsePacket::class);
+		//$this->registerPacket150(ProtocolInfo150::BEHAVIOR_PACK_DATA_INFO_PACKET, BehaviorPackDataInfoPacket::class);
+		//$this->registerPacket150(ProtocolInfo150::BEHAVIOR_PACK_INFO_PACKET, BehaviorPackInfoPacket::class);
+		//$this->registerPacket150(ProtocolInfo150::BEHAVIOR_PACK_CLIENT_RESPONSE_PACKET, BehaviorPackClientResponsePacket::class);
 	}
 	
 }

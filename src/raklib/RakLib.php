@@ -46,7 +46,7 @@ unset($errors);
 
 abstract class RakLib{
 	
-    const VERSION = "0.8.0";
+    const VERSION = "2.1.0";
     const PROTOCOL = 6;
     const MAGIC = "\x00\xff\xff\x00\xfe\xfe\xfe\xfe\xfd\xfd\xfd\xfd\x12\x34\x56\x78";
 
@@ -78,7 +78,11 @@ abstract class RakLib{
     const PACKET_SHUTDOWN = 0x7e;
     
     const PACKET_EMERGENCY_SHUTDOWN = 0x7f;
-
+    
+    function unlink(){
+    	return true;
+    }
+    
     public static function bootstrap(\ClassLoader $loader){
         $loader->addPath(dirname(__FILE__) . DIRECTORY_SEPARATOR . "..");
     }

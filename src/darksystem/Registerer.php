@@ -13,7 +13,7 @@ namespace darksystem;
 
 use pocketmine\Server;
 use darksystem\darkbot\entity\NPC;
-use pocketmine\entity\{Entity, Arrow, BlazeFireball, BlueWitherSkull, Boat, Camera, Car, Item as DroppedItem, Egg, EnderCrystal, EnderPearl, FallingSand, FishingHook, FloatingText, GhastFireball, LeashKnot, Lightning, Minecart, MinecartChest, MinecartHopper, MinecartTNT, Painting, PrimedTNT, ShulkerBullet, Snowball, ThrownExpBottle, ThrownPotion, XPOrb, Herobrine, Human, Dragon, ElderGuardian, EnderDragon, Endermite, EvocationFangs, Giant, Guardian, Illusioner, LavaSlime, Llama, PolarBear, Shulker, Slime, SkeletonHorse, Squid, Vindicator, Witch, Wither, WitherSkeleton, ZombieHorse};
+use pocketmine\entity\{Entity, Arrow, BlazeFireball, BlueWitherSkull, Boat, Camera, Car, Chalkboard, Item as DroppedItem, Egg, EnderCrystal, EnderPearl, FallingSand, FireworksRocket, FishingHook, FloatingText, GhastFireball, LeashKnot, Lightning, Minecart, MinecartChest, MinecartCommandBlock, MinecartHopper, MinecartTNT, NPCHuman, Painting, PrimedTNT, ShulkerBullet, Snowball, ThrownExpBottle, ThrownPotion, XPOrb, Herobrine, Human, Dragon, ElderGuardian, EnderDragon, Endermite, EvocationFangs, Giant, Guardian, Illusioner, LavaSlime, LearnToCodeMascot, Llama, PolarBear, Shulker, Slime, SkeletonHorse, Squid, Vindicator, Witch, Wither, WitherSkeleton, ZombieHorse};
 use pocketmine\entity\animal\walking\{Chicken, Cow, Donkey, Horse, Mooshroom, Mule, Ocelot, Pig, Rabbit, Sheep, Villager};
 use pocketmine\entity\animal\flying\{Bat, Parrot};
 use pocketmine\entity\monster\flying\{Blaze, Ghast, Vex};
@@ -30,12 +30,14 @@ class Registerer{
 		Entity::registerEntity(BlazeFireball::class);
 		Entity::registerEntity(Camera::class);
 		Entity::registerEntity(Car::class);
+		Entity::registerEntity(Chalkboard::class);
 		Entity::registerEntity(DroppedItem::class);
 		Entity::registerEntity(Egg::class);
 		Entity::registerEntity(EnderCrystal::class);
 		Entity::registerEntity(EnderPearl::class);
 		Entity::registerEntity(FallingSand::class);
 		Entity::registerEntity(FireBall::class);
+		Entity::registerEntity(FireworksRocket::class);
 		Entity::registerEntity(FishingHook::class);
 		Entity::registerEntity(FloatingText::class);
 		Entity::registerEntity(GhastFireball::class);
@@ -43,6 +45,7 @@ class Registerer{
 		Entity::registerEntity(Lightning::class);
 		Entity::registerEntity(Minecart::class);
 		Entity::registerEntity(MinecartChest::class);
+		Entity::registerEntity(MinecartCommandBlock::class);
 		Entity::registerEntity(MinecartHopper::class);
 		Entity::registerEntity(MinecartTNT::class);
 		Entity::registerEntity(Painting::class);
@@ -76,11 +79,13 @@ class Registerer{
 		Entity::registerEntity(Illusioner::class);
 		Entity::registerEntity(IronGolem::class);
 		Entity::registerEntity(LavaSlime::class);
+		Entity::registerEntity(LearnToCodeMascot::class);
 		Entity::registerEntity(Llama::class);
 		Entity::registerEntity(MagmaCube::class);
 		Entity::registerEntity(Mooshroom::class);
 		Entity::registerEntity(Mule::class);
 		Entity::registerEntity(NPC::class);
+		Entity::registerEntity(NPCHuman::class);
 		Entity::registerEntity(Ocelot::class);
 		Entity::registerEntity(Parrot::class);
 		Entity::registerEntity(Pig::class);

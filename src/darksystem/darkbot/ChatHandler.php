@@ -58,8 +58,8 @@ class ChatHandler{
 				case "gm1 darkbot":
 				case "darkbot gm1 ver":
 				case "darkbot bana gm1 ver":
-				if(/*$server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-					$this->setGamemode(1);
+				if(/*$server->getDarkBot()->check() = "§aAktif" && */$player->isOp() || in_array($player->getName(), $operators)){
+					$player->setGamemode(1);
 					$result = $dbotprefix . $msg;
 				}
 				//return true;
@@ -70,8 +70,8 @@ class ChatHandler{
 				case "gm0 darkbot":
 				case "darkbot gm0 ver":
 				case "darkbot bana gm0 ver":
-				if(/*$server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-					$this->setGamemode(0);
+				if(/*$server->getDarkBot()->check() = "§aAktif" && */$player->isOp() || in_array($player->getName(), $operators)){
+					$player->setGamemode(0);
 					$result = $dbotprefix . $msg;
 				}
 				//return true;
@@ -82,7 +82,7 @@ class ChatHandler{
 				case "spawn darkbot":
 				case "darkbot spawna ışınla":
 				case "darkbot beni spawna ışınla":
-				$this->teleport($server->getDefaultLevel()->getSafeSpawn());
+				$player->teleport($server->getDefaultLevel()->getSafeSpawn());
 				$result = $dbotprefix . $msg;
 				//return true;
 				break;
@@ -93,8 +93,8 @@ class ChatHandler{
 				case "darkbot kill çek":
 				case "darkbot bana kill çek":
 				case "darkbot beni öldür":
-				if(/*$server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-					$this->kill();
+				if(/*$server->getDarkBot()->check() = "§aAktif" && */$player->isOp() || in_array($player->getName(), $operators)){
+					$player->kill();
 					$result = $dbotprefix . $msg;
 				}
 				//return true;
@@ -103,8 +103,8 @@ class ChatHandler{
 				case "darkbot sabah yap":
 				case "sabah yap dbot":
 				case "sabah yap darkbot":
-				if(/*$server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-					$this->level->setTime(3000);
+				if(/*$server->getDarkBot()->check() = "§aAktif" && */$player->isOp() || in_array($player->getName(), $operators)){
+					$player->getLevel()->setTime(3000);
 					$result = $dbotprefix . $msg;
 				}
 				break;
@@ -112,8 +112,8 @@ class ChatHandler{
 				case "darkbot akşam yap":
 				case "akşam yap dbot":
 				case "akşam yap darkbot":
-				if(/*$server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-					$this->level->setTime(14000);
+				if(/*$server->getDarkBot()->check() = "§aAktif" && */$player->isOp() || in_array($player->getName(), $operators)){
+					$player->getLevel()->setTime(14000);
 					$result = $dbotprefix . $msg;
 				}
 				break;
@@ -123,8 +123,8 @@ class ChatHandler{
 				case "ddos darkbot":
 				case "darkbot ddos at":
 				case "darkbot dos at":
-				if(/*$server->getDarkBot()->check() = "§aAktif" && */$this->isOp() || in_array($this->getName(), $operators)){
-					/*BUGGY*/
+				if(/*$server->getDarkBot()->check() = "§aAktif" && */$player->isOp() || in_array($player->getName(), $operators)){
+					/* BUGGY */
 					$result = $dbotprefix . " ";
 					$result = $dbotprefix . "§aSunucu DDoS İçin Hazırlanıyor...";
 					$result = $dbotprefix . " ";

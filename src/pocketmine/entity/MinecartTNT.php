@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class MinecartTNT extends Minecart{
 	
-	const NETWORK_ID = 97;
+	const NETWORK_ID = self::TNT_MINECART;
 
 	/**
 	 * @return string

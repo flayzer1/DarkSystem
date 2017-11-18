@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class Mule extends Animal
 {
-	const NETWORK_ID = 25;
+	const NETWORK_ID = self::MULE;
 
 	public function getName()
 	{

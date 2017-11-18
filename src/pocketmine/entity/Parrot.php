@@ -14,9 +14,9 @@ namespace pocketmine\entity;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
-class Parrot extends Animal
+class Parrot extends FlyingAnimal
 {
-	const NETWORK_ID = 30;
+	const NETWORK_ID = self::PARROT;
 
 	public function getName()
 	{

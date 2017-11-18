@@ -22,7 +22,7 @@ class Giant extends Zombie
 
     public $dropExp = [5, 5];
 
-    public function getName(): string
+    public function getName()
     {
         return "Giant";
     }
@@ -31,6 +31,7 @@ class Giant extends Zombie
     {
         $this->setMaxHealth(100);
         $this->setDataProperty(Giant::DATA_SCALE, Giant::DATA_TYPE_FLOAT, 3);
+        
         parent::initEntity();
     }
 

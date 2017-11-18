@@ -22,7 +22,7 @@ use pocketmine\Server;
 
 class FishingHook extends Projectile{
 	
-	const NETWORK_ID = 77;
+	const NETWORK_ID = self::FISHING_HOOK;
 
 	public $width = 0.25;
 	public $length = 0.25;

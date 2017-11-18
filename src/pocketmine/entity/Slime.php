@@ -18,7 +18,7 @@ use pocketmine\item\Item as ItemItem;
 
 class Slime extends Living
 {
-    const NETWORK_ID = 37;
+    const NETWORK_ID = self::SLIME;
 
     const DATA_SLIME_SIZE = 16;
 
@@ -28,7 +28,7 @@ class Slime extends Living
 
     public $dropExp = [1, 4];
 
-    public function getName(): string
+    public function getName()
     {
         return "Slime";
     }

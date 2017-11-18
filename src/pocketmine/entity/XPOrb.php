@@ -18,7 +18,7 @@ use pocketmine\Player;
 
 class XPOrb extends Entity
 {
-    const NETWORK_ID = 69;
+    const NETWORK_ID = self::XP_ORB;
 
     public $width = 0.25;
     public $length = 0.25;

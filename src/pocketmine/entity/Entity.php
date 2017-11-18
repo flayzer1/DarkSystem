@@ -32,8 +32,8 @@ use pocketmine\level\Position;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
-use pocketmine\metadata\Metadatable;
-use pocketmine\metadata\MetadataValue;
+use darksystem\metadata\Metadatable;
+use darksystem\metadata\MetadataValue;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
@@ -60,7 +60,7 @@ use pocketmine\block\Fire;
 use pocketmine\block\Ladder;
 use pocketmine\block\Vine;
 
-abstract class Entity extends Location implements Metadatable{
+abstract class Entity extends Location implements Metadatable, EntityIds{
 	
 	const NETWORK_ID = -1;
 
@@ -864,7 +864,11 @@ abstract class Entity extends Location implements Metadatable{
 	public function isAlive(){
 		return $this->health > 0;
 	}
-
+	
+	public function isDead(){
+		return $this->health <= 0;
+	}
+	
 	/**
 	 * @param int $amount
 	 */
@@ -875,12 +879,12 @@ abstract class Entity extends Location implements Metadatable{
 		}
 		if($amount <= 0){
 			$this->health = 0;
-			if($this->dead !== true){
+			if(!$this->dead){
 				$this->kill();
 			}
-		} else if($amount <= $this->getMaxHealth() || $amount < $this->health){
+		}elseif($amount <= $this->getMaxHealth() || $amount < $this->health){
 			$this->health = (int) $amount;
-		} else {
+		}else{
 			$this->health = $this->getMaxHealth();
 		}
 	}
@@ -916,6 +920,10 @@ abstract class Entity extends Location implements Metadatable{
 	 */
 	public function setMaxHealth($amount){
 		$this->maxHealth = (int) $amount;
+		
+		if(!$this->isAlive()){
+			$this->health = $this->maxHealth;
+		}
 	}
 
 	public function canCollideWith(Entity $entity){

@@ -25,7 +25,7 @@ class EndPortal extends Solid{
     }
     
     public function getLightLevel() {
-        return 15;
+        return 10;
     }
     
 }

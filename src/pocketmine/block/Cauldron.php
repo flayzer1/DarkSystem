@@ -94,7 +94,7 @@ class Cauldron extends Solid
         return true;
     }
 
-    public function getDrops(Item $item): array
+    public function getDrops(Item $item)
     {
         if ($item->isPickaxe() >= 1) {
             return [
@@ -108,7 +108,7 @@ class Cauldron extends Solid
     public function update()
     {
         $this->getLevel()->setBlock($this, Block::get($this->id, $this->meta + 1), true);
-        $this->getLevel()->setBlock($this, $this, true);//Undo the damage value
+        $this->getLevel()->setBlock($this, $this, true);
     }
 
     public function isEmpty()

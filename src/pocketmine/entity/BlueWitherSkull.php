@@ -18,7 +18,7 @@ use pocketmine\Player;
 
 class BlueWitherSkull extends Projectile
 {
-    const NETWORK_ID = 89;
+    const NETWORK_ID = self::BLUE_WITHER_SKULL;
 
     public $width = 0.25;
     public $length = 0.25;

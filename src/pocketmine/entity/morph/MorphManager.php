@@ -34,6 +34,7 @@ class MorphManager{
 
     public function __construct($server){
     	$this->server = $server;
+    
         Entity::registerEntity(MorphCreeper::class);
     }
 

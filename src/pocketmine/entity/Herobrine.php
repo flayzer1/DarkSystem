@@ -16,13 +16,13 @@ use pocketmine\Player;
 
 class Herobrine extends Boss
 {
-    const NETWORK_ID = 63;
+    const NETWORK_ID = self::HUMAN;
 
     public $width = 0.6;
     public $length = 0.6;
     public $height = 1.8;
 
-    public function getName(): string
+    public function getName()
     {
         return "Herobrine";
     }
@@ -30,6 +30,7 @@ class Herobrine extends Boss
     public function initEntity()
     {
         $this->setMaxHealth(300);
+        
         parent::initEntity();
     }
 

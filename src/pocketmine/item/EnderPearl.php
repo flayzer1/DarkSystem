@@ -22,5 +22,4 @@ class EnderPearl extends Item
     {
         return 16;
     }
-
 }

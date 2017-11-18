@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class Wolf extends Animal
 {
-    const NETWORK_ID = 14;
+    const NETWORK_ID = self::WOLF;
 
     public $width = 0.3;
     public $length = 0.9;

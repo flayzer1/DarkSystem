@@ -22,16 +22,17 @@ class DaylightDetector extends Solid
         $this->meta = $meta;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return "Daylight Sensor";
     }
 
     public function getBoundingBox()
     {
-        if ($this->boundingBox === null) {
+        if($this->boundingBox === null){
             $this->boundingBox = $this->recalculateBoundingBox();
         }
+        
         return $this->boundingBox;
     }
 
@@ -40,7 +41,7 @@ class DaylightDetector extends Solid
         return false;
     }
 
-    public function canBeActivated(): bool
+    public function canBeActivated()
     {
         return true;
     }
@@ -55,7 +56,7 @@ class DaylightDetector extends Solid
         return 1;
     }
 
-    public function getDrops(Item $item): array
+    public function getDrops(Item $item)
     {
         return [
             [self::DAYLIGHT_SENSOR, 0, 1]

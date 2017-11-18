@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class Vindicator extends Illager
 {
-	const NETWORK_ID = 57;
+	const NETWORK_ID = self::VINDICATOR;
 	
 	public $width = 0.6;
 	public $length = 0.6;
@@ -24,7 +24,7 @@ class Vindicator extends Illager
 
 	public $dropExp = [5, 5];
 	
-	public function getName(): string
+	public function getName()
 	{
 		return "Vindicator";
 	}

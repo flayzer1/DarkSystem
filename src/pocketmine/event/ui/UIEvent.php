@@ -11,13 +11,12 @@
 
 namespace pocketmine\event\ui;
 
-use pocketmine\event\plugin\PluginEvent;
+use pocketmine\event\Event;
 use pocketmine\network\protocol\DataPacket;
-use pocketmine\Player;
-use pocketmine\plugin\Plugin;
 use pocketmine\network\protocol\v120\ModalFormResponsePacket;
+use pocketmine\Player;
 
-abstract class UIEvent extends PluginEvent{
+abstract class UIEvent extends Event{
 
 	public static $handlerList = null;
 
@@ -25,12 +24,10 @@ abstract class UIEvent extends PluginEvent{
 	protected $packet;
 	/** @var Player */
 	protected $player;
-
-	public function __construct(Plugin $plugin, DataPacket $packet, Player $player){
-		$this->packet = $packet;
+	
+	public function __construct(Player $player, DataPacket $packet){
 		$this->player = $player;
-		
-		parent::__construct($plugin);
+		$this->packet = $packet;
 	}
 
 	public function getPacket(){
@@ -44,5 +41,13 @@ abstract class UIEvent extends PluginEvent{
 	public function getID(){
 		return $this->packet->formId;
 	}
-
+	
+	public function getFormId(){
+		return $this->packet->formId;
+	}
+	
+	public function getFormData(){
+		return @json_decode($this->packet->data);
+	}
+	
 }

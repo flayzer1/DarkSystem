@@ -32,9 +32,11 @@ class ChangeDimensionPacket extends PEPacket{
 	}
 
 	public function encode($playerProtocol){
-		$this->reset();
+		$this->reset($playerProtocol);
 		$this->putVarInt($this->dimension);
-		$this->putVector3f($this->x, $this->y, $this->z);
+		$this->putLFloat($this->x);
+		$this->putLFloat($this->y);
+		$this->putLFloat($this->z);
 		$this->putBool($this->unknown);
 	}
 	

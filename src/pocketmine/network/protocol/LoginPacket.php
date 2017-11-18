@@ -59,7 +59,7 @@ class LoginPacket extends PEPacket{
 			$this->getShort();
 		}
 		$this->protocol1 = $this->getInt();
-		if($this->protocol1 > Info::CURRENT_PROTOCOL && $this->protocol1 < 150){
+		if($this->protocol1 > Info::CURRENT_PROTOCOL && $this->protocol1 < (Info::CURRENT_PROTOCOL + 20)){
 			$this->protocol1 = Info::CURRENT_PROTOCOL;
 		}
 		if(!in_array($this->protocol1, $acceptedProtocols) && $this->protocol1 !== Info::CURRENT_PROTOCOL){

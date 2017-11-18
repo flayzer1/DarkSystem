@@ -13,8 +13,10 @@ class BaseClassLoader extends \Threaded implements ClassLoader{
 
     /** @var \ClassLoader */
     private $parent;
+    
     /** @var string[] */
     private $lookup;
+    
     /** @var string[] */
     private $classes;
     

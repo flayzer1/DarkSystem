@@ -18,7 +18,7 @@ use pocketmine\item\Item as ItemItem;
 
 class Spider extends Monster
 {
-    const NETWORK_ID = 35;
+    const NETWORK_ID = self::SPIDER;
     
     public $width = 0.3;
     public $length = 0.9;

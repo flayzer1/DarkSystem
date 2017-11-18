@@ -19,7 +19,7 @@ class GoldenAppleEnchanted extends GoldenApple{
 		Food::__construct(self::ENCHANTED_GOLDEN_APPLE, $meta, $count, "Enchanted Golden Apple");
 	}
 
-	public function getAdditionalEffects() : array{
+	public function getAdditionalEffects(){
 		return [
 			Effect::getEffect(Effect::REGENERATION)->setDuration(600)->setAmplifier(4),
 			Effect::getEffect(Effect::ABSORPTION)->setDuration(2400)->setAmplifier(3),

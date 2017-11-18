@@ -64,9 +64,9 @@ use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
-use pocketmine\metadata\BlockMetadataStore;
-use pocketmine\metadata\Metadatable;
-use pocketmine\metadata\MetadataValue;
+use darksystem\metadata\BlockMetadataStore;
+use darksystem\metadata\Metadatable;
+use darksystem\metadata\MetadataValue;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
@@ -97,7 +97,7 @@ use pocketmine\utils\MainLogger;
 use pocketmine\utils\ReversePriorityQueue;
 use pocketmine\utils\TextFormat;
 use pocketmine\network\protocol\Info;
-use pocketmine\ChunkGenerator;
+use darksystem\ChunkGenerator;
 use pocketmine\level\generator\GenerationTask;
 use pocketmine\level\generator\Generator;
 use pocketmine\level\generator\GeneratorRegisterTask;
@@ -109,7 +109,7 @@ use pocketmine\entity\monster\Monster;
 use pocketmine\entity\animal\Animal;
 use pocketmine\nbt\NBT;
 
-class Level implements ChunkManager, Metadatable{
+class Level extends TimeValues implements ChunkManager, Metadatable{
 
 	private static $levelIdCounter = 1;
 	
@@ -120,14 +120,7 @@ class Level implements ChunkManager, Metadatable{
 	const BLOCK_UPDATE_SCHEDULED = 3;
 	const BLOCK_UPDATE_WEAK = 4;
 	const BLOCK_UPDATE_TOUCH = 5;
-
-	const TIME_DAY = 0;
-	const TIME_SUNSET = 12000;
-	const TIME_NIGHT = 14000;
-	const TIME_SUNRISE = 23000;
-
-	const TIME_FULL = 24000;
-
+	
 	/** @var Tile[] */
 	protected $tiles = [];
 
@@ -284,7 +277,7 @@ class Level implements ChunkManager, Metadatable{
 		}
 	}
 	
-	public static function generateChunkLoaderId(ChunkLoader $loader) : int{
+	public static function generateChunkLoaderId(ChunkLoader $loader){
 		if($loader->getLoaderId() === 0 || $loader->getLoaderId() === null || $loader->getLoaderId() === null){
 			return Level::$chunkLoaderCounter++;
 		}else{
@@ -480,7 +473,7 @@ class Level implements ChunkManager, Metadatable{
 		$defaultLevel = $this->server->getDefaultLevel();
 		foreach($this->getPlayers() as $p){
 			if($this === $defaultLevel || $defaultLevel === null){
-				$p->close(TextFormat::YELLOW . $p->getName() . " has left the game", "Forced default level unload");
+				$p->close("Forced default level unload");
 			}elseif($defaultLevel instanceof Level){
 				$p->teleport($this->server->getDefaultLevel()->getSafeSpawn());
 			}
@@ -501,7 +494,7 @@ class Level implements ChunkManager, Metadatable{
 	 *
 	 * @return Player[]
 	 */
-	public function getChunkPlayers(int $chunkX, int $chunkZ) : array{
+	public function getChunkPlayers($chunkX, $chunkZ){
 		return isset($this->playerLoaders[$index = Level::chunkHash($chunkX, $chunkZ)]) ? $this->playerLoaders[$index] : [];
 	}
 	
@@ -607,7 +600,7 @@ class Level implements ChunkManager, Metadatable{
 					foreach($this->changedBlocks as $index => $mini){
 						foreach($mini as $blocks){
 							foreach($blocks as $b){
-								foreach($this->getUsingChunk($b->x >> 4, $b->z >> 4) as $player){								
+								foreach($this->getUsingChunk($b->x >> 4, $b->z >> 4) as $player){
 									$pk = new UpdateBlockPacket();
 									$pk->records[] = [$b->x, $b->z, $b->y, $b->getId(), $b->getDamage(), UpdateBlockPacket::FLAG_ALL];
 									$player->dataPacket($pk);
@@ -635,7 +628,7 @@ class Level implements ChunkManager, Metadatable{
 					unset($this->playerHandItemQueue[$senderId][$recipientId]);
 					if($data['sender']->isSpawned($data['recipient'])){
 						$data['sender']->getInventory()->sendHeldItem($data['recipient']);
-					}	
+					}
 					if(count($this->playerHandItemQueue[$senderId]) == 0){
 						unset($this->playerHandItemQueue[$senderId]);
 					}
@@ -2298,14 +2291,14 @@ class Level implements ChunkManager, Metadatable{
 	public function registerGenerator(){
 		$size = $this->server->getScheduler()->getAsyncTaskPoolSize();
 		for($i = 0; $i < $size; ++$i){
-			$this->server->getScheduler()->scheduleAsyncTaskToWorker(new GeneratorRegisterTask($this,  $this->generatorInstance), $i);
+			$this->server->getScheduler()->scheduleAsyncTaskToWorker(new GeneratorRegisterTask($this, $this->generatorInstance), $i);
 		}
 	}
 
 	public function unregisterGenerator(){
 		$size = $this->server->getScheduler()->getAsyncTaskPoolSize();
 		for($i = 0; $i < $size; ++$i){
-			$this->server->getScheduler()->scheduleAsyncTaskToWorker(new GeneratorUnregisterTask($this,  $this->generatorInstance), $i);
+			$this->server->getScheduler()->scheduleAsyncTaskToWorker(new GeneratorUnregisterTask($this, $this->generatorInstance), $i);
 		}
 	}
 
@@ -2325,7 +2318,7 @@ class Level implements ChunkManager, Metadatable{
 			$Z = null;
 
 			foreach($this->chunks as $index => $chunk){
-				if(!isset($this->unloadQueue[$index]) && (!isset($this->usedChunks[$index]) || count($this->usedChunks[$index]) === 0)){					
+				if(!isset($this->unloadQueue[$index]) && (!isset($this->usedChunks[$index]) || count($this->usedChunks[$index]) === 0)){
 					Level::getXZ($index, $X, $Z);
 					if(!$this->isSpawnChunk($X, $Z)){
 						$this->unloadChunkRequest($X, $Z, true);
@@ -2382,7 +2375,7 @@ class Level implements ChunkManager, Metadatable{
 		$this->server->getLevelMetadata()->removeMetadata($this, $metadataKey, $plugin);
 	}
 
-	public function addEntityMotion($viewers, $entityId, $x, $y, $z){	
+	public function addEntityMotion($viewers, $entityId, $x, $y, $z){
 		$motion = [$entityId, $x, $y, $z];
 		foreach($viewers as $p){
 			$subClientId = $p->getSubClientId();

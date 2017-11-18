@@ -22,5 +22,4 @@ class DaylightSensorInverted extends Solid{
 	public function getName(){
         return "Daylight Sensor Inverted";
 	}
-
 }

@@ -6,7 +6,7 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
 
-class PoisonEffect extends Effect {
+class PoisonEffect extends Effect{
 	
 	public function canTick() {
 		if ($this->amplifier < 0) {
@@ -25,5 +25,4 @@ class PoisonEffect extends Effect {
 			$entity->attack($ev->getFinalDamage(), $ev);
 		}
 	}
-	
 }

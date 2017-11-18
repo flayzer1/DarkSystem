@@ -6,7 +6,7 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
 
-class WitherEffect extends Effect {
+class WitherEffect extends Effect{
 
 	public function canTick() {
 		if ($this->amplifier < 0) {

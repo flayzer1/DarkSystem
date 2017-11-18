@@ -16,8 +16,8 @@ interface CustomUI{
 
 	public function getContent();
 	
-	public function setID($id);
+	//public function setID($id);
 
-	public function getID();
+	//public function getID();
 	
 }

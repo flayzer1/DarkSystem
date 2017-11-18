@@ -24,5 +24,4 @@ class Range{
 	public function isInRange($v){
 		return $v >= $this->minValue && $v <= $this->maxValue;
 	}
-	
 }

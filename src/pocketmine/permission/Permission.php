@@ -54,8 +54,8 @@ class Permission{
 
 			case "true":
 				return Permission::DEFAULT_TRUE;
-
-			default:
+				
+				default;
 				return Permission::DEFAULT_FALSE;
 		}
 	}

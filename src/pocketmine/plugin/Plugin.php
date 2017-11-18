@@ -18,12 +18,20 @@ interface Plugin extends CommandExecutor{
 	public function onLoad();
 	
 	public function onEnable();
+	
+	public function activate();
 
 	public function isEnabled();
 	
+	public function isActivated();
+	
 	public function onDisable();
+	
+	public function deactivate();
 
 	public function isDisabled();
+	
+	public function isDeactivated();
 	
 	public function getDataFolder();
 	

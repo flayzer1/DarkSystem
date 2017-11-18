@@ -14,8 +14,8 @@ namespace pocketmine\plugin;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
-use pocketmine\Server;
 use pocketmine\utils\Config;
+use pocketmine\Server;
 
 abstract class PluginBase implements Plugin{
 
@@ -53,12 +53,24 @@ abstract class PluginBase implements Plugin{
 	public function onEnable(){
 
 	}
+	
+	public function activate(){
 
+	}
+	
 	public function onDisable(){
 
 	}
 	
+	public function deactivate(){
+
+	}
+	
 	public final function isEnabled(){
+		return $this->isEnabled === true;
+	}
+	
+	public final function isActivated(){
 		return $this->isEnabled === true;
 	}
 	
@@ -74,6 +86,10 @@ abstract class PluginBase implements Plugin{
 	}
 	
 	public final function isDisabled(){
+		return $this->isEnabled === false;
+	}
+	
+	public final function isDeactivated(){
 		return $this->isEnabled === false;
 	}
 

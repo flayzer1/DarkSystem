@@ -31,6 +31,8 @@ class ThemeManager{
 	}
 	
 	public function getTheme(){
+		return "uranium"; //Force theme
+		$configTheme = $this->server->getConfigString("theme", ThemeManager::DEFAULT_THEME);
 		/*if($this->server->getConfigInt("random-theme", "false")){
 		    return $this->availableThemes[array_rand($this->availableThemes)];
 		}*/
@@ -39,11 +41,11 @@ class ThemeManager{
 		    return $this->availableThemes[array_rand($this->availableThemes)];
 		}
 		
-		if(!is_null($this->server->getConfigString("theme", ThemeManager::DEFAULT_THEME))){
-			return $this->server->getConfigString("theme", ThemeManager::DEFAULT_THEME);
+		if($configTheme === null){
+			return false;
 		}
 		
-		return ThemeManager::DEFAULT_THEME;
+		return $configTheme;
     }
     
     public function setTheme($value){
@@ -56,6 +58,10 @@ class ThemeManager{
     	}
     
 		$this->server->setConfigString("theme", $value);
+    }
+    
+    public function getDefaultTheme(){
+    	return ThemeManager::DEFAULT_THEME;
     }
     
     public function getLogoTheme($dbotcheck, $dbotver, $version, $mcpe, $protocol, $build, $tag, $splash){

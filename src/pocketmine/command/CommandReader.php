@@ -11,11 +11,15 @@
 
 namespace pocketmine\command;
 
-use pocketmine\Thread;
+use darksystem\Thread;
+use pocketmine\Translate;
 
 class CommandReader extends Thread{
+	
 	private $readline;
+	
 	protected $buffer;
+	
 	private $shutdown = false;
 
 	public function __construct(){
@@ -74,6 +78,10 @@ class CommandReader extends Thread{
 	}
 
 	public function getThreadName(){
-		return "SUNUCU";
+		if(Translate::checkTurkish() === "yes"){
+			return "SUNUCU";
+		}else{
+			return "CONSOLE";
+		}
 	}
 }

@@ -20,7 +20,7 @@ use pocketmine\Player;
 
 class Egg extends Projectile{
 
-	const NETWORK_ID = 82;
+	const NETWORK_ID = self::EGG;
 
 	public $width = 0.23; //Default: 0.25
 	public $length = 0.23; //This

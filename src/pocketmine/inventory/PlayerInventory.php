@@ -21,9 +21,9 @@ use pocketmine\network\protocol\ContainerSetContentPacket;
 use pocketmine\network\protocol\ContainerSetSlotPacket;
 use pocketmine\network\protocol\MobArmorEquipmentPacket;
 use pocketmine\network\protocol\MobEquipmentPacket;
+use pocketmine\network\protocol\Info;
 use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\network\protocol\Info;
 
 class PlayerInventory extends BaseInventory{
 	

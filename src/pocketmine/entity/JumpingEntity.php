@@ -20,5 +20,4 @@ abstract class JumpingEntity extends BaseEntity{
     public function updateMove(){
         return null;
     }
-    
 }

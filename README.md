@@ -11,36 +11,43 @@
 You can download it [here](http://bit.do/darksystem_apk).<br>
 **NOTE:** Language of app is Turkish, does not support English. Will be added soon.<br>
 
-**If "onCommand" does not work, use "onCommand2" method on newer plugins.**
+**We may have language problems :)**
 
 # Features:
 - DarkSystem is **# 1** about speed & no-lag. (We think so)
 - Based on **old** PocketMine-MP for better performance and stability.
 - Loads chunks region-to-region. It uses less CPU resources & loads chunks fast.
 - Cached chunk loading (Loads chunks and levels with cache for speed.)
-- MobAI Support (So much animals and mobs can move & attack) (Support Attacking Movement)
-- Smooth Movement (Players does not glitch or go down (if not 1.2 :D) while moving and does not throw back.)
+- MobAI Support (So many animals and mobs can move & attack) (Support Attacking Movement)
+- Smooth Movement (Players do not glitch or go down (if not 1.2 :D) while moving and does not throw back.)
 - MCPE 1.2 Support (DarkSystem is compatible with MC: Bedrock Edition/Better together update)
-- Auto Updater (This is automatically updates DarkSystem from GitHub.) (!!!Not implemented yet!!!)
+- Auto Updater (This is automatically updates DarkSystem from GitHub.) (!!! Not implemented yet !!!)
 - More Biomes & Advanced Generator (Support more biomes than others, loads level fast)
 - Anti-BOT (Bot Protection) (Blocks joining of MCPE Bots from same ip. Ex. MineBot)
 - Anti-COOP Play (Like bot protection)
 - Themes! (You can change theme from **server.properties**. Available themes: classic, dark, light, metal, energy, uranium)
 - Ender Biome Support (No description :D)
+- Advanced Fly Checker (Can be activated from config. May cause lag about moving. Checks is player on the air better.)
+- No Bad Packets! (Players only can send a few packets before logging in. Only LoginPacket, Resource and Behavior packs packets, and 1-2 required packets. Blocks AdventureSettingsPacket and SetPlayerGameType packet. Cool!)
 - **InventoryAPI!** (You can create customizable virtual inventories!) (**InventoryAPI::createInventory(...)**)
 - /ping Command (Allows to get quality of player's connection)
 - /xyz Command (Allows to get players position)
 - /createinv Command (Allows to open virtual inventories)
+- Custom 1.2 and WIN10 Inventories (No Bug)
+- More Mobs/Entities (Support Parrot, NPC, Chalkboard, LearnToCodeMascot)
 - Morph/Disguise Support (You can transform to any mob with /morph command. Usage: /morph <mob>)
 - Extended Plugin API (It is an api called as DarkAPI :D lol) (Support Compound & CompoundTag etc.)
 - Compatible with newer plugins (API 3.x.x)
-- If you want to a cool and safe (Don't forget 'fast' :)) server, use DarkSystem! (Slogan by null) (lol)
+- Custom Query (When server starts, sets up a mySQL connection to specified host from config. Can be disabled from **server.properties**)
+- MySQLManager (You can send datas to website of your server about players' kills, deaths, money etc. quickly.) (**utils\MySQLManager**)
+- If you want to a cool and safe (Don't forget 'fast' :)) server, use DarkSystem!
 - Support **PIZZA!** (/givepizza [player] | If you write only /givepizza, gives pizza everyone. NOTE: Our pizzas does not contain harmful substances lol :D) (Pizza mark can be changed from advanced config.)
 - Colored & Clean Console (Console is really so clean, does not send junk messages like plugin enabling, XBOX offline mode warn. etc.)
 - AntiForceOP (Hackers cannot access to OP command, you are in safe :))
 - Floating Text as Entity (On DarkSystem, floating text is not a particle, it is an entity. So it blocks floating text hack or others. Also dissappearing of floating texts is not possible.)
 - Auto Lag Cleaner (How does it works? It automatically removes items and arrows from ground without occuping CPU.)
 - Weather (Supports snow/rain/thunder)
+- **DarkRCON!** (NOT PUBLISHED YET!, An advenced rcon client for managing DarkSystem servers. Fully protected with password. %100 safe. Works on Android, Windows And more...)
 - CustomUI (Allows to create fully customizable menus, can be added by /addui) (only +1.2)
 - /addui Command (You can easily test CustomUI's with this) (/addui {player} {type:shop/alert/image/slider/dropdown/input/mix})
 - Fully Turkish Language (DarkSystem Support %79 Turkish Language. How to set language to Turkish? Simple, choose language to **tur** on set-up wizard. After set **language:** to **tur** on **pocketmine.yml**)

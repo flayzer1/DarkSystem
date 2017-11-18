@@ -12,15 +12,15 @@
 namespace pocketmine\event\ui;
 
 use pocketmine\network\protocol\DataPacket;
+use pocketmine\event\Cancellable;
 use pocketmine\Player;
-use pocketmine\plugin\Plugin;
 
-class UICloseEvent extends UIEvent{
+class UICloseEvent extends UIEvent implements Cancellable{
 
 	public static $handlerList = null;
 
-	public function __construct(Plugin $plugin, DataPacket $packet, Player $player){
-		parent::__construct($plugin, $packet, $player);
+	public function __construct(Player $player, DataPacket $packet){
+		parent::__construct($player, $packet);
 	}
 	
 }

@@ -43,7 +43,6 @@ class RCON{
 			return;
 		}
 		socket_set_block($this->socket);
-
 		for($n = 0; $n < $this->threads; ++$n){
 			$this->workers[$n] = new RCONInstance($this->server->getLogger(), $this->socket, $this->password, $this->clientsPerThread);
 		}
@@ -87,16 +86,12 @@ class RCON{
 						$thread->notify();
 					}, $this->workers[$n]);
 				}else{
-
 					$response = new RemoteConsoleCommandSender();
 					$command = $this->workers[$n]->cmd;
-
 					$this->server->getPluginManager()->callEvent($ev = new RemoteServerCommandEvent($response, $command));
-
 					if(!$ev->isCancelled()){
 						$this->server->dispatchCommand($ev->getSender(), $ev->getCommand());
 					}
-
 					$this->workers[$n]->response = $response->getMessage();
 					$this->workers[$n]->synchronized(function(RCONInstance $thread){
 						$thread->notify();

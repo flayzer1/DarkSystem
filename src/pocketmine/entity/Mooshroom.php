@@ -19,7 +19,7 @@ use pocketmine\item\Item as ItemItem;
 
 class Mooshroom extends Animal
 {
-    const NETWORK_ID = 16;
+    const NETWORK_ID = self::MOOSHROOM;
 
     public $width = 0.3;
     public $length = 0.9;

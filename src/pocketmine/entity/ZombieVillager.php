@@ -11,12 +11,12 @@
 
 namespace pocketmine\entity;
 
-use pocketmine\Player;
 use pocketmine\network\protocol\AddEntityPacket;
+use pocketmine\Player;
 
 class ZombieVillager extends Zombie
 {
-    const NETWORK_ID = 44;
+    const NETWORK_ID = self::ZOMBIE_VILLAGER;
 
     public $width = 1.031;
     public $length = 0.891;
@@ -25,6 +25,7 @@ class ZombieVillager extends Zombie
     public function initEntity()
     {
         $this->setMaxHealth(20);
+        
         parent::initEntity();
     }
 

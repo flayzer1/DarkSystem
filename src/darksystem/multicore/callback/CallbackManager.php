@@ -1,34 +1,30 @@
 <?php
 
-namespace pocketmine\multicore\callback;
+namespace darksystem\multicore\callback;
 
 use pocketmine\Server;
-use pocketmine\plugin\Plugin;
-use pocketmine\multicore\Main;
 
 class CallbackManager{
 	
 	/** @var Server */
 	private $server;
 	
-	/** @var Main */
-	private $plugin;
-	
 	public $authenticate;
 	
-	public function __construct(Server $server, Plugin $plugin) {
+	public function __construct(Server $server){
 		$this->server = $server;
-		$this->plugin = $plugin;
 		
-		$this->init ();
+		$this->init();
 	}
 	
-	public function init() {
-		$this->register ( $this->authenticate = new AuthenticateCallback () );
+	public function init(){
+		//Other tasks here
+		//$this->register($this->authenticate = new AuthenticateCallback());
 	}
 	
-	public function register($listener) {
-		$this->server->getPluginManager ()->registerEvents ( $listener, $this->plugin );
+	public function register($listener){
+		//Not works
+		//$this->server->getPluginManager()->registerEvents($listener);
 	}
 	
 }

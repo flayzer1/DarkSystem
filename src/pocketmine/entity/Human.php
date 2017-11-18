@@ -37,6 +37,31 @@ use pocketmine\Player;
 
 class Human extends Creature implements ProjectileSource, InventoryHolder{
 	
+	const INVENTORY_CLASSIC = 0;
+    const INVENTORY_POCKET = 1;
+    
+	const SURVIVAL = 0;
+	const CREATIVE = 1;
+	const ADVENTURE = 2;
+	const SPECTATOR = 3;
+	const VIEW = 3;
+	
+	const CRAFTING_DEFAULT = 0;
+	const CRAFTING_WORKBENCH = 1;
+	const CRAFTING_ANVIL = 2;
+	const CRAFTING_ENCHANT = 3;
+
+	const SURVIVAL_SLOTS = 42;
+	const CREATIVE_SLOTS = 112;
+	
+	const DEFAULT_SPEED = 0.1;
+	const MAXIMUM_SPEED = 0.5;
+	
+	const MIN_WINDOW_ID = 2;
+	
+	const MAX_EXPERIENCE = 2147483648;
+	const MAX_EXPERIENCE_LEVEL = 21863;
+	
 	protected $inventory;
 	protected $uuid;
 	protected $rawUUID;
@@ -100,7 +125,15 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 	public function getRawUniqueId(){
 		return $this->rawUUID;
 	}
-
+	
+	public function getLeftShoulderEntity(){
+		return 0; //Parrot? (30)
+	}
+	
+	public function getRightShoulderEntity(){
+		return 0; //Parrot? (30)
+	}
+	
 	/**
 	 * @param string $str
 	 * @param string $skinId

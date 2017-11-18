@@ -13,9 +13,10 @@ namespace pocketmine\utils;
 
 use LogLevel;
 use pocketmine\Server;
-use pocketmine\Thread;
-use pocketmine\Worker;
+use darksystem\Thread;
+use darksystem\Worker;
 use pocketmine\Translate;
+use darksystem\ThemeManager;
 
 class MainLogger extends \AttachableThreadedLogger{
 	
@@ -241,11 +242,13 @@ class MainLogger extends \AttachableThreadedLogger{
 				$this->shouldSendMsg .= $color . "|" . $prefix . "|" . trim($message, "\r\n") . "\n";
 			}
 		}
-		switch(Server::getInstance()->getTheme()){
-			/*case "darkness":
-			Server::getInstance()->getThemeManager()->setTheme(Server::getInstance()->getThemeManager::DEFAULT_THEME);
+		$message = TextFormat::toANSI("§" . mt_rand(1, 9) . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§" . mt_rand(1, 9) . "》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+		//Not works correctly
+		/*switch(Server::getInstance()->getTheme()){
+			case "darkness":
+			//Server::getInstance()->getThemeManager()->setTheme(Server::getInstance()->getThemeManager()->getDefaultTheme());
 			$message = TextFormat::toANSI(TextFormat::GREEN . "<" . date("H:i:s", $now) . "> " . TextFormat::AQUA . "LOL §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
-			break;*/
+			break;
 			case "classic":
 			$message = TextFormat::toANSI(TextFormat::AQUA . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 			break;
@@ -267,7 +270,7 @@ class MainLogger extends \AttachableThreadedLogger{
 			default;
 			$message = TextFormat::toANSI(TextFormat::AQUA . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 			break;
-		}
+		}*/
 		$cleanMessage = TextFormat::clean($message);
 		if(!Terminal::hasFormattingCodes()){
 			echo $cleanMessage . PHP_EOL;
@@ -277,8 +280,8 @@ class MainLogger extends \AttachableThreadedLogger{
 		if($this->attachment instanceof \ThreadedLoggerAttachment){
 			$this->attachment->call($level, $message);
 		}
-		$this->logStream[] = date("Y-m-d", $now) . " " . $cleanMessage . "\n";
-		if($this->logStream->count() === 1){
+		$this->logStream[] = date("Y-m-d", $now) . TextFormat::SPACE . $cleanMessage . "\n";
+		if($this->logStream->count() == 1){
 			$this->synchronized(function(){
 				$this->notify();
 			});
@@ -305,4 +308,5 @@ class MainLogger extends \AttachableThreadedLogger{
 	public function run(){
 		$this->shutdown = false;
 	}
+	
 }

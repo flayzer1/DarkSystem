@@ -1,11 +1,20 @@
 <?php
 
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
+
 namespace pocketmine\item;
 
 use pocketmine\block\Block;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
 
 class Banner extends Item{
@@ -37,7 +46,7 @@ class Banner extends Item{
 		}
 
 		$namedTag = $this->getNamedTag();
-		$namedTag->Patterns->{$patternId} = new Compound("", [
+		$namedTag->Patterns->{$patternId} = new CompoundTag("", [
 			new IntTag("Color", $color & 0x0f),
 			new StringTag("Pattern", $pattern)
 		]);
@@ -133,13 +142,13 @@ class Banner extends Item{
 	}
 
 	public function correctNBT(){
-		$tag = $this->getNamedTag() ?? new Compound();
+		$tag = $this->getNamedTag() ?? new CompoundTag();
 		if(!isset($tag->Base) or !($tag->Base instanceof IntTag)){
 			$tag->Base = new IntTag("Base", $this->meta);
 		}
 
-		if(!isset($tag->Patterns) or !($tag->Patterns instanceof Enum)){
-			$tag->Patterns = new Enum("Patterns");
+		if(!isset($tag->Patterns) or !($tag->Patterns instanceof ListTag)){
+			$tag->Patterns = new ListTag("Patterns");
 		}
 		
 		$this->setNamedTag($tag);

@@ -21,7 +21,7 @@ use pocketmine\item\Potion;
 
 class ThrownPotion extends Projectile
 {
-    const NETWORK_ID = 86;
+    const NETWORK_ID = self::THROWN_POTION;
 
     const DATA_POTION_ID = 16;
 

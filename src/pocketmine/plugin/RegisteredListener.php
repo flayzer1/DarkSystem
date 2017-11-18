@@ -11,9 +11,9 @@
 
 namespace pocketmine\plugin;
 
-use pocketmine\event\Cancellable;
 use pocketmine\event\Event;
 use pocketmine\event\Listener;
+use pocketmine\event\Cancellable;
 use pocketmine\event\TimingsHandler;
 
 class RegisteredListener{

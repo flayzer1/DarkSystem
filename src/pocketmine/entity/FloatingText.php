@@ -11,11 +11,11 @@
 
 namespace pocketmine\entity;
 
-//use pocketmine\item\Item;
+use pocketmine\item\Item as ItemItem;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\AddPlayerPacket;
-use pocketmine\Player;
 use pocketmine\utils\UUID;
+use pocketmine\Player;
 
 class FloatingText extends Entity{
 
@@ -77,8 +77,10 @@ class FloatingText extends Entity{
 		$pk->uuid = UUID::fromRandom();
 		$pk->username = "";
 		$pk->eid = $this->id;
-		$pk->position = $this->asVector3();
-		$pk->item = Item::get(Item::AIR, 0, 0);
+		$pk->x = $this->x;
+        $pk->y = $this->y;
+        $pk->z = $this->z;
+		$pk->item = ItemItem::get(ItemItem::AIR, 0, 0);
 		$pk->metadata = $this->dataProperties;
 
 		$player->dataPacket($pk);

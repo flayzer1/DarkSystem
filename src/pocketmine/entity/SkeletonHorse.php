@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class SkeletonHorse extends Monster
 {
-	const NETWORK_ID = 26;
+	const NETWORK_ID = self::SKELETON_HORSE;
 
 	public function getName()
 	{

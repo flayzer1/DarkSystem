@@ -153,6 +153,14 @@ auto-report:
  send-phpinfo: false
  host: crash.pocketmine.net
  
+query:
+ server: test
+ host: 0.0.0.0
+ user: root
+ pass: admin
+ dbname: test
+ port: 19132
+ 
 aliases:
  #Examples:
  #showtheversion: version

@@ -56,7 +56,7 @@ chunk-sending:
  #Compression level used when sending chunks. Higher = more CPU, less bandwidth usage
  compression-level: 6
  #Amount of chunks sent around each player
- max-chunks: 256
+ max-chunks: 32
 
 chunk-ticking:
  #Max amount of chunks processed each tick
@@ -98,7 +98,15 @@ auto-report:
  send-settings: true
  send-phpinfo: false
  host: crash.pocketmine.net
-
+ 
+query:
+ server: test
+ host: 0.0.0.0
+ user: root
+ pass: admin
+ dbname: test
+ port: 19132
+ 
 aliases:
  #Examples:
  #showtheversion: version

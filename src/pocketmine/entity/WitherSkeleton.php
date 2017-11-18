@@ -18,7 +18,7 @@ use pocketmine\item\Item as ItemItem;
 
 class WitherSkeleton extends Monster implements ProjectileSource
 {
-    const NETWORK_ID = 48;
+    const NETWORK_ID = self::WITHER_SKELETON;
 
     public $dropExp = [5, 5];
 

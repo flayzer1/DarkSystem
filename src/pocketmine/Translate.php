@@ -15,6 +15,8 @@ use darksystem\language\Language;
 
 class Translate{
 	
+	//This may move to darksystem\language
+	
 	const ENG = "eng";
 	const TUR = "tur";
 	

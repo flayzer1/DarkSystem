@@ -27,7 +27,7 @@ use pocketmine\Player;
 
 class FallingSand extends Entity{
 	
-	const NETWORK_ID = 66;
+	const NETWORK_ID = self::FALLING_SAND;
 
 	const DATA_BLOCK_INFO = 20;
 
@@ -101,7 +101,7 @@ class FallingSand extends Entity{
 			$this->motionX *= $friction;
 			$this->motionY *= 1 - $this->drag;
 			$this->motionZ *= $friction;
-			if($this->y < 1) {
+			if($this->y < 1){
 				$this->kill();
 			}
 			

@@ -449,6 +449,7 @@ class Item{
 	const BOTTLE_ENCHANTING = 384;
 	const BOTTLE_O_ENCHANTING = 384;
 	const ENCHANTING_BOTTLE = 384;
+	const ENCHANT_BOTTLE = 384;
 	const FIRE_CHARGE = 385;
 	const WRITABLE_BOOK = 386;
 	const WRITTEN_BOOK = 387;
@@ -1440,7 +1441,7 @@ class Item{
 		}
 		
 		if(!is_int($colorCode)){
-			unset($tag->customColor);			
+			unset($tag->customColor);
 		}else{
 			$tag->customColor = new IntTag("customColor", $colorCode);
 		}
@@ -1605,7 +1606,11 @@ class Item{
 	public function isShears(){
 		return false;
 	}
-
+	
+	public function isBow(){
+		return false;
+	}
+	
 	final public function __toString(){
 		return "Item " . $this->name . " (" . $this->id . ":" . ($this->meta === null ? "?" : $this->meta) . ")x" . $this->count . ($this->hasCompoundTag() ? " tags:0x".bin2hex($this->getCompoundTag()) : "");
 	}

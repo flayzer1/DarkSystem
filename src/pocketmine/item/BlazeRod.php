@@ -22,4 +22,3 @@ class BlazeRod extends Item{
 	}
 
 }
-

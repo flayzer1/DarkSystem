@@ -6,7 +6,7 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\Player;
 
-class SaturationEffect extends Effect {
+class SaturationEffect extends Effect{
 
 	public function canTick() {
 		if ($this->amplifier < 0) {
@@ -24,5 +24,4 @@ class SaturationEffect extends Effect {
 			$entity->setFood($entity->getFood() + 1);
 		}
 	}
-
 }

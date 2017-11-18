@@ -21,7 +21,7 @@
 
 namespace pocketmine\scheduler;
 
-use pocketmine\Worker;
+use darksystem\Worker;
 
 class AsyncWorker extends Worker{
 

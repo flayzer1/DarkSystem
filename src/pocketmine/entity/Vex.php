@@ -18,7 +18,7 @@ use pocketmine\item\IronSword;
 
 class Vex extends Monster
 {
-	const NETWORK_ID = 105;
+	const NETWORK_ID = self::VEX;
 	
 	public $width = 0.6;
 	public $length = 0.6;

@@ -23,7 +23,7 @@ use pocketmine\Server;
 
 class Squid extends WaterAnimal implements Ageable{
 	
-	const NETWORK_ID = 17;
+	const NETWORK_ID = self::SQUID;
 
 	public $width = 0.95;
 	public $length = 0.95;

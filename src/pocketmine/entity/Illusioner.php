@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class Illusioner extends Illager
 {
-	const NETWORK_ID = 25;
+	const NETWORK_ID = self::ILLUSIONER;
 
 	public function getName()
 	{

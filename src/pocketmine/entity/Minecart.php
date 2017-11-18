@@ -20,12 +20,13 @@ use pocketmine\Player;
 
 class Minecart extends Vehicle{
 	
-    const NETWORK_ID = 84;
+    const NETWORK_ID = self::MINECART;
 
     const TYPE_NORMAL = 1;
     const TYPE_CHEST = 2;
     const TYPE_HOPPER = 3;
     const TYPE_TNT = 4;
+    const TYPE_COMMAND_BLOCK = 5;
 
     const STATE_INITIAL = 0;
     const STATE_ON_RAIL = 1;

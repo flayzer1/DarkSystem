@@ -19,7 +19,7 @@ use pocketmine\item\Item as ItemItem;
 
 class Cow extends Animal
 {
-    const NETWORK_ID = 11;
+    const NETWORK_ID = self::COW;
 
     public $width = 0.3;
     public $length = 0.9;

@@ -12,9 +12,9 @@
 namespace pocketmine\network\query;
 
 use pocketmine\event\server\QueryRegenerateEvent;
-use pocketmine\Server;
 use pocketmine\utils\Binary;
 use pocketmine\utils\Utils;
+use pocketmine\Server;
 
 class QueryHandler{
 	

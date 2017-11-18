@@ -6,7 +6,7 @@ use pocketmine\entity\InstantEffect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityRegainHealthEvent;
 
-class HealingEffect extends InstantEffect {
+class HealingEffect extends InstantEffect{
 
 	public function canTick() {
 		return true;
@@ -24,5 +24,4 @@ class HealingEffect extends InstantEffect {
 			$entity->heal($ev->getAmount(), $ev);
 		}
 	}
-
 }

@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class Endermite extends Monster
 {
-	const NETWORK_ID = 55;
+	const NETWORK_ID = self::ENDERMITE;
 
 	public function getName()
 	{

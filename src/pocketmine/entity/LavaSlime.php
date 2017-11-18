@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class LavaSlime extends Living
 {
-    const NETWORK_ID = 42;
+    const NETWORK_ID = self::LAVA_SLIME;
 
     const DATA_SLIME_SIZE = 16;
 

@@ -46,12 +46,5 @@ class ItemFrameDropItemEvent extends BlockEvent implements Cancellable{
 	public function getBlock(){
 		return $this->block;
 	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "ItemFrameDropItemEvent";
-	}
-
+	
 }

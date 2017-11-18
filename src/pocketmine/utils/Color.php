@@ -11,6 +11,8 @@
 
 namespace pocketmine\utils;
 
+use pocketmine\Translate;
+
 class Color{
 
 	const COLOR_DYE_BLACK = 0;
@@ -92,21 +94,24 @@ class Color{
 	public function getRed(){
 		return (int) $this->red;
 	}
-
-	public function getBlue(){
-		return (int) $this->blue;
-	}
-
+	
 	public function getGreen(){
 		return (int) $this->green;
 	}
-
+	
+	public function getBlue(){
+		return (int) $this->blue;
+	}
+	
 	public function getColorCode(){
 		return ($this->red << 16 | $this->green << 8 | $this->blue) & 0xffffff;
 	}
-
-	public function __toString(){
-		return "Color(Red:" . $this->red . ", Green:" . $this->green . ", Blue:" . $this->blue . ")";
-	}
 	
+	public function __toString(){
+		if(Translate::checkTurkish() === "yes"){
+			return "Renk (Kırmızı:" . $this->red . ", Yeşil:" . $this->green . ", Mavi:" . $this->blue . ")";
+		}else{
+			return "Color (Red:" . $this->red . ", Green:" . $this->green . ", Blue:" . $this->blue . ")";
+		}
+	}
 }

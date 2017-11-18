@@ -11,13 +11,13 @@
 
 namespace pocketmine\entity;
 
-use pocketmine\Player;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\network\protocol\MobArmorEquipmentPacket;
+use pocketmine\Player;
 
 class Horse extends Living
 {
-    const NETWORK_ID = 23;
+    const NETWORK_ID = self::HORSE;
 
     public function getName()
     {

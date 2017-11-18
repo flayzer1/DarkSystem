@@ -12,13 +12,13 @@
 namespace pocketmine\entity;
 
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
 class DragonFireBall extends Projectile
 {
-    const NETWORK_ID = 79;
+    const NETWORK_ID = self::DRAGON_FIREBALL;
 
     public $width = 0.25;
     public $length = 0.25;
@@ -27,7 +27,7 @@ class DragonFireBall extends Projectile
     protected $gravity = 0.03;
     protected $drag = 0.01;
 
-    public function __construct(Level $level, Compound $nbt, Entity $shootingEntity = null)
+    public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null)
     {
         parent::__construct($level, $nbt, $shootingEntity);
     }

@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class MinecartChest extends Minecart{
 	
-	const NETWORK_ID = 98;
+	const NETWORK_ID = self::CHEST_MINECART;
 
 	/**
 	 * @return string

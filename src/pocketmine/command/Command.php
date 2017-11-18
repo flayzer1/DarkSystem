@@ -14,9 +14,12 @@ namespace pocketmine\command;
 use pocketmine\event\TextContainer;
 use pocketmine\event\TimingsHandler;
 use pocketmine\event\TranslationContainer;
+use pocketmine\command\overload\CommandOverload;
+use pocketmine\command\overload\CommandParameter;
+use pocketmine\command\overload\CommandEnum;
+use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\utils\TextFormat;
 
 abstract class Command{
 	
@@ -25,6 +28,7 @@ abstract class Command{
 
 	/** @var string */
 	private $name;
+	
 	/** @var \stdClass */
 	protected $commandData = null;
 
@@ -68,15 +72,36 @@ abstract class Command{
 	 * @param string   $usageMessage
 	 * @param string[] $aliases
 	 */
-	public function __construct($name, $description = "", $usageMessage = null, array $aliases = []){
+	public function __construct($name, $description = "", $usageMessage = null, $aliases = [], $overloads = []){
 		$this->commandData = Command::generateDefaultData();
 		$this->name = $this->nextLabel = $this->label = $name;
 		$this->setDescription($description);
 		$this->usageMessage = $usageMessage === null ? "/" . $name : $usageMessage;
 		$this->setAliases($aliases);
 		$this->timings = new TimingsHandler("** Komut: " . $name);
+		
+		if(count($overloads) == 0){
+			self::applyDefaultSettings($this);
+		}else{
+			$this->overloads = $overloads;
+		}
 	}
-
+	
+	/**
+	 * @return array
+	 */
+	public function getOverloads(){
+		return $this->overloads;
+	}
+	
+	public function addOverload(CommandOverload $overload){
+		$this->overloads[$overload->getName()] = $overload;
+	}
+	
+	public function getOverload($name){
+		return $this->overloads[$name] ?? null;
+	}
+	
 	/**
 	 * @return \stdClass
 	 */
@@ -102,11 +127,7 @@ abstract class Command{
 		}*/
 		return $customData;
 	}
-
-	public function getOverloads(): \stdClass{
-		return $this->commandData->overloads;
-	}
-
+	
 	/**
 	 * @param CommandSender $sender
 	 * @param string        $commandLabel
@@ -130,7 +151,6 @@ abstract class Command{
 		return $this->commandData->pocketminePermission ?? null;
 	}
 	
-
 	/**
 	 * @param string|null $permission
 	 */
@@ -283,7 +303,11 @@ abstract class Command{
 			$this->activeAliases = (array) $aliases;
 		}
 	}
-
+	
+	public function getAliasesEnum(){
+		return new CommandEnum("aliases", $this->aliases);
+	}
+	
 	/**
 	 * @param string $description
 	 */
@@ -311,7 +335,13 @@ abstract class Command{
 		}
 		return clone Command::$defaultDataTemplate;
 	}
-
+	
+	public static function applyDefaultSettings(Command $command){
+		$defParam = new CommandParameter("args");
+		$overload = new CommandOverload("default", [$defParam]);
+		$command->addOverload($overload);
+	}
+	
 	/**
 	 * @param CommandSender $source
 	 * @param string        $message

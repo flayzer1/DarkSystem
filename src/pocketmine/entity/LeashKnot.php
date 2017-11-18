@@ -18,7 +18,7 @@ use pocketmine\Player;
 
 class LeashKnot extends Entity
 {
-    const NETWORK_ID = 88;
+    const NETWORK_ID = self::LEASH_KNOT;
     
     public $width = 0.98;
     public $length = 0.98;
@@ -36,11 +36,6 @@ class LeashKnot extends Entity
         parent::__construct($level, $nbt);
         
         $this->dropItem = $dropItem;
-    }
-
-    protected function initEntity()
-    {
-        parent::initEntity();
     }
     
     public function canCollideWith(Entity $entity)

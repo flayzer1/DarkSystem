@@ -11,14 +11,14 @@
 
 namespace pocketmine\entity;
 
-use pocketmine\Player;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\network\protocol\MobArmorEquipmentPacket;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\Player;
 
 class Llama extends Animal
 {
-    const NETWORK_ID = 29;
+    const NETWORK_ID = self::LLAMA;
     
     const CREAMY = 0;
 	const WHITE = 1;

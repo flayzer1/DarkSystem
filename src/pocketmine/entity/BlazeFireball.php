@@ -14,14 +14,14 @@ namespace pocketmine\entity;
 use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\level\Explosion;
 
 class BlazeFireball extends Projectile
 {
-    const NETWORK_ID = 94;
+    const NETWORK_ID = self::SMALL_FIREBALL;
 
     public $width = 0.3125;
     public $height = 0.3125;
@@ -32,7 +32,7 @@ class BlazeFireball extends Projectile
     protected $isCritical;
     protected $canExplode = false;
 
-    public function __construct(Level $level, Compound $nbt, Entity $shootingEntity = null, bool $critical = false)
+    public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false)
     {
         parent::__construct($level, $nbt, $shootingEntity);
         $this->isCritical = $critical;
@@ -43,7 +43,7 @@ class BlazeFireball extends Projectile
         return $this->canExplode;
     }
 
-    public function setExplode(bool $bool)
+    public function setExplode($bool)
     {
         $this->canExplode = $bool;
     }

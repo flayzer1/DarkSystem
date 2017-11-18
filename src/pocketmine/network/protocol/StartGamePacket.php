@@ -21,6 +21,8 @@
 
 namespace pocketmine\network\protocol;
 
+use pocketmine\network\protocol\types\PlayerPermissions;
+
 class StartGamePacket extends PEPacket{
 	
 	const NETWORK_ID = Info::START_GAME_PACKET;
@@ -37,7 +39,9 @@ class StartGamePacket extends PEPacket{
 	public $x;
 	public $y;
 	public $z;
-
+	
+	public $defaultPlayerPermission = PlayerPermissions::MEMBER;
+	
 	public function decode($playerProtocol){
 		$this->getHeader($playerProtocol);
 	}
@@ -97,7 +101,7 @@ class StartGamePacket extends PEPacket{
 			$this->putByte(0);
 			$this->putByte(0);
 			$this->putByte(0);
-			$this->putSignedVarInt(1);
+			$this->putSignedVarInt($this->defaultPlayerPermission);
 			$this->putSignedVarInt(4);
 			$this->putString("3138ee93-4a4a-479b-8dca-65ca5399e075");
 			$this->putString("");

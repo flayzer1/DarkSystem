@@ -1,5 +1,14 @@
 <?php
 
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
+
 namespace pocketmine\item;
 
 use pocketmine\Server;
@@ -105,7 +114,7 @@ class Potion extends Item{
 		parent::__construct(self::POTION, $meta, $count, self::getNameByMeta($meta));
 	}
 
-	public static function getColor(int $meta){
+	public static function getColor($meta){
 		$effect = Effect::getEffect(self::getEffectId($meta));
 		if($effect !== null){
 			return $effect->getColor();
@@ -113,19 +122,19 @@ class Potion extends Item{
 		return [0, 0, 0];
 	}
 
-	public function getMaxStackSize() : int{
+	public function getMaxStackSize(){
 		return 1;
 	}
 	
-	public function canBeConsumed() : bool{
+	public function canBeConsumed(){
 		return $this->meta > 0;
 	}
 	
-	public function canBeConsumedBy(Entity $entity) : bool{
+	public function canBeConsumedBy(Entity $entity){
 		return $entity instanceof Human;
 	}
 	
-	public function getEffects(): array{
+	public function getEffects(){
 		return self::getEffectsById($this->meta);
 	}
 
@@ -133,13 +142,12 @@ class Potion extends Item{
 	 * @param int $id
 	 * @return Effect[]
 	 */
-	public static function getEffectsById(int $id) : array{
+	public static function getEffectsById($id){
 		if(count(self::POTIONS[$id] ?? []) === 3){
 			return [Effect::getEffect(self::POTIONS[$id][0])->setDuration(self::POTIONS[$id][1])->setAmplifier(self::POTIONS[$id][2])];
 		}
 		return [];
 	}
-	
 	
 	public function onConsume(Entity $human){
 		$pk = new EntityEventPacket();
@@ -148,18 +156,21 @@ class Potion extends Item{
 		if($human instanceof Player){
 			$human->dataPacket($pk);
 		}
+		
 		Server::broadcastPacket($human->getViewers(), $pk);
 
 		foreach($this->getEffects() as $effect){
 			$human->addEffect($effect);
 		}
+		
 		if($human instanceof Player && $human->getGamemode() === 1){
 			return;
 		}
+		
 		$human->getInventory()->setItemInHand(Item::get(self::AIR));
 	}
 	
-	public static function getEffectId(int $meta) : int{
+	public static function getEffectId($meta){
 		switch($meta){
 			case self::INVISIBILITY:
 			case self::INVISIBILITY_T:
@@ -198,7 +209,7 @@ class Potion extends Item{
 			case self::REGENERATION_T:
 			case self::REGENERATION_TWO:
 				return Effect::REGENERATION;
-			default:
+				default;
 				return 0;
 		}
 	}
@@ -265,9 +276,8 @@ class Potion extends Item{
 			case self::WEAKNESS:
 			case self::WEAKNESS_T:
 				return "Potion of Weakness";
-			default:
+				default;
 				return "Potion";
 		}
 	}
-	
 }

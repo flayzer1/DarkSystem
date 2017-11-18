@@ -30,15 +30,13 @@ class PlayerQuitEvent extends PlayerEvent{
 	/** @var string */
 	protected $quitMessage;
 	protected $quitReason;
-	protected $quitLog;
 
-	public function __construct(Player $player, $quitMessage, $quitReason, $quitLog = ""){
+	public function __construct(Player $player, $quitMessage, $quitReason){
 		$this->player = $player;
 		$this->quitMessage = $quitMessage;
 		$this->quitReason = $quitReason;
-		$this->quitLog = $quitLog;
 	}
-
+	
 	public function setQuitMessage($quitMessage){
 		$this->quitMessage = $quitMessage;
 	}
@@ -51,9 +49,4 @@ class PlayerQuitEvent extends PlayerEvent{
 		return $this->quitReason;
 	}
 	
-	public function getQuitLog(){
-		return $this->quitLog;
-	}
-	
-
 }

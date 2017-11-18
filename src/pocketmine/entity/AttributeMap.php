@@ -29,7 +29,7 @@ class AttributeMap implements \ArrayAccess{
 	
 	public function needSend(){
 		return array_filter($this->attributes, function (Attribute $attribute){
-			return $attribute->isSyncable() and $attribute->isDesynchronized();
+			return $attribute->isSyncable() && $attribute->isDesynchronized();
 		});
 	}
 

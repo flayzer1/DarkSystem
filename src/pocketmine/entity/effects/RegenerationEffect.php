@@ -6,7 +6,7 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityRegainHealthEvent;
 
-class RegenerationEffect extends Effect {
+class RegenerationEffect extends Effect{
 
 	public function canTick() {
 		if ($this->amplifier < 0) {
@@ -25,5 +25,4 @@ class RegenerationEffect extends Effect {
 			$entity->heal($ev->getAmount(), $ev);
 		}
 	}
-
 }

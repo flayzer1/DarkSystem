@@ -16,4 +16,5 @@ abstract class PluginLoadOrder{
 	const STARTUP = 0;
 	
 	const POSTWORLD = 1;
+	
 }

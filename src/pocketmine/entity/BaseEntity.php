@@ -47,7 +47,7 @@ abstract class BaseEntity extends Creature{
 	
 	private static $closeMonsterOnDay = false;
 	
-	public static function setCloseMonsterOnDay($val) {
+	public static function setCloseMonsterOnDay($val){
 		BaseEntity::$closeMonsterOnDay = $val;
 	}
 
@@ -170,7 +170,7 @@ abstract class BaseEntity extends Creature{
 		$motion = (new Vector3($this->x - $damager->x, $this->y - $damager->y, $this->z - $damager->z))->normalize();
 		$this->motionX = $motion->x * 0.19;
 		$this->motionZ = $motion->z * 0.19;
-		if (!($this instanceof Monster) || $this->isFriendly()) {
+		if(!($this instanceof Monster) || $this->isFriendly()){
 			$this->sprintTime = mt_rand(60, 120);
 			$this->moveTime = 0;
 		}

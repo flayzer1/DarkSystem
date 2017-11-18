@@ -13,7 +13,7 @@ namespace darksystem\darkbot;
 
 use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\Thread;
+use darksystem\Thread;
 use pocketmine\Translate;
 use pocketmine\level\Level;
 use pocketmine\entity\Entity;

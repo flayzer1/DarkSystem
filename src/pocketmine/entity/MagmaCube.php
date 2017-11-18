@@ -18,7 +18,7 @@ use pocketmine\Player;
 
 class MagmaCube extends Slime
 {
-	const NETWORK_ID = 42;
+	const NETWORK_ID = self::MAGMA_CUBE;
 
 	const DATA_SLIME_SIZE = 16;
 

@@ -16,17 +16,18 @@ use pocketmine\item\Tool;
 use pocketmine\math\Vector3;
 
 class ActiveRedstoneLamp extends Solid implements ElectricalAppliance, SolidLight{
+	
 	protected $id = self::ACTIVE_REDSTONE_LAMP;
 
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Active Redstone Lamp";
 	}
 
-	public function getHardness() {
+	public function getHardness(){
 		return 0.5;
 	}
 
@@ -38,7 +39,7 @@ class ActiveRedstoneLamp extends Solid implements ElectricalAppliance, SolidLigh
 		return 10;
 	}
 
-	public function getDrops(Item $item) : array {
+	public function getDrops(Item $item){
 		return [
 			[Item::INACTIVE_REDSTONE_LAMP, 0 ,1],
 		];
@@ -109,4 +110,5 @@ class ActiveRedstoneLamp extends Solid implements ElectricalAppliance, SolidLigh
 		//$this->turnAroundOff();
 		return true;
 	}
+	
 }

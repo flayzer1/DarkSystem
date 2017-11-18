@@ -1,29 +1,19 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
- *
-*/
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\entity;
 
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\level\Explosion;
@@ -31,28 +21,30 @@ use pocketmine\event\entity\ExplosionPrimeEvent;
 
 class GhastFireball extends Projectile
 {
-    const NETWORK_ID = 85;
+    const NETWORK_ID = self::LARGE_FIREBALL;
 
     public $width = 1.0;
     public $height = 1.0;
+    
     protected $damage = 4;
     protected $drag = 0.01;
     protected $gravity = 0.05;
     protected $isCritical;
     protected $canExplode = false;
 
-    public function __construct(Level $level, Compound $nbt, Entity $shootingEntity = null, bool $critical = false)
+    public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false)
     {
         parent::__construct($level, $nbt, $shootingEntity);
+        
         $this->isCritical = $critical;
     }
 
-    public function isExplode(): bool
+    public function isExplode()
     {
         return $this->canExplode;
     }
 
-    public function setExplode(bool $bool)
+    public function setExplode($bool)
     {
         $this->canExplode = $bool;
     }
@@ -66,10 +58,10 @@ class GhastFireball extends Projectile
         $this->timings->startTiming();
         $hasUpdate = parent::onUpdate($currentTick);
         if (!$this->hadCollision and $this->isCritical) {
-            $this->level->addParticle(new CriticalParticle($this->add(
+            /*$this->level->addParticle(new CriticalParticle($this->add(
                 $this->width / 2 + mt_rand(-100, 100) / 500,
                 $this->height / 2 + mt_rand(-100, 100) / 500,
-                $this->width / 2 + mt_rand(-100, 100) / 500)));
+                $this->width / 2 + mt_rand(-100, 100) / 500)));*/
         } elseif ($this->onGround) {
             $this->isCritical = false;
         }
@@ -80,7 +72,7 @@ class GhastFireball extends Projectile
                 if (!$ev->isCancelled()) {
                     $explosion = new Explosion($this, $ev->getForce(), $this->shootingEntity);
                     if ($ev->isBlockBreaking()) {
-                        $explosion->explodeA();
+                        $explosion->explodeB();
                     }
                     $explosion->explodeB();
                 }

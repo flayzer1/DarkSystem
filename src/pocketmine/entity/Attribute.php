@@ -15,7 +15,6 @@ use pocketmine\Server;
 
 class Attribute
 {
-	
     const ABSORPTION = 0;
     const SATURATION = 1;
     const EXHAUSTION = 2;
@@ -176,7 +175,7 @@ class Attribute
         return $this->currentValue;
     }
 
-    public function setValue($value, bool $fit = true, bool $shouldSend = false)
+    public function setValue($value, $fit = true, $shouldSend = false)
     {
         if($value > $this->getMaxValue() or $value < $this->getMinValue()){
             if(!$fit){
@@ -218,7 +217,7 @@ class Attribute
         return $this->shouldSend and $this->desynchronized;
     }
 
-    public function markSynchronized(bool $synced = true)
+    public function markSynchronized($synced = true)
     {
         $this->desynchronized = !$synced;
     }

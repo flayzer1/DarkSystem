@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class SnowGolem extends Animal
 {
-    const NETWORK_ID = 21;
+    const NETWORK_ID = self::SNOW_GOLEM;
 
     public $width = 0.3;
     public $length = 0.9;

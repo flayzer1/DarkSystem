@@ -19,7 +19,7 @@ use pocketmine\Player;
 
 class Ocelot extends Animal
 {
-    const NETWORK_ID = 22;
+    const NETWORK_ID = self::OCELOT;
 
     const DATA_CAT_TYPE = 18;
 

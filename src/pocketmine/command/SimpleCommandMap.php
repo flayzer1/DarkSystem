@@ -91,90 +91,90 @@ use pocketmine\command\defaults\ExtractPluginCommand;
 
 class SimpleCommandMap implements CommandMap{
 	
+	const ROOT = "pocketmine"; //Why it is not 'darksystem'?
+	
 	protected $knownCommands = [];
-	protected $commandConfig = [];
 	
 	private $server;
 
 	public function __construct(Server $server){
 		$this->server = $server;
-		$this->commandConfig = $this->server->getProperty("commands");
 		SimpleCommandMap::registerDefaultCommands();
 	}
 
 	private function registerDefaultCommands(){
-		SimpleCommandMap::register("pocketmine", new WeatherCommand("weather"));
-		SimpleCommandMap::register("pocketmine", new BanIpByNameCommand("banipbyname"));
-		SimpleCommandMap::register("pocketmine", new BanCidByNameCommand("bancidbyname"));
-		SimpleCommandMap::register("pocketmine", new BanCidCommand("bancid"));
-		SimpleCommandMap::register("pocketmine", new VersionCommand("version"));
-		SimpleCommandMap::register("pocketmine", new PluginsCommand("plugins"));
-		SimpleCommandMap::register("pocketmine", new SeedCommand("seed"));
-		SimpleCommandMap::register("pocketmine", new HelpCommand("help"), null, true);
-		SimpleCommandMap::register("pocketmine", new StopCommand("stop"), null, true);
-		SimpleCommandMap::register("pocketmine", new TellCommand("tell"));
-		SimpleCommandMap::register("pocketmine", new DefaultGamemodeCommand("defaultgamemode"));
-		SimpleCommandMap::register("pocketmine", new BanCommand("ban"));
-		SimpleCommandMap::register("pocketmine", new BanIpCommand("ban-ip"));
-		SimpleCommandMap::register("pocketmine", new BanListCommand("banlist"));
-		SimpleCommandMap::register("pocketmine", new PardonCommand("pardon"));
-		SimpleCommandMap::register("pocketmine", new PardonIpCommand("pardon-ip"));
-		SimpleCommandMap::register("pocketmine", new SayCommand("say"));
-		SimpleCommandMap::register("pocketmine", new ListCommand("list"));
-		SimpleCommandMap::register("pocketmine", new TitleCommand("title"));
-		SimpleCommandMap::register("pocketmine", new DifficultyCommand("difficulty"));
-		SimpleCommandMap::register("pocketmine", new KickCommand("kick"));
-		SimpleCommandMap::register("pocketmine", new DeopCommand("deop"));
-		SimpleCommandMap::register("pocketmine", new WhitelistCommand("whitelist"));
-		SimpleCommandMap::register("pocketmine", new SaveOnCommand("save-on"));
-		SimpleCommandMap::register("pocketmine", new SaveOffCommand("save-off"));
-		SimpleCommandMap::register("pocketmine", new SaveCommand("save-all"), null, true);
-		SimpleCommandMap::register("pocketmine", new GiveCommand("give"));
-		SimpleCommandMap::register("pocketmine", new GivePizzaCommand("givepizza"));
-		SimpleCommandMap::register("pocketmine", new HackCommand("hack"));
-		SimpleCommandMap::register("pocketmine", new AddUICommand("addui"));
-		SimpleCommandMap::register("pocketmine", new ServerInfoCommand("serverinfo"));
-		SimpleCommandMap::register("pocketmine", new CreateInvCommand("createinv"));
-		SimpleCommandMap::register("pocketmine", new WorldCommand("world"));
-		SimpleCommandMap::register("pocketmine", new MorphCommand("morph"));
-		SimpleCommandMap::register("pocketmine", new ZoomCommand("zoom"));
-		SimpleCommandMap::register("pocketmine", new XYZCommand("xyz"));
-		SimpleCommandMap::register("pocketmine", new EffectCommand("effect"));
-		SimpleCommandMap::register("pocketmine", new ClearCommand("clear"));
-		SimpleCommandMap::register("pocketmine", new ClearChatCommand("clearchat"));
-		SimpleCommandMap::register("pocketmine", new EnchantCommand("enchant"));
-		SimpleCommandMap::register("pocketmine", new ParticleCommand("particle"));
-		SimpleCommandMap::register("pocketmine", new GamemodeCommand("gamemode"));
-		SimpleCommandMap::register("pocketmine", new KillCommand("kill"));
-		SimpleCommandMap::register("pocketmine", new SpawnDarkBotCommand("spawndarkbot"));
-		SimpleCommandMap::register("pocketmine", new SpawnPointCommand("spawnpoint"));
-		SimpleCommandMap::register("pocketmine", new SetWorldSpawnCommand("setworldspawn"));
-		SimpleCommandMap::register("pocketmine", new SummonCommand("summon"));
-		SimpleCommandMap::register("pocketmine", new TeleportCommand("tp"));
-		SimpleCommandMap::register("pocketmine", new TpAllCommand("tpall"));
-		SimpleCommandMap::register("pocketmine", new TimeCommand("time"));
-		SimpleCommandMap::register("pocketmine", new TimingsCommand("timings"));
-		SimpleCommandMap::register("pocketmine", new TransferCommand("transfer"));
-		SimpleCommandMap::register("pocketmine", new ReloadCommand("reload"), null, true);
-		SimpleCommandMap::register("pocketmine", new XpCommand("xp"));
-		SimpleCommandMap::register("pocketmine", new SetBlockCommand("setblock"));
-		SimpleCommandMap::register("pocketmine", new CaveCommand("cave"));
-		SimpleCommandMap::register("pocketmine", new FillCommand("fill"));
-		SimpleCommandMap::register("pocketmine", new BiomeCommand("biome"));
-		SimpleCommandMap::register("pocketmine", new ChunkInfoCommand("chunkinfo"));
-		SimpleCommandMap::register("pocketmine", new PingCommand("ping"));
-		SimpleCommandMap::register("pocketmine", new MakePluginCommand("mp"));
-		SimpleCommandMap::register("pocketmine", new MakeServerCommand("ms"));
-		SimpleCommandMap::register("pocketmine", new ExtractPluginCommand("ep"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new WeatherCommand("weather"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new BanIpByNameCommand("banipbyname"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new BanCidByNameCommand("bancidbyname"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new BanCidCommand("bancid"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new VersionCommand("version"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new PluginsCommand("plugins"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new SeedCommand("seed"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new HelpCommand("help"), null, true);
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new StopCommand("stop"), null, true);
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new TellCommand("tell"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new DefaultGamemodeCommand("defaultgamemode"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new BanCommand("ban"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new BanIpCommand("ban-ip"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new BanListCommand("banlist"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new PardonCommand("pardon"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new PardonIpCommand("pardon-ip"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new SayCommand("say"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new ListCommand("list"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new TitleCommand("title"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new DifficultyCommand("difficulty"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new KickCommand("kick"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new DeopCommand("deop"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new WhitelistCommand("whitelist"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new SaveOnCommand("save-on"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new SaveOffCommand("save-off"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new SaveCommand("save-all"), null, true);
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new GiveCommand("give"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new GivePizzaCommand("givepizza"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new HackCommand("hack"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new AddUICommand("addui"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new ServerInfoCommand("serverinfo"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new CreateInvCommand("createinv"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new WorldCommand("world"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new MorphCommand("morph"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new ZoomCommand("zoom"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new XYZCommand("xyz"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new EffectCommand("effect"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new ClearCommand("clear"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new ClearChatCommand("clearchat"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new EnchantCommand("enchant"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new ParticleCommand("particle"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new GamemodeCommand("gamemode"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new KillCommand("kill"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new SpawnDarkBotCommand("spawndarkbot"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new SpawnPointCommand("spawnpoint"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new SetWorldSpawnCommand("setworldspawn"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new SummonCommand("summon"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new TeleportCommand("tp"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new TpAllCommand("tpall"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new TimeCommand("time"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new TimingsCommand("timings"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new TransferCommand("transfer"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new ReloadCommand("reload"), null, true);
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new XpCommand("xp"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new SetBlockCommand("setblock"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new CaveCommand("cave"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new FillCommand("fill"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new BiomeCommand("biome"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new ChunkInfoCommand("chunkinfo"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new PingCommand("ping"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new MakePluginCommand("mp"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new MakeServerCommand("ms"));
+		SimpleCommandMap::register(SimpleCommandMap::ROOT, new ExtractPluginCommand("ep"));
 		
 		if($this->server->getSoftConfig("commands.operator-command", true)){
-			SimpleCommandMap::register("pocketmine", new OperatorCommand("operator"));
+			SimpleCommandMap::register(SimpleCommandMap::ROOT, new OperatorCommand("operator"));
 		}
 		
 		if($this->server->getProperty("debug.commands", false)){
-			SimpleCommandMap::register("pocketmine", new StatusCommand("status"), null, true);
-			SimpleCommandMap::register("pocketmine", new GarbageCollectorCommand("gc"), null, true);
-			SimpleCommandMap::register("pocketmine", new DumpMemoryCommand("dumpmemory"), null, true);
+			SimpleCommandMap::register(SimpleCommandMap::ROOT, new StatusCommand("status"), null, true);
+			SimpleCommandMap::register(SimpleCommandMap::ROOT, new GarbageCollectorCommand("gc"), null, true);
+			SimpleCommandMap::register(SimpleCommandMap::ROOT, new DumpMemoryCommand("dumpmemory"), null, true);
 		}
 	}
 
@@ -190,9 +190,6 @@ class SimpleCommandMap implements CommandMap{
 			$label = $command->getName();
 		}
 		$label = strtolower(trim($label));
-		if(!(($this->commandConfig[$label] ?? $this->commandConfig["default"] ?? true) or $overrideConfig)){
-			return false;
-		}
 		$fallbackPrefix = strtolower(trim($fallbackPrefix));
 		$registered = SimpleCommandMap::registerAlias($command, false, $fallbackPrefix, $label);
 		$aliases = $command->getAliases();

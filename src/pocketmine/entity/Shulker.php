@@ -18,7 +18,7 @@ use pocketmine\item\Item as ItemItem;
 
 class Shulker extends Monster
 {
-    const NETWORK_ID = 54;
+    const NETWORK_ID = self::SHULKER;
 
     public $width = 0.5;
     public $length = 0.9;

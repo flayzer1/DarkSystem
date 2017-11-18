@@ -18,7 +18,7 @@ use pocketmine\item\Item as ItemItem;
 
 class Stray extends Skeleton
 {
-    const NETWORK_ID = 46;
+    const NETWORK_ID = self::STRAY;
 
     public $dropExp = [5, 5];
 

@@ -18,7 +18,7 @@ use pocketmine\Player;
 
 class EnderCrystal extends Vehicle
 {
-    const NETWORK_ID = 71;
+    const NETWORK_ID = self::ENDER_CRYSTAL;
 
     public $height = 0.7;
     public $width = 1.6;
@@ -26,7 +26,7 @@ class EnderCrystal extends Vehicle
     public $gravity = 0.5;
     public $drag = 0.1;
 
-    public function __construct(Level $level, CompoundTag $nbt)
+    public function __construct(Level $level, CompoundTagr $nbt)
     {
         parent::__construct($level, $nbt);
     }

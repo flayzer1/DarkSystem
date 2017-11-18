@@ -6,7 +6,7 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\Player;
 
-class SlownessEffect extends Effect {
+class SlownessEffect extends Effect{
 
 	public function add(Entity $entity, $modify = false) {
 		parent::add($entity, $modify);
@@ -22,5 +22,4 @@ class SlownessEffect extends Effect {
 			$entity->updateSpeed($entity::DEFAULT_SPEED);
 		}
 	}
-
 }

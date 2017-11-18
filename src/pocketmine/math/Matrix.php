@@ -12,6 +12,7 @@
 namespace pocketmine\math;
 
 class Matrix implements \ArrayAccess{
+	
 	private $matrix = [];
 	private $rows = 0;
 	private $columns = 0;

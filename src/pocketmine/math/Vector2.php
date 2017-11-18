@@ -1,23 +1,13 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
- *
-*/
+#______           _    _____           _                  
+#|  _  \         | |  /  ___|         | |                 
+#| | | |__ _ _ __| | _\ `--. _   _ ___| |_ ___ _ __ ___   
+#| | | / _` | '__| |/ /`--. \ | | / __| __/ _ \ '_ ` _ \  
+#| |/ / (_| | |  |   </\__/ / |_| \__ \ ||  __/ | | | | | 
+#|___/ \__,_|_|  |_|\_\____/ \__, |___/\__\___|_| |_| |_| 
+#                             __/ |                       
+#                            |___/
 
 namespace pocketmine\math;
 
@@ -47,18 +37,18 @@ class Vector2{
 		return (int) $this->y;
 	}
 
-	public function add($x, $y = 0) {
-		if ($x instanceof Vector2) {
+	public function add($x, $y = 0){
+		if($x instanceof Vector2){
 			return new Vector2($this->x + $x->x, $this->y + $y->y);
-		} else {
+		}else{
 			return new Vector2($this->x + $x, $this->y + $y);
 		}
 	}
 
-	public function subtract($x, $y = 0) {
-		if ($x instanceof Vector2) {
+	public function subtract($x, $y = 0){
+		if($x instanceof Vector2){
 			return new Vector2($this->x - $x->x, $this->y - $y->y);
-		} else {
+		}else{
 			return new Vector2($this->x - $x, $this->y - $y);
 		}
 	}
@@ -95,10 +85,10 @@ class Vector2{
 		}
 	}
 
-	public function distanceSquared($x, $y = 0) {
-		if ($x instanceof Vector2) {
+	public function distanceSquared($x, $y = 0){
+		if($x instanceof Vector2){
 			return ($this->x - $x->x) ** 2 + ($this->y - $x->y) ** 2;
-		} else {
+		}else{
 			return ($this->x - $x) ** 2 + ($this->y - $y) ** 2;
 		}
 	}
@@ -112,7 +102,7 @@ class Vector2{
 	}
 
 	public function normalize(){
-		if ($this->x != 0 || $this->y != 0) {
+		if($this->x != 0 || $this->y != 0){
 			$len = sqrt($this->x * $this->x + $this->y * $this->y);
 			return new Vector2($this->x / $len, $this->y / $len);
 		}

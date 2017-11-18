@@ -2,13 +2,13 @@
 
 namespace darksystem\multicore;
 
-use pocketmine\Worker;
+use darksystem\Worker;
 
 class CoreWorker extends Worker{
 	
 	private $logger;
 	
-	public function __construct(\ThreadedLogger $logger) {
+	public function __construct(\ThreadedLogger $logger){
 		$this->logger = $logger;
 	}
 	
@@ -16,20 +16,20 @@ class CoreWorker extends Worker{
 		
 	}
 	
-	public function run() {
-		$this->registerClassLoader ();
-		gc_enable ();
-		ini_set ( "memory_limit", - 1 );
+	public function run(){
+		$this->registerClassLoader();
+		gc_enable();
+		ini_set("memory_limit", - 1);
 		
 		global $store;
-		$store = [ ];
+		$store = [];
 	}
 	
-	public function handleException(\Throwable $e) {
-		$this->logger->logException ( $e );
+	public function handleException(\Throwable $e){
+		$this->logger->logException($e);
 	}
 	
-	public function getThreadName() {
+	public function getThreadName(){
 		return "Asynchronous Worker";
 	}
 	

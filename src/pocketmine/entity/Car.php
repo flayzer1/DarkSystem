@@ -23,7 +23,7 @@ use pocketmine\math\Vector3;
 
 class Car extends Vehicle{
 	
-	const NETWORK_ID = 84;
+	const NETWORK_ID = self::MINECART;
 
 	const TYPE_NORMAL = 1;
 	const TYPE_CHEST = 2;

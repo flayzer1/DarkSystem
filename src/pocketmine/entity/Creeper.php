@@ -18,7 +18,7 @@ use pocketmine\Player;
 
 class Creeper extends Monster
 {
-    const NETWORK_ID = 33;
+    const NETWORK_ID = self::CREEPER;
 
     const DATA_SWELL = 19;
     const DATA_SWELL_OLD = 20;
@@ -38,10 +38,11 @@ class Creeper extends Monster
         if (!isset($this->namedtag->powered)) {
             $this->setPowered(false);
         }
+        
         $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_POWERED, $this->isPowered());
     }
 
-    public function setPowered(bool $powered, Lightning $lightning = null)
+    public function setPowered($powered, Lightning $lightning = null)
     {
         if ($lightning != null) {
             $powered = true;

@@ -17,11 +17,11 @@ use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\item\Item as ItemItem;
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 
 class Sheep extends Animal implements Colorable
 {
-    const NETWORK_ID = 13;
+    const NETWORK_ID = self::SHEEP;
 
     const DATA_COLOR_INFO = 16;
 
@@ -34,11 +34,12 @@ class Sheep extends Animal implements Colorable
         return "Sheep";
     }
 
-    public function __construct(Level $level, Compound $nbt)
+    public function __construct(Level $level, CompoundTag $nbt)
     {
         if(!isset($nbt->Color)){
             $nbt->Color = new ByteTag("Color", self::getRandomColor());
         }
+        
         parent::__construct($level, $nbt);
 
         $this->setDataProperty(self::DATA_COLOR_INFO, self::DATA_TYPE_BYTE, $this->getColor());
