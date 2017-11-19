@@ -1617,7 +1617,7 @@ class Server extends DarkSystem{
 			$this->scheduler = new ServerScheduler();
 			
 			if($this->getConfigBoolean("enable-rcon", false)){
-				$this->rcon = new RCON($this, $this->getConfigString("rcon.password", ""), $this->getConfigInt("rcon.port", $this->getPort()), ($ip = $this->getIp()) != "" ? $ip : "0.0.0.0", $this->getConfigInt("rcon.threads", 1), $this->getConfigInt("rcon.clients-per-thread", 50));
+				$this->rcon = new RCON($this, $this->getConfigString("rcon.password", ""), $this->getConfigInt("rcon.port", $this->getPort()), ($ip = $this->getIp()) !== "" ? $ip : "0.0.0.0", $this->getConfigInt("rcon.threads", 1), $this->getConfigInt("rcon.clients-per-thread", 50));
 			}
 			
 			if($this->getConfigBoolean("auto-query", false)){
@@ -2234,7 +2234,7 @@ class Server extends DarkSystem{
 	}
 	
 	public function shutdown($msg = ""){
-		if($msg != ""){
+		if($msg !== ""){
 			$this->propertyCache["settings.shutdown-message"] = $msg;
 		}
 		

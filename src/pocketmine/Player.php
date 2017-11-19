@@ -667,7 +667,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$data = new \stdClass();
 		$count = 0;
 		foreach($this->server->getCommandMap()->getCommands() as $command){
-			//if($this->hasPermission($command->getPermission() || $command->getPermission() == null)){
+			//if($this->hasPermission($command->getPermission()) || $command->getPermission() == null){
 			    if(($cmdData = $command->generateCustomCommandData($this)) !== null){
 				    ++$count;
 				    $data->{$command->getName()}->versions[0] = $cmdData;
@@ -733,7 +733,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 	}
 	
 	public function isValidSkin($skin){
-		return strlen($skin) === 64 * 32 * 4 || strlen($skin) === 64 * 64 * 4;
+		return strlen($skin) == 64 * 32 * 4 || strlen($skin) == 64 * 64 * 4;
 	}
 	
 	public function setSkin($str, /*$skinId, */$skinName, $skinGeometryName = "", /*$skinGeometryId = "", */$skinGeometryData = "", $capeData = ""){
@@ -834,7 +834,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 	}
 
 	public function sendChunk($x, $z, $data){ //$data
-		if($this->connected === false){
+		if(!$this->connected){
 			return false;
 		}
 		//$data = $payload[$this->getPlayerProtocol()];
@@ -929,10 +929,10 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 				}
 			}
 			$this->server->getPluginManager()->callEvent($ev = new PlayerJoinEvent($this, ""));
-			//if(!$ev->isCancelled()){
+			if($this->spawned){
 				foreach($this->server->getOnlinePlayers() as $p){
 					$p->sendMessage(TF::GREEN . $this->username . " Oyuna Katıldı!");
-				//}
+				}
 			}
 		}
 	}
@@ -1003,7 +1003,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		if($this->connected === false){
 			return false;
 		}
-		if($this->subClientId > 0 && $this->parent != null){
+		if($this->subClientId > 0 && $this->parent !== null){
 			$packet->senderSubClientID = $this->subClientId;
 			return $this->parent->dataPacket($packet);
 		}
@@ -1662,7 +1662,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 							$this->setJumping(false); //Bad method
 						}
 					}elseif(!$rocketBlock->isTransparent() && $rocketBlock->y + 1 > $rocket && $this->isLiving() && !$this->isFlying()){ //For rocket bug
-						if($d * 2 * 30 != $rocket){
+						if($d * 2 * 30 !== $rocket){
 							$this->setMotion(new Vector3(0, -$rocket, 0));
 						}else{
 							$this->setMotion(new Vector3(0, -$d * 2 * 30, 0));
@@ -1743,7 +1743,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			}
 		}
 
-		if(!$revert && $distanceSquared != 0){
+		if(!$revert && $distanceSquared !== 0){
 			$dx = $newPos->x - $this->x;
 			$dy = $newPos->y - $this->y;
 			$dz = $newPos->z - $this->z;
@@ -1823,7 +1823,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 
 			$this->sendPosition($from, $from->yaw, $from->pitch, MovePlayerPacket::MODE_RESET);
 		}else{
-			if($distanceSquared != 0 && $this->nextChunkOrderRun > 20){
+			if($distanceSquared !== 0 && $this->nextChunkOrderRun > 20){
 				$this->nextChunkOrderRun = 20;
 			}
 		}
@@ -2624,7 +2624,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 								$this->server->broadcastMessage($result);
 							}
 						}
-						if(trim($message) != "" && strlen($message) <= 255 && $this->messageCounter-- > 0 && /*!strpos($message, $externalIP) && !strpos($message, $internalIP) && */!strpos($message, $leetcc) && !strpos($message, $playmcpe)){
+						if(trim($message) !== "" && strlen($message) <= 255 && $this->messageCounter-- > 0 && /*!strpos($message, $externalIP) && !strpos($message, $internalIP) && */!strpos($message, $leetcc) && !strpos($message, $playmcpe)){
 							$this->server->getPluginManager()->callEvent($ev = new PlayerChatEvent($this, $message));
 							if(!$ev->isCancelled()){
 								$this->chatPlayer($format = $this->server->getLanguage()->translateString($ev->getFormat(), [
@@ -2659,7 +2659,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 					break;
 				}
 				
-				if($packet->windowId > 0 && $packet->windowId !== $this->currentWindowId){
+				if($packet->windowId > 0 && $packet->windowId != $this->currentWindowId){
 					$this->inventory->sendContents($this);
 					$pk = new ContainerClosePacket();
 					$pk->windowid = $packet->windowId;
@@ -2731,7 +2731,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 				foreach($ingredients as $ingredient){
 					$slot = -1;
 					foreach($playerInventoryItems as $index => $i){
-						if($ingredient->getId() !== Item::AIR && $ingredient->deepEquals($i, (!is_null($ingredient->getDamage()) && $ingredient->getDamage() != 0x7fff), false) && ($i->getCount() - $used[$index]) >= 1){
+						if($ingredient->getId() !== Item::AIR && $ingredient->deepEquals($i, (!is_null($ingredient->getDamage()) && $ingredient->getDamage() !== 0x7fff), false) && ($i->getCount() - $used[$index]) >= 1){
 							$slot = $index;
 							$used[$index]++;
 							break;
@@ -2967,7 +2967,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 				}
 				break;
 			case "COMMAND_REQUEST_PACKET":
-				if($packet->command[0] != "/"){
+				if($packet->command[0] !== "/"){
 					$this->sendMessage(TF::RED . "Bilinmeyen Komut!");
 					break;
 				}
@@ -3290,20 +3290,20 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			$pk->message = $reason;
 			$this->directDataPacket($pk);
 			$this->connected = false;
-			if($this->username != ""){
+			if($this->username !== ""){
 				$this->server->getPluginManager()->callEvent($ev = new PlayerQuitEvent($this, $message, $reason));
-				if($this->server->getSavePlayerData() && $this->loggedIn){
+				if($this->loggedIn && $this->server->getSavePlayerData()){
 					$this->save();
 				}
 				
-				//if(!$ev->isCancelled()){
+				if(!$this->connected){
 					foreach($this->server->getOnlinePlayers() as $p){
 						if(Translate::checkTurkish() === "yes"){
 							$p->sendMessage(TF::RED . $this->username . " Oyundan Ayrıldı!");
 						}else{
 							$p->sendMessage(TF::RED . $this->username . " has left the game!");
 						}
-					//}
+					}
 				}
 			}
 			
@@ -3323,7 +3323,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			}
 
 			$this->interface->close($this, $reason);
-
+			
+			$this->chunk = null;
+			
 			$chunkX = null;
 			$chunkZ = null;
 			foreach($this->usedChunks as $index => $d){
@@ -3352,8 +3354,15 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			$this->hasSpawned = [];
 			$this->spawnPosition = null;
 		}
-			
-		$this->perm->clearPermissions();
+		
+		if($this->perm !== null){
+			$this->perm->clearPermissions();
+			$this->perm = null;
+		}
+		
+		$this->inventory = null;
+		$this->enderChestInventory = null;
+		
 		$this->server->removePlayer($this);
 	}
 	
@@ -3376,7 +3385,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			$this->namedtag["playerGameType"] = $this->gamemode;
 			$this->namedtag["lastPlayed"] = floor(microtime(true) * 1000);
 
-			if($this->username != "" && $this->namedtag instanceof CompoundTag){
+			if($this->username !== "" && $this->namedtag instanceof CompoundTag){
 				$this->server->saveOfflinePlayerData($this->username, $this->namedtag, true);
 			}
 		}
@@ -3529,7 +3538,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			}
 		}
 
-		if($ev->getDeathMessage() != ""){
+		if($ev->getDeathMessage() !== ""){
 			$this->server->broadcast($ev->getDeathMessage(), Server::BROADCAST_CHANNEL_USERS);
 		}
 
@@ -4565,7 +4574,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 					break;
 				}
 
-				if($blockPosition["x"] != 0 || $blockPosition["y"] != 0 || $blockPosition["z"] != 0){
+				if($blockPosition["x"] !== 0 || $blockPosition["y"] !== 0 || $blockPosition["z"] !== 0){
 					$vectorLength = sqrt($blockPosition["x"] ** 2 + $blockPosition["y"] ** 2 + $blockPosition["z"] ** 2);
 					$aimPos = new Vector3($blockPosition["x"] / $vectorLength, $blockPosition["y"] / $vectorLength, $blockPosition["z"] / $vectorLength);
 				}else{
@@ -4728,7 +4737,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		
 		if($dropItem == null || $transaction == null){
 			$this->inventory->sendContents($this);
-			if($this->currentWindow != null){
+			if($this->currentWindow !== null){
 				$this->currentWindow->sendContents($this);
 			}
 			
@@ -4788,7 +4797,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 				}
 				
 				$isItemsNotEquals = $item->getId() != $ingredient->getId() || 
-					($item->getDamage() != $ingredient->getDamage() && $ingredient->getDamage() != 32767) || 
+					($item->getDamage() != $ingredient->getDamage() && $ingredient->getDamage() !== 32767) || 
 					$item->count < $ingredient->count;
 				if($isItemsNotEquals){
 					throw new \Exception("Receive bad recipe");

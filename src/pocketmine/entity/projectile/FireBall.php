@@ -75,9 +75,11 @@ class FireBall extends Projectile{
 					if($ev->isBlockBreaking()){
 						$explosion->explodeB();
 					}
+					
 					$explosion->explodeB();
 				}
 			}
+			
 			$this->kill();
 			$hasUpdate = true;
 		}

@@ -166,7 +166,11 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 	public function getInventory(){
 		return $this->inventory;
 	}
-
+	
+	public function getEnderChestInventory(){
+		return $this->enderChestInventory;
+	}
+	
 	protected function initEntity(){
 		$this->setDataFlag(Human::DATA_PLAYER_FLAGS, Human::DATA_PLAYER_FLAG_SLEEP, false);
 		$this->setDataProperty(Human::DATA_PLAYER_BED_POSITION, Human::DATA_TYPE_POS, [0, 0, 0]);
@@ -176,6 +180,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		}else{
 			$this->inventory = new PlayerInventory($this);
 		}
+		$this->enderChestInventory = new EnderChestInventory($this, ($this->namedtag->EnderChestInventory ?? null));
 		if(!($this instanceof Player)){
 			if(isset($this->namedtag->NameTag)){
 				$this->setNameTag($this->namedtag["NameTag"]);
@@ -211,7 +216,10 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		parent::saveNBT();
 		
 		$this->namedtag->Inventory = new ListTag("Inventory", []);
+		$this->namedtag->EnderChestInventory = new ListTag("EnderChestInventory", []);
 		$this->namedtag->Inventory->setTagType(NBT::TAG_Compound);
+		$this->namedtag->EnderChestInventory->setTagType(NBT::TAG_Compound);
+		
 		if($this->inventory !== null){
 			for($slot = 0; $slot < 9; ++$slot){
 				$hotbarSlot = $this->inventory->getHotbarSlotIndex($slot);
@@ -238,6 +246,14 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 				$item = $this->inventory->getItem($this->inventory->getSize() + $slot - 100);
 				if($item instanceof ItemItem && $item->getId() !== ItemItem::AIR){
 					$this->namedtag->Inventory[$slot] = NBT::putItemHelper($item, $slot);
+				}
+			}
+			
+			if($this->enderChestInventory !== null){
+				for($slot = 0; $slot < $this->enderChestInventory->getSize(); $slot++){
+					if(($item = $this->enderChestInventory->getItem($slot)) instanceof ItemItem){
+						$this->namedtag->EnderChestInventory[$slot] = NBT::putItemHelper($slot);
+					}
 				}
 			}
 		}
