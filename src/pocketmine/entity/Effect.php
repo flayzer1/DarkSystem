@@ -11,6 +11,7 @@
 
 namespace pocketmine\entity;
 
+use pocketmine\entity\effects\LevitationEffect;
 use pocketmine\entity\effects\InvisibilityEffect;
 use pocketmine\entity\effects\HarmingEffect;
 use pocketmine\entity\effects\HealingEffect;
@@ -52,6 +53,7 @@ class Effect{
 	const HEALTH_BOOST = 21;
 	const ABSORPTION = 22;
 	const SATURATION = 23;
+	const LEVITATION = 24;
 	
 	protected static $effects;
 	
@@ -73,13 +75,14 @@ class Effect{
 		Effect::$effects[Effect::FIRE_RESISTANCE] = new Effect(Effect::FIRE_RESISTANCE, "%potion.fireResistance", 228, 154, 58);
 		Effect::$effects[Effect::WATER_BREATHING] = new Effect(Effect::WATER_BREATHING, "%potion.waterBreathing", 46, 82, 153);
 		Effect::$effects[Effect::INVISIBILITY] = new InvisibilityEffect(Effect::INVISIBILITY, "%potion.invisibility", 127, 131, 146);
-		//Hunger
+		Effect::$effects[Effect::HUNGER] = new Effect(Effect::HUNGER, "%potion.hunger", 46, 139, 87);
 		Effect::$effects[Effect::WEAKNESS] = new Effect(Effect::WEAKNESS, "%potion.weakness", 72, 77, 72 , true);
 		Effect::$effects[Effect::POISON] = new PoisonEffect(Effect::POISON, "%potion.poison", 78, 147, 49, true);
 		Effect::$effects[Effect::WITHER] = new WitherEffect(Effect::WITHER, "%potion.wither", 53, 42, 39, true);
 		Effect::$effects[Effect::HEALTH_BOOST] = new Effect(Effect::HEALTH_BOOST, "%potion.healthBoost", 248, 125, 35);
-		//Absorption
-		//Saturation
+		Effect::$effects[Effect::ABSORPTION] = new Effect(Effect::ABSORPTION, "%potion.absorption", 36, 107, 251);
+		Effect::$effects[Effect::SATURATION] = new Effect(Effect::SATURATION, "%potion.saturation", 255, 0, 255);
+		Effect::$effects[Effect::LEVITATION] = new Effect(Effect::LEVITATION, "%potion.levitation", 206, 255, 255);
 	}
 
 	/**

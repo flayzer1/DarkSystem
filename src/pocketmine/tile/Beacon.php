@@ -106,9 +106,7 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder{
 		}
 
 		$level = $this->calculatePowerLevel();
-
-		$this->timings->startTiming();
-
+		
 		$id = 0;
 
 		if($level > 0){
@@ -132,9 +130,7 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder{
 		}
 
 		$this->lastUpdate = microtime(true);
-
-		$this->timings->stopTiming();
-
+		
 		return true;
 	}
 	

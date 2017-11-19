@@ -16,7 +16,7 @@ use pocketmine\level\Explosion;
 use pocketmine\level\Level;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\tile\Bed as TileBed;
@@ -164,7 +164,7 @@ class Bed extends Transparent{
 				$this->getLevel()->setBlock($block, Block::get($this->id, $meta), true, true);
 				$this->getLevel()->setBlock($next, Block::get($this->id, $meta | 0x08), true, true);
 
-				$nbt = new Compound("", [
+				$nbt = new CompoundTag("", [
 					new StringTag("id", Tile::BED),
 					new ByteTag("color", $item->getDamage() & 0x0f),
 					new IntTag("x", $block->x),

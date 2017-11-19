@@ -106,7 +106,7 @@ abstract class Tile extends Position{
 		if($level === null || $level->getProvider() === null){
 			throw new ChunkException("Invalid garbage Chunk/Level given to Tile");
 		}
-		
+		//TODO: Remove this
 		$this->timings = Timings::getTileEntityTimings($this);
 		
 		$this->chunk = $level->getChunk($this->namedtag["Pos"][0] >> 4, $this->namedtag["Pos"][2] >> 4);

@@ -1125,6 +1125,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 				}
 
 				$this->level->setTime($this->level->getTime() + Level::TIME_FULL - $time);
+				
 				foreach($this->level->getPlayers() as $p){
 					$p->stopSleep();
 				}
@@ -1168,45 +1169,6 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		return true;
 	}
 	
-	public function sndSettings(){
-		$flags = 0;
-		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
-			if($this->isAdventure()){
-				$flags |= 0x02;
-			}
-			if($this->autoJump){
-				$flags |= 0x20;
-			}
-			if($this->allowFlight){
-				$flags |= 0x40;
-			}
-			if($this->isSpectator()){
-				$flags |= 0x80;
-			}
-		}else{
-			if($this->isAdventure()){
-				$flags |= 0x02;
-			}
-			if($this->autoJump){
-				$flags |= 0x20;
-			}
-			if($this->allowFlight){
-				$flags |= 0x40;
-			}
-			if($this->isSpectator()){
-				$flags |= 0x80;
-			}
-		}
-		$flags |= 0x02;
-		$flags |= 0x04;
-		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
-			//$flags |= 0x100;
-		}
-		$pk = new AdventureSettingsPacket();
-		$pk->flags = $flags;
-		$this->dataPacket($pk);
-	}
-	
 	public function sendSettings(){
 		$pk = new AdventureSettingsPacket();
 
@@ -1222,115 +1184,6 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$pk->eid = $this->getId();
 
 		$this->dataPacket($pk);
-	}
-	
-	public function senSettings(){
-		$pk = new AdventureSettingsPacket();
-		$pk->flags = 0;
-		$pk->worldImmutable = $this->isAdventure();
-		$pk->autoJump = $this->autoJump;
-		$pk->allowFlight = $this->allowFlight;
-		$pk->noClip = $this->isSpectator();
-		$pk->worldBuilder = !($this->isAdventure());
-		$pk->isFlying = $this->flying;
-		$pk->userPermission = ($this->isOp() ? AdventureSettingsPacket::PERMISSION_OPERATOR : AdventureSettingsPacket::PERMISSION_NORMAL);
-		$this->dataPacket($pk);
-	}
-	
-	public function sedSettings(){
-		/*
-		bit mask | flag name
-		0x00000001 world_inmutable
-		0x00000002 no_pvp
-		0x00000004 no_pvm
-		0x00000008 no_mvp
-		0x00000010 static_time
-		0x00000020 nametags_visible
-		0x00000040 auto_jump
-		0x00000080 allow_fly
-		0x00000100 noclip
-		0x00000200 ?
-		0x00000400 ?
-		0x00000800 ?
-		0x00001000 ?
-		0x00002000 ?
-		0x00004000 ?
-		0x00008000 ?
-		0x00010000 ?
-		0x00020000 ?
-		0x00040000 ?
-		0x00080000 ?
-		0x00100000 ?
-		0x00200000 ?
-		0x00400000 ?
-		0x00800000 ?
-		0x01000000 ?
-		0x02000000 ?
-		0x04000000 ?
-		0x08000000 ?
-		0x10000000 ?
-		0x20000000 ?
-		0x40000000 ?
-		0x80000000 ?
-		*/
-		$flags = 0;
-		if($this->isAdventure()){
-			$flags |= 0x01; //Do not allow placing/breaking blocks, adventure mode
-		}
-
-		/*if($nametags !== false){
-			$flags |= 0x20; //Show Nametags
-		}*/
-
-		if($this->autoJump){
-			$flags |= 0x20;
-		}
-
-		if($this->allowFlight){
-			$flags |= 0x40;
-		}
-
-		if($this->isSpectator()){
-			$flags |= 0x80;
-		}
-		
-		$flags |= 0x02;
-		$flags |= 0x04;
-		
-		$pk = new AdventureSettingsPacket();
-		$pk->flags = $flags;
-		$pk->userId = $this->getId();
-		$this->dataPacket($pk);
-	}
-	
-	public function handleAdventureSettings(AdventureSettingsPacket $packet){
-		if($packet->eid !== $this->getId()){
-			return false;
-		}
-
-		$handled = false;
-
-		$isFlying = $packet->getFlag(AdventureSettingsPacket::FLYING);
-		if($isFlying && !$this->allowFlight && !$this->server->getAllowFlight()){
-			$this->kick("Lütfen Hile Kullanmayınız!");
-			return true;
-		}elseif($isFlying !== $this->isFlying()){
-			$this->server->getPluginManager()->callEvent($ev = new PlayerToggleFlightEvent($this, $isFlying));
-			if($ev->isCancelled()){
-				$this->sendSettings();
-			}else{
-				$this->flying = $ev->isFlying();
-			}
-
-			$handled = true;
-		}
-
-		if($packet->getFlag(AdventureSettingsPacket::NO_CLIP) && !$this->isSpectator()){
-			$this->kick("Lütfen Hile Kullanmayınız!");
-			return true;
-		}
-		
-		return $handled;
 	}
 	
 	public function isSurvival(){
@@ -1896,6 +1749,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			$this->processMovement($tickDiff);
 			$this->entityBaseTick($tickDiff);
 			if(!$this->isSpectator() && $this->speed !== null){
+				if($this->hasEffect(Effect::LEVITATION)){
+                    $this->inAirTicks = 0;
+                }
 				if($this->onGround || $this->isCollideWithLiquid()){
 					if($this->inAirTicks !== 0){
 						//$this->startAirTicks = 5;
@@ -1910,8 +1766,14 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 						$expectedVelocity = (-$this->gravity) / $this->drag - ((-$this->gravity) / $this->drag) * exp(-$this->drag * ($this->inAirTicks - $this->startAirTicks));
 						$diff = ($this->speed->y - $expectedVelocity) ** 2;
 						if(!$this->hasEffect(Effect::JUMP) && $diff > 0.6 && $expectedVelocity < $this->speed->y && !$this->server->getAllowFlight() && !$this->isOp() && !$this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NOT_MOVE)){
-							if($this->inAirTicks < 312){
-							}elseif($this->kick("Uçmak Yasak!")){
+							if(PHP_INT_SIZE !== 8 && !$this->server->getAllowFlight() && $this->inAirTicks < 600){
+								$this->setMotion(new Vector3(0, $expectedVelocity, 0));
+							}elseif($this->server->getAllowFlight()){
+								if(Translate::checkTurkish() === "yes"){
+									$this->kick("Uçmak Yasak!");
+								}else{
+									$this->kick("Flying is not allowed!");
+								}
 								return false;
 							}
 						}
@@ -3149,27 +3011,27 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$this->dataPacket($pk);
 	}
 	
-	public function sendTitle(string $title, string $subtitle = "", int $fadein = -1, int $fadeout = -1, int $duration = -1){
+	public function sendTitle($title, $subtitle = "", $fadein = -1, $fadeout = -1, $duration = -1){
         $this->prepareTitle($title, $subtitle, $fadein, $fadeout, $duration);
         $this->prepareTitle($title, $subtitle, $fadein, $fadeout, $duration);
 	}
 	
-	public function sendTitleMessage(string $title, string $subtitle = "", int $fadein = -1, int $fadeout = -1, int $duration = -1){
+	public function sendTitleMessage($title, $subtitle = "", $fadein = -1, $fadeout = -1, $duration = -1){
         $this->prepareTitle($title, $subtitle, $fadein, $fadeout, $duration);
         $this->prepareTitle($title, $subtitle, $fadein, $fadeout, $duration);
 	}
 	
-	public function addTitle(string $title, string $subtitle = "", int $fadein = -1, int $fadeout = -1, int $duration = -1){
+	public function addTitle($title, $subtitle = "", $fadein = -1, $fadeout = -1, $duration = -1){
         $this->prepareTitle($title, $subtitle, $fadein, $fadeout, $duration);
         $this->prepareTitle($title, $subtitle, $fadein, $fadeout, $duration);
 	}
 	
-	public function addTitleMessage(string $title, string $subtitle = "", int $fadein = -1, int $fadeout = -1, int $duration = -1){
+	public function addTitleMessage($title, $subtitle = "", $fadein = -1, $fadeout = -1, $duration = -1){
         $this->prepareTitle($title, $subtitle, $fadein, $fadeout, $duration);
         $this->prepareTitle($title, $subtitle, $fadein, $fadeout, $duration);
 	}
 	
- 	private function prepareTitle(string $title, string $subtitle = "", int $fadein = -1, int $fadeout = -1, int $duration = -1){
+ 	private function prepareTitle($title, $subtitle = "", $fadein = -1, $fadeout = -1, $duration = -1){
 		$pk = new SetTitlePacket();
 		$pk->type = SetTitlePacket::TITLE_TYPE_TITLE;
 		$pk->title = $title;
@@ -3188,7 +3050,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		}
 	}
 	
-	public function sendActionBar(string $title, int $fadein = -1, int $fadeout = -1, int $duration = -1){
+	public function sendActionBar($title, $subtitle = "", $fadein = -1, $fadeout = -1, $duration = -1){
 		$pk = new SetTitlePacket();
 		$pk->type = SetTitlePacket::TITLE_TYPE_ACTION_BAR;
 		$pk->title = $title;
@@ -3198,7 +3060,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$this->dataPacket($pk);
 	}
 	
-	public function sendActionBarMessage(string $title, int $fadein = -1, int $fadeout = -1, int $duration = -1){
+	public function sendActionBarMessage($title, $subtitle = "", $fadein = -1, $fadeout = -1, $duration = -1){
 		$pk = new SetTitlePacket();
 		$pk->type = SetTitlePacket::TITLE_TYPE_ACTION_BAR;
 		$pk->title = $title;
@@ -3208,7 +3070,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$this->dataPacket($pk);
 	}
 	
-	public function addActionBar(string $title, int $fadein = -1, int $fadeout = -1, int $duration = -1){
+	public function addActionBar($title, $subtitle = "", $fadein = -1, $fadeout = -1, $duration = -1){
 		$pk = new SetTitlePacket();
 		$pk->type = SetTitlePacket::TITLE_TYPE_ACTION_BAR;
 		$pk->title = $title;
@@ -3218,7 +3080,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$this->dataPacket($pk);
 	}
 	
-	public function addActionBarMessage(string $title, int $fadein = -1, int $fadeout = -1, int $duration = -1){
+	public function addActionBarMessage($title, $subtitle = "", $fadein = -1, $fadeout = -1, $duration = -1){
 		$pk = new SetTitlePacket();
 		$pk->type = SetTitlePacket::TITLE_TYPE_ACTION_BAR;
 		$pk->title = $title;
@@ -3228,7 +3090,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$this->dataPacket($pk);
 	}
 	
-	public function sendWhisper(string $sender, string $message){
+	public function sendWhisper($sender, $message){
 		$pk = new TextPacket();
 		$pk->type = TextPacket::TYPE_WHISPER;
 		$pk->source = $sender;
@@ -3236,7 +3098,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$this->dataPacket($pk);
 	}
 	
-	public function sendWhisperMessage(string $sender, string $message){
+	public function sendWhisperMessage($sender, $message){
 		$pk = new TextPacket();
 		$pk->type = TextPacket::TYPE_WHISPER;
 		$pk->source = $sender;
@@ -3244,7 +3106,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$this->dataPacket($pk);
 	}
 	
-	public function addWhisper(string $sender, string $message){
+	public function addWhisper($sender, $message){
 		$pk = new TextPacket();
 		$pk->type = TextPacket::TYPE_WHISPER;
 		$pk->source = $sender;
@@ -3252,7 +3114,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$this->dataPacket($pk);
 	}
 	
-	public function addWhisperMessage(string $sender, string $message){
+	public function addWhisperMessage($sender, $message){
 		$pk = new TextPacket();
 		$pk->type = TextPacket::TYPE_WHISPER;
 		$pk->source = $sender;
@@ -3940,7 +3802,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			$this->port,
 			TF::GREEN . $this->randomClientId . TF::WHITE,
 			$this->id,
-			$this->level->getName() . $this->level->getFolderName(),
+			$this->level->getName() . TF::SPACE . $this->level->getFolderName(),
 			round($this->x, 4),
 			round($this->y, 4),
 			round($this->z, 4)
@@ -3963,6 +3825,10 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 	
 	public function getItemInHand(){
 		return $this->inventory->getItemInHand();
+	}
+	
+	public function isHandEmpty(){
+		return $this->inventory->getItemInHand()->getId() === Item::AIR;
 	}
 	
 	public function chatPlayer($format){

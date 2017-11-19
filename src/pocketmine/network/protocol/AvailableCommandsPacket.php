@@ -66,9 +66,6 @@ class AvailableCommandsPacket extends PEPacket{
 			if($commandName == "help"){
 				continue;
 			}
-			if($commandName == "gamemode"){ //Test
-				continue;
-			}
 			$commandsStream->putString($commandName);
 			$commandsStream->putString($commandData['versions'][0]['description']);
 			$commandsStream->putByte(0);
