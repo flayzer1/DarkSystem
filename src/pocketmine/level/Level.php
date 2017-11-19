@@ -210,23 +210,23 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 		Block::GRASS => Grass::class,
 		Block::SAPLING => Sapling::class,
 		Block::LEAVES => Leaves::class,
-		Block::WHEAT_BLOCK => Wheat::class,
+		//Block::WHEAT_BLOCK => Wheat::class,
 		Block::FARMLAND => Farmland::class,
 		Block::SNOW_LAYER => SnowLayer::class,
 		Block::ICE => Ice::class,
 		Block::CACTUS => Cactus::class,
 		Block::SUGARCANE_BLOCK => Sugarcane::class,
-		Block::RED_MUSHROOM => RedMushroom::class,
-		Block::BROWN_MUSHROOM => BrownMushroom::class,
-		Block::PUMPKIN_STEM => PumpkinStem::class,
-		Block::MELON_STEM => MelonStem::class,
+		//Block::RED_MUSHROOM => RedMushroom::class,
+		//Block::BROWN_MUSHROOM => BrownMushroom::class,
+		//Block::PUMPKIN_STEM => PumpkinStem::class,
+		//Block::MELON_STEM => MelonStem::class,
 		//Block::VINE => true,
 		Block::MYCELIUM => Mycelium::class,
 		//Block::COCOA_BLOCK => true,
-		Block::CARROT_BLOCK => Carrot::class,
-		Block::POTATO_BLOCK => Potato::class,
-		Block::LEAVES2 => Leaves2::class,
-		Block::BEETROOT_BLOCK => Beetroot::class,
+		//Block::CARROT_BLOCK => Carrot::class,
+		//Block::POTATO_BLOCK => Potato::class,
+		//Block::LEAVES2 => Leaves2::class,
+		//Block::BEETROOT_BLOCK => Beetroot::class,
 	];
 	
 	public $timings;
@@ -1055,7 +1055,7 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 		unset($this->blockCache[$index = Level::blockHash($pos->x, $pos->y, $pos->z)]);
 
 		if($this->getChunk($pos->x >> 4, $pos->z >> 4, true)->setBlock($pos->x & 0x0f, $pos->y & $this->getYMask(), $pos->z & 0x0f, $block->getId(), $block->getDamage())){
-			if(!($pos instanceof Position)){
+			if(!$pos instanceof Position){
 				$pos = $this->temporalPosition->setComponents($pos->x, $pos->y, $pos->z);
 			}
 			
@@ -1066,10 +1066,10 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 				Cache::remove("world:" . $this->getId() . ":" . $index);
 			}
 
-			if($direct === true){
+			if($direct){
 				$this->sendBlocks($this->getUsingChunk($block->x >> 4, $block->z >> 4), [$block]);
 			}else{
-				if(!($pos instanceof Position)){
+				if(!$pos instanceof Position){
 					$pos = $this->temporalPosition->setComponents($pos->x, $pos->y, $pos->z);
 				}
 				
@@ -1089,7 +1089,7 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 				$this->changedBlocks[$index][$Y][] = clone $block;
 			}
 
-			if($update === true){
+			if($update){
 				$this->updateAllLight($block);
 				$this->server->getPluginManager()->callEvent($ev = new BlockUpdateEvent($block));
 				if(!$ev->isCancelled()){
@@ -1197,17 +1197,16 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 		if($item === null){
 			$item = Item::get(Item::AIR, 0, 0);
 		}
-		
 		$drops = $target->getDrops($item); 
 		if($player instanceof Player){
-			if($player->isSpectator()){
+			if($player->isAdventure() || $player->isSpectator()){
 				return false;
 			}
 			$ev = new BlockBreakEvent($player, $target, $item, ($player->getGamemode() & 0x01) === 1 ? true : false, $drops);
-			if($player->isSurvival() && $item instanceof Item && !$target->isBreakable($item)){
+			if($player->isLiving() && $item instanceof Item && !$target->isBreakable($item)){
 				$ev->setCancelled();
 			}
-			if(!$player->isOp() && ($distance = $this->server->getConfigInt("spawn-protection", 16)) > -1 || $player->isAdventure()){
+			if(!$player->isOp() && ($distance = $this->server->getConfigInt("spawn-protection", 16)) > -1){
 				$t = new Vector2($target->x, $target->z);
 				$s = new Vector2($this->getSpawnLocation()->x, $this->getSpawnLocation()->z);
 				if($t->distance($s) <= $distance){
@@ -1225,7 +1224,6 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 			}
 			$drops = $ev->getDrops();
 			$player->lastBreak = microtime(true);
-			
 			$pos = [ 'x' => $target->x, 'y' => $target->y, 'z' => $target->z ];
 			$blockId = $target->getId();
 			$player->sendSound(LevelSoundEventPacket::SOUND_BREAK, $pos, 1, $blockId);
@@ -1236,9 +1234,7 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 		}elseif($item instanceof Item && !$target->isBreakable($item)){
 			return false;
 		}
-
 		$level = $target->getLevel();
-
 		if($level instanceof Level){
 			$above = $level->getBlock(new Vector3($target->x, $target->y + 1, $target->z));
 			if($above instanceof Block){
@@ -1247,7 +1243,6 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 				}
 			}
 		}
-		
 		$target->onBreak($item);
 		$tile = $this->getTile($target);
 		if($tile instanceof Tile){
@@ -1255,22 +1250,18 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 				if($tile instanceof Chest){
 					$tile->unpair();
 				}
-
 				foreach($tile->getInventory()->getContents() as $chestItem){
 					$this->dropItem($target, $chestItem);
 				}
 			}
-
 			$tile->close();
 		}
-
 		if($item instanceof Item){
 			$item->useOn($target);
 			if($item->isTool() && $item->getDamage() >= $item->getMaxDurability()){
 				$item = Item::get(Item::AIR, 0, 0);
 			}
 		}
-
 		if(!($player instanceof Player) || $player->isSurvival()){
 			foreach($drops as $drop){
 				if($drop[2] > 0){
@@ -1278,7 +1269,6 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 				}
 			}
 		}
-
 		return true;
 	}
 
@@ -1310,7 +1300,7 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 			}
 			if(!$ev->isCancelled()){
 				$target->onUpdate(Level::BLOCK_UPDATE_TOUCH);
-				if($target->canBeActivated() === true && $target->onActivate($item, $player) === true){
+				if($target->canBeActivated() && $target->onActivate($item, $player)){
 					return true;
 				}
 				if($item->canBeActivated() && $item->onActivate($this, $player, $block, $target, $face, $fx, $fy, $fz)){
@@ -1325,7 +1315,7 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 					$player->getInventory()->sendContents($player);
 				}
 			}
-		}elseif($target->canBeActivated() === true && $target->onActivate($item, $player) === true){
+		}elseif($target->canBeActivated() && $target->onActivate($item, $player)){
 			return true;
 		}
 		if($item->isPlaceable()){
@@ -1334,17 +1324,20 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 		}elseif($block->getId() === Item::FIRE){
 			$this->setBlock($block, new Air(), true);
 			return false;
+		}elseif($block->getId() === Block::SNOW_LAYER){
+			$this->setBlock($block, new SnowLayer(), true);
+			return false;
 		}else{
 			return false;
 		}
-		if(!($block->canBeReplaced() === true || ($hand->getId() === Item::SLAB && $block->getId() === Item::SLAB))){
+		if(!($block->canBeReplaced() || ($hand->getId() === Item::SLAB && $block->getId() === Item::SLAB))){
 			return false;
 		}
 		if($target->canBeReplaced() === true){
 			$block = $target;
 			$hand->position($block);
 		}
-		if($hand->isSolid() === true && $hand->getBoundingBox() !== null){
+		if($hand->isSolid() && $hand->getBoundingBox() !== null){
 			$entities = $this->getCollidingEntities($hand->getBoundingBox());
 			$realCount = 0;
 			foreach($entities as $e){
@@ -1366,11 +1359,11 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 			}
 		}
 		if($player instanceof Player){
-			if($player->isSpectator()){
+			if($player->isAdventure() || $player->isSpectator()){
 				return false;
 			}
 			$ev = new BlockPlaceEvent($player, $hand, $block, $target, $item);
-			if(!$player->isOp() && ($distance = $this->server->getConfigInt("spawn-protection", 16)) > -1/* || $player->isAdventure()*/){
+			if(!$player->isOp() && ($distance = $this->server->getConfigInt("spawn-protection", 16)) > -1){
 				$t = new Vector2($target->x, $target->z);
 				$s = new Vector2($this->getSpawnLocation()->x, $this->getSpawnLocation()->z);
 				if($t->distance($s) <= $distance){
@@ -1382,7 +1375,7 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 				return false;
 			}
 		}
-		if($hand->place($item, $block, $target, $face, $fx, $fy, $fz, $player) === false){
+		if(!$hand->place($item, $block, $target, $face, $fx, $fy, $fz, $player)){
 			return false;
 		}
 		if($hand->getId() === Item::SIGN_POST || $hand->getId() === Item::WALL_SIGN){
@@ -1713,7 +1706,7 @@ class Level extends TimeValues implements ChunkManager, Metadatable{
 		return $this->getChunk($x, $z, $create);
 	}
 	
-	public function getChunkLoaders(int $chunkX, int $chunkZ){
+	public function getChunkLoaders($chunkX, $chunkZ){
 		return isset($this->chunkLoaders[$index = Level::chunkHash($chunkX, $chunkZ)]) ? $this->chunkLoaders[$index] : [];
 	}
 	

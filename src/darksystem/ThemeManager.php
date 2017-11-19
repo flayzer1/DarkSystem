@@ -64,7 +64,25 @@ class ThemeManager{
     	return ThemeManager::DEFAULT_THEME;
     }
     
+    //ASCII Text Font: Doom
     public function getLogoTheme($dbotcheck, $dbotver, $version, $mcpe, $protocol, $build, $tag, $splash){
+    	if(mt_rand(1, 100) == 1){ //%1 chance
+    	    $random = substr(base64_encode(random_bytes(20)), 3, 10);
+    	    return "
+    
+    §f______      _         _____       _             
+    §f|  _  \    | |       /  ___|     | |            
+    §f| | | |__ _| | ___ __\ `--. _   _| |_ ___ _ __  
+    §f| | | / _` | |/ / '__|`--. \ | | | __/ _ \ '_ \ 
+    §f| |/ / (_| |   <| |  /\__/ / |_| | ||  __/ | | |
+    §f|___/ \__,_|_|\_\_|  \____/ \__, |\__\___|_| |_|
+                                 §f__/  |              
+                                 §f|___/               
+                             
+      §bDakrSyten 9.9.9 (4)  *$random*
+      
+			";
+		}
     	switch($this->getTheme()){
     	    case "darkness":
     	    $this->setTheme(ThemeManager::DEFAULT_THEME);

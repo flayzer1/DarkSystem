@@ -107,7 +107,7 @@ interface EntityIds{
 	const FISHING_HOOK = 77;
 	const CHALKBOARD = 78;
 	const DRAGON_FIREBALL = 79;
-	const ARROW = 80;
+	const ARROW = 80; //TODO: Add spectral arrow type
 	const SNOWBALL = 81;
 	const EGG = 82;
 	const PAINTING = 83;

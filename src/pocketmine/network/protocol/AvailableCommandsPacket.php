@@ -66,6 +66,9 @@ class AvailableCommandsPacket extends PEPacket{
 			if($commandName == "help"){
 				continue;
 			}
+			if($commandName == "gamemode"){ //Test
+				continue;
+			}
 			$commandsStream->putString($commandName);
 			$commandsStream->putString($commandData['versions'][0]['description']);
 			$commandsStream->putByte(0);
@@ -125,9 +128,10 @@ class AvailableCommandsPacket extends PEPacket{
 		self::$commandsBuffer[Info::PROTOCOL_120] = $additionalDataStream->buffer;
 	}
 	
+	//Second way
 	protected function getPreparedCommandData(){
-		$extraDataStream = new BinaryStream;
-		$commandStream = new BinaryStream;
+		$extraDataStream = new BinaryStream();
+		$commandStream = new BinaryStream();
 		
 		$enumValues = [];
 		$enums = [];
@@ -191,8 +195,8 @@ class AvailableCommandsPacket extends PEPacket{
 						
 						$commandStream->putLInt($type);
 						$commandStream->putBool($param->isOptional());
-						}
 					}
+				}
 			}
 		}
 		

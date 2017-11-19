@@ -666,16 +666,13 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 	public function sendCommandData(){
 		$data = new \stdClass();
 		$count = 0;
-		if($this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_120){
-			//TODO
-		}
 		foreach($this->server->getCommandMap()->getCommands() as $command){
-			if($this->hasPermission($command->getPermission()) || $command->getPermission() == null){
+			//if($this->hasPermission($command->getPermission() || $command->getPermission() == null)){
 			    if(($cmdData = $command->generateCustomCommandData($this)) !== null){
 				    ++$count;
 				    $data->{$command->getName()}->versions[0] = $cmdData;
 				}
-			}
+			//}
 		}
 		if($count > 0){
 			$pk = new AvailableCommandsPacket();
@@ -2901,9 +2898,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 				if($ev->isCancelled()){
 					break;
 				}
-				Timings::$playerCommandTimer->startTiming();
 				$this->server->dispatchCommand($ev->getPlayer(), substr($ev->getMessage(), 1));
-				Timings::$playerCommandTimer->stopTiming();
 				break;
 			case "RESOURCE_PACK_CLIENT_RESPONSE_PACKET":
 				switch($packet->status){
@@ -2927,7 +2922,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 					$this->close("disconnectionScreen.resourcePack", true);
 					break;
 				}
-
+				
 				$pk = new ResourcePackChunkDataPacket();
 				$pk->packId = $pack->getPackId();
 				$pk->chunkIndex = $packet->chunkIndex;

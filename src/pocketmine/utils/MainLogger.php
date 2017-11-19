@@ -229,11 +229,23 @@ class MainLogger extends \AttachableThreadedLogger{
 		$now = time();
 		$thread = \Thread::getCurrentThread();
 		if($thread === null){
-			$threadName = "Sunucu Görevi";
+			if(Translate::checkTurkish() === "yes"){
+				$threadName = "Sunucu İşlemi";
+			}else{
+				$threadName = "Server Thread";
+			}
 		}elseif($thread instanceof Thread || $thread instanceof Worker){
-			$threadName = $thread->getThreadName() . " Görevi";
+			if(Translate::checkTurkish() === "yes"){
+				$threadName = $thread->getThreadName() . " İşlemi";
+			}else{
+				$threadName = $thread->getThreadName() . " Thread";
+			}
 		}else{
-			$threadName = (new \ReflectionClass($thread))->getShortName() . " Görevi";
+			if(Translate::checkTurkish() === "yes"){
+				$threadName = (new \ReflectionClass($thread))->getShortName() . " İşlemi";
+			}else{
+				$threadName = (new \ReflectionClass($thread))->getShortName() . " Thread";
+			}
 		}
 		if($this->shouldRecordMsg){
 			if((time() - $this->lastGet) >= 10) $this->shouldRecordMsg = false;
@@ -242,33 +254,35 @@ class MainLogger extends \AttachableThreadedLogger{
 				$this->shouldSendMsg .= $color . "|" . $prefix . "|" . trim($message, "\r\n") . "\n";
 			}
 		}
-		$message = TextFormat::toANSI("§" . mt_rand(1, 9) . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§" . mt_rand(1, 9) . "》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+		$name = \pocketmine\CODENAME;
+		$easter = "LOL";
+		$message = TextFormat::toANSI("§" . mt_rand(1, 9) . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . $name . " §l§" . mt_rand(1, 9) . "》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 		//Not works correctly
 		/*switch(Server::getInstance()->getTheme()){
 			case "darkness":
 			//Server::getInstance()->getThemeManager()->setTheme(Server::getInstance()->getThemeManager()->getDefaultTheme());
-			$message = TextFormat::toANSI(TextFormat::GREEN . "<" . date("H:i:s", $now) . "> " . TextFormat::AQUA . "LOL §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			$message = TextFormat::toANSI(TextFormat::GREEN . "<" . date("H:i:s", $now) . "> " . TextFormat::AQUA . $easter . " §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 			break;
 			case "classic":
-			$message = TextFormat::toANSI(TextFormat::AQUA . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			$message = TextFormat::toANSI(TextFormat::AQUA . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . $name . " §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 			break;
 			case "dark":
-			$message = TextFormat::toANSI(TextFormat::GRAY . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§3》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			$message = TextFormat::toANSI(TextFormat::GRAY . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . $name . " §l§3》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 			break;
 			case "light":
-			$message = TextFormat::toANSI(TextFormat::WHITE . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§f》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			$message = TextFormat::toANSI(TextFormat::WHITE . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . $name . " §l§f》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 			break;
 			case "metal":
-			$message = TextFormat::toANSI(TextFormat::GRAY . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§f》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			$message = TextFormat::toANSI(TextFormat::GRAY . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . $name . " §l§f》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 			break;
 			case "energy":
-			$message = TextFormat::toANSI(TextFormat::YELLOW . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			$message = TextFormat::toANSI(TextFormat::YELLOW . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . $name . " §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 			break;
 			case "uranium":
-			$message = TextFormat::toANSI(TextFormat::GREEN . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§e》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			$message = TextFormat::toANSI(TextFormat::GREEN . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . $name . " §l§e》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 			break;
 			default;
-			$message = TextFormat::toANSI(TextFormat::AQUA . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . "DarkSystem §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
+			$message = TextFormat::toANSI(TextFormat::AQUA . "<" . date("H:i:s", $now) . "> " . TextFormat::BLUE . $name . " §l§6》§r " . $color . $prefix . ":" . " " . $message . TextFormat::RESET);
 			break;
 		}*/
 		$cleanMessage = TextFormat::clean($message);

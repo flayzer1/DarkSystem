@@ -1549,7 +1549,7 @@ class Server extends DarkSystem{
 				$this->konsol->info($this->dbot->getStartupMessage());
 			}
 			
-			//if(count($this->pluginMgr->getPlugins()) > 0 || $this->pluginMgr->getPlugins() === null){
+			//if(count($this->pluginMgr->getPlugins()) > 0){
 				if(Translate::checkTurkish() === "yes"){
 					$this->konsol->info("§aEklentiler Yükleniyor...");
 				}else{
@@ -1557,8 +1557,13 @@ class Server extends DarkSystem{
 				}
 			//}
 			
-			$lang = $this->getProperty("settings.language", Language::FALLBACK_LANGUAGE);
-			if($defaultLang != "Bilinmeyen" && $lang != $defaultLang){
+			if(Translate::checkTurkish() === "yes"){
+				$lang = Translate::TUR;
+			}elseif($this->getProperty("settings.language", Language::FALLBACK_LANGUAGE) !== Translate::TUR){
+				$lang = $this->getProperty("settings.language", Language::FALLBACK_LANGUAGE);
+			}
+			
+			if($defaultLang !== "Bilinmeyen" && $lang !== $defaultLang){
 				@file_put_contents($configPath, str_replace('language: "' . $lang . '"', 'language: "' . $defaultLang . '"', file_get_contents($configPath)));
 				$this->config->reload();
 				unset($this->propertyCache["settings.language"]);
@@ -2246,7 +2251,7 @@ class Server extends DarkSystem{
 		try{
 			$this->hasStopped = true;
 			foreach($this->players as $p){
-				$p->close(TF::YELLOW . $p->getName() . " Oyundan Ayrıldı", $this->getProperty("settings.shutdown-message", "Sunucu Durduruldu"));
+				$p->close($this->getProperty("settings.shutdown-message", "Sunucu Durduruldu"));
 			}
 			
 			foreach($this->network->getInterfaces() as $int){
@@ -2255,9 +2260,9 @@ class Server extends DarkSystem{
 			}
 			
 			$this->shutdown();
-			//$this->dbot->shutdown();
+			$this->dbot->shutdown();
 			
-			//if(count($this->pluginMgr->getPlugins()) > 0 || $this->pluginMgr->getPlugins() === null){
+			//if(count($this->pluginMgr->getPlugins()) > 0){
 				if(Translate::checkTurkish() === "yes"){
 					$this->konsol->info("§cEklentiler Devre Dışı Bırakılıyor...");
 				}else{
