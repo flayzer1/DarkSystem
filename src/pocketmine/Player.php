@@ -1750,8 +1750,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			$this->entityBaseTick($tickDiff);
 			if(!$this->isSpectator() && $this->speed !== null){
 				if($this->hasEffect(Effect::LEVITATION)){
-                    $this->inAirTicks = 0;
-                }
+					$this->inAirTicks = 0;
+				}
 				if($this->onGround || $this->isCollideWithLiquid()){
 					if($this->inAirTicks !== 0){
 						//$this->startAirTicks = 5;
@@ -1768,7 +1768,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 						if(!$this->hasEffect(Effect::JUMP) && $diff > 0.6 && $expectedVelocity < $this->speed->y && !$this->server->getAllowFlight() && !$this->isOp() && !$this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NOT_MOVE)){
 							if(PHP_INT_SIZE !== 8 && !$this->server->getAllowFlight() && $this->inAirTicks < 600){
 								$this->setMotion(new Vector3(0, $expectedVelocity, 0));
-							}elseif($this->server->getAllowFlight()){
+							}elseif(!$this->server->getAllowFlight()){
 								if(Translate::checkTurkish() === "yes"){
 									$this->kick("Uçmak Yasak!");
 								}else{
