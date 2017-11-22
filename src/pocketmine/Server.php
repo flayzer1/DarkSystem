@@ -317,6 +317,42 @@ class Server extends DarkSystem{
 		return "DarkSystem";
 	}
 	
+	public function getUptime(){
+		$time = microtime(true) - \pocketmine\START_TIME;
+
+		$seconds = floor($time % 60);
+		$minutes = null;
+		$hours = null;
+		$days = null;
+
+		if($time >= 60){
+			$minutes = floor(($time % 3600) / 60);
+			if($time >= 3600){
+				$hours = floor(($time % (3600 * 24)) / 3600);
+				if($time >= 3600 * 24){
+					$days = floor($time / (3600 * 24));
+				}
+			}
+		}
+
+		$uptime = ($minutes !== null ?
+				($hours !== null ?
+					($days !== null ?
+						"$days " . $this->getLanguage()->translateString("%pocketmine.command.status.days") . " "
+						: "") . "$hours " . $this->getLanguage()->translateString("%pocketmine.command.status.hours") . " "
+					: "") . "$minutes " . $this->getLanguage()->translateString("%pocketmine.command.status.minutes") . " "
+				: "") . "$seconds " . $this->getLanguage()->translateString("%pocketmine.command.status.seconds");
+		return $uptime;
+	}
+
+	public function getTicksPerSecondAverage(){
+		return round(array_sum($this->tickAverage) / count($this->tickAverage), 2);
+	}
+
+	public function getTickUsageAverage(){
+		return round((array_sum($this->useAverage) / count($this->useAverage)) * 100, 2);
+	}
+	
 	private function getCallingClass(){
 		$trace = debug_backtrace();
 		$class = $trace[1]["class"];
