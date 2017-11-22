@@ -43,6 +43,7 @@ class InventoryAPI{
         $block->level->sendBlocks([$player], [$block]);
         $inventory = new CustomChestInventory($tile);
         $tile->spawnTo($player);
+        
         if($autoOpen){
             $player->addWindow($inventory, 15);
         }

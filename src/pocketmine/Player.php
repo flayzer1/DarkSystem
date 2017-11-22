@@ -377,7 +377,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 	}
 	
 	public function getLeaveMessage(){
-		return "";
+		return ""; //TODO
 	}
 	
 	public function getLoaderId(){
@@ -904,6 +904,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			$this->inventory->sendContents($this);
 			$this->inventory->sendArmorContents($this);
 			$this->inventory->setHeldItemIndex(0);
+			$this->setDataFlag(Player::DATA_FLAGS, Player::DATA_FLAG_NOT_IN_WATER, true);
 			$this->setFlyingFlag(false);
 			$this->setSprinting(false);
 			$this->setMoving(false);
@@ -1170,19 +1171,32 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 	}
 	
 	public function sendSettings(){
+		$flags = 0;
+		if($this->isAdventure()){
+			$flags |= 0x01;
+		}
+		
+		if($this->autoJump){
+			$flags |= 0x20;
+		}
+
+		if($this->allowFlight){
+			$flags |= 0x40;
+		}
+		
+		if($this->isSpectator()){
+			$flags |= 0x80;
+		}
+		
+		$flags |= 0x02;
+		$flags |= 0x04;
+		
 		$pk = new AdventureSettingsPacket();
-
-		$pk->setPlayerFlag(AdventureSettingsPacket::WORLD_IMMUTABLE, $this->isSpectator());
-		$pk->setPlayerFlag(AdventureSettingsPacket::NO_PVP, $this->isSpectator());
-		$pk->setPlayerFlag(AdventureSettingsPacket::AUTO_JUMP, $this->autoJump);
-		$pk->setPlayerFlag(AdventureSettingsPacket::ALLOW_FLIGHT, $this->allowFlight);
-		$pk->setPlayerFlag(AdventureSettingsPacket::NO_CLIP, $this->isSpectator());
-		$pk->setPlayerFlag(AdventureSettingsPacket::FLYING, $this->flying);
-
-		$pk->commandPermission = ($this->isOp() ? AdventureSettingsPacket::PERMISSION_OPERATOR : AdventureSettingsPacket::PERMISSION_NORMAL);
-		$pk->playerPermission = ($this->isOp() ? PlayerPermissions::OPERATOR : PlayerPermissions::MEMBER);
-		$pk->eid = $this->getId();
-
+		$pk->flags = $flags;
+		$pk->actionPermissions = ($this->isOp() ? AdventureSettingsPacket::ACTION_FLAG_ALLOW_ALL : AdventureSettingsPacket::ACTION_FLAG_DEFAULT_LEVEL_PERMISSIONS);
+		//TODO: PlayerPermissions
+		$pk->permissionLevel = ($this->isOp() ? AdventureSettingsPacket::PERMISSION_LEVEL_OPERATOR : AdventureSettingsPacket::PERMISSION_LEVEL_MEMBER);
+		$pk->userId = $this->getId();
 		$this->dataPacket($pk);
 	}
 	
@@ -1766,7 +1780,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 						$expectedVelocity = (-$this->gravity) / $this->drag - ((-$this->gravity) / $this->drag) * exp(-$this->drag * ($this->inAirTicks - $this->startAirTicks));
 						$diff = ($this->speed->y - $expectedVelocity) ** 2;
 						if(!$this->hasEffect(Effect::JUMP) && $diff > 0.6 && $expectedVelocity < $this->speed->y && !$this->server->getAllowFlight() && !$this->isOp() && !$this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NOT_MOVE)){
-							if(PHP_INT_SIZE !== 8 && !$this->server->getAllowFlight() && $this->inAirTicks < 600){
+							if($this->inAirTicks < 1000){
 								$this->setMotion(new Vector3(0, $expectedVelocity, 0));
 							}elseif(!$this->server->getAllowFlight()){
 								if(Translate::checkTurkish() === "yes"){
@@ -1960,7 +1974,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
             case "UPDATE_ATTRIBUTES_PACKET":
                 break;
             case "ADVENTURE_SETTINGS_PACKET":
-                $isHacker = ($this->allowFlight === false && ($packet->flags >> 9) & 0x01 === 1) || 
+                $isHacker = (!$this->allowFlight && ($packet->flags >> 9) & 0x01 === 1) || 
                     (!$this->isSpectator() && ($packet->flags >> 7) & 0x01 === 1);
                 if($isHacker){
                 	$this->kick("Lütfen Hile Kullanmayınız!");
@@ -2934,7 +2948,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 	}
 	
 	public function kick($reason = "Sunucu Bağlantısı Kesildi"){
-		$this->server->getPluginManager()->callEvent($ev = new PlayerKickEvent($this, $reason));
+		$this->server->getPluginManager()->callEvent($ev = new PlayerKickEvent($this, $reason, $this->getLeaveMessage()));
 		if(!$ev->isCancelled()){
 			$this->close($ev->getQuitMessage(), $reason);
 			return true;
@@ -3600,7 +3614,6 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 
 	public function removeWindow(Inventory $inventory){
 		if($this->currentWindow !== $inventory){
-			
 		}else{
 			$inventory->close($this);
 			$this->currentWindow = null;
@@ -3618,13 +3631,12 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			$pk->privateKey = $privateKey;
 			$this->dataPacket($pk);
 			$this->enableEncrypt($token, $privateKey, $this->identityPublicKey);
-		//}else{
 		}
-			$this->continueLoginProcess();
-		//}
+		
+		$this->continueLogin();
 	}
 	
-	public function continueLoginProcess(){
+	public function continueLogin(){
 		$pk = new PlayStatusPacket();
 		$pk->status = PlayStatusPacket::LOGIN_SUCCESS;
 		$this->dataPacket($pk);
@@ -3671,7 +3683,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 			$this->close("disconnectionScreen.serverFull");
 			return false;
 		}
-		$this->server->getPluginManager()->callEvent($ev = new PlayerPreLoginEvent($this, "Plugin reason"));
+		$this->server->getPluginManager()->callEvent($ev = new PlayerPreLoginEvent($this, "Plugin Reason"));
 		if($ev->isCancelled()){
 			$this->close($ev->getKickMessage());
 			return false;
@@ -3774,7 +3786,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer{
 		$pk->z = (int) $hub->z;
 		$this->dataPacket($pk);
 		if($this->getHealth() <= 0){
-			$this->dead = true;
+			//$this->dead = true;
 		}
 		//$pk = new ResourcePackDataInfoPacket();
 		//$this->dataPacket($pk);

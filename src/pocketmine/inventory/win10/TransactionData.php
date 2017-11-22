@@ -18,7 +18,7 @@ class TransactionData{
 	
 	public function __toString() {
 		return get_class($this->inventory) . ' Slot: ' . $this->slot . ' Old item: ' . $this->oldItem->getId() .  ' (' . $this->oldItem->getCount() . ') '
-				. ' New item: ' . $this->newItem->getId() .  ' (' . $this->newItem->getCount() . ')';
+			. ' New item: ' . $this->newItem->getId() .  ' (' . $this->newItem->getCount() . ')';
 	}
 	
 	public function getInventory() {

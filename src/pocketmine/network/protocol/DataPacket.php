@@ -53,7 +53,7 @@ abstract class DataPacket extends BinaryStream{
 		foreach($this as $k => $v){
 			if($k === "buffer"){
 				$data[$k] = bin2hex($v);
-			}elseif(is_string($v) or (is_object($v) and method_exists($v, "__toString"))){
+			}elseif(is_string($v) || (is_object($v) && method_exists($v, "__toString"))){
 				$data[$k] = Utils::printable((string) $v);
 			}else{
 				$data[$k] = $v;
@@ -72,6 +72,8 @@ abstract class DataPacket extends BinaryStream{
 		DataPacket::$packetsIds[Info::PROTOCOL_110] = $oClass->getConstants();
 		$oClass = new \ReflectionClass('pocketmine\network\protocol\Info120');
 		DataPacket::$packetsIds[Info::PROTOCOL_120] = $oClass->getConstants();
+		$oClass = new \ReflectionClass('pocketmine\network\protocol\Info150');
+		DataPacket::$packetsIds[Info::PROTOCOL_150] = $oClass->getConstants();
 	}
 	
 }

@@ -8,7 +8,7 @@ class GameRulesChangedPacket extends PEPacket{
 
 	public $rules = [];
 
-	public function decode(){
+	public function decode($playerProtocol){
 		$this->getHeader($playerProtocol);
 		$count = $this->getVarInt();
 		for ($i = 0; $i < $count; $i++){
@@ -19,8 +19,8 @@ class GameRulesChangedPacket extends PEPacket{
 		}
 	}
 
-	public function encode(){
-		$this->reset();
+	public function encode($playerProtocol){
+		$this->reset($playerProtocol);
 		$this->putVarInt(count($this->rules));
 		foreach($this->rules as $rule){
 			$this->putString($rule["NAME"]);

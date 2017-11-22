@@ -26,7 +26,6 @@ class Win10InvLogic{
 		}
 		switch ($packet->pname()) {
 			case 'CONTAINER_SET_SLOT_PACKET':
-//				var_dump($packet);
 				$invData = self::$playersInventoryData[$playerId];
 				switch ($packet->windowid) {
 					case self::WINDOW_ID_PLAYER_INVENTORY:
@@ -68,7 +67,7 @@ class Win10InvLogic{
 				}
 				break;
 			default:
-				var_dump('Unknovn packet: ' . $packet->pname());
+				var_dump('Unknown packet: ' . $packet->pname());
 				break;
 		}
 	}
@@ -93,5 +92,4 @@ class Win10InvLogic{
 			unset(self::$playersInventoryData[$playerId]);
 		}
     }
-	
 }

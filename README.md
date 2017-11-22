@@ -47,9 +47,9 @@ You can download it [here](http://bit.do/darksystem_apk).<br>
 - Floating Text as Entity (On DarkSystem, floating text is not a particle, it is an entity. So it blocks floating text hack or others. Also dissappearing of floating texts is not possible.)
 - Auto Lag Cleaner (How does it works? It automatically removes items and arrows from ground without occuping CPU.)
 - Weather (Supports snow/rain/thunder)
-- **DarkRCON!** (NOT PUBLISHED YET!, An advenced rcon client for managing DarkSystem servers. Fully protected with password. %100 safe. Works on Android, Windows And more...)
+- **DarkRCON!** (NOT PUBLISHED YET!) (An advenced rcon client for managing DarkSystem servers. Fully protected with password. %100 safe. Works on Android, Windows And more...)
 - CustomUI (Allows to create fully customizable menus, can be added by /addui) (only +1.2)
-- /addui Command (You can easily test CustomUI's with this) (/addui {player} {type:shop/alert/image/slider/dropdown/input/mix})
+- /addui Command (You can easily test CustomUIs with this) (/addui {player} {type:shop/alert/image/slider/dropdown/input/mix})
 - Fully Turkish Language (DarkSystem Support %79 Turkish Language. How to set language to Turkish? Simple, choose language to **tur** on set-up wizard. After set **language:** to **tur** on **pocketmine.yml**)
 - MultiVersion® support (**What is this?** We support **1.0.x, 1.1.x, 1.2.x** versions of Minecraft (PE) Bedrock Edition)
 - Always up-to-date. We always add new block, items to DarkSystem. You can find new things here when out.
@@ -80,17 +80,17 @@ You can download it [here](http://bit.do/darksystem_apk).<br>
 - [ ] **Experience System (working)**
 - [ ] **Map**
 - [x] **Horse**
-- [ ] **Fireworks**
+- [x] **Fireworks (%60)**
 - [ ] **Armor Stand (made %10)**
-- [ ] **Throwing Potions**
+- [x] **Throwing Potions**
 - [x] **Writable & Written Books**
 - [x] **Fully Working CustomUI**
 - [ ] **Riding Minecart and Boat**
-- [ ] **Fully Redstone System**
-- [ ] **Multi-core (indev, will finish)**
+- [x] **Fully Redstone System**
+- [x] **Multi-core**
 - [x] **Jukebox**
 - [x] **Pistons**
-- [ ] **Fully Multi-Language**
+- [x] **Fully Multi-Language**
 - [ ] **Mob Spawner**
 - [x] **Item Frame**
 - [x] **Auto lag cleaner**
@@ -101,8 +101,7 @@ You can download it [here](http://bit.do/darksystem_apk).<br>
 
 # Known Bugs in 1.2:
 - Moving is glitchy. (Seen on Android OS & 32-bit machines)
-- Breaking block does not work.
-- AvailableCommandPackets is die on 1.2. (On 1.1, works perfect)
+- AvailableCommandPacket problems
 
 # Notes:
 - DarkSystem does not support PMAnvil map format, only support Anvil and McRegion.

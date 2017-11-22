@@ -19,15 +19,19 @@ class PlayerKickEvent extends PlayerEvent implements Cancellable{
 	public static $handlerList = null;
 	
 	/** @var string */
-	protected $quitMessage;
+	protected $reason;
 	
 	/** @var string */
-	protected $reason;
-
-	public function __construct(Player $player, $quitMessage = "", $reason){
+	protected $quitMessage;
+	
+	public function __construct(Player $player, $reason, $quitMessage = ""){
 		$this->player = $player;
-		$this->quitMessage = $quitMessage;
 		$this->reason = $reason;
+		$this->quitMessage = $quitMessage;
+	}
+	
+	public function getReason(){
+		return $this->reason;
 	}
 	
 	public function setQuitMessage($quitMessage){
@@ -36,10 +40,6 @@ class PlayerKickEvent extends PlayerEvent implements Cancellable{
 
 	public function getQuitMessage(){
 		return $this->quitMessage;
-	}
-	
-	public function getReason(){
-		return $this->reason;
 	}
 	
 }

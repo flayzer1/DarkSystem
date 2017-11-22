@@ -254,7 +254,6 @@ class PlayerInventoryData{
 	
 	protected function isTransactionTmp($newItem, $currentItem, $inventory) {
 //		var_dump('checking for tmp transaction');
-		// small bad code for transaction bad order issue
 		$countDiff = $newItem->count - $currentItem->count;
 		$searchItem = Item::get($newItem->getId(), $newItem->getDamage(), $countDiff);
 //		var_dump('Search item: ' . $searchItem->getId() . ' ' . $newItem->getDamage() . ' ' . $searchItem->count);

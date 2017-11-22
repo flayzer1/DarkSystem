@@ -21,10 +21,7 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
-class DisconnectPacket extends PEPacket {
+class DisconnectPacket extends PEPacket{
 	
 	const NETWORK_ID = Info::DISCONNECT_PACKET;
 	const PACKET_NAME = "DISCONNECT_PACKET";

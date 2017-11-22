@@ -202,7 +202,7 @@ class Server extends DarkSystem{
 	private $queryHandler;
 
 	/** @var QueryRegenerateEvent */
-	private $queryRegenerateTask = null;
+	private $queryRegenerator = null;
 
 	/** @var Config */
 	private $properties;
@@ -1751,7 +1751,7 @@ class Server extends DarkSystem{
 			
 			register_shutdown_function([$this, "crashReport"]);
 
-			$this->queryRegenerator = new QueryRegenerateEvent($this, 7);
+			$this->queryRegenerator = new QueryRegenerateEvent($this, 5); //7
 			$this->pluginMgr->loadPlugins($this->pluginPath);
 			$this->enablePlugins(PluginLoadOrder::STARTUP);
 			$this->network->registerInterface(new RakLibInterface($this));
